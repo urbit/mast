@@ -1,176 +1,372 @@
 /*  mast-js  %js  /lib/mast/js
 |%
 ::
-+$  sail  manx
-+$  crow  [=path data=(map @t @t)]
-+$  diff  (list json)
++$  crow  [=path data=(map @t @t)]               :: event poke
++$  name  term                                   :: component name
++$  dock  (list [name mast])                     :: component list
++$  deck  (map name mast)                        :: component map
++$  hull  agent:gall                             :: nested agent
++$  bowl  bowl:gall                              :: bowl
++$  stow  vase                                   :: local component state
++$  sack  vase                                   :: component props state
++$  mast                                         :: component core
+  $_  ^|
+  |_  [bowl stow sack]
+  ++  scud  *(unit *)
+  ++  spar  *$-(crow (quip card stow))
+  ++  sail  *$^([%hoot manx:hoot] manx)
+  --
++$  rigs  (map ship rope)                        :: component trees by source
++$  rope  (axal wood)                            :: component instance tree
++$  wood                                         :: component instance state
+  $:  sud=atom                                   ::   prev scud hash
+      sow=stow                                   ::   local state
+      sac=sack                                   ::   props state
+      aft=manx                                   ::   prev manx
+  ==                                             ::
++$  diff  (list json)                            :: luff diff prod
++$  card  card:agent:gall                        :: card
++$  brig                                         :: %mast internal state
+  $:  =rigs
+  ==
 ::
-++  pin
-  |*  session-state=mold
-  =>
-  |%
-  +$  event  crow
-  +$  rig  rig-0
-  +$  rig-0
-    $:  =last-heard
-        =storage
-        =aft
+++  wrap
+  |=  [=deck =hull]
+  ^-  agent:gall
+  =|  =brig
+  =<
+  |_  =bowl
+  +*  this  .
+      hu  ~(. hull bowl)
+  ::
+  ++  on-init
+    ^-  (quip card _this)
+    =^  cards  hull  on-init:hu
+    :-  cards  this
+  ::
+  ++  on-save   on-save:hu
+  ::
+  ++  on-load
+    |=  =vase
+    ^-  (quip card _this)
+    =^  cards  hull  (on-load:hu vase)
+    :-  cards  this
+  ::
+  ++  on-poke
+    |=  [=mark =vase]
+    ^-  (quip card _this)
+    ?+  mark
+      ::
+      =^  cards  hull  (on-poke:hu [mark vase])
+      =^  cardz  deck  gust  :: TEST:
+      :-  cards  this
+      ::
+        %handle-http-request
+      =+  !<([rid=@ta req=inbound-request:eyre] vase)
+      ?+  method.request.req  ~|(bad-method/method.request.req !!)
+      :: TODO: make handle-http-request fall through to hull
+        ::
+          %'GET'
+        :: TODO: gale
+        `this
+      ==
+      ::
+        %json
+      =+  !<  jon=json  vase
+      ?.  ?&  ?=(%a -.jon)
+              ?=(^ p.jon)
+              ?=(^ t.p.jon)
+              =([%s 'mast'] i.p.jon)
+          ==
+        =^  cards  hull  (on-poke:hu [mark vase])
+        :-  cards  this
+      =/  =crow  (parse-channel-data i.t.p.jon)
+      =^  cards  hull  (on-poke:hu [%mast-event !>(crow)])
+      :-  cards  this
+      ::
     ==
-  +$  last-heard  (map ship @da)
-  +$  storage     (map ship session-state)
-  +$  aft         (map ship sail)
+  ::
+  ++  on-watch
+    |=  =path
+    ^-  (quip card _this)
+    ?:  ?=([%http-response *] path)
+      [~ this]
+    ?:  ?=([%mast @ta ~] path)
+      ?>  =(src.bowl (slav %p i.t.path))
+      [~ this]
+    =^  cards  hull  (on-watch:hu path)
+    :-  cards  this
+  ::
+  ++  on-leave
+    |=  =path
+    ^-  (quip card _this)
+    =^  cards  hull  (on-leave:hu path)
+    :-  cards  this
+  ::
+  ++  on-peek   on-peek:hu
+  ::
+  ++  on-agent
+    |=  [=wire =sign:agent:gall]
+    ^-  (quip card _this)
+    =^  cards  hull  (on-agent:hu wire sign)
+    :-  cards  this
+  ::
+  ++  on-arvo
+    |=  [=wire =sign-arvo]
+    ^-  (quip card _this)
+    =^  cards  hull  (on-arvo:hu wire sign-arvo)
+    :-  cards  this
+  ::
+  ++  on-fail
+    |=  [=term =tang]
+    ^-  (quip card _this)
+    =^  cards  hull  (on-fail:hu term tang)
+    :-  cards  this
+  ::
   --
   ::
-  =|  rig
-  =*  rig  -
-  ^=  mast
   |%
   ::
   ++  gale
-    |=  [bowl:gall rid=@ta =sail]
-    ^-  (quip card:agent:gall ^rig)
-    =/  new  (hoist sail)
-    ?.  ?&  =(%html n.g.new)  ?=(^ c.new)
-            =(%head n.g.i.c.new)  ?=(^ t.c.new)
-            =(%body n.g.i.t.c.new)
-        ==
-      !!
-    =.  aft  (~(put by aft) src new)
-    =?  last-heard  !=(src our)
-      (~(put by last-heard) src now)
-    =.  rig  (swab now)
-    =/  =mart
-      :~  [%our +:(scow %p our)]
-          [%app (trip dap)]
-          [%sub (spud (make-sub-path src))]
-      ==
-    :_  rig
-    %^    make-direct-http-cards
-        rid
-      [200 ['Content-Type' 'text/html'] ~]
-    :-  ~
-    %-  as-octt:mimes:html
-    %-  en-xml:html
-    %_  new
-      a.g    (weld a.g.new mart)
-      c.i.c  (snoc c.i.c.new script-node)
-    ==
+    |=  [rid=@ta =bowl]
+    ^-  (quip card rigs)
+    `*rigs
   ::
   ++  gust
-    |=  [bowl:gall =sail]
-    ^-  (quip card:agent:gall ^rig)
-    =/  new  (hoist sail)
-    =/  old  (~(got by aft) src)
-    ?.  ?&  =(%html n.g.new)  ?=(^ c.new)
-            =(%head n.g.i.c.new)  ?=(^ t.c.new)
-            =(%body n.g.i.t.c.new)
-            =(%html n.g.old)  ?=(^ c.old)
-            =(%head n.g.i.c.old)  ?=(^ t.c.old)
-            =(%body n.g.i.t.c.old)
-        ==
+    ^-  (quip card ^deck)
+    =/  com  (~(get by deck) %$)  :: TEST:
+    ?~  com
       !!
-    =.  aft  (~(put by aft) src new)
-    :_  rig
-    :_  ~
-    :^    %give
-        %fact
-      [(make-sub-path src) ~]
-    :-  %json
-    !>  ^-  json
-    [%a (luff [i.t.c.old ~] [i.t.c.new ~])]
+    =.  u.com
+      !<  mast
+      =-  -(+>+ +>.hull)
+      !>  u.com
+    =/  sal  ~(sail u.com [*bowl *vase *vase])
+    ~&  >  sal
+    :: :_  (~(put by deck) %$ u.com)  :: TODO: don't do this; instead just do the above each time?
+    :_  deck
+    ~
   ::
-  ++  agent
-    |=  =agent:gall
-    ^-  agent:gall
-    |_  =bowl:gall
-    +*  this  .
-        ag    ~(. agent bowl)
-    ::
-    ++  on-init
-      ^-  (quip card:agent:gall agent:gall)
-      =^  cards  agent  on-init:ag
-      [cards this]
-    ::
-    ++  on-save   on-save:ag
-    ::
-    ++  on-load
-      |=  old-state=vase
-      ^-  (quip card:agent:gall agent:gall)
-      =^  cards  agent  (on-load:ag old-state)
-      [cards this]
-    ::
-    ++  on-poke
-      |=  [=mark =vase]
-      ^-  (quip card:agent:gall agent:gall)
-      ?.  ?=(%json mark)
-        =^(cards agent (on-poke:ag [mark vase]) [cards this])
-      =+  !<(jon=json vase)
-      ?.  ?&  ?=(%a -.jon)  ?=(^ p.jon)
-              =([%s 'mast'] i.p.jon)  ?=(^ t.p.jon)
+  ++  take-hoot
+    =|  bag=(map name sack)
+    |=  mat=manx:hoot
+    ^-  [manx _bag]
+    =/  mar=marl:hoot  [mat ~]
+    =<  ?>  ?=(^ p)  [i.p q]
+    |-  ^-  (pair marl _bag)
+    %^  spin  mar  bag
+    |=  [i=tuna:hoot a=_bag]
+    ^-  [manx _bag]
+    ?>  ?=(^ -.i)
+    ?.  ?=([%mast @] n.g.i)
+      =/  [m=marl b=_bag]  ^$(mar c.i, bag a)
+      :_  (~(uni by a) b)
+      :_  m
+      :-  n.g.i
+      %-  mart  a.g.i
+    =;  [key=(unit tape) sac=(unit sack)]
+      ?>  ?=(^ key)
+      :-  [[n.g.i [[%key u.key] ~]] ~]
+      ?~  sac  bag
+      %+  ~(put by bag)  +.n.g.i  u.sac
+    %+  roll  a.g.i
+    |=  $:  [k=mane:hoot v=(list beer:hoot)]
+            [ke=(unit tape) sa=(unit sack)]
+        ==
+    ^+  [ke sa]
+    ?:  ?=(%sack k)
+      :-  ke
+      ?>  ?&  ?=(^ v)
+              ?=(^ i.v)
+              ?=(%hand -.p.i.v)
+              ?=(%1 -.q.p.i.v)
           ==
-        =^(cards agent (on-poke:ag [mark vase]) [cards this])
-      =/  =crow  (parse-channel-data i.t.p.jon)
-      =?  last-heard  !=(src.bowl our.bowl)
-        (~(put by last-heard) src.bowl now.bowl)
-      =^  cards  agent
-        (on-poke:ag [%mast-event !>(crow)])
-      [cards this]
-    ::
-    ++  on-watch
-      |=  =path
-      ^-  (quip card:agent:gall agent:gall)
-      ?:  ?=([%http-response *] path)
-        [~ this]
-      ?:  ?=([%mast @ta ~] path)
-        ?>  =(src.bowl (slav %p i.t.path))
-        [~ this]
-      =^  cards  agent  (on-watch:ag path)
-      [cards this]
-    ::
-    ++  on-leave
-      |=  =path
-      ^-  (quip card:agent:gall agent:gall)
-      =^  cards  agent  (on-leave:ag path)
-      [cards this]
-    ::
-    ++  on-peek   on-peek:ag
-    ::
-    ++  on-agent
-      |=  [=wire =sign:agent:gall]
-      ^-  (quip card:agent:gall agent:gall)
-      =^  cards  agent  (on-agent:ag wire sign)
-      [cards this]
-    ::
-    ++  on-arvo
-      |=  [=wire =sign-arvo]
-      ^-  (quip card:agent:gall agent:gall)
-      =^  cards  agent  (on-arvo:ag wire sign-arvo)
-      [cards this]
-    ::
-    ++  on-fail
-      |=  [=term =tang]
-      ^-  (quip card:agent:gall agent:gall)
-      =^  cards  agent  (on-fail:ag term tang)
-      [cards this]
-    ::
-    --
-  ::
-  ++  swab
-    |=  now=@da
-    ^-  ^rig
-    =/  threshold  ~d1
-    =^  dead=(set @p)  last-heard
-      %-  %~  rep  by  last-heard
-      |=  [i=(pair @p @da) a=(pair (set @p) ^last-heard)]
-      ?:  (lth (sub now q.i) threshold)
-        %_(a q (~(put by q.a) i))
-      %_(a p (~(put in p.a) p.i))
-    %_  rig
-      storage  (malt (skip ~(tap by storage) |=([p=@p *] (~(has in dead) p))))
-      aft      (malt (skip ~(tap by aft) |=([p=@p *] (~(has in dead) p))))
-    ==
+      :-  ~  [p.p.i.v p.q.p.i.v]
+    ?:  ?=(%key k)
+      :_  sa
+      :-  ~
+      %-  tape  v
+    :-  ke  sa
   ::
   --
+::
+++  make
+  |=  [=term key=tape limited-sack=tape]
+  ^-  manx
+  [[[%mast term] [[%sack limited-sack] [%key key] ~]] ~]
+::
+++  make-hoot
+  |=  [=term key=tape =sack]
+  ^-  manx:hoot
+  =/  prop=hoon  [%hand [p.sack [%1 q.sack]]]
+  [[[%mast term] [[%sack [[~ prop] ~]] [%key key] ~]] ~]
+::
+:: ++  pin
+::   |*  session-state=mold
+::   =>
+::   |%
+::   +$  event  crow
+::   +$  rig  rig-0
+::   +$  rig-0
+::     $:  =last-heard
+::         =storage
+::         =aft
+::     ==
+::   +$  last-heard  (map ship @da)
+::   +$  storage     (map ship session-state)
+::   +$  aft         (map ship sail)
+::   --
+::   ::
+::   =|  rig
+::   =*  rig  -
+::   ^=  mast
+::   |%
+::   ::
+::   ++  gale
+::     |=  [bowl:gall rid=@ta =sail]
+::     ^-  (quip card:agent:gall ^rig)
+::     =/  new  (hoist sail)
+::     ?.  ?&  =(%html n.g.new)  ?=(^ c.new)
+::             =(%head n.g.i.c.new)  ?=(^ t.c.new)
+::             =(%body n.g.i.t.c.new)
+::         ==
+::       !!
+::     =.  aft  (~(put by aft) src new)
+::     =?  last-heard  !=(src our)
+::       (~(put by last-heard) src now)
+::     =.  rig  (swab now)
+::     =/  =mart
+::       :~  [%our +:(scow %p our)]
+::           [%app (trip dap)]
+::           [%sub (spud (make-sub-path src))]
+::       ==
+::     :_  rig
+::     %^    make-direct-http-cards
+::         rid
+::       [200 ['Content-Type' 'text/html'] ~]
+::     :-  ~
+::     %-  as-octt:mimes:html
+::     %-  en-xml:html
+::     %_  new
+::       a.g    (weld a.g.new mart)
+::       c.i.c  (snoc c.i.c.new script-node)
+::     ==
+::   ::
+::   ++  gust
+::     |=  [bowl:gall =sail]
+::     ^-  (quip card:agent:gall ^rig)
+::     =/  new  (hoist sail)
+::     =/  old  (~(got by aft) src)
+::     ?.  ?&  =(%html n.g.new)  ?=(^ c.new)
+::             =(%head n.g.i.c.new)  ?=(^ t.c.new)
+::             =(%body n.g.i.t.c.new)
+::             =(%html n.g.old)  ?=(^ c.old)
+::             =(%head n.g.i.c.old)  ?=(^ t.c.old)
+::             =(%body n.g.i.t.c.old)
+::         ==
+::       !!
+::     =.  aft  (~(put by aft) src new)
+::     :_  rig
+::     :_  ~
+::     :^    %give
+::         %fact
+::       [(make-sub-path src) ~]
+::     :-  %json
+::     !>  ^-  json
+::     [%a (luff [i.t.c.old ~] [i.t.c.new ~])]
+::   ::
+::   ++  agent
+::     |=  =agent:gall
+::     ^-  agent:gall
+::     |_  =bowl:gall
+::     +*  this  .
+::         ag    ~(. agent bowl)
+::     ::
+::     ++  on-init
+::       ^-  (quip card:agent:gall agent:gall)
+::       =^  cards  agent  on-init:ag
+::       [cards this]
+::     ::
+::     ++  on-save   on-save:ag
+::     ::
+::     ++  on-load
+::       |=  old-state=vase
+::       ^-  (quip card:agent:gall agent:gall)
+::       =^  cards  agent  (on-load:ag old-state)
+::       [cards this]
+::     ::
+::     ++  on-poke
+::       |=  [=mark =vase]
+::       ^-  (quip card:agent:gall agent:gall)
+::       ?.  ?=(%json mark)
+::         =^(cards agent (on-poke:ag [mark vase]) [cards this])
+::       =+  !<(jon=json vase)
+::       ?.  ?&  ?=(%a -.jon)  ?=(^ p.jon)
+::               =([%s 'mast'] i.p.jon)  ?=(^ t.p.jon)
+::           ==
+::         =^(cards agent (on-poke:ag [mark vase]) [cards this])
+::       =/  =crow  (parse-channel-data i.t.p.jon)
+::       =?  last-heard  !=(src.bowl our.bowl)
+::         (~(put by last-heard) src.bowl now.bowl)
+::       =^  cards  agent
+::         (on-poke:ag [%mast-event !>(crow)])
+::       [cards this]
+::     ::
+::     ++  on-watch
+::       |=  =path
+::       ^-  (quip card:agent:gall agent:gall)
+::       ?:  ?=([%http-response *] path)
+::         [~ this]
+::       ?:  ?=([%mast @ta ~] path)
+::         ?>  =(src.bowl (slav %p i.t.path))
+::         [~ this]
+::       =^  cards  agent  (on-watch:ag path)
+::       [cards this]
+::     ::
+::     ++  on-leave
+::       |=  =path
+::       ^-  (quip card:agent:gall agent:gall)
+::       =^  cards  agent  (on-leave:ag path)
+::       [cards this]
+::     ::
+::     ++  on-peek   on-peek:ag
+::     ::
+::     ++  on-agent
+::       |=  [=wire =sign:agent:gall]
+::       ^-  (quip card:agent:gall agent:gall)
+::       =^  cards  agent  (on-agent:ag wire sign)
+::       [cards this]
+::     ::
+::     ++  on-arvo
+::       |=  [=wire =sign-arvo]
+::       ^-  (quip card:agent:gall agent:gall)
+::       =^  cards  agent  (on-arvo:ag wire sign-arvo)
+::       [cards this]
+::     ::
+::     ++  on-fail
+::       |=  [=term =tang]
+::       ^-  (quip card:agent:gall agent:gall)
+::       =^  cards  agent  (on-fail:ag term tang)
+::       [cards this]
+::     ::
+::     --
+::   ::
+::   ++  swab
+::     |=  now=@da
+::     ^-  ^rig
+::     =/  threshold  ~d1
+::     =^  dead=(set @p)  last-heard
+::       %-  %~  rep  by  last-heard
+::       |=  [i=(pair @p @da) a=(pair (set @p) ^last-heard)]
+::       ?:  (lth (sub now q.i) threshold)
+::         %_(a q (~(put by q.a) i))
+::       %_(a p (~(put in p.a) p.i))
+::     %_  rig
+::       storage  (malt (skip ~(tap by storage) |=([p=@p *] (~(has in dead) p))))
+::       aft      (malt (skip ~(tap by aft) |=([p=@p *] (~(has in dead) p))))
+::     ==
+::   ::
+::   --
 ::
 ++  bind-url
   |=  [app=@tas url=path]
@@ -225,7 +421,7 @@
   ((ot ~[path+pa data+(om so)]):dejs:format jon)
 ::
 ++  hoist
-  |_  =sail
+  |_  sail=manx
   ++  $
     ^-  manx
     ?.  ?&  =(%html n.g.sail)  ?=(^ c.sail)
