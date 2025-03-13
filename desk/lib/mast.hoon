@@ -1,7 +1,10 @@
 /*  mast-js  %js  /lib/mast/js
 |%
 ::
-+$  crow  [=path data=(map @t @t)]               :: event poke
++$  crow                                         :: client events
+  $%  [%poke =path data=(map @t @t)]             ::
+      [%open req=inbound-request:eyre]           ::
+  ==                                             ::
 +$  name  term                                   :: component name
 +$  dock  (list [name mast])                     :: component list
 +$  deck  (map name mast)                        :: component map
@@ -17,7 +20,10 @@
   ++  sail  *$^([%hoot manx:hoot] manx)
   --
 +$  rigs  (map ship rope)                        :: component trees by source
-+$  rope  (axal wood)                            :: component instance tree
++$  rope                                         :: component instance tree
+  $~  [*wood ~]  (pair wood (map clew rope))     ::
++$  clew  [=name key=@t]                         :: component instance id
++$  tack  (list clew)                            :: component instance path
 +$  wood                                         :: component instance state
   $:  sud=atom                                   ::   prev scud hash
       sow=stow                                   ::   local state
@@ -58,31 +64,35 @@
     ?+  mark
       ::
       =^  cards  hull  (on-poke:hu [mark vase])
-      =^  cardz  deck  gust  :: TEST:
       :-  cards  this
       ::
         %handle-http-request
       =+  !<([rid=@ta req=inbound-request:eyre] vase)
-      ?+  method.request.req  ~|(bad-method/method.request.req !!)
-      :: TODO: make handle-http-request fall through to hull
+      ?+  method.request.req
+        ::
+        :: TODO: make handle-http-request fall through to hull
+        ~|(bad-method/method.request.req !!)
         ::
           %'GET'
-        :: TODO: gale
-        `this
+        =^  cards  rigs.brig  (gale rid req bowl)
+        :-  cards  this
+        ::
       ==
       ::
         %json
-      =+  !<  jon=json  vase
-      ?.  ?&  ?=(%a -.jon)
-              ?=(^ p.jon)
-              ?=(^ t.p.jon)
-              =([%s 'mast'] i.p.jon)
-          ==
-        =^  cards  hull  (on-poke:hu [mark vase])
-        :-  cards  this
-      =/  =crow  (parse-channel-data i.t.p.jon)
-      =^  cards  hull  (on-poke:hu [%mast-event !>(crow)])
-      :-  cards  this
+      :: TODO: gust
+      `this
+      :: =+  !<  jon=json  vase
+      :: ?.  ?&  ?=(%a -.jon)
+      ::         ?=(^ p.jon)
+      ::         ?=(^ t.p.jon)
+      ::         =([%s 'mast'] i.p.jon)
+      ::     ==
+      ::   =^  cards  hull  (on-poke:hu [mark vase])
+      ::   :-  cards  this
+      :: =/  =crow  (parse-channel-data i.t.p.jon)
+      :: =^  cards  hull  (on-poke:hu [%mast-event !>(crow)])
+      :: :-  cards  this
       ::
     ==
   ::
@@ -91,7 +101,7 @@
     ^-  (quip card _this)
     ?:  ?=([%http-response *] path)
       [~ this]
-    ?:  ?=([%mast @ta ~] path)
+    ?:  ?=([%mast @ta ~] path)           :: TODO:
       ?>  =(src.bowl (slav %p i.t.path))
       [~ this]
     =^  cards  hull  (on-watch:hu path)
@@ -128,7 +138,7 @@
   |%
   ::
   ++  gale
-    |=  [rid=@ta =bowl]
+    |=  [rid=@ta req=inbound-request:eyre =bowl]
     ^-  (quip card rigs)
     `*rigs
   ::
@@ -187,6 +197,28 @@
       :-  ~
       %-  tape  v
     :-  ke  sa
+  ::
+  ++  get-wood   :: TODO: these are used in routing an event to a component
+    |=  [tac=tack rop=rope]
+    ^-  wood
+    ?~  tac  p.rop
+    %=  $
+      tac  t.tac
+      rop  (~(got by q.rop) i.tac)
+    ==
+  ::
+  ++  put-wood
+    |=  [tac=tack wod=wood rop=rope]
+    ^-  rope
+    ?~  tac  rop(p wod)
+    %_  rop
+      q
+        %+  ~(put by q.rop)  i.tac
+        %=  $
+          tac  t.tac
+          rop  (~(got by q.rop) i.tac)
+        ==
+    ==
   ::
   --
 ::
@@ -418,6 +450,8 @@
 ++  parse-channel-data
   |=  jon=json
   ^-  crow
+  :: TODO: handle all event types
+  :-  %poke
   ((ot ~[path+pa data+(om so)]):dejs:format jon)
 ::
 ++  hoist
