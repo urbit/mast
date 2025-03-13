@@ -5,23 +5,34 @@
   $%  [%poke =path data=(map @t @t)]             ::
       [%open req=inbound-request:eyre]           ::
   ==                                             ::
++$  blow                                         :: event effects
+  $:  p=(unit path)                              ::   change session route state
+      q=(unit cage)                              ::   forward a poke to the agent
+  ==                                             ::
 +$  name  term                                   :: component name
 +$  dock  (list [name mast])                     :: component list
 +$  deck  (map name mast)                        :: component map
 +$  hull  agent:gall                             :: nested agent
 +$  bowl  bowl:gall                              :: bowl
-+$  stow  vase                                   :: local component state
++$  stay  [=path =bowl]                          :: component context (route+bowl)
 +$  sack  vase                                   :: component props state
++$  stow  vase                                   :: local component state
 +$  mast                                         :: component core
-  $_  ^|
-  |_  [bowl stow sack]
-  ++  scud  *(unit *)
-  ++  spar  *$-(crow (quip card stow))
-  ++  sail  *$^([%hoot manx:hoot] manx)
-  --
-+$  rigs  (map ship rope)                        :: component trees by source
+  $_  ^|                                         ::
+  |_  [stay sack stow]                           ::
+  ++  scud  *(unit *)                            ::
+  ++  spar  *$-(crow [blow stow])                ::
+  ++  sail  *$^([%hoot manx:hoot] manx)          ::
+  --                                             ::
++$  rigs                                         :: session state by source
+  %+  map  ship                                  ::
+  $:  =path                                      ::
+      =rope                                      ::
+  ==                                             ::
 +$  rope                                         :: component instance tree
-  $~  [*wood ~]  (pair wood (map clew rope))     ::
+  $~  [*wood ~]                                  ::
+  %+  pair  wood                                 ::
+  %+  map  clew  rope                            ::
 +$  clew  [=name key=@t]                         :: component instance id
 +$  tack  (list clew)                            :: component instance path
 +$  wood                                         :: component instance state
@@ -144,18 +155,14 @@
   ::
   ++  gust
     ^-  (quip card ^deck)
-    =/  com  (~(get by deck) %$)  :: TEST:
-    ?~  com
-      !!
-    =.  u.com
-      !<  mast
-      =-  -(+>+ +>.hull)
-      !>  u.com
-    =/  sal  ~(sail u.com [*bowl *vase *vase])
-    ~&  >  sal
-    :: :_  (~(put by deck) %$ u.com)  :: TODO: don't do this; instead just do the above each time?
-    :_  deck
-    ~
+    :: TODO:
+    `deck
+  ::
+  ++  build-mast
+    |=  =name
+    !<  mast
+    =-  -(+>+ +>.hull)
+    !>  (~(got by deck) name)
   ::
   ++  take-hoot
     =|  bag=(map name sack)
