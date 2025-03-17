@@ -156,7 +156,56 @@
   ++  gale
     |=  [rid=@ta req=inbound-request:eyre =bowl]
     ^-  (quip card ^brig)
-    [~ brig]
+    =/  url  (stab url.request.req)  :: TODO: need better url parsing
+    =/  say  `stay`[url bowl]
+    =/  eve  `crow`[%open req]
+    =/  ses  (~(get by rigs.brig) src.bowl)
+    :: TODO:
+    :: ?^  ses
+    ::   :: if the session already exists, update url state and send an open event, then process it as a regular event update.
+    ::   =.  url.u.ses  url
+    ::   =/  arg=[stay sack stow]  [[url.u.ses bowl] !>(~) sow.p.rope.u.ses]
+    ::   =/  [bow=blow sow=stow]   (~(spar (build-mast %$) arg) eve)
+    ::   =/  same-local-state=?    =(sow sow.p.rope.u.ses)
+    ::   =.  sow.p.rope.u.ses      sow
+    ::   =/  same-url=?            |(?=(~ url.bow) =(u.p.bow url.u.ses))
+    ::   =?  url.u.ses             ?=(^ url.bow)  u.p.bow
+    ::   ?^  q.bow
+    ::     :: forward poke to agent if q.bow
+    ::     
+    ::   ?:  &(same-url same-local-state)
+    ::     :: no change
+    ::     :-  ~
+    ::     %_  brig
+    ::       rigs  (~(put by rigs.brig) src.bowl u.ses)
+    ::     ==
+    ::   :: do reactive render check
+
+    :: else create the session and render out the component tree with a branch add case for the root.
+    :: TEST:
+    =/  rop  (branch-create *clew !>(~) say)
+    =/  sal  (branch-manx-assemble rop)
+    :_  brig
+    =/  mar
+      ^-  mart
+      :~  [%our +:(scow %p our.bowl)]
+          [%app (trip dap.bowl)]
+          [%sub (spud (make-sub-path src.bowl))]
+      ==
+    %^    make-direct-http-cards
+        rid
+      [200 ['Content-Type' 'text/html'] ~]
+    :-  ~
+    %-  as-octt:mimes:html
+    %-  en-xml:html
+    ?>  ?&  ?=(%html n.g.sal)
+            ?=(^ c.sal)
+            ?=(%head n.g.i.c.sal)
+        ==
+    %_  sal
+      a.g    (weld a.g.sal mar)
+      c.i.c  (snoc c.i.c.sal script-node)
+    ==
   ::
   ++  gust
     ^-  (quip card ^deck)
@@ -203,16 +252,16 @@
     ^-  [manx loot]
     ?>  ?=(^ -.i)
     ?.  ?=([%mast @] n.g.i)
-      =/  [m=marl b=loot]  ^$(mar c.i, lot a)
+      =/  [m=marl b=loot]  ^$(mar c.i)
       :_  (~(uni by a) b)
       :_  m
       :-  n.g.i
       %-  mart  a.g.i
     =;  [key=(unit tape) sac=(unit sack)]
-      ?~  key  ~&  >>>  "Error: component {<+.n.g.i>} is missing a key"  !!
+      ?~  key  ~&  >>>  "Error: mast element {<+.n.g.i>} is missing a key"  !!
       :-  [[n.g.i [[%key u.key] ~]] ~]
-      ?~  sac  lot
-      %+  ~(put by lot)  [+.n.g.i (crip u.key)]  u.sac
+      %+  ~(put by a)  [+.n.g.i (crip u.key)]
+      ?^  sac  u.sac  !>(~)
     %+  roll  a.g.i
     |=  $:  [k=mane:hoot v=(list beer:hoot)]
             [ke=(unit tape) sa=(unit sack)]
@@ -220,17 +269,101 @@
     ^+  [ke sa]
     ?:  ?=(%sack k)
       :-  ke
-      ?>  ?&  ?=(^ v)
+      ?.  ?&  ?=(^ v)
               ?=(^ i.v)
               ?=(%hand -.p.i.v)
               ?=(%1 -.q.p.i.v)
           ==
+        :-  ~  !>(;;(tape v))
       :-  ~  [p.p.i.v p.q.p.i.v]
     ?:  ?=(%key k)
       :_  sa
       :-  ~
       %-  tape  v
     :-  ke  sa
+  ::
+  ++  get-loot
+    =|  lot=loot
+    |=  man=manx
+    ^-  loot
+    =?  lot  ?=([%mast @] n.g.man)
+      =;  [key=(unit tape) sac=(unit sack)]
+        ?~  key  ~&  >>>  "Error: mast element {<+.n.g.man>} is missing a key"  !!
+        %+  ~(put by lot)  [+.n.g.man (crip u.key)]
+        ?^  sac  u.sac  !>(~)
+      %+  roll  a.g.man
+      |=  $:  [k=mane v=tape]
+              [ke=(unit tape) sa=(unit sack)]
+          ==
+      ?:  ?=(%sack k)
+        :-  ke  [~ !>(v)]
+      ?:  ?=(%key k)
+        :-  [~ v]  sa
+      :-  ke  sa
+    %+  roll  c.man
+    |=  [i=manx a=_lot]
+    %=  ^$
+      man  i
+      lot  a
+    ==
+  ::
+  ++  process-sail
+    |_  [cew=clew man=manx]
+    ++  $
+      ^-  manx
+      ?:  ?&  =(%html n.g.man)
+              ?=(^ c.man)
+              =(%head n.g.i.c.man)
+              ?=(^ t.c.man)
+              =(%body n.g.i.t.c.man)
+          ==
+        %_  man
+          i.t.c  (anx i.t.c.man ["" ~])
+        ==
+      %+  anx  man  [(trip key.cew) ~]
+    ++  anx
+      |=  [m=manx key=(pair tape (list @))]
+      ^-  manx
+      =/  fkey
+        ^-  @t
+        %+  getv  %key  a.g.m
+      =/  nkey
+        ^-  (pair tape (list @))
+        ?:  =('' fkey)  key
+        :-  ((w-co:co 1) `@uw`(mug fkey))  ~
+      =/  ntap
+        ^-  tape
+        ?~  q.nkey  p.nkey
+        %+  weld  p.nkey  ((w-co:co 1) `@uw`(jam q.nkey))
+      ?:  =(%$ n.g.m)
+        ;t-
+          =key  ntap
+          ;+  m
+        ==
+      %_  m
+        a.g
+          ^-  mart  
+          ?.  =('' fkey)  a.g.m
+          :-  [%key ntap]  a.g.m
+        c
+          ?:  ?|  =(%input n.g.m)   =(%textarea n.g.m)
+                  =(%script n.g.m)  =(%img n.g.m)
+                  =(%link n.g.m)    =(%hr n.g.m)
+                  =(%meta n.g.m)    =(%base n.g.m)
+              ==
+            c.m
+          %+  arl  c.m  nkey
+      ==
+    ++  arl
+      |=  [m=marl key=(pair tape (list @))]
+      =|  i=@
+      |-  ^-  marl
+      ?~  m  ~
+      :-  %+  anx
+            i.m
+          key(q [i q.key])
+      $(m t.m, i +(i))
+    --
   ::
   ++  get-wood   :: TODO: these are used in routing an event to a component
     |=  [tac=tack rop=rope]
@@ -254,6 +387,59 @@
         ==
     ==
   ::
+  ++  branch-create
+    |=  [cew=clew sac=sack say=stay]
+    ^-  rope
+    =/  com  (build-mast name.cew)
+    =/  sow  ;;(stow +<+<.com)  :: get stow for possible init bunt
+    =.  +<.com  [say sac sow]
+    =/  sud
+      ^-  @
+      ?.  (~(has in buoy.brig) name.cew)  ~
+      =/  s  scud:com
+      ?~  s  ~
+      %-  mug  u.s
+    =/  [sal=manx lot=loot]
+      =/  man  sail:com
+      ?.  ?=(%hoot -.man)
+        :-  man  (get-loot man)
+      %-  take-hoot  +.man
+    =.  sal  (process-sail cew sal) 
+    :-  ^-  wood
+        :*  sud
+            sac
+            sow
+            sal
+        ==
+    %-  ~(urn by lot)
+    |=  [k=clew v=sack]
+    %=  ^$
+      cew  k
+      sac  v
+    ==
+  ::
+  ++  branch-manx-assemble
+    |=  rop=rope
+    ^-  manx
+    =/  mar=marl  [aft.p.rop ~]
+    =<  ?>  ?=(^ -)  i
+    |-  ^-  marl
+    %+  turn  mar
+    |=  i=manx
+    ^-  manx
+    ?.  ?=([%mast @] n.g.i)
+      %_  i
+        c  ^$(mar c.i)
+      ==
+    =/  key
+      |-  ^-  @t
+      ?>  ?=(^ a.g.i)
+      ?.  ?=(%key n.i.a.g.i)  $(a.g.i t.a.g.i)
+      %-  crip  v.i.a.g.i
+    %=  ^^$
+      rop  (~(got by q.rop) [+.n.g.i key])
+    ==
+  ::
   --
 ::
 ++  make
@@ -266,173 +452,6 @@
   ^-  manx:hoot
   =/  prop=hoon  [%hand [p.sack [%1 q.sack]]]
   [[[%mast term] [[%sack [[~ prop] ~]] [%key key] ~]] ~]
-::
-:: ++  pin
-::   |*  session-state=mold
-::   =>
-::   |%
-::   +$  event  crow
-::   +$  rig  rig-0
-::   +$  rig-0
-::     $:  =last-heard
-::         =storage
-::         =aft
-::     ==
-::   +$  last-heard  (map ship @da)
-::   +$  storage     (map ship session-state)
-::   +$  aft         (map ship sail)
-::   --
-::   ::
-::   =|  rig
-::   =*  rig  -
-::   ^=  mast
-::   |%
-::   ::
-::   ++  gale
-::     |=  [bowl:gall rid=@ta =sail]
-::     ^-  (quip card:agent:gall ^rig)
-::     =/  new  (hoist sail)
-::     ?.  ?&  =(%html n.g.new)  ?=(^ c.new)
-::             =(%head n.g.i.c.new)  ?=(^ t.c.new)
-::             =(%body n.g.i.t.c.new)
-::         ==
-::       !!
-::     =.  aft  (~(put by aft) src new)
-::     =?  last-heard  !=(src our)
-::       (~(put by last-heard) src now)
-::     =.  rig  (swab now)
-::     =/  =mart
-::       :~  [%our +:(scow %p our)]
-::           [%app (trip dap)]
-::           [%sub (spud (make-sub-path src))]
-::       ==
-::     :_  rig
-::     %^    make-direct-http-cards
-::         rid
-::       [200 ['Content-Type' 'text/html'] ~]
-::     :-  ~
-::     %-  as-octt:mimes:html
-::     %-  en-xml:html
-::     %_  new
-::       a.g    (weld a.g.new mart)
-::       c.i.c  (snoc c.i.c.new script-node)
-::     ==
-::   ::
-::   ++  gust
-::     |=  [bowl:gall =sail]
-::     ^-  (quip card:agent:gall ^rig)
-::     =/  new  (hoist sail)
-::     =/  old  (~(got by aft) src)
-::     ?.  ?&  =(%html n.g.new)  ?=(^ c.new)
-::             =(%head n.g.i.c.new)  ?=(^ t.c.new)
-::             =(%body n.g.i.t.c.new)
-::             =(%html n.g.old)  ?=(^ c.old)
-::             =(%head n.g.i.c.old)  ?=(^ t.c.old)
-::             =(%body n.g.i.t.c.old)
-::         ==
-::       !!
-::     =.  aft  (~(put by aft) src new)
-::     :_  rig
-::     :_  ~
-::     :^    %give
-::         %fact
-::       [(make-sub-path src) ~]
-::     :-  %json
-::     !>  ^-  json
-::     [%a (luff [i.t.c.old ~] [i.t.c.new ~])]
-::   ::
-::   ++  agent
-::     |=  =agent:gall
-::     ^-  agent:gall
-::     |_  =bowl:gall
-::     +*  this  .
-::         ag    ~(. agent bowl)
-::     ::
-::     ++  on-init
-::       ^-  (quip card:agent:gall agent:gall)
-::       =^  cards  agent  on-init:ag
-::       [cards this]
-::     ::
-::     ++  on-save   on-save:ag
-::     ::
-::     ++  on-load
-::       |=  old-state=vase
-::       ^-  (quip card:agent:gall agent:gall)
-::       =^  cards  agent  (on-load:ag old-state)
-::       [cards this]
-::     ::
-::     ++  on-poke
-::       |=  [=mark =vase]
-::       ^-  (quip card:agent:gall agent:gall)
-::       ?.  ?=(%json mark)
-::         =^(cards agent (on-poke:ag [mark vase]) [cards this])
-::       =+  !<(jon=json vase)
-::       ?.  ?&  ?=(%a -.jon)  ?=(^ p.jon)
-::               =([%s 'mast'] i.p.jon)  ?=(^ t.p.jon)
-::           ==
-::         =^(cards agent (on-poke:ag [mark vase]) [cards this])
-::       =/  =crow  (parse-channel-data i.t.p.jon)
-::       =?  last-heard  !=(src.bowl our.bowl)
-::         (~(put by last-heard) src.bowl now.bowl)
-::       =^  cards  agent
-::         (on-poke:ag [%mast-event !>(crow)])
-::       [cards this]
-::     ::
-::     ++  on-watch
-::       |=  =path
-::       ^-  (quip card:agent:gall agent:gall)
-::       ?:  ?=([%http-response *] path)
-::         [~ this]
-::       ?:  ?=([%mast @ta ~] path)
-::         ?>  =(src.bowl (slav %p i.t.path))
-::         [~ this]
-::       =^  cards  agent  (on-watch:ag path)
-::       [cards this]
-::     ::
-::     ++  on-leave
-::       |=  =path
-::       ^-  (quip card:agent:gall agent:gall)
-::       =^  cards  agent  (on-leave:ag path)
-::       [cards this]
-::     ::
-::     ++  on-peek   on-peek:ag
-::     ::
-::     ++  on-agent
-::       |=  [=wire =sign:agent:gall]
-::       ^-  (quip card:agent:gall agent:gall)
-::       =^  cards  agent  (on-agent:ag wire sign)
-::       [cards this]
-::     ::
-::     ++  on-arvo
-::       |=  [=wire =sign-arvo]
-::       ^-  (quip card:agent:gall agent:gall)
-::       =^  cards  agent  (on-arvo:ag wire sign-arvo)
-::       [cards this]
-::     ::
-::     ++  on-fail
-::       |=  [=term =tang]
-::       ^-  (quip card:agent:gall agent:gall)
-::       =^  cards  agent  (on-fail:ag term tang)
-::       [cards this]
-::     ::
-::     --
-::   ::
-::   ++  swab
-::     |=  now=@da
-::     ^-  ^rig
-::     =/  threshold  ~d1
-::     =^  dead=(set @p)  last-heard
-::       %-  %~  rep  by  last-heard
-::       |=  [i=(pair @p @da) a=(pair (set @p) ^last-heard)]
-::       ?:  (lth (sub now q.i) threshold)
-::         %_(a q (~(put by q.a) i))
-::       %_(a p (~(put in p.a) p.i))
-::     %_  rig
-::       storage  (malt (skip ~(tap by storage) |=([p=@p *] (~(has in dead) p))))
-::       aft      (malt (skip ~(tap by aft) |=([p=@p *] (~(has in dead) p))))
-::     ==
-::   ::
-::   --
 ::
 ++  bind-url
   |=  [app=@tas =url]
@@ -487,59 +506,6 @@
   :: TODO: handle all event types
   :-  %poke
   ((ot ~[path+pa data+(om so)]):dejs:format jon)
-::
-++  hoist
-  |_  sail=manx
-  ++  $
-    ^-  manx
-    ?.  ?&  =(%html n.g.sail)  ?=(^ c.sail)
-            =(%head n.g.i.c.sail)  ?=(^ t.c.sail)
-            =(%body n.g.i.t.c.sail)
-        ==
-      ~|  'document must be structured as: <html><head></head><body></body></html>'
-      !!
-    %_  sail
-      i.t.c  (anx i.t.c.sail ["" ~])
-    ==
-  ++  anx
-    |=  [m=manx key=(pair tape (list @))]
-    ^-  manx
-    =/  fkey=@t  (getv %key a.g.m)
-    =/  nkey=(pair tape (list @))
-      ?~(fkey key [((w-co:co 1) `@uw`(mug fkey)) ~])
-    =/  ntap=tape
-      ?~  q.nkey  p.nkey
-      (weld p.nkey ((w-co:co 1) `@uw`(jam q.nkey)))
-    ?:  =(%$ n.g.m)
-      ;t-
-        =key  ntap
-        ;+  m
-      ==
-    %_    m
-        a.g
-      ^-  mart  
-      ?~  fkey
-        [[%key ntap] a.g.m]
-      a.g.m
-        c
-      ?:  ?|  =(%input n.g.m)  =(%textarea n.g.m)
-              =(%script n.g.m)  =(%img n.g.m)
-              =(%link n.g.m)  =(%hr n.g.m)
-              =(%meta n.g.m)  =(%base n.g.m)
-          ==
-        c.m
-      (arl c.m nkey)
-    ==
-  ++  arl
-    |=  [m=marl key=(pair tape (list @))]
-    =|  i=@
-    |-  ^-  marl
-    ?~  m  ~
-    :-  %+  anx
-          i.m
-        key(q [i q.key])
-    $(m t.m, i +(i))
-  --
 ::
 ++  luff
   |=  [old=marl new=marl]
