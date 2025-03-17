@@ -1,12 +1,13 @@
 /*  mast-js  %js  /lib/mast/js
 |%
 ::
++$  url  path                                    ::
 +$  crow                                         :: client events
   $%  [%poke =path data=(map @t @t)]             ::
       [%open req=inbound-request:eyre]           ::
   ==                                             ::
 +$  blow                                         :: event effects
-  $:  p=(unit path)                              ::   change session route state
+  $:  p=(unit url)                               ::   change session route state
       q=(unit cage)                              ::   forward a poke to the agent
   ==                                             ::
 +$  name  term                                   :: component name
@@ -14,7 +15,7 @@
 +$  deck  (map name mast)                        :: component map
 +$  hull  agent:gall                             :: nested agent
 +$  bowl  bowl:gall                              :: bowl
-+$  stay  [=path =bowl]                          :: component context (route+bowl)
++$  stay  [=url =bowl]                           :: component context
 +$  sack  vase                                   :: component props state
 +$  stow  vase                                   :: local component state
 +$  mast                                         :: component core
@@ -26,7 +27,7 @@
   --                                             ::
 +$  rigs                                         :: session state by source
   %+  map  ship                                  ::
-  $:  =path                                      ::
+  $:  =url                                       ::
       =rope                                      ::
   ==                                             ::
 +$  rope                                         :: component instance tree
@@ -41,10 +42,13 @@
       sac=sack                                   ::   props state
       aft=manx                                   ::   prev manx
   ==                                             ::
-+$  diff  (list json)                            :: luff diff prod
++$  diff  (list json)                            :: luff diff product
++$  loot  (map clew sack)                        :: props for rendered components
 +$  card  card:agent:gall                        :: card
++$  buoy  (set name)                             :: reactive component record
 +$  brig                                         :: %mast internal state
-  $:  =rigs
+  $:  =buoy
+      =rigs
   ==
 ::
 ++  wrap
@@ -52,6 +56,7 @@
   ^-  agent:gall
   =|  =brig
   =<
+  =.  buoy.brig  check-masts
   |_  =bowl
   +*  this  .
       hu  ~(. hull bowl)
@@ -85,7 +90,7 @@
         ~|(bad-method/method.request.req !!)
         ::
           %'GET'
-        =^  cards  rigs.brig  (gale rid req bowl)
+        =^  cards  brig  (gale rid req bowl)
         :-  cards  this
         ::
       ==
@@ -150,8 +155,8 @@
   ::
   ++  gale
     |=  [rid=@ta req=inbound-request:eyre =bowl]
-    ^-  (quip card rigs)
-    `*rigs
+    ^-  (quip card ^brig)
+    [~ brig]
   ::
   ++  gust
     ^-  (quip card ^deck)
@@ -164,28 +169,50 @@
     =-  -(+>+ +>.hull)
     !>  (~(got by deck) name)
   ::
+  ++  check-masts
+    ^-  buoy
+    =;  [acc=buoy err=buoy]
+      ?:  .=  ~  err  acc
+      ~&  >>>  "%mast wrap error:"
+      ?:  .=  ~(wyt in err)  ~(wyt in ~(key by deck))
+        ~&  >>>  "The context of the agent does not match the context of its components."
+      !!
+      ~&  >>>  'The context of the following components do not match the context of their agent:'
+      ~&  >>>  ~(tap in err)
+      !!
+    %-  %~  rep  by  deck
+    |=  [[k=name v=mast] acc=buoy err=buoy]
+    =/  com=(unit mast)  (mole |.((build-mast k)))
+    :-  =/  sud  ?~(com ~ scud:u.com)
+        ?^  sud  (~(put in acc) k)  acc
+    ?:  ?&  ?=(^ com)
+            =(+>.v +>.u.com)  :: TODO: should be comparing context types instead of noun equality
+        ==
+      err
+    %-  ~(put in err)  k
+  ::
   ++  take-hoot
-    =|  bag=(map name sack)
     |=  mat=manx:hoot
-    ^-  [manx _bag]
+    ^-  [manx loot]
+    =|  lot=loot
     =/  mar=marl:hoot  [mat ~]
     =<  ?>  ?=(^ p)  [i.p q]
-    |-  ^-  (pair marl _bag)
-    %^  spin  mar  bag
-    |=  [i=tuna:hoot a=_bag]
-    ^-  [manx _bag]
+    |-  ^-  (pair marl loot)
+    %^  spin  mar  lot
+    |=  [i=tuna:hoot a=loot]
+    ^-  [manx loot]
     ?>  ?=(^ -.i)
     ?.  ?=([%mast @] n.g.i)
-      =/  [m=marl b=_bag]  ^$(mar c.i, bag a)
+      =/  [m=marl b=loot]  ^$(mar c.i, lot a)
       :_  (~(uni by a) b)
       :_  m
       :-  n.g.i
       %-  mart  a.g.i
     =;  [key=(unit tape) sac=(unit sack)]
-      ?>  ?=(^ key)
+      ?~  key  ~&  >>>  "Error: component {<+.n.g.i>} is missing a key"  !!
       :-  [[n.g.i [[%key u.key] ~]] ~]
-      ?~  sac  bag
-      %+  ~(put by bag)  +.n.g.i  u.sac
+      ?~  sac  lot
+      %+  ~(put by lot)  [+.n.g.i (crip u.key)]  u.sac
     %+  roll  a.g.i
     |=  $:  [k=mane:hoot v=(list beer:hoot)]
             [ke=(unit tape) sa=(unit sack)]
@@ -408,7 +435,7 @@
 ::   --
 ::
 ++  bind-url
-  |=  [app=@tas url=path]
+  |=  [app=@tas =url]
   ^-  card:agent:gall
   [%pass /bind %arvo %e %connect [~ url] app]
 ::
