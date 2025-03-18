@@ -309,7 +309,82 @@
       lot  a
     ==
   ::
-  ++  process-sail
+  ++  get-wood   :: TODO: these are used in routing an event to a component
+    |=  [tac=tack rop=rope]
+    ^-  wood
+    ?~  tac  p.rop
+    %=  $
+      tac  t.tac
+      rop  (~(got by q.rop) i.tac)
+    ==
+  ::
+  ++  put-wood
+    |=  [tac=tack wod=wood rop=rope]
+    ^-  rope
+    ?~  tac  rop(p wod)
+    %_  rop
+      q
+        %+  ~(put by q.rop)  i.tac
+        %=  $
+          tac  t.tac
+          rop  (~(got by q.rop) i.tac)
+        ==
+    ==
+  ::
+  ++  branch-create
+    |=  [cew=clew sac=sack say=stay]
+    ^-  rope
+    =/  com  (build-mast name.cew)
+    =/  sow  ;;(stow +<+<.com)  :: get stow for possible init bunt
+    =.  +<.com  [say sac sow]
+    =/  sud
+      ^-  @
+      ?.  (~(has in buoy.brig) name.cew)  ~
+      =/  s  scud:com
+      ?~  s  ~
+      %-  mug  u.s
+    =/  [sal=manx lot=loot]
+      =/  man  sail:com
+      ?.  ?=(%hoot -.man)
+        :-  man  (get-loot man)
+      %-  take-hoot  +.man
+    =.  sal  (haul cew sal) 
+    :-  ^-  wood
+        :*  sud
+            sac
+            sow
+            sal
+        ==
+    %-  ~(urn by lot)
+    |=  [k=clew v=sack]
+    %=  ^$
+      cew  k
+      sac  v
+    ==
+  ::
+  ++  branch-manx-assemble
+    |=  rop=rope
+    ^-  manx
+    =/  mar=marl  [aft.p.rop ~]
+    =<  ?>  ?=(^ -)  i
+    |-  ^-  marl
+    %+  turn  mar
+    |=  i=manx
+    ^-  manx
+    ?.  ?=([%mast @] n.g.i)
+      %_  i
+        c  ^$(mar c.i)
+      ==
+    =/  key
+      |-  ^-  @t
+      ?>  ?=(^ a.g.i)
+      ?.  ?=(%key n.i.a.g.i)  $(a.g.i t.a.g.i)
+      %-  crip  v.i.a.g.i
+    %=  ^^$
+      rop  (~(got by q.rop) [+.n.g.i key])
+    ==
+  ::
+  ++  haul
     |_  [cew=clew man=manx]
     ++  $
       ^-  manx
@@ -367,80 +442,295 @@
       $(m t.m, i +(i))
     --
   ::
-  ++  get-wood   :: TODO: these are used in routing an event to a component
-    |=  [tac=tack rop=rope]
-    ^-  wood
-    ?~  tac  p.rop
-    %=  $
-      tac  t.tac
-      rop  (~(got by q.rop) i.tac)
-    ==
-  ::
-  ++  put-wood
-    |=  [tac=tack wod=wood rop=rope]
-    ^-  rope
-    ?~  tac  rop(p wod)
-    %_  rop
-      q
-        %+  ~(put by q.rop)  i.tac
+  ++  luff
+    |=  [old=marl new=marl]
+    =|  i=@ud
+    =|  pkey=@t
+    =|  acc=diff
+    |-  ^-  diff
+    ?~  new
+      ?~  old
+        acc
+      ?:  =(%skip- n.g.i.old)
         %=  $
-          tac  t.tac
-          rop  (~(got by q.rop) i.tac)
+          old  t.old
         ==
-    ==
-  ::
-  ++  branch-create
-    |=  [cew=clew sac=sack say=stay]
-    ^-  rope
-    =/  com  (build-mast name.cew)
-    =/  sow  ;;(stow +<+<.com)  :: get stow for possible init bunt
-    =.  +<.com  [say sac sow]
-    =/  sud
-      ^-  @
-      ?.  (~(has in buoy.brig) name.cew)  ~
-      =/  s  scud:com
-      ?~  s  ~
-      %-  mug  u.s
-    =/  [sal=manx lot=loot]
-      =/  man  sail:com
-      ?.  ?=(%hoot -.man)
-        :-  man  (get-loot man)
-      %-  take-hoot  +.man
-    =.  sal  (process-sail cew sal) 
-    :-  ^-  wood
-        :*  sud
-            sac
-            sow
-            sal
-        ==
-    %-  ~(urn by lot)
-    |=  [k=clew v=sack]
-    %=  ^$
-      cew  k
-      sac  v
-    ==
-  ::
-  ++  branch-manx-assemble
-    |=  rop=rope
-    ^-  manx
-    =/  mar=marl  [aft.p.rop ~]
-    =<  ?>  ?=(^ -)  i
-    |-  ^-  marl
-    %+  turn  mar
-    |=  i=manx
-    ^-  manx
-    ?.  ?=([%mast @] n.g.i)
-      %_  i
-        c  ^$(mar c.i)
+      %_  acc
+        p
+          ?.  ?=([%mast @] n.g.i.old)  p.acc
+          %+  ~(put by p.acc)  [+.n.g.i.old (getv %key a.g.i.old)]  %del
+        q
+          :_  q.acc
+          ^-  json
+          :-  %o
+          %-  my
+          :~  ['p' [%s 'd']]
+              ['q' [%a (turn old |=(m=manx [%s (getv %key a.g.m)]))]]
+          ==
       ==
-    =/  key
-      |-  ^-  @t
-      ?>  ?=(^ a.g.i)
-      ?.  ?=(%key n.i.a.g.i)  $(a.g.i t.a.g.i)
-      %-  crip  v.i.a.g.i
-    %=  ^^$
-      rop  (~(got by q.rop) [+.n.g.i key])
+    =?  p.acc  ?=([%mast @] n.g.i.new)
+      %+  ~(put by p.acc)  [+.n.g.i.new (getv %key a.g.i.new)]  %dif
+    ?:  =(%$ n.g.i.new)
+      acc
+    ?:  &(?=(^ old) =(%skip- n.g.i.old))
+      %=  $
+        old  t.old
+      ==
+    ?:  =(%move- n.g.i.new)
+      %=  $
+        new  t.new
+        i    +(i)
+        q.acc
+          %+  snoc  q.acc
+          ^-  json
+          :-  %o
+          %-  my
+          :~  ['p' [%s 'm']]
+              ['q' [%s (getv %key a.g.i.new)]]
+              ['r' [%n (getv %i a.g.i.new)]]
+          ==
+      ==
+    =|  j=@ud
+    =/  jold=marl  old
+    =/  nkey=[n=mane k=@t]  [n.g.i.new (getv %key a.g.i.new)]
+    |-  ^-  diff
+    ?~  new
+      !!
+    ?~  jold
+      %=  ^$
+        new  t.new
+        i    +(i)
+        p.acc
+          ?.  ?=([%mast @] n.g.i.new)  p.acc
+          %+  ~(put by p.acc)  [+.n.g.i.new k.nkey]  %add
+        q.acc
+          %+  snoc  q.acc
+          ^-  json
+          :-  %o
+          %-  my
+          :~  ['p' [%s 'n']]
+              ['q' [%s pkey]]
+              ['r' [%n (scot %ud i)]]
+              ['s' [%s (crip (en-xml:html i.new))]]
+          ==
+      ==
+    ?~  old
+      !!
+    ?:  =(%skip- n.g.i.jold)
+      %=  $
+        jold  t.jold
+        j     +(j)
+      ==
+    ?:  =(nkey [n.g.i.jold (getv %key a.g.i.jold)])
+      ?.  =(0 j)
+        =|  n=@ud
+        =/  nnew=marl  new
+        =/  okey=[n=mane k=@t]  [n.g.i.old (getv %key a.g.i.old)]
+        |-  ^-  diff
+        ?~  nnew
+          %=  ^^$
+            old  (snoc t.old i.old)
+          ==
+        ?:  =(%move- n.g.i.nnew)
+          %=  $
+            nnew  t.nnew
+            n     +(n)
+          ==
+        =/  nnky=[n=mane k=@t]  [n.g.i.nnew (getv %key a.g.i.nnew)]
+        ?.  =(okey nnky)
+          %=  $
+            nnew  t.nnew
+            n     +(n)
+          ==
+        ?:  (gte n j)
+          =/  aupd  (jibe n.g.i.nnew a.g.i.old a.g.i.nnew)
+          %=  ^^$
+            old   c.i.old
+            new   c.i.nnew
+            pkey  k.nnky
+            i     0
+            acc
+              %=  ^^$
+                old  t.old
+                new
+                  %^  newm  new  n
+                  ;move-(i (y-co:co (add n i)), key (trip k.nnky));
+                q.acc
+                  ?:  &(?=(~ del.aupd) ?=(~ new.aupd))
+                    q.acc
+                  :_  q.acc
+                  ^-  json
+                  :-  %o
+                  %-  my
+                  :~  ['p' [%s 'c']]
+                      ['q' [%s k.nnky]]
+                      ['r' [%a del.aupd]]
+                      ['s' [%a new.aupd]]
+                  ==
+              ==
+          ==
+        =/  aupd  (jibe n.g.i.new a.g.i.jold a.g.i.new)
+        %=  ^^$
+          old   c.i.jold
+          new   c.i.new
+          pkey  k.nkey
+          i     0
+          acc
+            %=  ^^$
+              old  (newm old j ;skip-;)
+              new  t.new
+              i    +(i)
+              q.acc
+                =.  q.acc
+                  %+  snoc  q.acc
+                  ^-  json
+                  :-  %o
+                  %-  my
+                  :~  ['p' [%s 'm']]
+                      ['q' [%s k.nkey]]
+                      ['r' [%n (scot %ud i)]]
+                  ==
+                ?:  &(?=(~ del.aupd) ?=(~ new.aupd))
+                  q.acc
+                :_  q.acc
+                ^-  json
+                :-  %o
+                %-  my
+                :~  ['p' [%s 'c']]
+                    ['q' [%s k.nkey]]
+                    ['r' [%a del.aupd]]
+                    ['s' [%a new.aupd]]
+                ==
+            ==
+        ==
+      ?:  =(%t- n.g.i.new)
+        ?:  ?&  ?=(^ c.i.old)  ?=(^ c.i.new)
+                ?=(^ a.g.i.c.i.old)  ?=(^ a.g.i.c.i.new)
+                =(v.i.a.g.i.c.i.old v.i.a.g.i.c.i.new)
+            ==
+          %=  ^$
+            old  t.old
+            new  t.new
+            i    +(i)
+          ==
+        =/  txt=@t
+          ?.  &(?=(^ c.i.new) ?=(^ a.g.i.c.i.new))
+            ''
+          (crip v.i.a.g.i.c.i.new)
+        %=  ^$
+          old  t.old
+          new  t.new
+          i    +(i)
+          q.acc
+            :_  q.acc
+            ^-  json
+            :-  %o
+            %-  my
+            :~  ['p' [%s 't']]
+                ['q' [%s (getv %key a.g.i.new)]]
+                ['r' [%s txt]]
+            ==
+        ==
+      =/  aupd  (jibe n.g.i.new a.g.i.old a.g.i.new)
+      %=  ^$
+        old   c.i.old
+        new   c.i.new
+        pkey  k.nkey
+        i     0
+        acc
+          %=  ^$
+            old  t.old
+            new  t.new
+            i    +(i)
+            q.acc
+              ?:  &(?=(~ del.aupd) ?=(~ new.aupd))
+                q.acc
+              :_  q.acc
+              ^-  json
+              :-  %o
+              %-  my
+              :~  ['p' [%s 'c']]
+                  ['q' [%s k.nkey]]
+                  ['r' [%a del.aupd]]
+                  ['s' [%a new.aupd]]
+              ==
+          ==
+      ==
+    %=  $
+      jold  t.jold
+      j     +(j)
     ==
+  ::
+  ++  jibe
+    |=  [nn=mane om=mart nm=mart]
+    =|  acc=[del=(list json) new=(list json)]
+    ?:  ?=([%mast @] nn)  acc
+    |-  ^+  acc
+    ?~  nm
+      ?~  om
+        acc
+      %_    acc
+          del
+        %+  turn  om
+        |=  [n=mane *]
+        [%s `@t`?>(?=(@ n) n)]
+      ==
+    =|  i=@ud
+    =/  com=mart  om
+    |-  ^+  acc
+    ?~  nm
+      !!
+    ?~  com
+      %=  ^$
+        nm  t.nm
+        new.acc
+          :_  new.acc
+          :-  %a
+          :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
+              [%s (crip v.i.nm)]
+          ==
+      ==
+    ?~  om
+      !!
+    ?:  =(n.i.com n.i.nm)
+      ?:  =(v.i.com v.i.nm)
+        %=  ^$
+          om  (oust [i 1] (mart om))
+          nm  t.nm
+        ==
+      %=  ^$
+        om   (oust [i 1] (mart om))
+        nm   t.nm
+        new.acc
+          :_  new.acc
+          :-  %a
+          :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
+              [%s (crip v.i.nm)]
+          ==
+      ==
+    %=  $
+      com  t.com
+      i    +(i)
+    ==
+  ::
+  ++  newm
+    |=  [ml=marl i=@ud mx=manx]
+    =|  j=@ud
+    |-  ^-  marl
+    ?~  ml
+      ~
+    :-  ?:  =(i j)
+          mx
+        i.ml
+    $(ml t.ml, j +(j))
+  ::
+  ++  getv
+    |=  [t=@tas m=mart]
+    ^-  @t
+    ?~  m  ''
+    ?:  =(n.i.m t)
+      (crip v.i.m)
+    $(m t.m)
   ::
   --
 ::
@@ -509,294 +799,5 @@
   :-  %poke
   ((ot ~[path+pa data+(om so)]):dejs:format jon)
 ::
-++  luff
-  |=  [old=marl new=marl]
-  =|  i=@ud
-  =|  pkey=@t
-  =|  acc=diff
-  |-  ^-  diff
-  ?~  new
-    ?~  old
-      acc
-    ?:  =(%skip- n.g.i.old)
-      %=  $
-        old  t.old
-      ==
-    %_  acc
-      p
-        ?.  ?=([%mast @] n.g.i.old)  p.acc
-        %+  ~(put by p.acc)  [+.n.g.i.old (getv %key a.g.i.old)]  %del
-      q
-        :_  q.acc
-        ^-  json
-        :-  %o
-        %-  my
-        :~  ['p' [%s 'd']]
-            ['q' [%a (turn old |=(m=manx [%s (getv %key a.g.m)]))]]
-        ==
-    ==
-  =?  p.acc  ?=([%mast @] n.g.i.new)
-    %+  ~(put by p.acc)  [+.n.g.i.new (getv %key a.g.i.new)]  %dif
-  ?:  =(%$ n.g.i.new)
-    acc
-  ?:  &(?=(^ old) =(%skip- n.g.i.old))
-    %=  $
-      old  t.old
-    ==
-  ?:  =(%move- n.g.i.new)
-    %=  $
-      new  t.new
-      i    +(i)
-      q.acc
-        %+  snoc  q.acc
-        ^-  json
-        :-  %o
-        %-  my
-        :~  ['p' [%s 'm']]
-            ['q' [%s (getv %key a.g.i.new)]]
-            ['r' [%n (getv %i a.g.i.new)]]
-        ==
-    ==
-  =|  j=@ud
-  =/  jold=marl  old
-  =/  nkey=[n=mane k=@t]  [n.g.i.new (getv %key a.g.i.new)]
-  |-  ^-  diff
-  ?~  new
-    !!
-  ?~  jold
-    %=  ^$
-      new  t.new
-      i    +(i)
-      p.acc
-        ?.  ?=([%mast @] n.g.i.new)  p.acc
-        %+  ~(put by p.acc)  [+.n.g.i.new k.nkey]  %add
-      q.acc
-        %+  snoc  q.acc
-        ^-  json
-        :-  %o
-        %-  my
-        :~  ['p' [%s 'n']]
-            ['q' [%s pkey]]
-            ['r' [%n (scot %ud i)]]
-            ['s' [%s (crip (en-xml:html i.new))]]
-        ==
-    ==
-  ?~  old
-    !!
-  ?:  =(%skip- n.g.i.jold)
-    %=  $
-      jold  t.jold
-      j     +(j)
-    ==
-  ?:  =(nkey [n.g.i.jold (getv %key a.g.i.jold)])
-    ?.  =(0 j)
-      =|  n=@ud
-      =/  nnew=marl  new
-      =/  okey=[n=mane k=@t]  [n.g.i.old (getv %key a.g.i.old)]
-      |-  ^-  diff
-      ?~  nnew
-        %=  ^^$
-          old  (snoc t.old i.old)
-        ==
-      ?:  =(%move- n.g.i.nnew)
-        %=  $
-          nnew  t.nnew
-          n     +(n)
-        ==
-      =/  nnky=[n=mane k=@t]  [n.g.i.nnew (getv %key a.g.i.nnew)]
-      ?.  =(okey nnky)
-        %=  $
-          nnew  t.nnew
-          n     +(n)
-        ==
-      ?:  (gte n j)
-        =/  aupd  (jibe n.g.i.nnew a.g.i.old a.g.i.nnew)
-        %=  ^^$
-          old   c.i.old
-          new   c.i.nnew
-          pkey  k.nnky
-          i     0
-          acc
-            %=  ^^$
-              old  t.old
-              new
-                %^  newm  new  n
-                ;move-(i (y-co:co (add n i)), key (trip k.nnky));
-              q.acc
-                ?:  &(?=(~ del.aupd) ?=(~ new.aupd))
-                  q.acc
-                :_  q.acc
-                ^-  json
-                :-  %o
-                %-  my
-                :~  ['p' [%s 'c']]
-                    ['q' [%s k.nnky]]
-                    ['r' [%a del.aupd]]
-                    ['s' [%a new.aupd]]
-                ==
-            ==
-        ==
-      =/  aupd  (jibe n.g.i.new a.g.i.jold a.g.i.new)
-      %=  ^^$
-        old   c.i.jold
-        new   c.i.new
-        pkey  k.nkey
-        i     0
-        acc
-          %=  ^^$
-            old  (newm old j ;skip-;)
-            new  t.new
-            i    +(i)
-            q.acc
-              =.  q.acc
-                %+  snoc  q.acc
-                ^-  json
-                :-  %o
-                %-  my
-                :~  ['p' [%s 'm']]
-                    ['q' [%s k.nkey]]
-                    ['r' [%n (scot %ud i)]]
-                ==
-              ?:  &(?=(~ del.aupd) ?=(~ new.aupd))
-                q.acc
-              :_  q.acc
-              ^-  json
-              :-  %o
-              %-  my
-              :~  ['p' [%s 'c']]
-                  ['q' [%s k.nkey]]
-                  ['r' [%a del.aupd]]
-                  ['s' [%a new.aupd]]
-              ==
-          ==
-      ==
-    ?:  =(%t- n.g.i.new)
-      ?:  ?&  ?=(^ c.i.old)  ?=(^ c.i.new)
-              ?=(^ a.g.i.c.i.old)  ?=(^ a.g.i.c.i.new)
-              =(v.i.a.g.i.c.i.old v.i.a.g.i.c.i.new)
-          ==
-        %=  ^$
-          old  t.old
-          new  t.new
-          i    +(i)
-        ==
-      =/  txt=@t
-        ?.  &(?=(^ c.i.new) ?=(^ a.g.i.c.i.new))
-          ''
-        (crip v.i.a.g.i.c.i.new)
-      %=  ^$
-        old  t.old
-        new  t.new
-        i    +(i)
-        q.acc
-          :_  q.acc
-          ^-  json
-          :-  %o
-          %-  my
-          :~  ['p' [%s 't']]
-              ['q' [%s (getv %key a.g.i.new)]]
-              ['r' [%s txt]]
-          ==
-      ==
-    =/  aupd  (jibe n.g.i.new a.g.i.old a.g.i.new)
-    %=  ^$
-      old   c.i.old
-      new   c.i.new
-      pkey  k.nkey
-      i     0
-      acc
-        %=  ^$
-          old  t.old
-          new  t.new
-          i    +(i)
-          q.acc
-            ?:  &(?=(~ del.aupd) ?=(~ new.aupd))
-              q.acc
-            :_  q.acc
-            ^-  json
-            :-  %o
-            %-  my
-            :~  ['p' [%s 'c']]
-                ['q' [%s k.nkey]]
-                ['r' [%a del.aupd]]
-                ['s' [%a new.aupd]]
-            ==
-        ==
-    ==
-  %=  $
-    jold  t.jold
-    j     +(j)
-  ==
-::
-++  getv
-  |=  [t=@tas m=mart]
-  ^-  @t
-  ?~  m  ''
-  ?:  =(n.i.m t)
-    (crip v.i.m)
-  $(m t.m)
-::
-++  jibe
-  |=  [nn=mane om=mart nm=mart]
-  =|  acc=[del=(list json) new=(list json)]
-  ?:  ?=([%mast @] nn)  acc
-  |-  ^+  acc
-  ?~  nm
-    ?~  om
-      acc
-    %_    acc
-        del
-      %+  turn  om
-      |=  [n=mane *]
-      [%s `@t`?>(?=(@ n) n)]
-    ==
-  =|  i=@ud
-  =/  com=mart  om
-  |-  ^+  acc
-  ?~  nm
-    !!
-  ?~  com
-    %=  ^$
-      nm  t.nm
-      new.acc
-        :_  new.acc
-        :-  %a
-        :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
-            [%s (crip v.i.nm)]
-        ==
-    ==
-  ?~  om
-    !!
-  ?:  =(n.i.com n.i.nm)
-    ?:  =(v.i.com v.i.nm)
-      %=  ^$
-        om  (oust [i 1] (mart om))
-        nm  t.nm
-      ==
-    %=  ^$
-      om   (oust [i 1] (mart om))
-      nm   t.nm
-      new.acc
-        :_  new.acc
-        :-  %a
-        :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
-            [%s (crip v.i.nm)]
-        ==
-    ==
-  %=  $
-    com  t.com
-    i    +(i)
-  ==
-::
-++  newm
-  |=  [ml=marl i=@ud mx=manx]
-  =|  j=@ud
-  |-  ^-  marl
-  ?~  ml
-    ~
-  :-  ?:  =(i j)
-        mx
-      i.ml
-  $(ml t.ml, j +(j))
-::
 --
+
