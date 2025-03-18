@@ -53,6 +53,36 @@
       =rigs
   ==
 ::
+++  make
+  |=  [=term key=tape limited-sack=tape]
+  ^-  manx
+  [[[%mast term] [[%sack limited-sack] [%key key] ~]] ~]
+::
+++  make-hoot
+  |=  [=term key=tape =sack]
+  ^-  manx:hoot
+  =/  prop=hoon  [%hand [p.sack [%1 q.sack]]]
+  [[[%mast term] [[%sack [[~ prop] ~]] [%key key] ~]] ~]
+::
+++  bind-url
+  |=  [app=@tas =url]
+  ^-  card:agent:gall
+  [%pass /bind %arvo %e %connect [~ url] app]
+::
+++  make-auth-redirect
+  |=  rid=@ta
+  ^-  (list card:agent:gall)
+  %^  make-direct-http-cards  rid
+  [307 ['Location' '/~/login?redirect='] ~]  ~
+::
+++  make-direct-http-cards
+  |=  [rid=@ta hed=response-header.simple-payload:http dat=(unit octs)]
+  ^-  (list card:agent:gall)
+  :~  [%give %fact ~[/http-response/[rid]] [%http-response-header !>(hed)]]
+      [%give %fact ~[/http-response/[rid]] [%http-response-data !>(dat)]]
+      [%give %kick ~[/http-response/[rid]] ~]
+  ==
+::
 ++  wrap
   |=  [=deck =hull]
   ^-  agent:gall
@@ -213,6 +243,22 @@
     ^-  (quip card ^deck)
     :: TODO:
     `deck
+  ::
+  ++  parse-channel-data
+    |=  jon=json
+    ^-  crow
+    :: TODO: handle all event types
+    :-  %poke
+    ((ot ~[path+pa data+(om so)]):dejs:format jon)
+  ::
+  ++  make-sub-path
+    |=  src=@p
+    ^-  path
+    [%mast (scot %p src) ~]
+  ::
+  ++  script-node
+    ^-  manx
+    ;script: {(trip mast-js)}
   ::
   ++  build-mast
     |=  =name
@@ -733,71 +779,6 @@
     $(m t.m)
   ::
   --
-::
-++  make
-  |=  [=term key=tape limited-sack=tape]
-  ^-  manx
-  [[[%mast term] [[%sack limited-sack] [%key key] ~]] ~]
-::
-++  make-hoot
-  |=  [=term key=tape =sack]
-  ^-  manx:hoot
-  =/  prop=hoon  [%hand [p.sack [%1 q.sack]]]
-  [[[%mast term] [[%sack [[~ prop] ~]] [%key key] ~]] ~]
-::
-++  bind-url
-  |=  [app=@tas =url]
-  ^-  card:agent:gall
-  [%pass /bind %arvo %e %connect [~ url] app]
-::
-++  make-css-response
-  |=  [rid=@ta css=@t]
-  ^-  (list card:agent:gall)
-  %^  make-direct-http-cards  rid 
-    [200 ['Content-Type' 'text/css'] ~]
-  [~ (as-octs:mimes:html css)]
-::
-++  make-auth-redirect
-  |=  rid=@ta
-  ^-  (list card:agent:gall)
-  %^  make-direct-http-cards  rid
-  [307 ['Location' '/~/login?redirect='] ~]  ~
-::
-++  make-400
-  |=  rid=@ta
-  ^-  (list card:agent:gall)
-  %^  make-direct-http-cards
-  rid  [400 ~]  ~
-::
-++  make-404
-  |=  [rid=@ta data=(unit octs)]
-  ^-  (list card:agent:gall)
-  %^  make-direct-http-cards
-  rid  [404 ~]  data
-::
-++  make-direct-http-cards
-  |=  [rid=@ta head=response-header.simple-payload:http data=(unit octs)]
-  ^-  (list card:agent:gall)
-  :~  [%give %fact ~[/http-response/[rid]] [%http-response-header !>(head)]]
-      [%give %fact ~[/http-response/[rid]] [%http-response-data !>(data)]]
-      [%give %kick ~[/http-response/[rid]] ~]
-  ==
-::
-++  make-sub-path
-  |=  src=@p
-  ^-  path
-  [%mast (scot %p src) ~]
-::
-++  script-node
-  ^-  manx
-  ;script: {(trip mast-js)}
-::
-++  parse-channel-data
-  |=  jon=json
-  ^-  crow
-  :: TODO: handle all event types
-  :-  %poke
-  ((ot ~[path+pa data+(om so)]):dejs:format jon)
 ::
 --
 
