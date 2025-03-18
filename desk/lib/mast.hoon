@@ -42,7 +42,9 @@
       sac=sack                                   ::   props state
       aft=manx                                   ::   prev manx
   ==                                             ::
-+$  diff  (list json)                            :: luff diff product
++$  diff                                         ::
+  %+  pair  (map clew ?(%add %del %dif))         :: luff diff product
+  %-  list  json                                 ::
 +$  loot  (map clew sack)                        :: props for rendered components
 +$  card  card:agent:gall                        :: card
 +$  buoy  (set name)                             :: reactive component record
@@ -520,13 +522,21 @@
       %=  $
         old  t.old
       ==
-    :_  acc
-    ^-  json
-    :-  %o
-    %-  my
-    :~  ['p' [%s 'd']]
-        ['q' [%a (turn old |=(m=manx [%s (getv %key a.g.m)]))]]
+    %_  acc
+      p
+        ?.  ?=([%mast @] n.g.i.old)  p.acc
+        %+  ~(put by p.acc)  [+.n.g.i.old (getv %key a.g.i.old)]  %del
+      q
+        :_  q.acc
+        ^-  json
+        :-  %o
+        %-  my
+        :~  ['p' [%s 'd']]
+            ['q' [%a (turn old |=(m=manx [%s (getv %key a.g.m)]))]]
+        ==
     ==
+  =?  p.acc  ?=([%mast @] n.g.i.new)
+    %+  ~(put by p.acc)  [+.n.g.i.new (getv %key a.g.i.new)]  %dif
   ?:  =(%$ n.g.i.new)
     acc
   ?:  &(?=(^ old) =(%skip- n.g.i.old))
@@ -537,8 +547,8 @@
     %=  $
       new  t.new
       i    +(i)
-      acc
-        %+  snoc  acc
+      q.acc
+        %+  snoc  q.acc
         ^-  json
         :-  %o
         %-  my
@@ -557,8 +567,11 @@
     %=  ^$
       new  t.new
       i    +(i)
-      acc
-        %+  snoc  acc
+      p.acc
+        ?.  ?=([%mast @] n.g.i.new)  p.acc
+        %+  ~(put by p.acc)  [+.n.g.i.new k.nkey]  %add
+      q.acc
+        %+  snoc  q.acc
         ^-  json
         :-  %o
         %-  my
@@ -597,7 +610,7 @@
           n     +(n)
         ==
       ?:  (gte n j)
-        =/  aupd  (upda a.g.i.old a.g.i.nnew)
+        =/  aupd  (jibe n.g.i.nnew a.g.i.old a.g.i.nnew)
         %=  ^^$
           old   c.i.old
           new   c.i.nnew
@@ -609,10 +622,10 @@
               new
                 %^  newm  new  n
                 ;move-(i (y-co:co (add n i)), key (trip k.nnky));
-              acc
+              q.acc
                 ?:  &(?=(~ del.aupd) ?=(~ new.aupd))
-                  acc
-                :_  acc
+                  q.acc
+                :_  q.acc
                 ^-  json
                 :-  %o
                 %-  my
@@ -623,7 +636,7 @@
                 ==
             ==
         ==
-      =/  aupd  (upda a.g.i.jold a.g.i.new)
+      =/  aupd  (jibe n.g.i.new a.g.i.jold a.g.i.new)
       %=  ^^$
         old   c.i.jold
         new   c.i.new
@@ -634,9 +647,9 @@
             old  (newm old j ;skip-;)
             new  t.new
             i    +(i)
-            acc
-              =.  acc
-                %+  snoc  acc
+            q.acc
+              =.  q.acc
+                %+  snoc  q.acc
                 ^-  json
                 :-  %o
                 %-  my
@@ -645,8 +658,8 @@
                     ['r' [%n (scot %ud i)]]
                 ==
               ?:  &(?=(~ del.aupd) ?=(~ new.aupd))
-                acc
-              :_  acc
+                q.acc
+              :_  q.acc
               ^-  json
               :-  %o
               %-  my
@@ -675,8 +688,8 @@
         old  t.old
         new  t.new
         i    +(i)
-        acc
-          :_  acc
+        q.acc
+          :_  q.acc
           ^-  json
           :-  %o
           %-  my
@@ -685,7 +698,7 @@
               ['r' [%s txt]]
           ==
       ==
-    =/  aupd  (upda a.g.i.old a.g.i.new)
+    =/  aupd  (jibe n.g.i.new a.g.i.old a.g.i.new)
     %=  ^$
       old   c.i.old
       new   c.i.new
@@ -696,10 +709,10 @@
           old  t.old
           new  t.new
           i    +(i)
-          acc
+          q.acc
             ?:  &(?=(~ del.aupd) ?=(~ new.aupd))
-              acc
-            :_  acc
+              q.acc
+            :_  q.acc
             ^-  json
             :-  %o
             %-  my
@@ -723,9 +736,10 @@
     (crip v.i.m)
   $(m t.m)
 ::
-++  upda
-  |=  [om=mart nm=mart]
+++  jibe
+  |=  [nn=mane om=mart nm=mart]
   =|  acc=[del=(list json) new=(list json)]
+  ?:  ?=([%mast @] nn)  acc
   |-  ^+  acc
   ?~  nm
     ?~  om
