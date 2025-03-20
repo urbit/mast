@@ -65,7 +65,23 @@ function pokeDebounce(ms, ...pokeArgs) {
         timeoutId = window.setTimeout(() => pokeShip(e, e.target, ...pokeArgs), ms);
     };
 };
+function getComponentPath(el) {
+    let componentPath = [];
+    while ('BODY' != el.tagName) {
+        if (el.hasAttribute('component')) {
+          const componentId = {
+            name: el.getAttribute('component'),
+            key: el.getAttribute('key')
+          };
+          componentPath.unshift(componentId);
+        }
+        if (el.parentElement === null) break;
+        el = el.parentElement;
+    }
+    return componentPath;
+}
 function pokeShip(event, target, eventType, eventAttr, returnAttrVals) {
+    const componentPath = getComponentPath(target);
     const jsOnEvent = target.getAttribute('js-on-event');
     if (jsOnEvent) {
         eval?.(`"use strict"; ${jsOnEvent}`);
@@ -83,6 +99,7 @@ function pokeShip(event, target, eventType, eventAttr, returnAttrVals) {
     fetch(channelPath, {
         method: 'PUT',
         body: JSON.stringify(makePokeBody({
+            route: componentPath,
             path: eventAttr,
             data: uiEventData
         }))
@@ -140,7 +157,7 @@ function handleReturnAttr(event, target, returnAttrVals) {
 };
 function handleChannelStream(event) {
     const streamResponse = JSON.parse(event.data);
-    // console.log(streamResponse);
+    console.log(streamResponse);
     if (streamResponse.response !== 'diff') return;
     fetch(channelPath, {
         method: 'PUT',
