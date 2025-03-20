@@ -138,19 +138,30 @@
       ==
       ::
         %json
-      :: TODO: gust
-      `this
-      :: =+  !<  jon=json  vase
-      :: ?.  ?&  ?=(%a -.jon)
-      ::         ?=(^ p.jon)
-      ::         ?=(^ t.p.jon)
-      ::         =([%s 'mast'] i.p.jon)
-      ::     ==
-      ::   =^  cards  hull  (on-poke:hu [mark vase])
-      ::   :-  cards  this
-      :: =/  =crow  (parse-channel-data i.t.p.jon)
-      :: =^  cards  hull  (on-poke:hu [%mast-event !>(crow)])
-      :: :-  cards  this
+      =+  !<  jon=json  vase
+      ?.  ?&  ?=(%a -.jon)
+              ?=(^ p.jon)
+              ?=(^ t.p.jon)
+              =([%s 'mast'] i.p.jon)
+          ==
+        =^  cards  hull  (on-poke:hu [mark vase])
+        =^  diffs  brig  (gust bowl)
+        :_  this
+        %+  weld  cards  diffs
+      =/  [tac=tack cro=crow]  (parse-channel-data i.t.p.jon)
+      =^  [new-url=? new-poke=(unit cage) new-local=(unit tack)]  brig
+        %^  sway  tac  cro  bowl
+      ?:  ?&  !new-url
+              ?=(~ new-poke)
+              ?=(~ new-local)
+          ==
+        :-  ~  this
+      =^  cards  hull
+        ?^  new-poke  (on-poke:hu u.new-poke)
+        :-  *(list card)  hull
+      =^  diffs  brig  (gust bowl)          :: TODO: add new-local
+      :_  this
+      %+  weld  cards  diffs
       ::
     ==
   ::
@@ -285,12 +296,48 @@
       !>  `json`[%a jon]
     :-  cards  brig
   ::
+  :: apply an event to a component;
+  :: produce a possible route change,
+  :: a possible poke to forward to the agent,
+  :: and a possible route to a component with a local state change.
+  ++  sway
+    |=  [tac=tack cro=crow bol=bowl]
+    ^-  [[new-url=? (unit cage) (unit tack)] ^brig]
+    =/  ses  (~(got by rigs.brig) src.bol)
+    =/  say  `stay`[url.ses bol]
+    =/  wod  (get-wood tac rope.ses)
+    =/  com  (build-mast name:(rear tac))
+    =/  [bow=blow sow=stow]
+      %-  ~(spar com [say sac.wod sow.wod])  cro
+    :-  :*  &(?=(^ p.bow) !=(u.p.bow url.ses))
+            q.bow
+            ?:(=(sow sow.wod) ~ [~ tac])
+        ==
+    %_  brig
+      rigs
+        %+  ~(put by rigs.brig)  src.bol
+        %_  ses
+          url  ?^(p.bow u.p.bow url.ses)
+          rope
+            %^  put-wood  tac  wod(sow sow)  rope.ses
+        ==
+    ==
+  ::
+  :: parse json from the client into a component route and event.
   ++  parse-channel-data
     |=  jon=json
-    ^-  crow
-    :: TODO: handle all event types
-    :-  %poke
-    ((ot ~[path+pa data+(om so)]):dejs:format jon)
+    ^-  [tack crow]
+    =,  dejs:format
+    =/  pok
+      ^-  [route=tack =path data=(map @t @t)]
+      %.  jon
+      %-  ot
+      :~  route+(ar (ot ~[name+so key+so]))
+          path+pa
+          data+(om so)
+      ==
+    :-  route.pok
+    :-  %poke  [path.pok data.pok]
   ::
   ++  make-sub-path
     |=  src=@p
@@ -396,7 +443,7 @@
       lot  a
     ==
   ::
-  ++  get-wood   :: TODO: these are used in routing an event to a component
+  ++  get-wood
     |=  [tac=tack rop=rope]
     ^-  wood
     ?~  tac  p.rop
@@ -436,11 +483,12 @@
         :-  man  (get-loot man)
       %-  take-hoot  +.man
     =.  sal  (haul cew sal) 
-    :-  ^-  wood
-        :*  sud
-            sac
-            sow
-            sal
+    =|  wod=wood
+    :-  %_  wod
+          sud  sud
+          sac  sac
+          sow  sow
+          aft  sal
         ==
     %-  ~(urn by lot)
     |=  [k=clew v=sack]
@@ -462,11 +510,7 @@
       %_  i
         c  ^$(mar c.i)
       ==
-    =/  key
-      |-  ^-  @t
-      ?>  ?=(^ a.g.i)
-      ?.  ?=(%key n.i.a.g.i)  $(a.g.i t.a.g.i)
-      %-  crip  v.i.a.g.i
+    =/  key  (getv %key a.g.i)
     %=  ^^$
       rop  (~(got by q.rop) [+.n.g.i key])
     ==
@@ -533,15 +577,18 @@
     |_  [cew=clew man=manx]
     ++  $
       ^-  manx
+      =/  component-attr  [%component (trip name.cew)]
       ?:  ?&  =(%html n.g.man)
               ?=(^ c.man)
               =(%head n.g.i.c.man)
               ?=(^ t.c.man)
               =(%body n.g.i.t.c.man)
           ==
+        =.  a.g.i.t.c.man  [component-attr a.g.i.t.c.man]
         %_  man
           i.t.c  (anx i.t.c.man ["" ~])
         ==
+      =.  a.g.man  [component-attr a.g.man]
       %+  anx  man  [(trip key.cew) ~]
     ++  anx
       |=  [m=manx key=(pair tape (list @))]
