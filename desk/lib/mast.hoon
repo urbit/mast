@@ -36,6 +36,7 @@
   %+  map  clew  rope                            ::
 +$  clew  [=name key=@t]                         :: component instance id
 +$  tack  (list clew)                            :: component instance path
++$  hook  [=ship =tack]                          :: tack with session source
 +$  wood                                         :: component instance state
   $:  sud=atom                                   ::   prev scud hash
       sow=stow                                   ::   local state
@@ -120,7 +121,7 @@
     ?+  mark
       ::
       =^  cards  hull  (on-poke:hu [mark vase])
-      =^  diffs  brig  (gust bowl)
+      =^  diffs  brig  (gust ~ bowl)
       :_  this
       %+  weld  cards  diffs
       ::
@@ -145,7 +146,7 @@
               =([%s 'mast'] i.p.jon)
           ==
         =^  cards  hull  (on-poke:hu [mark vase])
-        =^  diffs  brig  (gust bowl)
+        =^  diffs  brig  (gust ~ bowl)
         :_  this
         %+  weld  cards  diffs
       =/  [tac=tack cro=crow]  (parse-channel-data i.t.p.jon)
@@ -156,10 +157,11 @@
               ?=(~ new-local)
           ==
         :-  ~  this
+      :: TODO: add a case for only a local update that does diff-component-tree directly
       =^  cards  hull
         ?^  new-poke  (on-poke:hu u.new-poke)
         :-  *(list card)  hull
-      =^  diffs  brig  (gust bowl)          :: TODO: add new-local
+      =^  diffs  brig  (gust ?^(new-local [~ src.bowl u.new-local] ~) bowl)
       :_  this
       %+  weld  cards  diffs
       ::
@@ -174,7 +176,7 @@
       ?>  =(src.bowl (slav %p i.t.path))
       [~ this]
     =^  cards  hull  (on-watch:hu path)
-    =^  diffs  brig  (gust bowl)
+    =^  diffs  brig  (gust ~ bowl)
     :_  this
     %+  weld  cards  diffs
   ::
@@ -182,7 +184,7 @@
     |=  =path
     ^-  (quip card _this)
     =^  cards  hull  (on-leave:hu path)
-    =^  diffs  brig  (gust bowl)
+    =^  diffs  brig  (gust ~ bowl)
     :_  this
     %+  weld  cards  diffs
   ::
@@ -192,7 +194,7 @@
     |=  [=wire =sign:agent:gall]
     ^-  (quip card _this)
     =^  cards  hull  (on-agent:hu wire sign)
-    =^  diffs  brig  (gust bowl)
+    =^  diffs  brig  (gust ~ bowl)
     :_  this
     %+  weld  cards  diffs
   ::
@@ -200,7 +202,7 @@
     |=  [=wire =sign-arvo]
     ^-  (quip card _this)
     =^  cards  hull  (on-arvo:hu wire sign-arvo)
-    =^  diffs  brig  (gust bowl)
+    =^  diffs  brig  (gust ~ bowl)
     :_  this
     %+  weld  cards  diffs
   ::
@@ -208,7 +210,7 @@
     |=  [=term =tang]
     ^-  (quip card _this)
     =^  cards  hull  (on-fail:hu term tang)
-    =^  diffs  brig  (gust bowl)
+    =^  diffs  brig  (gust ~ bowl)
     :_  this
     %+  weld  cards  diffs
   ::
@@ -273,7 +275,7 @@
     ==
   ::
   ++  gust
-    |=  =bowl
+    |=  [huk=(unit hook) =bowl]
     ^-  (quip card ^brig)
     =^  cards=(list card)  rigs.brig
       %+  ~(rib by rigs.brig)  *(list card)
@@ -284,6 +286,7 @@
       =/  say=stay  [url.ses bowl]
       =^  jon=(list json)  rop.ses
         %:  diff-component-tree
+          ?:(&(?=(^ huk) =(ship.u.huk src)) [~ tack.u.huk] ~)
           say  ~  *clew  rop.ses
         ==
       :_  [src ses]
@@ -469,7 +472,7 @@
     |=  [cew=clew sac=sack say=stay]
     ^-  rope
     =/  com  (build-mast name.cew)
-    =/  sow  ;;(stow +<+<.com)  :: get stow for possible init bunt
+    =/  sow  ;;(stow +<+>.com)  :: get stow for possible init bunt
     =.  +<.com  [say sac sow]
     =/  sud
       ^-  @
@@ -516,12 +519,18 @@
     ==
   ::
   ++  diff-component-tree
-    |=  [say=stay suc=(unit sack) cew=clew rop=rope]
+    |=  $:  tuc=(unit tack)
+            say=stay
+            suc=(unit sack)
+            cew=clew
+            rop=rope
+        ==
     ^-  (quip json rope)
     =/  react=?  (~(has in buoy.brig) name.cew)
     =/  props=?  &(?=(^ suc) !=(u.suc sac.p.rop))
+    =/  local=?  &(?=(^ tuc) ?=(~ u.tuc))
     =^  upd=$@(~ [=diff =loot])  p.rop
-      ?.  |(react props)
+      ?.  |(react props local)
         :-  ~  p.rop
       =/  com
         =-  -(+< [say ?^(suc u.suc sac.p.rop) sow.p.rop])
@@ -533,6 +542,7 @@
         =<  scud  com
       =/  render=?
         ?|  props
+            local
             !=(sud sud.p.rop)
         ==
       =:  sud.p.rop  sud
@@ -562,6 +572,7 @@
           cew  k
           rop  v
           suc  ?^(upd (~(get by loot.upd) k) ~)
+          tuc  ?^(tuc ?^(u.tuc ?:(=(k i.u.tuc) tuc(u t.u.tuc) ~) ~) ~)
         ==
       %_  a
         p  (weld p.a b)
