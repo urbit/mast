@@ -124,7 +124,7 @@
 ++  on-init
   ^-  (quip card _this)
   :_  this
-  :~  (bind-url:mast dap.bowl /mast-test)
+  :~  (bind-url:mast dap.bowl /mast-demo)
   ==
 ++  on-save
   ^-  vase
@@ -133,7 +133,7 @@
   |=  =vase
   ^-  (quip card _this)
   :_  this(state *^state)
-  :~  (bind-url:mast dap.bowl /mast-test)
+  :~  (bind-url:mast dap.bowl /mast-demo)
   ==
 :: :: :: :: :: :: :: :: :: :: :: :: :: :: :: :: :: :: :: :: :: :: 
 ++  on-poke
