@@ -16,7 +16,7 @@
 +$  hull  agent:gall                             :: nested agent
 +$  bowl  bowl:gall                              :: bowl
 +$  stay  [=url =bowl]                           :: component context
-+$  sack  vase                                   :: component props state
++$  sack  (map @tas vase)                        :: component props state
 +$  stow  vase                                   :: local component state
 +$  mast                                         :: component core
   $_  ^|                                         ::
@@ -63,15 +63,23 @@
   ==
 ::
 ++  make
-  |=  [=term key=tape limited-sack=tape]
+  |=  [=term key=tape limited-props=(list [@tas tape])]
   ^-  manx
-  [[[%mast term] [[%sack limited-sack] [%key key] ~]] ~]
+  [[[%mast term] (snoc limited-props [%key key])] ~]
 ::
 ++  make-hoot
-  |=  [=term key=tape =sack]
+  |=  [=term key=tape props=(list [@tas vase])]
   ^-  manx:hoot
-  =/  prop=hoon  [%hand [p.sack [%1 q.sack]]]
-  [[[%mast term] [[%sack [[~ prop] ~]] [%key key] ~]] ~]
+  =/  sac
+    ^-  (list beer:hoot)
+    %+  turn  props
+    |=  [k=@tas v=vase]
+    ^-  beer:hoot
+    :-  ~
+    :*  [%rock [%tas k]]
+        [%hand [p.v [%1 q.v]]]
+    ==
+  [[[%mast term] [[%sack sac] [%key key] ~]] ~]
 ::
 ++  bind-url
   |=  [app=@tas =url]
@@ -248,7 +256,7 @@
 
     :: else create the session and render out the component tree with a branch add case for the root.
     :: TEST:
-    =/  rop  (branch-create *clew !>(~) say)
+    =/  rop  (branch-create *clew ~ say)
     =/  sal  (branch-manx-assemble rop)
     :_  %_  brig
           rigs  (~(put by rigs.brig) src.bowl [url rop])
@@ -396,25 +404,30 @@
       :_  m
       :-  n.g.i
       %-  mart  a.g.i
-    =;  [key=(unit tape) sac=(unit sack)]
+    =;  [key=(unit tape) sac=sack]
       ?~  key  ~&  >>>  "Error: mast element {<+.n.g.i>} is missing a key"  !!
       :-  [[n.g.i [[%key u.key] ~]] ~]
-      %+  ~(put by a)  [+.n.g.i (crip u.key)]
-      ?^  sac  u.sac  !>(~)
+      %+  ~(put by a)  [+.n.g.i (crip u.key)]  sac
     %+  roll  a.g.i
     |=  $:  [k=mane:hoot v=(list beer:hoot)]
-            [ke=(unit tape) sa=(unit sack)]
+            [ke=(unit tape) sa=sack]
         ==
     ^+  [ke sa]
     ?:  ?=(%sack k)
       :-  ke
-      ?.  ?&  ?=(^ v)
-              ?=(^ i.v)
-              ?=(%hand -.p.i.v)
-              ?=(%1 -.q.p.i.v)
+      %-  malt
+      %+  turn  v
+      |=  ber=beer:hoot
+      ^-  [@tas vase]
+      ?>  ?&  ?=(^ ber)
+              ?=(^ -.p.ber)
+              ?=(%rock -.p.p.ber)
+              ?=(@ q.p.p.ber)
+              ?=(%hand -.q.p.ber)
+              ?=(%1 -.q.q.p.ber)
           ==
-        :-  ~  !>(;;(tape v))
-      :-  ~  [p.p.i.v p.q.p.i.v]
+      :-  q.p.p.ber
+      :-  p.q.p.ber  p.q.q.p.ber
     ?:  ?=(%key k)
       :_  sa
       :-  ~
@@ -426,19 +439,18 @@
     |=  man=manx
     ^-  loot
     =?  lot  ?=([%mast @] n.g.man)
-      =;  [key=(unit tape) sac=(unit sack)]
+      =;  [key=(unit tape) sac=sack]
         ?~  key  ~&  >>>  "Error: mast element {<+.n.g.man>} is missing a key"  !!
-        %+  ~(put by lot)  [+.n.g.man (crip u.key)]
-        ?^  sac  u.sac  !>(~)
+        %+  ~(put by lot)  [+.n.g.man (crip u.key)]  sac
       %+  roll  a.g.man
       |=  $:  [k=mane v=tape]
-              [ke=(unit tape) sa=(unit sack)]
+              [ke=(unit tape) sa=sack]
           ==
-      ?:  ?=(%sack k)
-        :-  ke  [~ !>(v)]
       ?:  ?=(%key k)
         :-  [~ v]  sa
-      :-  ke  sa
+      :-  ke
+      ?^  k  sa
+      %+  ~(put by sa)  k  !>(v)
     %+  roll  c.man
     |=  [i=manx a=_lot]
     %=  ^$
@@ -718,7 +730,7 @@
             ==
           =/  cew  `clew`[+.n.g.i.new k.nkey]
           =/  suc  (~(get by lot) cew)
-          =/  rop  (branch-create cew ?~(suc !>(~) u.suc) say)
+          =/  rop  (branch-create cew ?~(suc ~ u.suc) say)
           %_  acc
             add.p  (~(put by add.p.acc) cew rop)
             q

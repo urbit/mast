@@ -77,8 +77,12 @@
         ^-  manx:hoot
         ;div
           ;*  %+  turn  (tap:((on @da @t) gth) posts)
-              |=  [k=@da v=@t]
-              (make-hoot:mast %post <k> !>([k v]))
+              |=  [id=@da txt=@t]
+              %:  make-hoot:mast  %post  <id>
+                :-  %id   !>  id
+                :-  %txt  !>  txt
+                ~
+              ==
         ==
       --
       ::
@@ -90,27 +94,28 @@
         |=  =crow:mast
         ^-  [blow:mast stow:mast]
         ?>  ?=(%poke -.crow)
-        =/  props  !<  [id=@da txt=@t]  sack
         ?+  path.crow  [~^~ stow]
           ::
             [%click %hide ~]
           =/  hidden  !<  ?  stow
-          [~^~ !>(!hidden)]
+          :-  ~^~  !>(!hidden)
           ::
             [%click %delete ~]
+          =/  id  !<  @da  (~(got by sack) %id)
           :_  stow
           :-  ~
-          `[%delete-post !>(id.props)]
+          `[%delete-post !>(id)]
           ::
         ==
       ::
       ++  sail
         ^-  manx
-        =/  props  !<  [id=@da txt=@t]  sack
+        =/  id  !<  @da  (~(got by sack) %id)
+        =/  txt  !<  @t  (~(got by sack) %txt)
         =/  hidden  !<  ?  stow
         ;div
-          ;h2: {<id.props>}
-          ;p: {?.(hidden (trip txt.props) "")}
+          ;h2: {<id>}
+          ;p: {?.(hidden (trip txt) "")}
           ;button(event "/click/hide"): hide
           ;button(event "/click/delete"): delete
         ==
