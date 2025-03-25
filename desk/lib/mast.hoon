@@ -472,7 +472,10 @@
     |=  [cew=clew sac=sack say=stay]
     ^-  rope
     =/  com  (build-mast name.cew)
-    =/  sow  ;;(stow +<+>.com)  :: get stow for possible init bunt
+    =/  sam
+      !<  [=stay =sack =stow]  :: get sample for possible stow init bunt
+      :-  -:!>([*stay *sack *stow])  +<.com
+    =/  sow  stow.sam
     =.  +<.com  [say sac sow]
     =/  sud
       ^-  @
