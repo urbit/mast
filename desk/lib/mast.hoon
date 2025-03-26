@@ -62,11 +62,20 @@
       [%text container-key=_s+'' data=_s+'']
   ==
 ::
+:: ++make
+:: produce a component element that links a component core
+:: and nests its sail in the render process.
+:: takes the name of the component, a key to identify the component,
+:: and a list of props that are limited to tape values.
 ++  make
   |=  [=term key=tape limited-props=(list [@tas tape])]
   ^-  manx
   [[[%mast term] (snoc limited-props [%key key])] ~]
 ::
+:: ++make-hoot
+:: produce a component element for a ++sail arm in hoot mode.
+:: works the same as ++make,
+:: but lets you pass in a list of full props with vase values.
 ++  make-hoot
   |=  [=term key=tape props=(list [@tas vase])]
   ^-  manx:hoot
@@ -100,6 +109,9 @@
       [%give %kick ~[/http-response/[rid]] ~]
   ==
 ::
+:: ++wrap
+:: use this arm to add the %mast wrapper to your gall agent.
+:: takes a component map and an agent.
 ++  wrap
   |=  [=deck =hull]
   ^-  agent:gall
@@ -226,6 +238,10 @@
   ::
   |%
   ::
+  :: ++gale
+  :: handle an HTTP GET for the UI.
+  :: creates and renders components if no session exists for the src,
+  :: and sends a full page with the %mast script inserted.
   ++  gale
     |=  [rid=@ta req=inbound-request:eyre =bowl]
     ^-  (quip card ^brig)
@@ -282,6 +298,9 @@
       c.i.c  (snoc c.i.c.sal script-node)
     ==
   ::
+  :: ++gust
+  :: handles an instance of the nested agent running.
+  :: produces any diffs which might have resulted from a change in the agent.
   ++  gust
     |=  [huk=(unit hook) =bowl]
     ^-  (quip card ^brig)
@@ -307,6 +326,7 @@
       !>  `json`[%a jon]
     :-  cards  brig
   ::
+  :: ++sway
   :: apply an event to a component;
   :: produce a possible route change,
   :: a possible poke to forward to the agent,
@@ -334,6 +354,7 @@
         ==
     ==
   ::
+  :: ++parse-channel-data
   :: parse json from the client into a component route and event.
   ++  parse-channel-data
     |=  jon=json
@@ -359,12 +380,23 @@
     ^-  manx
     ;script: {(trip mast-js)}
   ::
+  :: ++build-mast
+  :: gets a component core from the component map,
+  :: and grafts the context from the nested agent's payload
+  :: into the context of the component core.
+  :: this is the essential operation that lets component cores
+  :: defined separately from the gall agent but under the same context
+  :: run within the current subject of the agent.
   ++  build-mast
     |=  =name
     !<  mast
     =-  -(+>+ +>.hull)
     !>  (~(got by deck) name)
   ::
+  :: ++check-masts
+  :: runs on wrap and checks whether the contexts of the component cores
+  :: are equivalent to the context of the nested agent.
+  :: also gets a list of all component cores that declare themselves reactive.
   ++  check-masts
     ^-  buoy
     =;  [acc=buoy err=buoy]
@@ -387,6 +419,10 @@
       err
     %-  ~(put in err)  k
   ::
+  :: ++take-hoot
+  :: process manx:hoot from ++sail:mast.
+  :: turns the manx:hoot into regular manx,
+  :: and collects any props from component elements.
   ++  take-hoot
     |=  mat=manx:hoot
     ^-  [manx loot]
@@ -434,6 +470,9 @@
       %-  tape  v
     :-  ke  sa
   ::
+  :: ++get-loot
+  :: collects props from any component elements.
+  :: this arm is run in place of ++take-hoot when the sail is not hoot mode.
   ++  get-loot
     =|  lot=loot
     |=  man=manx
@@ -458,6 +497,8 @@
       lot  a
     ==
   ::
+  :: ++get-wood
+  :: gets a node from a component instance state tree.
   ++  get-wood
     |=  [tac=tack rop=rope]
     ^-  wood
@@ -467,6 +508,8 @@
       rop  (~(got by q.rop) i.tac)
     ==
   ::
+  :: ++put-wood
+  :: puts a node into a component instance state tree.
   ++  put-wood
     |=  [tac=tack wod=wood rop=rope]
     ^-  rope
@@ -480,6 +523,11 @@
         ==
     ==
   ::
+  :: ++branch-create
+  :: creates a branch of a component instance state tree,
+  :: starting with that of the initial id,
+  :: recursively creating further nodes based on any
+  :: component elements rendered in the parent's sail.
   ++  branch-create
     |=  [cew=clew sac=sack say=stay]
     ^-  rope
@@ -515,6 +563,11 @@
       sac  v
     ==
   ::
+  :: ++branch-manx-assemble
+  :: descends through a branch of a component instance state tree
+  :: and stitches together the full manx of the branch
+  :: by replacing each component element with the rendered manx
+  :: of the associated component.
   ++  branch-manx-assemble
     |=  rop=rope
     ^-  manx
@@ -533,6 +586,15 @@
       rop  (~(got by q.rop) [+.n.g.i key])
     ==
   ::
+  :: ++diff-component-tree
+  :: rerenders and then diffs a component's old and new manx
+  :: updating the component instance state tree based on any component changes,
+  :: and produces a diff update for the mast script on the client.
+  :: this happens recursively for any child component that meets the criteria
+  :: for rerendering:
+  :: 1) subject reaction,
+  :: 2) props change,
+  :: 3) local state change.
   ++  diff-component-tree
     |=  $:  tuc=(unit tack)
             say=stay
@@ -599,6 +661,11 @@
       q  (~(uni by q.rop) add.p.diff.upd)
     ==
   ::
+  :: ++haul
+  :: apply preprocessing to a component's rendered sail.
+  :: primarily adds locational keys to elements without explicit ones
+  :: for the sake of diffing in ++luff.
+  :: also adds component name attributes to the root.
   ++  haul
     |_  [cew=clew man=manx]
     ++  $
@@ -660,6 +727,8 @@
       $(m t.m, i +(i))
     --
   ::
+  :: ++luff
+  :: diffs manx into a format that gets sent and applied to sync the client.
   ++  luff
     |=  [say=stay lot=loot old=marl new=marl]
     =|  i=@ud
@@ -873,6 +942,9 @@
       j     +(j)
     ==
   ::
+  :: ++jibe
+  :: diff an attribute list.
+  :: used in ++luff.
   ++  jibe
     |=  [nn=mane om=mart nm=mart]
     =|  $=  acc
@@ -939,6 +1011,8 @@
         i.ml
     $(ml t.ml, j +(j))
   ::
+  :: ++getv
+  :: gets a value from mart by key.
   ++  getv
     |=  [t=@tas m=mart]
     ^-  @t
@@ -947,6 +1021,9 @@
       (crip v.i.m)
     $(m t.m)
   ::
+  :: ++swig
+  :: takes +$jiff which is the json diff format for the client,
+  :: and turns it into the full json object to be sent.
   ++  swig
     |=  jif=jiff
     ^-  json
