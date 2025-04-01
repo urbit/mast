@@ -101,7 +101,7 @@
       =/  pax  ?>  ?=([%mast *] url)  (snip t.url)  :: assumes /mast prefix
       ~&  >  vew
       ~&  >  pax
-      =/  ui-core  (ui-abed:ui src.bowl [vew pax])
+      :: =/  ui-core  (ui-abed:ui src.bowl [vew pax])
       !!
       ::
     ==
@@ -122,9 +122,10 @@
   ==
 ::
 ++  ui
-  |_  [yon=ship lin=line lak=lake dek=deck]
+  |_  [yon=ship lin=line wak=wake]
+  ::
   ++  ui-core  .
-  ++  ui-subs  |=  =lake  ui-core(lak (welp (flop lake) lak))
+  ::
   ++  ui-abed
     |=  [y=_yon l=_lin]
     ^+  ui-core
@@ -132,13 +133,37 @@
         lin  l
       ==
     =/  duk  (~(get by dock) [yon lin])
-    ?^  duk
-      %_  ui-core
-        dek  u.duk
-      ==
-    =^  subs  dek  (make-branch lin ~)
-    =.  dock  (~(put by dock) [yon lin] dek)
-    %-  ui-subs  subs
+    ?~  duk  ui-core
+    %_  ui-core
+      dek.wak  u.duk
+    ==
+  ::
+  :: ++ui-buoy
+  :: add resource subscription changes.
+  ++  ui-buoy
+    |=  b=(list buoy)
+    %_  ui-core
+      boy.wak  (welp (flop b) boy.wak)
+    ==
+  ::
+  :: ++ui-open
+  :: create a new root branch if one does not exist.
+  ++  ui-open
+    ^+  ui-core
+    ?^  dek.wak  ui-core
+    %_  ui-core
+      wak  (make-branch lin [lin ~] ~)
+    ==
+  ::
+  :: ++ui-gale
+  :: finalize, producing a full page.
+  ++  ui-gale
+    ^+  [*manx ui-core]
+    ?~  dek.wak
+      !!  :: TODO: error pages by +$sunk type
+    =.  dock  (~(put by dock) [yon lin] dek.wak)
+    :: TODO:
+    [*manx ui-core]
   ::
   ++  en-scud
     |=  [pax=path kid=kids]
@@ -229,30 +254,75 @@
   ::
   ++  hydrate-component
     |=  [bom=boom pax=path]
-    ^-  (unit (pair kids vase))
+    ^-  (each (pair kids vase) sunk)
     =/  bym  (bem pax)
     =/  fil
-      ^-  (unit vase)
+      ^-  (each vase sunk)
+      ?:  .=  ~  .^(@uvI %cz bym)
+        :-  %|  [%missing-local-resource bym]
       ?.  .^(? %cu bym)
-        :-  ~
+        :-  %&
         !>  ~
       =/  fil  .^(vase %cr bym)
-      =/  mak  (rear pax)
-      ?:  =(mak mar.bom)
-        :-  ~  fil
+      =/  mar  (rear pax)
+      ?:  =(mar mar.bom)
+        :-  %&  fil
+      =;  con
+        ?~  con
+          :-  %|  [%no-tube pax mar.bom]
+        :-  %&  u.con
       %-  mole
       |.  ^-  vase
-      =/  tub  .^(tube:clay %cc (bem /[mak]/[mar.bom]))
+      =/  tub  .^(tube:clay %cc (bem /[mar]/[mar.bom]))
       %-  tub  fil
-    ?~  fil  ~
-    :-  ~
-    :_  u.fil
+    ?:  ?=(%| -.fil)
+      :-  %|  p.fil
+    :-  %&
+    :_  p.fil
     .^((list path) %ct bym)
   ::
   ++  make-branch
-    |=  [new=line pop=prop]
-    ^-  [lake deck]
-    ~^*deck
+    |=  [new=line rop=rope pop=prop]
+    ^-  wake
+    =/  com  (~(get by rigs) p.new)
+    ?~  com
+      :-  [%missing-component-file p.new]^~  ~^~
+    =/  dat  (hydrate-component boom.u.com q.new)
+    ?:  ?=(%| -.dat)
+      :-  p.dat^~  ~^~
+    =/  [sal=manx lot=loot]
+      =/  man
+        %~  sail  mast.u.com
+        :-  (en-scud q.new p.p.dat)  [pop loc.boom.u.com q.p.dat]
+      ?.  ?=(%hoot -.man)
+        :-  man  (get-loot man)
+      %-  take-hoot  +.man
+    =.  sal  (haul new sal)
+    =/  [sun=(list sunk) boy=(list buoy) dak=(map line deck)]
+      %-  ~(rep by lot)
+      |=  $:  [k=line v=prop]
+              [s=(list sunk) b=(list buoy) d=(map line deck)]
+          ==
+      =;  wak=wake
+        :-  (weld s sun.wak)
+        :-  (weld b boy.wak)
+        ?~  dek.wak  d
+        %+  ~(put by d)  k  dek.wak
+      %=  ^$
+        new  k
+        rop  (snoc rop k)
+        pop  v
+      ==
+    =|  cew=clew
+    :-  sun
+    :-  [[%add rop] boy]
+    :_  dak
+    %_  cew
+      pop  pop
+      loc  loc.boom.u.com
+      bom  boom.u.com
+      aft  sal
+    ==
   ::
   :: ++haul
   :: apply preprocessing to a component's rendered sail.

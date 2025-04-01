@@ -30,9 +30,7 @@
   ++  sail  *$^([%hoot manx:hoot] manx)          ::
   --                                             ::
 +$  line  (pair term path)                       :: component name + file node path
-+$  rope  (lest line)                            :: component locational id
-+$  buoy  [?(%add %del) p=rope]                  :: subscription effect
-+$  lake  (list buoy)                            :: subscription effects
++$  rope  (list line)                            :: component locational id
 +$  dock  (map [ship line] deck)                 :: ui sessions
 +$  deck                                         :: component node tree
   $~  [*clew ~]                                  ::
@@ -45,7 +43,17 @@
       aft=manx                                   ::
   ==                                             ::
 +$  loot  (map line prop)                        :: props for components to render
-
++$  wake                                         :: component creation results
+  $:  sun=(list sunk)                            ::
+      boy=(list buoy)                            ::
+      dek=$@(~ deck)                             ::
+  ==                                             ::
++$  buoy  [?(%add %del) p=rope]                  :: subscription effect
++$  sunk                                         :: component creation error
+  $%  [%missing-component-file name=@tas]        ::
+      [%missing-local-resource =path]            ::
+      [%no-tube fil=path com=mark]               ::
+  ==                                             ::
 
 :: +$  diff
 ::   %+  pair  [del=(set clew) add=(map clew rope)]
