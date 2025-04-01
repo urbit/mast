@@ -44,18 +44,48 @@
       bom=boom                                   ::
       aft=manx                                   ::
   ==                                             ::
-+$  loot  (map line sack)                        :: props for components to render
++$  loot  (map line prop)                        :: props for components to render
 
 
 :: +$  diff
 ::   %+  pair  [del=(set clew) add=(map clew rope)]
 ::   %-  list  json
-:: +$  jiff
-::   $%  [%new parent-key=_s+'' index=_n+'' data=_s+'']
-::       [%delete keys=[%a (list _s+'')]]
-::       [%move key=_s+'' index=_n+'']
-::       [%change-attr key=_s+'' del=[%a (list k=_s+'')] new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
-::       [%text container-key=_s+'' data=_s+'']
-::   ==
++$  jiff
+  $%  [%new parent-key=_s+'' index=_n+'' data=_s+'']
+      [%delete keys=[%a (list _s+'')]]
+      [%move key=_s+'' index=_n+'']
+      [%change-attr key=_s+'' del=[%a (list k=_s+'')] new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
+      [%text container-key=_s+'' data=_s+'']
+  ==
+::
+::
+:: ++make
+:: produce a component element.
+:: takes the name of the component, a filesystem path to render,
+:: and a list of props that are limited to tape values.
+++  make
+  |=  [component=term file=path limited-props=(list [@tas tape])]
+  ^-  manx
+  [[[%mast component] (snoc limited-props [%key (spud file)])] ~]
+::
+:: ++make-hoot
+:: produce a component element when a ++sail arm is in hoot mode.
+:: works the same as ++make,
+:: but lets you pass in a list of full props with vase values.
+++  make-hoot
+  |=  [component=term file=path props=(list [@tas vase])]
+  ^-  manx:hoot
+  =;  pop
+    [[[%mast component] [[%prop pop] [%key (spud file)] ~]] ~]
+  ^-  (list beer:hoot)
+  %+  turn  props
+  |=  [k=@tas v=vase]
+  ^-  beer:hoot
+  :-  ~
+  :*  [%rock [%tas k]]
+      [%hand [p.v [%1 q.v]]]
+  ==
+::
+
 --
 

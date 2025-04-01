@@ -148,6 +148,85 @@
         pax
         kid
     ==
+  ::
+  :: ++take-hoot
+  :: process manx:hoot from ++sail:mast.
+  :: turns the manx:hoot into regular manx,
+  :: and collects any props from component elements.
+  ++  take-hoot
+    |=  mat=manx:hoot
+    ^-  [manx loot]
+    =|  lot=loot
+    =/  mar=marl:hoot  [mat ~]
+    =<  ?>  ?=(^ p)  [i.p q]
+    |-  ^-  (pair marl loot)
+    %^  spin  mar  lot
+    |=  [i=tuna:hoot a=loot]
+    ^-  [manx loot]
+    ?>  ?=(^ -.i)
+    ?.  ?=([%mast @] n.g.i)
+      =/  [m=marl b=loot]  ^$(mar c.i)
+      :_  (~(uni by a) b)
+      :_  m
+      :-  n.g.i
+      %-  mart  a.g.i
+    =;  [key=(unit tape) pop=prop]
+      ?>  ?=(^ key)
+      :-  [[n.g.i [[%key u.key] ~]] ~]
+      %+  ~(put by a)  [+.n.g.i (scan u.key stap)]  pop
+    %+  roll  a.g.i
+    |=  $:  [k=mane:hoot v=(list beer:hoot)]
+            [ke=(unit tape) po=prop]
+        ==
+    ^+  [ke po]
+    ?:  ?=(%prop k)
+      :-  ke
+      %-  malt
+      %+  turn  v
+      |=  ber=beer:hoot
+      ^-  [@tas vase]
+      ?>  ?&  ?=(^ ber)
+              ?=(^ -.p.ber)
+              ?=(%rock -.p.p.ber)
+              ?=(@ q.p.p.ber)
+              ?=(%hand -.q.p.ber)
+              ?=(%1 -.q.q.p.ber)
+          ==
+      :-  q.p.p.ber
+      :-  p.q.p.ber  p.q.q.p.ber
+    ?:  ?=(%key k)
+      :_  po
+      :-  ~
+      %-  tape  v
+    :-  ke  po
+  ::
+  :: ++get-loot
+  :: collects props from any component elements.
+  :: this arm is run in place of ++take-hoot when the sail is not hoot mode.
+  ++  get-loot
+    =|  lot=loot
+    |=  man=manx
+    ^-  loot
+    =?  lot  ?=([%mast @] n.g.man)
+      =;  [key=(unit tape) pop=prop]
+        ?>  ?=(^ key)
+        %+  ~(put by lot)  [+.n.g.man (scan u.key stap)]  pop
+      %+  roll  a.g.man
+      |=  $:  [k=mane v=tape]
+              [ke=(unit tape) po=prop]
+          ==
+      ?:  ?=(%key k)
+        :-  [~ v]  po
+      :-  ke
+      ?^  k  po
+      %+  ~(put by po)  k  !>(v)
+    %+  roll  c.man
+    |=  [i=manx a=_lot]
+    %=  ^$
+      man  i
+      lot  a
+    ==
+  ::
   ++  hydrate-component
     |=  [bom=boom pax=path]
     ^-  (unit (pair kids vase))
