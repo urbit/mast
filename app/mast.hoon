@@ -254,6 +254,82 @@
     ^-  [lake deck]
     ~^*deck
   ::
+  :: ++haul
+  :: apply preprocessing to a component's rendered sail.
+  :: primarily adds locational keys to elements without explicit ones
+  :: for the sake of diffing in ++luff.
+  :: also adds component name attributes to the root.
+  ++  haul
+    |_  [lin=line man=manx]
+    ++  $
+      ^-  manx
+      =/  component-attr  [%component (trip p.lin)]
+      ?:  ?&  =(%html n.g.man)
+              ?=(^ c.man)
+              =(%head n.g.i.c.man)
+              ?=(^ t.c.man)
+              =(%body n.g.i.t.c.man)
+          ==
+        =.  a.g.i.t.c.man  [component-attr a.g.i.t.c.man]
+        %_  man
+          i.t.c  (anx i.t.c.man ["" ~])
+        ==
+      =.  a.g.man  [component-attr a.g.man]
+      %+  anx  man  [(spud q.lin) ~]
+    ++  anx
+      |=  [m=manx key=(pair tape (list @))]
+      ^-  manx
+      =/  fkey
+        ^-  @t
+        %+  getv  %key  a.g.m
+      =/  nkey
+        ^-  (pair tape (list @))
+        ?:  =('' fkey)  key
+        :-  ((w-co:co 1) `@uw`(mug fkey))  ~
+      =/  ntap
+        ^-  tape
+        ?~  q.nkey  p.nkey
+        %+  weld  p.nkey  ((w-co:co 1) `@uw`(jam q.nkey))
+      ?:  =(%$ n.g.m)
+        ;t-
+          =key  ntap
+          ;+  m
+        ==
+      %_  m
+        a.g
+          ^-  mart  
+          ?.  =('' fkey)  a.g.m
+          :-  [%key ntap]  a.g.m
+        c
+          ?:  ?|  =(%input n.g.m)   =(%textarea n.g.m)
+                  =(%script n.g.m)  =(%img n.g.m)
+                  =(%link n.g.m)    =(%hr n.g.m)
+                  =(%meta n.g.m)    =(%base n.g.m)
+              ==
+            c.m
+          %+  arl  c.m  nkey
+      ==
+    ++  arl
+      |=  [m=marl key=(pair tape (list @))]
+      =|  i=@
+      |-  ^-  marl
+      ?~  m  ~
+      :-  %+  anx
+            i.m
+          key(q [i q.key])
+      $(m t.m, i +(i))
+    --
+  ::
+  :: ++getv
+  :: gets a value from mart by key.
+  ++  getv
+    |=  [t=@tas m=mart]
+    ^-  @t
+    ?~  m  ''
+    ?:  =(n.i.m t)
+      (crip v.i.m)
+    $(m t.m)
+  ::
   --
 ::
 --
