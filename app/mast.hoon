@@ -197,7 +197,7 @@
   ++  ui-gale
     ^+  [*manx cor]
     ?~  dek.wak
-      !!  :: TODO: error pages by +$sunk type
+      :-  sunk-page  cor
     =.  dock  (~(put by dock) [yon lin] dek.wak)
     :_  cor
     %-  assemble-branch-manx  dek.wak
@@ -209,6 +209,35 @@
         yon
         pax
         kid
+    ==
+  ::
+  :: ++sunk-page
+  :: produces an error page
+  :: for when the root component fails to create.
+  ++  sunk-page              :: TODO: better error pages
+    ^-  manx
+    ;div
+      ;*  %+  turn  sun.wak
+          |=  i=sunk
+          ^-  manx
+          ?-  -.i
+              %missing-component-file
+            ;div
+              ;h1: {<-.i>}
+              ;p: {<name.i>}
+            ==
+              %missing-local-resource
+            ;div
+              ;h1: {<-.i>}
+              ;p: {(spud path.i)}
+            ==
+              %no-tube
+            ;div
+              ;h1: {<-.i>}
+              ;p: {(spud fil.i)}
+              ;p: {<com.i>}
+            ==
+          ==
     ==
   ::
   :: ++take-hoot
