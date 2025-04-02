@@ -329,11 +329,11 @@
       ^-  (each vase sunk)
       ?:  .=  ~  .^(@uvI %cz bym)
         :-  %|  [%missing-local-resource bym]
-      ?.  .^(? %cu bym)
-        ?.  =(%$ mar.bom)
-          :-  %|  [%no-tube pax mar.bom]
+      ?:  =(%$ mar.bom)
         :-  %&
         !>  ~
+      ?.  .^(? %cu bym)
+        :-  %|  [%no-tube pax mar.bom]
       =/  fil  .^(vase %cr bym)
       =/  mar  (rear pax)
       ?:  =(mar mar.bom)
