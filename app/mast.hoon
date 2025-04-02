@@ -1,5 +1,6 @@
 /-  *mast
 /~  rigs  [=boom =mast]  /com
+/*  mast-js  %js  /lib/mast/js
 ::
 :: O╭ ┌┬╮╭─╮╭─╮┌┬┐
 :: ╭╯ │││├─┤╰─╮ │
@@ -72,6 +73,15 @@
 ++  bem  |=  =path  (welp bek path)
 ++  bam  |=  [=desk =path]  (welp (bak desk) path)
 ::
+++  script-node
+  ^-  manx
+  ;script: {(trip mast-js)}
+::
+++  make-sub-path
+  |=  src=@p
+  ^-  path
+  [%mast (scot %p src) ~]
+::
 ++  bind-url
   |=  [app=@tas url=path]
   ^-  card:agent:gall
@@ -101,8 +111,35 @@
       =/  pax  ?>  ?=([%mast *] url)  (snip t.url)  :: assumes /mast prefix
       ~&  >  vew
       ~&  >  pax
-      :: =/  ui-core  (ui-abed:ui src.bowl [vew pax])
-      !!
+      =^  sal  cor  ui-gale:ui-open:(ui-abed:ui src.bowl [vew pax])
+      =?  sal  !?=(%html n.g.sal)
+        ;html
+          ;head;
+          ;body
+            ;+  sal
+          ==
+        ==
+      =/  mar
+        ^-  mart
+        :~  [%our +:(scow %p our.bowl)]
+            [%app (trip dap.bowl)]
+            [%sub (spud (make-sub-path src.bowl))]
+        ==
+      %-  emil
+      %^    make-direct-http-cards
+          rid
+        [200 ['Content-Type' 'text/html'] ~]
+      :-  ~
+      %-  as-octt:mimes:html
+      %-  en-xml:html
+      ?>  ?&  ?=(%html n.g.sal)
+              ?=(^ c.sal)
+              ?=(%head n.g.i.c.sal)
+          ==
+      %_  sal
+        a.g    (weld a.g.sal mar)
+        c.i.c  (snoc c.i.c.sal script-node)
+      ==
       ::
     ==
     ::
@@ -158,12 +195,12 @@
   :: ++ui-gale
   :: finalize, producing a full page.
   ++  ui-gale
-    ^+  [*manx ui-core]
+    ^+  [*manx cor]
     ?~  dek.wak
       !!  :: TODO: error pages by +$sunk type
     =.  dock  (~(put by dock) [yon lin] dek.wak)
-    :: TODO:
-    [*manx ui-core]
+    :_  cor
+    %-  assemble-branch-manx  dek.wak
   ::
   ++  en-scud
     |=  [pax=path kid=kids]
@@ -252,6 +289,9 @@
       lot  a
     ==
   ::
+  :: ++hydrate-component
+  :: scries the namespace for data to supply
+  :: to a component.
   ++  hydrate-component
     |=  [bom=boom pax=path]
     ^-  (each (pair kids vase) sunk)
@@ -261,6 +301,8 @@
       ?:  .=  ~  .^(@uvI %cz bym)
         :-  %|  [%missing-local-resource bym]
       ?.  .^(? %cu bym)
+        ?.  =(%$ mar.bom)
+          :-  %|  [%no-tube pax mar.bom]
         :-  %&
         !>  ~
       =/  fil  .^(vase %cr bym)
@@ -281,6 +323,13 @@
     :_  p.fil
     .^((list path) %ct bym)
   ::
+  :: ++make-branch
+  :: creates a component state branch
+  :: starting with that of the initial +$line,
+  :: recursively creating further nodes based on any
+  :: component elements rendered in the parent's sail.
+  :: produces effects for resource subscriptions
+  :: and component creation errors.
   ++  make-branch
     |=  [new=line rop=rope pop=prop]
     ^-  wake
@@ -324,8 +373,37 @@
       aft  sal
     ==
   ::
+  :: ++assemble-branch-manx
+  :: descends through a branch of component state
+  :: and stitches together the full manx of that branch
+  :: by replacing each component element with the rendered manx
+  :: of the associated component.
+  :: if the component is missing from the map of children,
+  :: then we assume that it failed to create and skip the element.
+  ++  assemble-branch-manx
+    |=  dek=deck
+    ^-  manx
+    =/  mar=marl  [aft.p.dek ~]
+    =<  ?>  ?=(^ -)  i
+    |-  ^-  marl
+    %+  murn  mar
+    |=  i=manx
+    ^-  (unit manx)
+    ?.  ?=([%mast @] n.g.i)
+      :-  ~
+      %_  i
+        c  ^$(mar c.i)
+      ==
+    =/  key  (getv %key a.g.i)
+    =/  com  (~(get by q.dek) [+.n.g.i (stab key)])
+    ?~  com  ~
+    :-  ~
+    %=  ^^$
+      dek  u.com
+    ==
+  ::
   :: ++haul
-  :: apply preprocessing to a component's rendered sail.
+  :: applies preprocessing to a component's rendered sail.
   :: primarily adds locational keys to elements without explicit ones
   :: for the sake of diffing in ++luff.
   :: also adds component name attributes to the root.
