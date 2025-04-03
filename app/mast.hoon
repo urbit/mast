@@ -88,6 +88,22 @@
   :*  %pass  /bind  %arvo  %e  %connect  [~ url]  app
   ==
 ::
+++  rope-to-wire
+  |=  rop=rope
+  ^-  wire
+  (turn rop |=(i=line (spat i)))
+::
+++  wire-to-rope
+  |=  wir=wire
+  ^-  rope
+  (turn wir |=(i=knot =>((stab i) ?>(?=(^ .) .))))
+::
+++  make-resource-subscription
+  |=  rop=rope
+  ^-  card
+  =/  for  q:(rear rop)
+  [%pass (rope-to-wire rop) %arvo %c [%warp our.bowl %base ~ %next %x da+now.bowl for]]
+::
 ++  make-direct-http-cards
   |=  [rid=@ta hed=response-header.simple-payload:http dat=(unit octs)]
   ^-  (list card:agent:gall)
@@ -342,7 +358,7 @@
         ?~  con
           :-  %|  [%no-tube pax mar.bom]
         :-  %&  u.con
-      %-  mole
+      %-  mole                       :: TODO: remove
       |.  ^-  vase
       =/  tub  .^(tube:clay %cc (bem /[mar]/[mar.bom]))
       %-  tub  fil
