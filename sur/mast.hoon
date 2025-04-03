@@ -54,10 +54,13 @@
       [%missing-local-resource =path]            ::
       [%no-tube fil=path com=mark]               ::
   ==                                             ::
-
-:: +$  diff
-::   %+  pair  [del=(set clew) add=(map clew rope)]
-::   %-  list  json
++$  diff
+  %+  pair
+    $:  boy=(list buoy)
+        del=(set line)
+        add=(map line deck)
+    ==
+  %-  list  json
 +$  jiff
   $%  [%new parent-key=_s+'' index=_n+'' data=_s+'']
       [%delete keys=[%a (list _s+'')]]
