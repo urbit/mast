@@ -88,21 +88,35 @@
   :*  %pass  /bind  %arvo  %e  %connect  [~ url]  app
   ==
 ::
-++  rope-to-wire
-  |=  rop=rope
+++  ship-rope-to-wire
+  |=  [yon=ship rop=rope]
   ^-  wire
+  :-  (scot %p yon)
   (turn rop |=(i=line (spat i)))
 ::
-++  wire-to-rope
+++  wire-to-ship-rope
   |=  wir=wire
-  ^-  rope
-  (turn wir |=(i=knot =>((stab i) ?>(?=(^ .) .))))
+  ^-  [ship rope]
+  ?<  ?=(~ wir)
+  :-  (slav %p i.wir)
+  (turn t.wir |=(i=knot =>((stab i) ?>(?=(^ .) .))))
 ::
-++  make-resource-subscription
-  |=  rop=rope
-  ^-  card
-  =/  for  q:(rear rop)
-  [%pass (rope-to-wire rop) %arvo %c [%warp our.bowl %base ~ %next %x da+now.bowl for]]
+++  make-resource-subscription-cards
+  |=  bos=(list buoy)
+  ^-  (list card)
+  %+  turn  bos
+  |=  i=buoy
+  ?-  -.i
+      %add
+    =/  for  q:(rear q.i)
+    :*  %pass  (ship-rope-to-wire +.i)  %arvo  %c
+        [%warp our.bowl %base ~ %next %x da+now.bowl for]
+    ==
+      %del
+    :*  %pass  (ship-rope-to-wire +.i)  %arvo  %c
+        [%warp our.bowl %base ~]
+    ==
+  ==
 ::
 ++  make-direct-http-cards
   |=  [rid=@ta hed=response-header.simple-payload:http dat=(unit octs)]
@@ -125,9 +139,8 @@
       =/  url  (stab url.request.req)  :: TODO: need better url parsing
       =/  vew  (rear url)
       =/  pax  ?>  ?=([%mast *] url)  (snip t.url)  :: assumes /mast prefix
-      ~&  >  vew
-      ~&  >  pax
-      =^  sal  cor  ui-gale:ui-open:(ui-abed:ui src.bowl [vew pax])
+      =^  [bos=(list buoy) sal=manx]  cor
+        =<  ui-gale  ui-open:(ui-abed:ui src.bowl [vew pax])
       =?  sal  !?=(%html n.g.sal)
         ;html
           ;head;
@@ -142,8 +155,9 @@
             [%sub (spud (make-sub-path src.bowl))]
         ==
       %-  emil
-      %^    make-direct-http-cards
-          rid
+      %+  weld
+        %-  make-resource-subscription-cards  bos
+      %^  make-direct-http-cards  rid
         [200 ['Content-Type' 'text/html'] ~]
       :-  ~
       %-  as-octt:mimes:html
@@ -164,21 +178,28 @@
 ++  arvo
   |=  [=wire sign=sign-arvo]
   ^+  cor
-  ~&  >  wire
-  ~&  >>  sign
+  :: ~&  >  :-  %arvo-wire  wire
+  :: ~&  >>  :-  %arvo-sign  sign
   ?+  sign  cor
     ::
-      [%clay %writ ^]
-    ~&  >>>  r.u.p.sign
-    cor
+      [%clay %writ *]
+    =/  [yon=ship rop=rope]  (wire-to-ship-rope wire)
+    ?<  ?=(~ rop)
+    =^  [bos=(list buoy) jon=(list json)]  cor
+      %-  ui-gust:(ui-abed:ui yon i.rop)  rop
+    %-  emil
+    ?:  =(~ jon)
+      %-  make-resource-subscription-cards  bos
+    :_  %-  make-resource-subscription-cards  bos
+    :*  %give  %fact  [(make-sub-path yon) ~]  %json
+        !>  `json`[%a jon]
+    ==
     ::
   ==
 ::
 ++  ui
   |_  [yon=ship lin=line wak=wake]
-  ::
   ++  ui-core  .
-  ::
   ++  ui-abed
     |=  [y=_yon l=_lin]
     ^+  ui-core
@@ -193,11 +214,11 @@
   ::
   :: ++ui-buoy
   :: add resource subscription changes.
-  ++  ui-buoy
-    |=  b=(list buoy)
-    %_  ui-core
-      boy.wak  (welp (flop b) boy.wak)
-    ==
+  :: ++  ui-buoy
+  ::   |=  b=(list buoy)
+  ::   %_  ui-core
+  ::     boy.wak  (welp (flop b) boy.wak)
+  ::   ==
   ::
   :: ++ui-open
   :: create a new root branch if one does not exist.
@@ -211,12 +232,35 @@
   :: ++ui-gale
   :: finalize, producing a full page.
   ++  ui-gale
-    ^+  [*manx cor]
+    ^+  [*[(list buoy) manx] cor]
     ?~  dek.wak
-      :-  sunk-page  cor
+      :-  [~ sunk-page]  cor
     =.  dock  (~(put by dock) [yon lin] dek.wak)
     :_  cor
+    :-  boy.wak
     %-  assemble-branch-manx  dek.wak
+  ::
+  :: ++ui-gust
+  :: finalize, producing a diff update by branch.
+  ++  ui-gust
+    |=  rop=rope
+    ^+  [*[(list buoy) (list json)] cor]
+    ?<  ?=(~ dek.wak)
+    =/  duk  (get-deck rop dek.wak)
+    ?~  duk
+      :_  cor
+      :-  boy.wak  ~
+    =^  fec=[boy=(list buoy) jon=(list json)]  duk
+      %:  update-branch
+        |  rop  pop.p.duk  duk
+      ==
+    =.  boy.fec  [[%add yon rop] boy.fec]
+    =.  dock
+      %+  ~(put by dock)  [yon lin]
+      %^  put-deck  rop  duk  dek.wak
+    :_  cor
+    :_  jon.fec
+    %+  weld  boy.wak  boy.fec
   ::
   ++  en-scud
     |=  [pax=path kid=kids]
@@ -254,6 +298,36 @@
               ;p: {<com.i>}
             ==
           ==
+    ==
+  ::
+  :: ++get-deck
+  :: gets a branch from a component state tree.
+  ++  get-deck
+    |=  [rop=rope dek=deck]
+    ^-  $@(~ deck)
+    ?~  rop  ~
+    ?~  t.rop  dek
+    =/  nex  (~(get by q.dek) i.t.rop)
+    ?~  nex  ~
+    %=  $
+      rop  t.rop
+      dek  u.nex
+    ==
+  ::
+  :: ++put-deck
+  :: puts a branch into the component state tree.
+  ++  put-deck
+    |=  [rop=rope new=deck dek=deck]
+    ^-  deck
+    ?~  rop  dek
+    ?~  t.rop  new
+    %_  dek
+      q
+        %+  ~(put by q.dek)  i.t.rop
+        %=  $
+          rop  t.rop
+          dek  (~(got by q.dek) i.t.rop)
+        ==
     ==
   ::
   :: ++take-hoot
@@ -409,21 +483,16 @@
       ==
     =|  cew=clew
     :-  sun
-    :-  [[%add rop] boy]
+    :-  [[%add yon rop] boy]
     :_  dak
     %_  cew
+      fil  (mug q.p.dat)
+      kid  p.p.dat
       pop  pop
       loc  loc.boom.u.com
       bom  boom.u.com
       aft  sal
     ==
-  ::
-  ++  unsubscribe-branch
-    =|  acc=(list buoy)
-    |=  [r=rope d=deck]
-    ^-  (list buoy)
-    :: TODO: go through deck and build rope; at each component, add a %del to buoy
-    !!
   ::
   :: ++assemble-branch-manx
   :: descends through a branch of component state
@@ -452,6 +521,83 @@
     :-  ~
     %=  ^^$
       dek  u.com
+    ==
+  ::
+  ++  unsubscribe-branch
+    |=  [r=rope d=deck]
+    ^-  (list buoy)
+    :-  [%del yon r]
+    %-  ~(rep by q.d)
+    |=  [[k=line v=deck] a=(list buoy)]
+    %+  weld  a
+    %=  ^$
+      r  (snoc r k)
+      d  v
+    ==
+  ::
+  :: ++update-branch
+  :: takes a component and its rope
+  :: and potentially updates and rerenders it,
+  :: and recursively does this for any nested
+  :: components.
+  ++  update-branch
+    =|  n=@
+    |=  $:  local-state-change=?
+            rop=rope
+            pop=prop
+            dek=deck
+        ==
+    ^-  [[(list buoy) (list json)] deck]
+    ?.  ?&  =(0 n)
+            =(pop pop.p.dek)
+        ==
+      [~^~ dek]
+    =/  lyn  (rear rop)
+    =/  dat  (hydrate-component bom.p.dek q.lyn)
+    ?>  ?=(%& -.dat)
+    =/  fih  (mug q.p.dat)
+    ?:  ?&  !local-state-change  :: infer the update was triggered
+            =(0 n)               :: by a change in the state of an
+            =(fih fil.p.dek)     :: existing child in the resource's dir.
+            =(p.p.dat kid.p.dek) :: this is not cause for a rerender.
+        ==
+      [~^~ dek]
+    =/  [sal=manx lot=loot]
+      =/  com  (~(got by rigs) p.lyn)
+      =/  man
+        %~  sail  mast.com
+        :-  (en-scud q.lyn p.p.dat)  [pop loc.bom.p.dek q.p.dat]
+      ?.  ?=(%hoot -.man)
+        :-  man  (get-loot man)
+      %-  take-hoot  +.man
+    =.  sal  (haul lyn sal)
+    =/  dif  (luff rop lot [aft.p.dek ~] [sal ~])
+    =^  [bo=(list buoy) jo=(list json)]  q.dek
+      %-  ~(rep by q.dek)
+      |=  $:  [k=line v=deck]
+              a=[[b=(list buoy) j=(list json)] a=(map line deck)]
+          ==
+      ?:  (~(has in del.p.dif) k)
+        %_  a
+          b  %+  weld  (unsubscribe-branch (snoc rop k) v)  b.a
+        ==
+      =/  l  (~(get by lot) k)
+      =^  b=[b=(list buoy) j=(list json)]  v
+        %=  ^$
+          n    +(n)
+          rop  (snoc rop k)
+          pop  ?~(l ~ u.l)
+          dek  v
+        ==
+      %_  a
+        b  %+  weld  b.b  b.a
+        j  %+  weld  j.b  j.a
+        a  %+  ~(put by a.a)  k  v
+      ==
+    :-  [(weld boy.p.dif bo) (weld q.dif jo)]
+    %_  dek
+      p  p.dek(fil fih, kid p.p.dat, pop pop, aft sal)
+      q  (~(uni by q.dek) add.p.dif)
     ==
   ::
   :: ++haul

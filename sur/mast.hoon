@@ -37,7 +37,9 @@
   %+  pair  clew                                 ::
   %+  map  line  deck                            ::
 +$  clew                                         :: component node state
-  $:  pop=prop                                   ::
+  $:  fil=@      :: temp                         ::
+      kid=kids   :: temp                         ::
+      pop=prop                                   ::
       loc=vase                                   ::
       bom=boom                                   ::
       aft=manx                                   ::
@@ -48,7 +50,7 @@
       boy=(list buoy)                            ::
       dek=$@(~ deck)                             ::
   ==                                             ::
-+$  buoy  [?(%add %del) p=rope]                  :: subscription effect
++$  buoy  [?(%add %del) p=ship q=rope]           :: subscription effect
 +$  sunk                                         :: component creation error
   $%  [%missing-component-file name=@tas]        ::
       [%missing-local-resource =path]            ::
