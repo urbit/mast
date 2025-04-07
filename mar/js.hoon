@@ -15,6 +15,7 @@
                 ==
     ++  html    ;html:(head:"{script}" body)
     --
+  ++  txt  (to-wain:format (@t mud))
   --
 ++  grab
   |%                                                    ::  convert from
