@@ -2,7 +2,7 @@
 :-  ^-  boom:mast
     :*  %txt
         %z
-        !>(~)
+        !>("")
     ==
 ^-  mast:mast
 |_  [=scud:mast =sack:mast]
@@ -10,17 +10,28 @@
 ++  spar
   |=  =crow:mast
   ^-  blow:mast
-  !!
+  ?+  -.crow  ~^~
+    ::
+      [%click %test ~]
+    =/  loc  !<  tape  loc.sack
+    =/  txt  !<  wain  fil.sack
+    :-  ~
+    !>  "{loc}!"
+    ::
+  ==
 ::
 ++  sail
   ^-  manx
+  =/  hid  (~(get by pop.sack) %hide)
+  =/  loc  !<  tape  loc.sack
   =/  txt  !<  wain  fil.sack
   ;div
-    ;h2: Test
-    ;p: {<our.scud>}
     ;p: {<pax.scud>}
-    ;p: Txt:
-    ;p: {<txt>}
+    ;*  ?:  &(?=(^ hid) !<(bean u.hid))  ~
+        ;=  ;p: Txt:
+            ;p: {<txt>}
+            ;button(event "/click/test"): click me{loc}
+        ==
   ==
 ::
 --

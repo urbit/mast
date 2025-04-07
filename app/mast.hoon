@@ -13,7 +13,6 @@
 +$  state-n
   $%  [%state-0 state-0]
   ==
-+$  card  card:agent:gall
 --
 ::
 =|  state-n
@@ -101,6 +100,30 @@
   :-  (slav %p i.wir)
   (turn t.wir |=(i=knot =>((stab i) ?>(?=(^ .) .))))
 ::
+++  parse-channel-data
+  |=  jon=json
+  ^-  [rope crow]
+  =,  dejs:format
+  =/  pok
+    ^-  [route=rope =path data=(map @t @t)]
+    %.  jon
+    %-  ot
+    :~  route+(ar (ot ~[name+so key+pa]))
+        path+pa
+        data+(om so)
+    ==
+  :-  route.pok
+  :-  path.pok  data.pok
+::
+++  make-diff-cards
+  |=  [yon=ship jon=(list json)]
+  ^-  (list card)
+  ?.  .?  jon  ~
+  :_  ~
+  :*  %give  %fact  [(make-sub-path yon) ~]  %json
+      !>  `json`[%a jon]
+  ==
+::
 ++  make-resource-subscription-cards
   |=  bos=(list buoy)
   ^-  (list card)
@@ -173,6 +196,22 @@
       ::
     ==
     ::
+      %json
+    =+  !<  jon=json  vase
+    ?.  ?&  ?=(%a -.jon)
+            ?=(^ p.jon)
+            ?=(^ t.p.jon)
+            =([%s 'mast'] i.p.jon)
+        ==
+      cor
+    =/  [rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
+    ?<  ?=(~ rop)
+    =/  ui-core  (ui-moor:(ui-abed:ui src.bowl i.rop) rop)
+    =^  cards  ui-core  (ui-sway:ui-core cro)
+    =^  [bos=(list buoy) jon=(list json)]  cor  ui-gust:ui-core
+    %-  emil
+    %+  weld  (make-diff-cards src.bowl jon)  cards
+    ::
   ==
 ::
 ++  arvo
@@ -188,12 +227,8 @@
     =^  [bos=(list buoy) jon=(list json)]  cor
       ui-gust:(ui-moor:(ui-abed:ui yon i.rop) rop)
     %-  emil
-    ?.  .?  jon
-      %-  make-resource-subscription-cards  bos
-    :_  %-  make-resource-subscription-cards  bos
-    :*  %give  %fact  [(make-sub-path yon) ~]  %json
-        !>  `json`[%a jon]
-    ==
+    %+  weld  (make-resource-subscription-cards bos)
+    %+  make-diff-cards  yon  jon
     ::
   ==
 ::
@@ -223,7 +258,7 @@
     %_  ui-core
       sun.fex  (welp (flop s) sun.fex)
       boy.fex  (welp (flop b) boy.fex)
-      jon.fex  (welp (flop j) jon.fex)
+      jon.fex  (welp j jon.fex)
     ==
   ::
   :: ++ui-open
@@ -277,6 +312,28 @@
     =>  (ui-wake ~ [[%add yon.ses rop.com] boy] jon)
     :_  cor
     :-  boy.fex  jon.fex
+  ::
+  :: ++ui-sway
+  :: apply an event to the loaded component.
+  ++  ui-sway
+    |=  cro=crow
+    ^+  [*(list card) ui-core]
+    ?<  ?=(~ com)
+    =/  lyn  (rear rop.com)
+    =/  rig  (~(got by rigs) p.lyn)
+    =/  dat  (hydrate-component bom.p.dek.com q.lyn)
+    ?>  ?=(%& -.dat)
+    =/  blo
+      ^-  blow
+      %.  cro
+      %~  spar  mast.rig
+      :-  (en-scud q.lyn p.p.dat)  [pop.p.dek.com loc.p.dek.com q.p.dat]
+    ?~  loc.blo  [caz.blo ui-core]
+    :-  caz.blo
+    %_  ui-core
+      local-update.com  &
+      loc.p.dek.com  loc.blo
+    ==
   ::
   ++  en-scud
     |=  [pax=path kid=kids]
@@ -468,16 +525,16 @@
   ++  make-branch
     |=  [new=line rop=rope pop=prop]
     ^-  wood
-    =/  com  (~(get by rigs) p.new)
-    ?~  com
+    =/  rig  (~(get by rigs) p.new)
+    ?~  rig
       :-  [%missing-component-file p.new]^~  ~^~
-    =/  dat  (hydrate-component boom.u.com q.new)
+    =/  dat  (hydrate-component boom.u.rig q.new)
     ?:  ?=(%| -.dat)
       :-  p.dat^~  ~^~
     =/  [sal=manx lot=loot]
       =/  man
-        %~  sail  mast.u.com
-        :-  (en-scud q.new p.p.dat)  [pop loc.boom.u.com q.p.dat]
+        %~  sail  mast.u.rig
+        :-  (en-scud q.new p.p.dat)  [pop loc.boom.u.rig q.p.dat]
       ?.  ?=(%hoot -.man)
         :-  man  (get-loot man)
       %-  take-hoot  +.man
@@ -505,8 +562,8 @@
       fil  (mug q.p.dat)
       kid  p.p.dat
       pop  pop
-      loc  loc.boom.u.com
-      bom  boom.u.com
+      loc  loc.boom.u.rig
+      bom  boom.u.rig
       aft  sal
     ==
   ::
@@ -532,11 +589,11 @@
         c  ^$(mar c.i)
       ==
     =/  key  (getv %key a.g.i)
-    =/  com  (~(get by q.dek) [+.n.g.i (stab key)])
-    ?~  com  ~
+    =/  duk  (~(get by q.dek) [+.n.g.i (stab key)])
+    ?~  duk  ~
     :-  ~
     %=  ^^$
-      dek  u.com
+      dek  u.duk
     ==
   ::
   ++  unsubscribe-branch
@@ -564,7 +621,7 @@
             dek=deck
         ==
     ^-  [[(list buoy) (list json)] deck]
-    ?.  ?&  =(0 n)
+    ?:  ?&  !=(0 n)
             =(pop pop.p.dek)
         ==
       [~^~ dek]
@@ -579,10 +636,10 @@
         ==
       [~^~ dek]
     =/  [sal=manx lot=loot]
-      =/  com  (~(got by rigs) p.lyn)
+      =/  rig  (~(got by rigs) p.lyn)
       =/  man
-        %~  sail  mast.com
-        :-  (en-scud q.lyn p.p.dat)  [pop loc.bom.p.dek q.p.dat]
+        %~  sail  mast.rig
+        :-  (en-scud q.lyn p.p.dat)  [pop loc.p.dek q.p.dat]
       ?.  ?=(%hoot -.man)
         :-  man  (get-loot man)
       %-  take-hoot  +.man

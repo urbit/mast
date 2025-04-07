@@ -1,9 +1,6 @@
 |%
-+$  crow                                         :: client events
-  $%  [%poke =path data=(map @t @t)]             ::
-      [%open req=inbound-request:eyre]           ::
-  ==                                             ::
-+$  blow  (quip card loc=$@(~ vase))             :: event effects
++$  crow  [=path data=(map @t @t)]               :: client event
++$  blow  [caz=(list card) loc=$@(~ vase)]       :: event effects
 +$  prop  (map @tas vase)                        :: component props state
 +$  kids  (list path)                            :: child component paths :: TODO:
 +$  scud                                         :: component context
@@ -75,6 +72,7 @@
       [%change-attr key=_s+'' del=[%a (list k=_s+'')] new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
       [%text container-key=_s+'' data=_s+'']
   ==
++$  card  card:agent:gall
 ::
 ::
 :: ++make
