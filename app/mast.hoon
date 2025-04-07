@@ -75,6 +75,9 @@
 ++  script-node
   ^-  manx
   ;script: {(trip mast-js)}
+++  style-node
+  ^-  manx
+  ;link(rel "stylesheet", href "https://nyc3.digitaloceanspaces.com/drain/hawk/1744044773876.css");
 ::
 ++  make-sub-path
   |=  src=@p
@@ -191,7 +194,12 @@
           ==
       %_  sal
         a.g    (weld a.g.sal mar)
-        c.i.c  (snoc c.i.c.sal script-node)
+        c.i.c
+          ;=
+            ;*  c.i.c.sal
+            ;+  script-node
+            ;+  style-node
+          ==
       ==
       ::
     ==
