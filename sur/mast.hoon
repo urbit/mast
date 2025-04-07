@@ -45,24 +45,29 @@
       aft=manx                                   ::
   ==                                             ::
 +$  loot  (map line prop)                        :: props for components to render
-+$  wake                                         :: component creation results
-  $:  sun=(list sunk)                            ::
-      boy=(list buoy)                            ::
-      dek=$@(~ deck)                             ::
-  ==                                             ::
 +$  buoy  [?(%add %del) p=ship q=rope]           :: subscription effect
 +$  sunk                                         :: component creation error
   $%  [%missing-component-file name=@tas]        ::
       [%missing-local-resource =path]            ::
       [%no-tube fil=path com=mark]               ::
   ==                                             ::
-+$  diff
-  %+  pair
-    $:  boy=(list buoy)
-        del=(set line)
-        add=(map line deck)
-    ==
-  %-  list  json
++$  wake                                         :: ui effects
+  $:  sun=(list sunk)                            ::
+      boy=(list buoy)                            ::
+      jon=(list json)                            ::
+  ==                                             ::
++$  wood                                         :: component creation result
+  $:  sun=(list sunk)                            ::
+      boy=(list buoy)                            ::
+      dek=$@(~ deck)                             ::
+  ==                                             ::
++$  diff                                         :: ++luff diff output
+  %+  pair                                       ::
+    $:  boy=(list buoy)                          ::
+        del=(set line)                           ::
+        add=(map line deck)                      ::
+    ==                                           ::
+  %-  list  json                                 ::
 +$  jiff
   $%  [%new parent-key=_s+'' index=_n+'' data=_s+'']
       [%delete keys=[%a (list _s+'')]]
