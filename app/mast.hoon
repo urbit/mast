@@ -296,7 +296,7 @@
   :: finalize, producing a full page.
   ++  ui-gale
     ^+  [*[(list buoy) manx] cor]
-    ?~  dek.ses  [[~ sunk-page] cor]
+    ?~  dek.ses  [[~ (sunk-page sun.fex)] cor]
     =.  dock  (~(put by dock) [yon.ses lin.ses] dek.ses)
     :_  cor
     :-  boy.fex
@@ -353,12 +353,12 @@
     ==
   ::
   :: ++sunk-page
-  :: produces an error page
-  :: for when the root component fails to create.
+  :: produces an error page.
   ++  sunk-page              :: TODO: better error pages
+    |=  sun=(list sunk)
     ^-  manx
     ;div
-      ;*  %+  turn  sun.fex
+      ;*  %+  turn  sun
           |=  i=sunk
           ^-  manx
           ?-  -.i
@@ -681,6 +681,44 @@
       q  (~(uni by q.dek) add.p.dif)
     ==
   ::
+  ++  handle-diff-branch-add
+    |=  [rop=rope lot=loot man=manx]
+    =|  $=  acc
+        $:  des=(map line deck)
+            sun=(list sunk)
+            boy=(list buoy)
+        ==
+    =/  mal=marl  [man ~]
+    ^-  [_acc manx]
+    =<  ?>  ?=(^ p)
+        :-  q  i.p
+    |-  ^-  (pair marl _acc)
+    %^  spin  mal  acc
+    |=  [i=manx a=_acc]
+    ?:  ?=([%mast @] n.g.i)
+      =/  key  (getv %key a.g.i)
+      =/  lin  `line`[+.n.g.i (stab key)]
+      =/  pup  (~(get by lot) lin)
+      =/  wod  (make-branch lin (snoc rop lin) ?~(pup ~ u.pup))
+      ?~  dek.wod
+        :-  i(c [(sunk-page sun.wod) ~])
+        %_  a
+          sun  (weld sun.a sun.wod)
+        ==
+      :-  (assemble-branch-manx dek.wod)
+      %_  a
+        des  (~(put by des.a) lin dek.wod)
+        sun  (weld sun.a sun.wod)
+        boy  (weld boy.a boy.wod)
+      ==
+    =^  b=_acc  c.i  =>  ^$(mal c.i)  [q p]
+    :-  i
+    %_  a
+      des  (~(uni by des.a) des.b)
+      sun  (weld sun.a sun.b)
+      boy  (weld boy.a boy.b)
+    ==
+  ::
   :: ++haul
   :: applies preprocessing to a component's rendered sail.
   :: primarily adds locational keys to elements without explicit ones
@@ -809,31 +847,18 @@
         new  t.new
         i    +(i)
         acc
-          ?.  ?=([%mast @] n.g.i.new)
-            %_  acc
-              q
-                %+  snoc  q.acc
-                %-  swig
-                :*  %new
-                    [%s pkey]
-                    [%n (scot %ud i)]
-                    [%s (crip (en-xml:html i.new))]
-                ==
-            ==
-          =/  lin  `line`[+.n.g.i.new (stab k.nkey)]
-          =/  pup  (~(get by lot) lin)
-          =/  wod  (make-branch lin (snoc rop lin) ?~(pup ~ u.pup))  :: TODO: print any sunk
-          ?~  dek.wod  !!  :: TODO: handle branch create fail
+          =^  fec  i.new
+            %^  handle-diff-branch-add  rop  lot  i.new
           %_  acc
-            boy.p  (weld boy.p.acc boy.wod)
-            add.p  (~(put by add.p.acc) lin dek.wod)
+            boy.p  (weld boy.p.acc boy.fec)
+            add.p  (~(uni by add.p.acc) des.fec)
             q
               %+  snoc  q.acc
               %-  swig
               :*  %new
                   [%s pkey]
                   [%n (scot %ud i)]
-                  [%s (crip (en-xml:html (assemble-branch-manx dek.wod)))]
+                  [%s (crip (en-xml:html i.new))]
               ==
           ==
       ==

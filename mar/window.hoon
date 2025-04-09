@@ -7,7 +7,7 @@
           --
 ++  grab  |%
           ++  noun  window
-          ++  mime  |=((pair mite octs) (cue q.q))
+          ++  mime  |=((pair mite octs) (window (cue q.q)))
           --
 --
 
