@@ -111,7 +111,7 @@
     ^-  [route=rope =path data=(map @t @t)]
     %.  jon
     %-  ot
-    :~  route+(ar (ot ~[name+so key+pa]))
+    :~  route+(ar (ot ~[name+so path+pa]))
         path+pa
         data+(om so)
     ==
@@ -296,7 +296,7 @@
   :: finalize, producing a full page.
   ++  ui-gale
     ^+  [*[(list buoy) manx] cor]
-    ?~  dek.ses  [[~ sunk-page] cor]
+    ?~  dek.ses  [[~ (sunk-page sun.fex)] cor]
     =.  dock  (~(put by dock) [yon.ses lin.ses] dek.ses)
     :_  cor
     :-  boy.fex
@@ -353,12 +353,12 @@
     ==
   ::
   :: ++sunk-page
-  :: produces an error page
-  :: for when the root component fails to create.
+  :: produces an error page.
   ++  sunk-page              :: TODO: better error pages
+    |=  sun=(list sunk)
     ^-  manx
     ;div
-      ;*  %+  turn  sun.fex
+      ;*  %+  turn  sun
           |=  i=sunk
           ^-  manx
           ?-  -.i
@@ -432,17 +432,17 @@
       :_  m
       :-  n.g.i
       %-  mart  a.g.i
-    =;  [key=(unit tape) pop=prop]
-      ?>  ?=(^ key)
-      :-  [[n.g.i [[%key u.key] ~]] ~]
-      %+  ~(put by a)  [+.n.g.i (scan u.key stap)]  pop
+    =;  [paf=(unit tape) pop=prop]
+      ?>  ?=(^ paf)
+      :-  [[n.g.i [[%path u.paf] ~]] ~]
+      %+  ~(put by a)  [+.n.g.i (scan u.paf stap)]  pop
     %+  roll  a.g.i
     |=  $:  [k=mane:hoot v=(list beer:hoot)]
-            [ke=(unit tape) po=prop]
+            [pa=(unit tape) po=prop]
         ==
-    ^+  [ke po]
+    ^+  [pa po]
     ?:  ?=(%prop k)
-      :-  ke
+      :-  pa
       %-  malt
       %+  turn  v
       |=  ber=beer:hoot
@@ -456,11 +456,11 @@
           ==
       :-  q.p.p.ber
       :-  p.q.p.ber  p.q.q.p.ber
-    ?:  ?=(%key k)
+    ?:  ?=(%path k)
       :_  po
       :-  ~
       %-  tape  v
-    :-  ke  po
+    :-  pa  po
   ::
   :: ++get-loot
   :: collects props from any component elements.
@@ -470,16 +470,16 @@
     |=  man=manx
     ^-  loot
     =?  lot  ?=([%mast @] n.g.man)
-      =;  [key=(unit tape) pop=prop]
-        ?>  ?=(^ key)
-        %+  ~(put by lot)  [+.n.g.man (scan u.key stap)]  pop
+      =;  [paf=(unit tape) pop=prop]
+        ?>  ?=(^ paf)
+        %+  ~(put by lot)  [+.n.g.man (scan u.paf stap)]  pop
       %+  roll  a.g.man
       |=  $:  [k=mane v=tape]
-              [ke=(unit tape) po=prop]
+              [pa=(unit tape) po=prop]
           ==
-      ?:  ?=(%key k)
+      ?:  ?=(%path k)
         :-  [~ v]  po
-      :-  ke
+      :-  pa
       ?^  k  po
       %+  ~(put by po)  k  !>(v)
     %+  roll  c.man
@@ -546,7 +546,7 @@
       ?.  ?=(%hoot -.man)
         :-  man  (get-loot man)
       %-  take-hoot  +.man
-    =.  sal  (haul new sal)
+    =.  sal  (haul rop sal)
     =/  [sun=(list sunk) boy=(list buoy) dak=(map line deck)]
       %-  ~(rep by lot)
       |=  $:  [k=line v=prop]
@@ -596,8 +596,8 @@
       %_  i
         c  ^$(mar c.i)
       ==
-    =/  key  (getv %key a.g.i)
-    =/  duk  (~(get by q.dek) [+.n.g.i (stab key)])
+    =/  paf  (getv %path a.g.i)
+    =/  duk  (~(get by q.dek) [+.n.g.i (stab paf)])
     ?~  duk  ~
     :-  ~
     %=  ^^$
@@ -651,7 +651,7 @@
       ?.  ?=(%hoot -.man)
         :-  man  (get-loot man)
       %-  take-hoot  +.man
-    =.  sal  (haul lyn sal)
+    =.  sal  (haul rop sal)
     =/  dif  (luff rop lot [aft.p.dek ~] [sal ~])
     =^  [bo=(list buoy) jo=(list json)]  q.dek
       %-  ~(rep by q.dek)
@@ -681,31 +681,79 @@
       q  (~(uni by q.dek) add.p.dif)
     ==
   ::
+  ++  handle-diff-branch-add
+    |=  [rop=rope lot=loot man=manx]
+    =|  $=  acc
+        $:  des=(map line deck)
+            sun=(list sunk)
+            boy=(list buoy)
+        ==
+    =/  mal=marl  [man ~]
+    ^-  [_acc manx]
+    =<  ?>  ?=(^ p)
+        :-  q  i.p
+    |-  ^-  (pair marl _acc)
+    %^  spin  mal  acc
+    |=  [i=manx a=_acc]
+    ?:  ?=([%mast @] n.g.i)
+      =/  paf  (getv %path a.g.i)
+      =/  lin  `line`[+.n.g.i (stab paf)]
+      =/  pup  (~(get by lot) lin)
+      =/  wod  (make-branch lin (snoc rop lin) ?~(pup ~ u.pup))
+      ?~  dek.wod
+        :-  i(c [(sunk-page sun.wod) ~])
+        %_  a
+          sun  (weld sun.a sun.wod)
+        ==
+      :-  (assemble-branch-manx dek.wod)
+      %_  a
+        des  (~(put by des.a) lin dek.wod)
+        sun  (weld sun.a sun.wod)
+        boy  (weld boy.a boy.wod)
+      ==
+    =^  b=_acc  c.i  =>  ^$(mal c.i)  [q p]
+    :-  i
+    %_  a
+      des  (~(uni by des.a) des.b)
+      sun  (weld sun.a sun.b)
+      boy  (weld boy.a boy.b)
+    ==
+  ::
   :: ++haul
   :: applies preprocessing to a component's rendered sail.
   :: primarily adds locational keys to elements without explicit ones
   :: for the sake of diffing in ++luff.
   :: also adds component name attributes to the root.
   ++  haul
-    |_  [lin=line man=manx]
+    |_  [rop=rope man=manx]                 :: TODO: REFACTOR
     ++  $
       ^-  manx
+      =/  lin  (rear rop)
       =/  component-attr  [%component (trip p.lin)]
+      =/  path-attr  [%path (spud q.lin)]
+      =/  key  (make-component-key rop)
       ?:  ?&  =(%html n.g.man)
               ?=(^ c.man)
               =(%head n.g.i.c.man)
               ?=(^ t.c.man)
               =(%body n.g.i.t.c.man)
           ==
-        =.  a.g.i.t.c.man  [component-attr a.g.i.t.c.man]
+        =.  a.g.i.t.c.man  [component-attr path-attr a.g.i.t.c.man]
         %_  man
-          i.t.c  (anx i.t.c.man ["" ~])
+          i.t.c  (anx i.t.c.man [key ~])
         ==
-      =.  a.g.man  [component-attr a.g.man]
-      %+  anx  man  [(spud q.lin) ~]
+      =.  a.g.man  [component-attr path-attr a.g.man]
+      %+  anx  man  [key ~]
+    ::
     ++  anx
       |=  [m=manx key=(pair tape (list @))]
       ^-  manx
+      ?:  ?=([%mast @] n.g.m)
+        =/  lin  `line`[+.n.g.m (stab (getv %path a.g.m))]
+        =/  com-key  [%key (make-component-key (snoc rop lin))]
+        %_  m
+          a.g  [com-key a.g.m]
+        ==
       =/  fkey
         ^-  @t
         %+  getv  %key  a.g.m
@@ -724,7 +772,7 @@
         ==
       %_  m
         a.g
-          ^-  mart  
+          ^-  mart
           ?.  =('' fkey)  a.g.m
           :-  [%key ntap]  a.g.m
         c
@@ -736,6 +784,7 @@
             c.m
           %+  arl  c.m  nkey
       ==
+    ::
     ++  arl
       |=  [m=marl key=(pair tape (list @))]
       =|  i=@
@@ -745,6 +794,11 @@
             i.m
           key(q [i q.key])
       $(m t.m, i +(i))
+    ::
+    ++  make-component-key
+      |=  rop=rope
+      ((w-co:co 1) `@uw`(mug rop))
+    ::
     --
   ::
   :: ++luff
@@ -762,22 +816,19 @@
         %=  $
           old  t.old
         ==
-      =/  dels
-        ^-  (list [n=mane k=@t])
-        %+  turn  old
-        |=  m=manx  [n.g.m (getv %key a.g.m)]
       %_  acc
         del.p
           %-  ~(gas in del.p.acc)
-          %+  roll  dels
-          |=  [[n=mane k=@t] a=(list line)]
-          ?.  ?=([%mast @] n)  a
-          :-  [+.n (stab k)]  a
+          %+  roll  `marl`old
+          |=  [m=manx a=(list line)]
+          ?.  ?=([%mast @] n.g.m)  a
+          =/  paf  (stab (getv %path a.g.m))
+          :-  `line`[+.n.g.m paf]  a
         q
           :_  q.acc
           %-  swig
           :*  %delete
-              [%a (turn dels |=([* k=@t] [%s k]))]
+              [%a (turn old |=(m=manx [%s (getv %key a.g.m)]))]
           ==
       ==
     ?:  =(%$ n.g.i.new)
@@ -809,31 +860,18 @@
         new  t.new
         i    +(i)
         acc
-          ?.  ?=([%mast @] n.g.i.new)
-            %_  acc
-              q
-                %+  snoc  q.acc
-                %-  swig
-                :*  %new
-                    [%s pkey]
-                    [%n (scot %ud i)]
-                    [%s (crip (en-xml:html i.new))]
-                ==
-            ==
-          =/  lin  `line`[+.n.g.i.new (stab k.nkey)]
-          =/  pup  (~(get by lot) lin)
-          =/  wod  (make-branch lin (snoc rop lin) ?~(pup ~ u.pup))  :: TODO: print any sunk
-          ?~  dek.wod  !!  :: TODO: handle branch create fail
+          =^  fec  i.new
+            %^  handle-diff-branch-add  rop  lot  i.new
           %_  acc
-            boy.p  (weld boy.p.acc boy.wod)
-            add.p  (~(put by add.p.acc) lin dek.wod)
+            boy.p  (weld boy.p.acc boy.fec)
+            add.p  (~(uni by add.p.acc) des.fec)
             q
               %+  snoc  q.acc
               %-  swig
               :*  %new
                   [%s pkey]
                   [%n (scot %ud i)]
-                  [%s (crip (en-xml:html (assemble-branch-manx dek.wod)))]
+                  [%s (crip (en-xml:html i.new))]
               ==
           ==
       ==
