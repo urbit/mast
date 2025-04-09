@@ -82,7 +82,7 @@
 ++  make
   |=  [component=term file=path limited-props=(list [@tas tape])]
   ^-  manx
-  [[[%mast component] (snoc limited-props [%key (spud file)])] ~]
+  [[[%mast component] (snoc limited-props [%path (spud file)])] ~]
 ::
 :: ++make-hoot
 :: produce a component element when a ++sail arm is in hoot mode.
@@ -92,7 +92,7 @@
   |=  [component=term file=path props=(list [@tas vase])]
   ^-  manx:hoot
   =;  pop
-    [[[%mast component] [[%prop pop] [%key (spud file)] ~]] ~]
+    [[[%mast component] [[%prop pop] [%path (spud file)] ~]] ~]
   ^-  (list beer:hoot)
   %+  turn  props
   |=  [k=@tas v=vase]
