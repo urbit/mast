@@ -59,49 +59,56 @@
     ::
       %$
     =/  pot=tape  ?.  .?  pos  ~  (spud pos)
-    ;div.p2.b1.hf.wf.mono
-      ;div.p2.mb1.b2
-        ;div.fr.js
-          ;div.wf
-            ;button.p-1.b4.hover(event "/click/close{pot}"): close
+    ;div.grow.mono.fc.basis-half.shrink-0.p2
+      ;div.fc.bd1.grow
+        ;div.p2.b1.fc.g2
+          ;div.fr.js
+            ;div.wf
+              ;button.p-1.b4.hover(event "/click/close{pot}"): {close-x}
+            ==
+            ;span.p-1: split:
+            ;button.p-1.b4.hover(event "/click/split/l{pot}"): {arrow-l}
+            ;button.p-1.b4.hover(event "/click/split/b{pot}"): {arrow-d}
+            ;button.p-1.b4.hover(event "/click/split/t{pot}"): {arrow-u}
+            ;button.p-1.b4.hover(event "/click/split/r{pot}"): {arrow-r}
           ==
-          ;span.p-1: split:
-          ;button.p-1.b4.hover(event "/click/split/l{pot}"): left
-          ;button.p-1.b4.hover(event "/click/split/b{pot}"): down
-          ;button.p-1.b4.hover(event "/click/split/t{pot}"): up
-          ;button.p-1.b4.hover(event "/click/split/r{pot}"): right
+          ;form.fr.g2(event "/submit/go{pot}")
+            ;input.p-1.f0.b2.wf.hover.grow
+              =name  "path-input"
+              =value  (spud path.win)
+              =placeholder  "path"
+              =autocomplete  "off"
+              =spellcheck  "false"
+              ;
+            ==
+            ;input.p-1.f0.b2.hover
+              =style  "width: 85px;"
+              =name  "component-input"
+              =value  (trip component.win)
+              =placeholder  "component"
+              =autocomplete  "off"
+              =spellcheck  "false"
+              ;
+            ==
+            ;button.p-1.b4.hover: go
+          ==
         ==
-        ;form.fr.ja.mt1(event "/submit/go{pot}")
-          ;input.p-1.f0.b4.wf.hover
-            =name  "path-input"
-            =value  (spud path.win)
-            =placeholder  "path"
-            ;
-          ==
-          ;input.p-1.f0.b4.ml1.mr1.hover
-            =name  "component-input"
-            =value  (trip component.win)
-            =placeholder  "component"
-            ;
-          ==
-          ;button.p-1.b4.hover: go
+        ;div.grow.scroll-y.b0.fc
+          ;+  ?:  ?=(%$ component.win)
+                ;div.p2: ~
+              (make:mast component.win path.win ~)
         ==
-      ==
-      ;div.hf.scroll-y
-        ;+  ?:  ?=(%$ component.win)
-              ;div: ~
-            (make:mast component.win path.win ~)
       ==
     ==
     ::
       %h
-    ;div.fc.ac.hf
+    ;div.fc.grow.basis-half.shrink-0
       ;+  $(win top.win, pos (snoc pos %t))
       ;+  $(win bot.win, pos (snoc pos %b))
     ==
     ::
       %v
-    ;div.fr.jc.hf
+    ;div.fr.grow.basis-half.shrink-0
       ;+  $(win lef.win, pos (snoc pos %l))
       ;+  $(win rig.win, pos (snoc pos %r))
     ==
@@ -110,6 +117,14 @@
 ::
 --
 |%
+::
+::  unicode symbols
+::
+++  close-x  (trip 0x95.9ce2)
+++  arrow-l  (trip 0x90.86e2)
+++  arrow-r  (trip 0x92.86e2)
+++  arrow-u  (trip 0x91.86e2)
+++  arrow-d  (trip 0x93.86e2)
 ::
 ++  write-file
   |=  [to=path dat=cage]
@@ -165,4 +180,3 @@
   ==
 ::
 --
-

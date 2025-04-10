@@ -170,7 +170,7 @@
       =?  sal  !?=(%html n.g.sal)
         ;html
           ;head;
-          ;body
+          ;body.wf.hf.fc
             ;+  sal
           ==
         ==
@@ -196,6 +196,8 @@
         a.g    (weld a.g.sal mar)
         c.i.c
           ;=
+            ;meta(charset "UTF-8");
+            ;title: mast
             ;*  c.i.c.sal
             ;+  script-node
             ;+  style-node
