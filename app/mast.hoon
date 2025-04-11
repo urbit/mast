@@ -8,7 +8,8 @@
 ::
 |%
 +$  state-0
-  $:  =dock
+  $:  =coms 
+      =dock
   ==
 +$  state-n
   $%  [%state-0 state-0]
@@ -25,6 +26,7 @@
 ::
 ++  on-init
   ^-  (quip card _this)
+  =.  coms  (sort ~(tap in ~(key by rigs)) aor)
   :_  this
   :~  (bind-url dap.bowl /mast)
   ==
@@ -36,6 +38,7 @@
 ++  on-load
   |=  =vase
   ^-  (quip card _this)
+  =.  coms  (sort ~(tap in ~(key by rigs)) aor)
   :_  this
   :~  (bind-url dap.bowl /mast)
   ==
@@ -346,10 +349,9 @@
   ++  en-scud
     |=  [pax=path kid=kids]
     ^-  scud
-    :*  our.bowl
-        yon.ses
-        pax
-        kid
+    :*  [our.bowl yon.ses]
+        [now.bowl eny.bowl]
+        [coms byk.bowl pax kid]
     ==
   ::
   :: ++sunk-page

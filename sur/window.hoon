@@ -9,6 +9,8 @@
   $:  component=term
       =path
   ==
-+$  position  (list ?(%l %r %t %b))
++$  place     ?(%l %r %t %b)
++$  position  (list place)
++$  open      (pair (unit place) pane)
 --
 

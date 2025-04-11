@@ -2,12 +2,20 @@
 +$  crow  [=path data=(map @t @t)]               :: client event
 +$  blow  [caz=(list card) loc=$@(~ vase)]       :: event effects
 +$  prop  (map @tas vase)                        :: component props state
-+$  kids  (list path)                            :: child component paths :: TODO:
++$  coms  (list term)                            :: component list
++$  kids  (list path)                            :: :: TODO:
 +$  scud                                         :: component context
-  $:  our=ship                                   ::   server
-      yon=ship                                   ::   client
-      pax=path                                   ::   namespace node identity
-      kid=kids                                   ::   child node paths
+  $:  $:  our=ship                               ::   server
+          yon=ship                               ::   client
+      ==                                         ::
+      $:  now=@da                                ::   now
+          eny=@uvJ                               ::   entropy
+      ==                                         ::
+      $:  com=coms                               ::   all available components
+          byk=beak                               ::   beak
+          pax=path                               ::   resource path
+          kid=kids                               ::   data under resource
+      ==                                         ::
   ==                                             ::
 +$  sack                                         :: component state
   $:  pop=prop                                   ::   props state
@@ -26,7 +34,7 @@
   ++  spar  *$-(crow blow)                       ::
   ++  sail  *$^([%hoot manx:hoot] manx)          ::
   --                                             ::
-+$  line  (pair term path)                       :: component name + file node path
++$  line  (pair term path)                       :: component name + file nodeny=@uvJe path
 +$  rope  (list line)                            :: component locational id
 +$  dock  (map [ship line] deck)                 :: ui sessions
 +$  deck                                         :: component node tree

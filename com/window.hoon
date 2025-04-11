@@ -52,9 +52,11 @@
   ==
 ::
 ++  sail
+  :-  %hoot
   =/  pos  ^*  position
   =/  win  !<  window  fil.sack
-  |-  ^-  manx
+  =/  won  win
+  |-  ^-  manx:hoot
   ?-  -.win
     ::
       %$
@@ -88,9 +90,13 @@
         ==
       ==
       ;div.hf.scroll-y
-        ;+  ?:  ?=(%$ component.win)
-              ;div: ~
-            (make:mast component.win path.win ~)
+        ;+  ?.  ?=(%$ component.win)
+              %^  make-hoot:mast  component.win  path.win
+              ~
+            %^  make-hoot:mast  %explorer  (snip path.win)
+            :~  :-  %selection   !>  `(unit term)`?~(path.win ~ [~ (rear path.win)])
+                :-  %set-window  !>  `$-(open card:mast)`(prop-set-window [pax.scud pos won])
+            ==
       ==
     ==
     ::
@@ -115,6 +121,23 @@
   |=  [to=path dat=cage]
   ^-  card:mast
   [%pass /write %arvo %c [%info %base %& [[to %ins dat] ~]]]
+::
+++  prop-set-window
+  |=  [here=path pos=position win=window]
+  |=  pen=open
+  ^-  card:mast
+  =/  dow  (get-window pos win)
+  =.  win
+    =;  new  (put-window pos new win)
+    ^-  window
+    ?~  p.pen  [%$ q.pen]
+    ?-  u.p.pen
+      %t  [%h [%$ q.pen] dow]
+      %b  [%h dow [%$ q.pen]]
+      %l  [%v [%$ q.pen] dow]
+      %r  [%v dow [%$ q.pen]]
+    ==
+  %+  write-file  here  [%window !>(win)]
 ::
 ++  get-window
   |=  [pos=position win=window]
