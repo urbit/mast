@@ -95,7 +95,7 @@
               ~
             %^  make-hoot:mast  %explorer  (snip path.win)
             :~  :-  %selection   !>  `(unit term)`?~(path.win ~ [~ (rear path.win)])
-                :-  %set-window  !>  `$-(open card:mast)`(prop-set-window [pax.scud pos won])
+                :-  %set-window  !>  `$-(open card:mast)`(prop-set-window pax.scud pos won)
             ==
       ==
     ==

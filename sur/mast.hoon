@@ -34,7 +34,7 @@
   ++  spar  *$-(crow blow)                       ::
   ++  sail  *$^([%hoot manx:hoot] manx)          ::
   --                                             ::
-+$  line  (pair term path)                       :: component name + file nodeny=@uvJe path
++$  line  (pair term path)                       :: component name + file path
 +$  rope  (list line)                            :: component locational id
 +$  dock  (map [ship line] deck)                 :: ui sessions
 +$  deck                                         :: component node tree

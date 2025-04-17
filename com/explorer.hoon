@@ -60,14 +60,14 @@
                   =(u.sel seg.i)
               ==
             ?:  fil.i
-              ;div.wf.b-3.f-3.bd2.bc-3
+              ;div.wf.b4.f-3.bd2.bc-3
                 ;+  ;/  seg-t
               ==
             ;div.wf.b4.f-4.bd2.bc-4
               ;+  ;/  seg-t
             ==
           ?:  fil.i
-            ;button.wf.b-3.hover.tl
+            ;button.wf.b4.f-3.hover.tl
               =event  "/click/set-window/{seg-t}"
               ;+  ;/  seg-t
             ==
@@ -128,7 +128,7 @@
               ?~  sel  ;div;
               =/  seg-t  (trip seg.i)
               ?:  fil.i
-                ;button.wf.b-3.hover.tl
+                ;button.wf.f-3.b2.hover.tl
                   =event  "/click/set-window/{(trip u.sel)}/{seg-t}"
                   ;+  ;/  seg-t
                 ==
