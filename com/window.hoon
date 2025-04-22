@@ -91,9 +91,9 @@
       ==
       ;div.hf.scroll-y
         ;+  ?.  ?=(%$ component.win)
-              %^  make-hoot:mast  component.win  path.win
+              %^  make-hoot:mast  component.win  [%c path.win]
               ~
-            %^  make-hoot:mast  %explorer  (snip path.win)
+            %^  make-hoot:mast  %explorer  [%c (snip path.win)]
             :~  :-  %selection   !>  `(unit term)`?~(path.win ~ [~ (rear path.win)])
                 :-  %set-window  !>  `$-(open card:mast)`(prop-set-window pax.scud pos won)
             ==

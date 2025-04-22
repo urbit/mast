@@ -52,7 +52,12 @@
 ++  on-watch  |=(path ^-((quip card _this) `this))
 ++  on-leave  |=(path ^-((quip card _this) !!))
 ++  on-peek   |=(path ^-((unit (unit cage)) !!))
-++  on-agent  |=([wire sign:agent:gall] ^-((quip card _this) !!))
+::
+++  on-agent
+  |=  [=wire =sign:agent:gall]
+  ^-  (quip card _this)
+  =^  cards  state  abet:(agent:cor wire sign)
+  :-  cards  this
 ::
 ++  on-arvo
   |=  [=wire sign=sign-arvo]
@@ -135,16 +140,36 @@
   ^-  (list card)
   %+  turn  bos
   |=  i=buoy
-  ?-  -.i
-      %add
-    =/  for  q:(rear q.i)
-    :*  %pass  (ship-rope-to-wire +.i)  %arvo  %c
-        [%warp our.bowl %base ~ %next %x da+now.bowl for]
+  =/  pax  q:(rear q.i)
+  ?+  pax  ~&([%bad-namespace-path pax] !!)
+    ::
+      [%c *]  :: clay namespace element path syntax: /c/path
+    =/  for  +.pax
+    ?-  -.i
+        %add
+      :*  %pass  (ship-rope-to-wire +.i)  %arvo  %c
+          [%warp our.bowl %base ~ %next %x da+now.bowl for]
+      ==
+        %del
+      :*  %pass  (ship-rope-to-wire +.i)  %arvo  %c
+          [%warp our.bowl %base ~]
+      ==
     ==
-      %del
-    :*  %pass  (ship-rope-to-wire +.i)  %arvo  %c
-        [%warp our.bowl %base ~]
+    ::
+      [%g @ta *]  :: gall namespace element path syntax: /g/agent-name/path
+    =/  age  i.t.pax
+    =/  for  t.t.pax
+    ?-  -.i
+        %add
+      :*  %pass  (ship-rope-to-wire +.i)  %agent  [our.bowl age]
+          %watch  for
+      ==
+        %del
+      :*  %pass  (ship-rope-to-wire +.i)  %agent  [our.bowl age]
+          %leave  ~
+      ==
     ==
+    ::
   ==
 ::
 ++  make-direct-http-cards
@@ -222,6 +247,24 @@
     =^  [bos=(list buoy) jon=(list json)]  cor  ui-gust:ui-core
     %-  emil
     %+  weld  (make-diff-cards src.bowl jon)  cards
+    ::
+  ==
+::
+++  agent
+  |=  [=wire =sign:agent:gall]
+  ^+  cor
+  :: ~&  >  :-  %agent-wire  wire
+  :: ~&  >>  :-  %agent-sign  sign
+  ?+  -.sign  cor
+    ::
+      %fact
+    =/  [yon=ship rop=rope]  (wire-to-ship-rope wire)
+    ?<  ?=(~ rop)
+    =^  [bos=(list buoy) jon=(list json)]  cor
+      ui-gust:(ui-moor:(ui-abed:ui yon i.rop) rop)
+    %-  emil
+    %+  weld  (make-resource-subscription-cards bos)
+    %+  make-diff-cards  yon  jon
     ::
   ==
 ::
@@ -349,9 +392,15 @@
   ++  en-scud
     |=  [pax=path kid=kids]
     ^-  scud
+    =/  paf
+      ^-  path
+      ?+  pax  !!
+        [%c *]  t.pax
+        [%g @ta *]  t.t.pax
+      ==
     :*  [our.bowl yon.ses]
         [now.bowl eny.bowl]
-        [coms byk.bowl pax kid]
+        [coms byk.bowl paf kid]
     ==
   ::
   :: ++sunk-page
@@ -497,8 +546,17 @@
   ++  hydrate-component
     |=  [bom=boom pax=path]
     ^-  (each (pair kids vase) sunk)
-    =/  bym  (bem pax)
-    =/  fil
+    ?+  pax  ~&([%bad-namespace-path pax] !!)
+      ::
+        [%c *]
+      =/  for  t.pax
+      =/  bym  (bem for)
+      =;  fil
+        ?:  ?=(%| -.fil)
+          :-  %|  p.fil
+        :-  %&
+        :_  p.fil
+        .^((list path) %ct bym)
       ^-  (each vase sunk)
       ?:  .=  ~  .^(@uvI %cz bym)
         :-  %|  [%missing-local-resource bym]
@@ -506,24 +564,32 @@
         :-  %&
         !>  ~
       ?.  .^(? %cu bym)
-        :-  %|  [%no-tube pax mar.bom]
+        :-  %|  [%no-tube for mar.bom]
       =/  fil  .^(vase %cr bym)
-      =/  mar  (rear pax)
+      =/  mar  (rear for)
       ?:  =(mar mar.bom)
         :-  %&  fil
       =;  con
         ?~  con
-          :-  %|  [%no-tube pax mar.bom]
+          :-  %|  [%no-tube for mar.bom]
         :-  %&  u.con
-      %-  mole                       :: TODO: remove
+      %-  mole
       |.  ^-  vase
       =/  tub  .^(tube:clay %cc (bem /[mar]/[mar.bom]))
       %-  tub  fil
-    ?:  ?=(%| -.fil)
-      :-  %|  p.fil
-    :-  %&
-    :_  p.fil
-    .^((list path) %ct bym)
+      ::
+        [%g @ta *]
+      =/  age  i.t.pax
+      =/  for  (bam age (weld //1 t.t.pax))  :: NOTE: prefix with //1 (docs don't mention the 1)
+      =/  cas  .^([%ud p=@] %gw for)         :: NOTE: the docs say the type is cass:clay but it's not
+      =/  kid  .^((list path) %gt for)       :: BUG: this gives all paths including tombstoned ones. There is no way to determine if a path has been tombstoned. If you scry one of these paths, it will crash.
+      ?:  =(%$ mar.bom)
+        :+  %&  kid  !>(~)
+      =/  fil  .^(noun %gx (weld /[(scot %p our.bowl)]/[age]/[(scot %ud p.cas)]//1 t.t.pax))
+      =/  tub  .^(tube:clay %cc (bem /noun/[mar.bom]))
+      :+  %&  kid  (tub !>(fil))
+      ::
+    ==
   ::
   :: ++make-branch
   :: creates a component state branch

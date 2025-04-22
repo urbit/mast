@@ -23,7 +23,9 @@
   ~&  >  %init
   ~&  >  %sky-bowl
   ~&  >>  sky.bowl
-  :-  ~  this
+  :_  this
+  :~  (make-grow-card /posts noun/~)
+  ==
 ::
 ++  on-save
   ^-  vase
@@ -35,7 +37,9 @@
   ~&  >  %load
   ~&  >  %sky-bowl
   ~&  >>  sky.bowl
-  :-  ~  this
+  :_  this
+  :~  (make-grow-card /posts noun/~)
+  ==
 ::
 ++  on-poke
   |=  [=mark =vase]
