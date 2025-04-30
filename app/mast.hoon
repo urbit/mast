@@ -253,8 +253,8 @@
 ++  agent
   |=  [=wire =sign:agent:gall]
   ^+  cor
-  :: ~&  >  :-  %agent-wire  wire
-  :: ~&  >>  :-  %agent-sign  sign
+  ~&  >  :-  %agent-wire  wire
+  ~&  >>  :-  %agent-sign  sign
   ?+  -.sign  cor
     ::
       %fact
@@ -579,14 +579,29 @@
       %-  tub  fil
       ::
         [%g @ta *]
+      :: =/  age  i.t.pax
+      :: =/  for  (bam age (weld //1 t.t.pax))  :: NOTE: prefix with //1 (docs don't mention the 1)
+      :: =/  cas  .^([%ud p=@] %gw for)         :: NOTE: the docs say the type is cass:clay but it's not
+      :: =/  kid  .^((list path) %gt for)       :: BUG: this gives all paths including tombstoned ones. There is no way to determine if a path has been tombstoned. If you scry one of these paths, it will crash.
+      :: ?:  =(%$ mar.bom)
+      ::   :+  %&  kid  !>(~)
+      :: =/  fil  .^(noun %gx (weld /[(scot %p our.bowl)]/[age]/[(scot %ud p.cas)]//1 t.t.pax))
+      :: =/  tub  .^(tube:clay %cc (bem /noun/[mar.bom]))
+      :: :+  %&  kid  (tub !>(fil))
       =/  age  i.t.pax
-      =/  for  (bam age (weld //1 t.t.pax))  :: NOTE: prefix with //1 (docs don't mention the 1)
-      =/  cas  .^([%ud p=@] %gw for)         :: NOTE: the docs say the type is cass:clay but it's not
-      =/  kid  .^((list path) %gt for)       :: BUG: this gives all paths including tombstoned ones. There is no way to determine if a path has been tombstoned. If you scry one of these paths, it will crash.
+      =/  for  (bam age t.t.pax)
+      ~&  >>>  %hydrate-component
+      ~&  >>>  [%agent age]
+      ~&  >>>  [%path for]
+      :: =/  cas  .^([%ud p=@] %gw for)
+      =/  kid  *(list path) :: .^((list path) %gt for)
       ?:  =(%$ mar.bom)
         :+  %&  kid  !>(~)
-      =/  fil  .^(noun %gx (weld /[(scot %p our.bowl)]/[age]/[(scot %ud p.cas)]//1 t.t.pax))
+      =/  fil  .^(noun %gx (weld /[(scot %p our.bowl)]/[age]/[(scot %da now.bowl)] (snoc t.t.pax %noun)))
+      ~&  >  [%file fil]
       =/  tub  .^(tube:clay %cc (bem /noun/[mar.bom]))
+      ~&  %tube-got
+      ~&  (tub !>(fil))
       :+  %&  kid  (tub !>(fil))
       ::
     ==

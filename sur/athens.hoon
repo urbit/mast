@@ -9,5 +9,10 @@
 +$  user-session
   $:  read-posts=(set post-id)
   ==
+::
++$  state
+  $:  =posts
+      =user-sessions
+  ==
 --
 

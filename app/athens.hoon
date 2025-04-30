@@ -1,10 +1,7 @@
-/-  *athens
+/-  athens
 |%
 +$  card  card:agent:gall
-+$  state-0
-  $:  =posts
-      =user-sessions
-  ==
++$  state-0  state:athens
 +$  state-n
   $%  [%state-0 state-0]
   ==
@@ -20,12 +17,8 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  ~&  >  %init
-  ~&  >  %sky-bowl
-  ~&  >>  sky.bowl
   :_  this
-  :~  (make-grow-card /posts noun/~)
-  ==
+  ~
 ::
 ++  on-save
   ^-  vase
@@ -34,12 +27,8 @@
 ++  on-load
   |=  =vase
   ^-  (quip card _this)
-  ~&  >  %load
-  ~&  >  %sky-bowl
-  ~&  >>  sky.bowl
   :_  this
-  :~  (make-grow-card /posts noun/~)
-  ==
+  ~
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -54,7 +43,18 @@
   :-  ~  this
 ::
 ++  on-leave  |=(path ^-((quip card _this) !!))
-++  on-peek   |=(path ^-((unit (unit cage)) !!))
+::
+++  on-peek
+  |=  =path
+  ^-  (unit (unit cage))
+  ~&  >>  path
+  ?+  path  !!
+    ::
+      [%x %athens ~]
+    [~ ~ %noun !>(`noun`+.state)]
+    ::
+  ==
+::
 ++  on-agent  |=([wire sign:agent:gall] ^-((quip card _this) !!))
 ++  on-arvo   |=([wire sign-arvo] ^-((quip card _this) !!))
 ++  on-fail   |=([term tang] ^-((quip card _this) !!))
@@ -71,53 +71,20 @@
   ^+  cor
   ?+  mark  ~|(bad-poke/mark !!) 
     ::
-      %delete-all
-    =/  fans-on  ((on @ud (pair @da (each page @uvI))) lte)
-    %-  emil
-    %-  ~(rep by sky.bowl)
-    |=  [[k=path v=fans:gall] a=(list card)]
-    =/  fan  (pry:fans-on v)
-    ?~  fan  a
-    :_  a
-    :*  [%pass /delete %cull ud+key.u.fan k]
-    ==
-    ::
       %test-post
     =/  dat  !<  @t  vase
     %-  add-post  dat
-    ::
-      %test-check
-    ~&  >>  sky.bowl
-    cor
     ::
   == 
 ::
 ++  add-post
   |=  dat=@t
   ^+  cor
-  =/  =post  [src.bowl dat]
-  =/  =post-id  now.bowl
+  =/  =post:athens  [src.bowl dat]
+  =/  =post-id:athens  now.bowl
   =.  posts  (~(put by posts) post-id post)
-  %-  emil
-  %+  grow-post  post-id  post
-::
-++  grow-post
-  |=  [=post-id =post]
-  ^-  (list card)
-  =/  post-path  (make-post-path post-id)
-  :~  (make-grow-card post-path athens-post/post)
-      (make-fact-card post-path)
-  ==
-::
-++  make-post-path
-  |=  =post-id
-  /posts/[(scot %da post-id)]
-::
-++  make-grow-card
-  |=  [=path =page]
-  ^-  card
-  :*  %pass  /grow  %grow  path  page
-  ==
+  %-  emit
+  %-  make-fact-card  /state
 ::
 ++  make-fact-card
   |=  =path

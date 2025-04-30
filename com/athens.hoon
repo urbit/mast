@@ -1,6 +1,6 @@
 /-  mast, athens
 :-  ^-  boom:mast
-    :*  %$
+    :*  %athens
         %z
         !>(~)
     ==
@@ -22,12 +22,10 @@
 ++  sail
   ^-  manx
   ~&  >  %athens-render
+  =/  state  !<  state:athens  fil.sack
+  ~&  >>>  :-  %state  state
   ;div
     ;h1: Athens
-    ;*  %+  turn  kid.scud
-        |=  =path
-        ~&  >  [%make [%g %athens path]]
-        (make:mast %athens-post [%g %athens path] ~)
   ==
 ::
 --
