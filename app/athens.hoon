@@ -39,24 +39,40 @@
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
-  ~&  [%athens-watch path]
+  :: ~&  [%athens-watch path]
   :-  ~  this
 ::
 ++  on-leave  |=(path ^-((quip card _this) !!))
 ::
 ++  on-peek
-  |=  =path
+  |=  pax=path
   ^-  (unit (unit cage))
-  ~&  [%athens-peek path]
-  ?+  path  !!
+  ?<  ?=(~ pax)
+  ?+  +.pax  ~
     ::
-      [%r %athens ~]
-    :^  ~  ~  %$  !>
-    [%athens !>(+.state)]
+    [%posts ~]
+      ?+  i.pax  ~
+        %t
+          :^  ~  ~  %$  !>
+          ^-  (list path)
+          %+  turn  (tap:posts-on posts.state)
+          |=  [k=post-id:athens v=post:athens]
+          /[(scot %da k)]
+      ==
     ::
-      [%t %athens ~]
-    :^  ~  ~  %$  !>
-    *(list ^path)
+    [%posts @ta ~]
+      ?+  i.pax  ~
+        %r
+          :^  ~  ~  %$  !>
+          =/  =post-id:athens  (slav %da i.t.t.pax)
+          :: BUG: the mop got crashes sometimes, yet when I log it, the key is in the mop: (got:posts-on posts.state post-id)
+          :: but the regular got always works
+          =/  =post:athens  (~(got by posts.state) post-id)
+          [%athens-post !>(post)]
+        %t
+          :^  ~  ~  %$  !>
+          *(list path)
+      ==
     ::
   ==
 ::
@@ -89,13 +105,15 @@
   =/  =post-id:athens  now.bowl
   =.  posts  (~(put by posts) post-id post)
   %-  emit
-  %-  make-fact-card  /r/athens  :: NOTE: fact update path here
+  %-  make-fact-card  /t/posts
 ::
 ++  make-fact-card
   |=  =path
   ^-  card
   :*  %give  %fact  ~[path]  %noun  !>(~)
   ==
+::
+++  posts-on  ((on post-id:athens post:athens) lte)
 ::
 --
 

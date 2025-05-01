@@ -1,8 +1,8 @@
 /-  mast, athens
 :-  ^-  boom:mast
-    :*  %$
+    :*  %athens-post
         %z
-        !>(~)
+        !>(|)
     ==
 =<
 ^-  mast:mast
@@ -14,19 +14,22 @@
   =/  pol  ^-  (pole @ta)  path.crow
   ?+  pol  ~^~
     ::
-      [%test p=*]
-    ~^~
+      [%click %toggle-hide ~]
+    =/  hid  !<  ?  loc.sack
+    :-  ~  !>(!hid)
     ::
   ==
 ::
 ++  sail
   ^-  manx
-  :: ~&  >  kid.scud
+  =/  hid  !<  ?  loc.sack
+  =/  dat  !<  post:athens  fil.sack
   ;div
-    ;h1: Athens
-    ;*  %+  turn  kid.scud
-        |=  p=path
-        (make:mast %athens-post (weld pax.scud p) ~)
+    ;p(event "/click/toggle-hide"): {(scow %p author.dat)}
+    ;+  ?:  hid
+          ;div;
+        ;p: {(trip content.dat)}
+    ;hr;
   ==
 ::
 --

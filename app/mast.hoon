@@ -259,7 +259,6 @@
     ::
       %fact
     =/  [car=@tas yon=ship rop=rope]  (parse-component-wire wire)
-    ~&  >  [%mast-fact car yon rop]
     ?<  ?=(~ rop)
     =^  [bos=(list buoy) jon=(list json)]  cor
       ui-gust:(ui-moor:(ui-abed:ui yon i.rop) rop)
