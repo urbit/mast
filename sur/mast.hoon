@@ -42,9 +42,7 @@
   %+  pair  clew                                 ::
   %+  map  line  deck                            ::
 +$  clew                                         :: component node state
-  $:  fil=@      :: temp                         ::
-      kid=kids   :: temp                         ::
-      pop=prop                                   ::
+  $:  pop=prop                                   ::
       loc=vase                                   ::
       bom=boom                                   ::
       aft=manx                                   ::

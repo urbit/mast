@@ -39,7 +39,7 @@
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
-  ~&  [%on-watch path]
+  ~&  [%athens-watch path]
   :-  ~  this
 ::
 ++  on-leave  |=(path ^-((quip card _this) !!))
@@ -47,11 +47,16 @@
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
-  ~&  >>  path
+  ~&  [%athens-peek path]
   ?+  path  !!
     ::
-      [%x %athens ~]
-    [~ ~ %noun !>(`noun`+.state)]
+      [%r %athens ~]
+    :^  ~  ~  %$  !>
+    [%athens !>(+.state)]
+    ::
+      [%t %athens ~]
+    :^  ~  ~  %$  !>
+    *(list ^path)
     ::
   ==
 ::
@@ -80,11 +85,11 @@
 ++  add-post
   |=  dat=@t
   ^+  cor
-  =/  =post:athens  [src.bowl dat]
+  =/  =post:athens  [src.bowl dat ~]
   =/  =post-id:athens  now.bowl
   =.  posts  (~(put by posts) post-id post)
   %-  emit
-  %-  make-fact-card  /state
+  %-  make-fact-card  /r/athens  :: NOTE: fact update path here
 ::
 ++  make-fact-card
   |=  =path

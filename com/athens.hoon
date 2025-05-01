@@ -21,17 +21,21 @@
 ::
 ++  sail
   ^-  manx
-  ~&  >  %athens-render
   =/  state  !<  state:athens  fil.sack
-  ~&  >>>  :-  %state  state
   ;div
     ;h1: Athens
+    ;*  %+  turn  (tap:posts-on posts.state)
+        |=  [k=post-id:athens v=post:athens]
+        ;div
+          ;p: {(scow %p author.v)}
+          ;p: {(trip content.v)}
+        ==
   ==
 ::
 --
 |%
 ::
-++  test  0
+++  posts-on  ((on post-id:athens post:athens) lte)
 ::
 --
 
