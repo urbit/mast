@@ -31,6 +31,12 @@
     :~  (make-action-card scud %put-post t.t.pax.scud dat)
     ==
     ::
+      [%click %delete ~]
+    ?>  ?=([%athens %posts *] pax.scud)
+    :_  ~
+    :~  (make-action-card scud %del-post t.t.pax.scud)
+    ==
+    ::
   ==
 ::
 ++  sail
@@ -40,25 +46,29 @@
   ;div.post-node-container
     ;div.post-container
       ;div.post.pointer
-        ;div.author(event "/click/toggle-hide"): {(cite:title author.dat)}
+        ;div(event "/click/toggle-hide")
+          =class  "author {?:(hidden.loc "hide" "")}"
+          ;+  ;/  (cite:title author.dat)
+        ==
       ==
-      ;+  ?:  hidden.loc  ;div;
-          =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
+      ;+  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
           ;div
-            =class  "message full {?:(=(0 depth) "" "reply")}"
+            =class  "message {?:(hidden.loc "hide" "full")} {?:(=(0 depth) "" "reply")}"
             =style  "margin-left: {((d-co:co 1) depth)}em"
-            ;div: {(trip content.dat)}
-            ;+  ?.  reply.loc
+            ;+  ;/  (trip content.dat)
+            ;+  ?:  |(!reply.loc hidden.loc)
                   ;div;
-                ;form(event "/submit/reply")
-                  ;input.post-input(name "reply-input", placeholder "Write something...");
+                ;form.post-form(event "/submit/reply")
+                  ;textarea(name "reply-input", placeholder "Write something...");
+                  ;button: 🠊
                 ==
           ==
-        ;div.options
-          ;button(event "/click/toggle-reply"): reply
-          ;button: edit
-          ;button: delete
-        ==
+      ;+  ?:  hidden.loc  ;div;
+          ;div.options
+            ;button(event "/click/toggle-reply"): reply
+            ;button: edit
+            ;button(event "/click/delete"): delete
+          ==
     ==
     ;+  ?:  ?|  hidden.loc
                 ?=(~ kid.scud)

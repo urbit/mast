@@ -197,7 +197,9 @@
         ui-gale:ui-open:(ui-abed:ui src.bowl [vew pax])
       =?  sal  !?=(%html n.g.sal)
         ;html
-          ;head;
+          ;head
+            ;meta(charset "UTF-8");
+          ==
           ;body
             ;+  sal
           ==

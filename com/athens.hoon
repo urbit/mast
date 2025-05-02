@@ -31,8 +31,9 @@
       ;*  %+  turn  kid.scud
           |=  p=path
           (make:mast %athens-post (weld pax.scud p) ~)
-      ;form(event "/submit/post")
-        ;input.post-input(name "post-input");
+      ;form.post-form(event "/submit/post")
+        ;textarea(name "post-input");
+        ;button: 🠊
       ==
     ==
   ==
@@ -54,10 +55,15 @@
     .options {
       color: #A3A3A3;
     }
+    .options {
+      /* margin-left: auto; */
+    }
     .options > button {
       visibility: hidden;
       color: #A3A3A3;
-      margin-inline: 0.2em;
+      margin-inline: 0.25em;
+      font-family: Inter, sans-serif;
+      font-size: 0.85rem;
     }
     .post-container:hover > .options > button {
       visibility: visible;
@@ -79,9 +85,6 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-    }
-    .replies-container {
-      margin-top: 0.6em;
     }
     .post-node-container {
       display: flex;
@@ -107,6 +110,9 @@
       color: #FAFAFA;
       min-width: 120px;
     }
+    .author.hide {
+      color: #575757;
+    }
     .message {
       flex-grow: 1;
       font-family: Inter, sans-serif;
@@ -120,31 +126,54 @@
       width: 100%;
       white-space: pre-line;
     }
-    .message.full {
-      
+    .message.hide {
+      color: #575757;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .message.full.reply {
+    .message.reply {
       padding-left: 0.3em;
       border-left-width: 1px;
       border-left-color: #575757;
       border-left-style: solid;
     }
-    .message.preview {
+    .replies-container {
+      margin-top: 6px;
       display: flex;
-      gap: 8px;
-      flex-grow: 1;
+      flex-direction: column;
+      gap: 6px;
     }
     .replies {
       padding-left: 0px;
     }
-    .post-input {
+    .post-form {
+      width: 100%;
       margin-top: 0.45em;
       padding: 0.15em;
       border: solid;
       border-width: 1px;
       border-radius: 6px;
       border-color: #575757;
-      font-size: unset;
+      display: flex;
+    }
+    .post-form > textarea {
+      color: #FAFAFA;
+      height: 1.5em;
+      min-height: 1.5em;
+      padding-inline: 0.3em;
+      padding-top: 0.1em;
+      resize: block;
+      flex-grow: 1;
+      font-size: 0.85rem;
+      font-family: Inter, sans-serif;
+    }
+    .post-form > button {
+      padding-inline: 0.2em;
+      color: #A3A3A3;
+    }
+    .post-form > button:hover {
+      color: #FAFAFA;
     }
     '''
   ==

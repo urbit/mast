@@ -1,6 +1,7 @@
 |%
 +$  action
   $%  [%put-post post-at=path content=@t]
+      [%del-post at=path]
   ==
 ::
 +$  post-id  @da

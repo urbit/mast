@@ -100,6 +100,9 @@
         %put-post
       %+  put-post  post-at.act  content.act
       ::
+        %del-post
+      %-  del-post  at.act
+      ::
     ==
     ::
   == 
@@ -123,6 +126,24 @@
   %-  emit
   %-  make-fact-card  (weld /t/posts post-at)
 ::
+++  del-post  :: TODO: auth for deletes
+  |=  at=path
+  ^+  cor
+  =.  posts
+    |-  ^-  posts:athens
+    ?~  at  !!
+    =/  id  (slav %da i.at)
+    ?~  t.at  (~(del by posts) id)
+    =/  [poz=post:athens rez=posts:athens]  (~(got by posts) id)
+    %+  ~(put by posts)  id
+    :-  poz
+    %=  $
+      at  t.at
+      posts  rez
+    ==
+  %-  emit
+  %-  make-fact-card  (weld /t/posts (snip at))
+::
 ++  get-post-key-paths
   |=  poz=posts:athens
   ^-  (list path)
@@ -140,38 +161,39 @@
 ::
 ++  init-test-posts
   %-  ~(gas by *posts:athens)
-  :~
-    :-  ~2025.3.3
-      :-  :-  ~sampel-palnet  'hello world'  ~
-    :-  ~2025.3.4
-      :-  :-  ~sampel-palnet
-      '''
-      The presence (or absence) of a tilde engraved on the keyboard depends on the territory where it was sold. In either case, computer's system settings determine the keyboard mapping and the default setting will match the engravings on the keys. 
+  ~
+  :: :~
+  ::   :-  ~2025.3.3
+  ::     :-  :-  ~sampel-palnet  'hello world'  ~
+  ::   :-  ~2025.3.4
+  ::     :-  :-  ~sampel-palnet
+  ::     '''
+  ::     The presence (or absence) of a tilde engraved on the keyboard depends on the territory where it was sold. In either case, computer's system settings determine the keyboard mapping and the default setting will match the engravings on the keys. 
 
-      Even so, it certainly possible to configure a keyboard for a different locale than that supplied by the retailer. On American and British keyboards, the tilde is a standard keytop and pressing it produces a free-standing "ASCII Tilde". To generate a letter with a tilde diacritic requires the US international or UK extended keyboard setting.
-      '''
-      ~
-    :-  ~2025.3.5
-      :-  :-  ~sampel-palnet
-      '''
-      The presence (or absence) of a tilde engraved on the keyboard depends on the territory where it was sold. In either case, computer's system settings determine the keyboard mapping and the default setting will match the engravings on the keys. 
+  ::     Even so, it certainly possible to configure a keyboard for a different locale than that supplied by the retailer. On American and British keyboards, the tilde is a standard keytop and pressing it produces a free-standing "ASCII Tilde". To generate a letter with a tilde diacritic requires the US international or UK extended keyboard setting.
+  ::     '''
+  ::     ~
+  ::   :-  ~2025.3.5
+  ::     :-  :-  ~sampel-palnet
+  ::     '''
+  ::     The presence (or absence) of a tilde engraved on the keyboard depends on the territory where it was sold. In either case, computer's system settings determine the keyboard mapping and the default setting will match the engravings on the keys. 
 
-      Even so, it certainly possible to configure a keyboard for a different locale than that supplied by the retailer. On American and British keyboards, the tilde is a standard keytop and pressing it produces a free-standing "ASCII Tilde". To generate a letter with a tilde diacritic requires the US international or UK extended keyboard setting.
-      '''
-      ~
-    :-  ~2025.3.6
-      :-  :-  ~sampel-palnet
-      '''
-      The presence (or absence) of a tilde engraved on the keyboard depends on the territory where it was sold. In either case, computer's system settings determine the keyboard mapping and the default setting will match the engravings on the keys. 
+  ::     Even so, it certainly possible to configure a keyboard for a different locale than that supplied by the retailer. On American and British keyboards, the tilde is a standard keytop and pressing it produces a free-standing "ASCII Tilde". To generate a letter with a tilde diacritic requires the US international or UK extended keyboard setting.
+  ::     '''
+  ::     ~
+  ::   :-  ~2025.3.6
+  ::     :-  :-  ~sampel-palnet
+  ::     '''
+  ::     The presence (or absence) of a tilde engraved on the keyboard depends on the territory where it was sold. In either case, computer's system settings determine the keyboard mapping and the default setting will match the engravings on the keys. 
 
-      Even so, it certainly possible to configure a keyboard for a different locale than that supplied by the retailer. On American and British keyboards, the tilde is a standard keytop and pressing it produces a free-standing "ASCII Tilde". To generate a letter with a tilde diacritic requires the US international or UK extended keyboard setting.
-      '''
-      ~
-    :-  ~2025.3.7
-      :-  :-  ~sampel-palnet
-      'https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html'
-      ~
-  ==
+  ::     Even so, it certainly possible to configure a keyboard for a different locale than that supplied by the retailer. On American and British keyboards, the tilde is a standard keytop and pressing it produces a free-standing "ASCII Tilde". To generate a letter with a tilde diacritic requires the US international or UK extended keyboard setting.
+  ::     '''
+  ::     ~
+  ::   :-  ~2025.3.7
+  ::     :-  :-  ~sampel-palnet
+  ::     'https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html'
+  ::     ~
+  :: ==
 ::
 --
 
