@@ -81,6 +81,9 @@
       border-radius: 3px;
       color: #A3A3A3;
       background-color: #262626;
+      font-family: 'Source Code Pro', monospace;
+      font-weight: 500;
+      font-size: 14px;
     }
     .athens {
       height: 100%;
