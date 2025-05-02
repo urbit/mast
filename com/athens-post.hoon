@@ -11,16 +11,15 @@
 ++  spar
   |=  =crow:mast
   ^-  blow:mast
+  =/  loc  !<  [hidden=? reply=?]  loc.sack
   =/  pol  ^-  (pole @ta)  path.crow
   ?+  pol  ~^~
     ::
       [%click %toggle-hide ~]
-    =/  loc  !<  [hidden=? reply=?]  loc.sack
     :-  ~
     !>  loc(hidden !hidden.loc)
     ::
       [%click %toggle-reply ~]
-    =/  loc  !<  [hidden=? reply=?]  loc.sack
     :-  ~
     !>  loc(reply !reply.loc)
     ::
@@ -28,7 +27,7 @@
     ?>  ?=([%athens %posts *] pax.scud)
     =/  dat  (~(got by data.crow) 'reply-input')
     ?:  =('' dat)  ~^~
-    :_  ~
+    :_  !>  loc(reply !reply.loc)
     :~  (make-action-card scud %put-post t.t.pax.scud dat)
     ==
     ::
@@ -44,16 +43,15 @@
         ;div.author(event "/click/toggle-hide"): {(cite:title author.dat)}
       ==
       ;+  ?:  hidden.loc  ;div;
-          =/  depth=@  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
+          =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
           ;div
-            =class  "message full {?:(=(1 depth) "" "reply")}"
+            =class  "message full {?:(=(0 depth) "" "reply")}"
             =style  "margin-left: {((d-co:co 1) depth)}em"
             ;div: {(trip content.dat)}
             ;+  ?.  reply.loc
                   ;div;
                 ;form(event "/submit/reply")
                   ;input.post-input(name "reply-input", placeholder "Write something...");
-                  ;button: ⇾
                 ==
           ==
         ;div.options
