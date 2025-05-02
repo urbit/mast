@@ -39,7 +39,6 @@
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
-  :: ~&  [%athens-watch path]
   :-  ~  this
 ::
 ++  on-leave  |=(path ^-((quip card _this) !!))
@@ -48,30 +47,32 @@
   |=  pax=path
   ^-  (unit (unit cage))
   ?<  ?=(~ pax)
-  ?+  +.pax  ~
+  =/  care  i.pax
+  =/  pole  ^-  (pole @ta)  t.pax
+  ?+  pole  ~
     ::
     [%posts ~]
-      ?+  i.pax  ~
-        %t
-          :^  ~  ~  %$  !>
-          ^-  (list path)
-          %+  turn  (tap:posts-on posts.state)
-          |=  [k=post-id:athens v=post:athens]
-          /[(scot %da k)]
-      ==
-    ::
-    [%posts @ta ~]
-      ?+  i.pax  ~
+      ?+  care  ~
         %r
           :^  ~  ~  %$  !>
-          =/  =post-id:athens  (slav %da i.t.t.pax)
-          :: BUG: the mop got crashes sometimes, yet when I log it, the key is in the mop: (got:posts-on posts.state post-id)
-          :: but the regular got always works
-          =/  =post:athens  (~(got by posts.state) post-id)
-          [%athens-post !>(post)]
+          [%noun !>(~)]
         %t
           :^  ~  ~  %$  !>
-          *(list path)
+          (get-post-key-paths posts)
+      ==
+    ::
+    [%posts rest=^]
+      |-  ^-  (unit (unit cage))
+      =/  =post-id:athens  (slav %da -.rest.pole)
+      =/  =post-node:athens  (~(got by posts) post-id)
+      ?^  +.rest.pole  $(posts replies.post-node, rest.pole +.rest.pole)
+      ?+  care  ~
+        %r
+          :^  ~  ~  %$  !>
+          [%athens-post !>(post.post-node)]
+        %t
+          :^  ~  ~  %$  !>
+          (get-post-key-paths replies.post-node)
       ==
     ::
   ==
@@ -92,28 +93,48 @@
   ^+  cor
   ?+  mark  ~|(bad-poke/mark !!) 
     ::
-      %test-post
-    =/  dat  !<  @t  vase
-    %-  add-post  dat
+      %athens-action
+    =/  act  !<  action:athens  vase
+    ?-  -.act
+      ::
+        %put-post
+      %+  put-post  post-at.act  content.act
+      ::
+    ==
     ::
   == 
 ::
-++  add-post
-  |=  dat=@t
+++  put-post
+  |=  [post-at=path dat=@t]
   ^+  cor
-  =/  =post:athens  [src.bowl dat ~]
-  =/  =post-id:athens  now.bowl
-  =.  posts  (~(put by posts) post-id post)
+  =/  new-post=post:athens  [src.bowl dat]
+  =/  new-id=post-id:athens  now.bowl
+  =.  posts
+    |-  ^-  posts:athens
+    ?~  post-at  (~(put by posts) new-id [new-post ~])
+    =/  id  (slav %da i.post-at)
+    =/  [poz=post:athens rez=posts:athens]  (~(got by posts) id)
+    %+  ~(put by posts)  id
+    :-  poz
+    %=  $
+      post-at  t.post-at
+      posts  rez
+    ==
   %-  emit
-  %-  make-fact-card  /t/posts
+  %-  make-fact-card  (weld /t/posts post-at)
+::
+++  get-post-key-paths
+  |=  poz=posts:athens
+  ^-  (list path)
+  %+  turn  (sort ~(tap in ~(key by poz)) lte)
+  |=  k=post-id:athens
+  /[(scot %da k)]
 ::
 ++  make-fact-card
   |=  =path
   ^-  card
   :*  %give  %fact  ~[path]  %noun  !>(~)
   ==
-::
-++  posts-on  ((on post-id:athens post:athens) lte)
 ::
 --
 

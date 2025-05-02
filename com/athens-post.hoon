@@ -18,6 +18,13 @@
     =/  hid  !<  ?  loc.sack
     :-  ~  !>(!hid)
     ::
+      [%submit %reply ~]
+    ?>  ?=([%athens %posts *] pax.scud)
+    =/  dat  (~(got by data.crow) 'reply-input')
+    :_  ~
+    :~  (make-action-card scud %put-post t.t.pax.scud dat)
+    ==
+    ::
   ==
 ::
 ++  sail
@@ -28,14 +35,27 @@
     ;p(event "/click/toggle-hide"): {(scow %p author.dat)}
     ;+  ?:  hid
           ;div;
-        ;p: {(trip content.dat)}
+        ;div
+          ;p: {(trip content.dat)}
+          ;span: replies
+          ;*  %+  turn  kid.scud
+              |=  p=path
+              (make:mast %athens-post (weld pax.scud p) ~)
+          ;form(event "/submit/reply")
+            ;input(name "reply-input");
+            ;button: Reply
+          ==
+        ==
     ;hr;
   ==
 ::
 --
 |%
 ::
-++  posts-on  ((on post-id:athens post:athens) lte)
+++  make-action-card
+  |=  [sud=scud:mast act=action:athens]
+  ^-  card:agent:gall
+  [%pass /athens-post %agent [our.sud %athens] %poke %athens-action !>(act)]
 ::
 --
 

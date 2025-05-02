@@ -14,25 +14,34 @@
   =/  pol  ^-  (pole @ta)  path.crow
   ?+  pol  ~^~
     ::
-      [%test p=*]
-    ~^~
+      [%submit %post ~]
+    :_  ~
+    =/  dat  (~(got by data.crow) 'post-input')
+    :~  (make-action-card scud [%put-post ~ dat])
+    ==
     ::
   ==
 ::
 ++  sail
   ^-  manx
-  :: ~&  >  kid.scud
   ;div
     ;h1: Athens
     ;*  %+  turn  kid.scud
         |=  p=path
         (make:mast %athens-post (weld pax.scud p) ~)
+    ;form(event "/submit/post")
+      ;input(name "post-input");
+      ;button: Post
+    ==
   ==
 ::
 --
 |%
 ::
-++  posts-on  ((on post-id:athens post:athens) lte)
+++  make-action-card
+  |=  [sud=scud:mast act=action:athens]
+  ^-  card:agent:gall
+  [%pass /athens-post %agent [our.sud %athens] %poke %athens-action !>(act)]
 ::
 --
 

@@ -1,11 +1,18 @@
 |%
++$  action
+  $%  [%put-post post-at=path content=@t]
+  ==
+::
 +$  post-id  @da
-+$  posts  ((mop post-id post) lte)
++$  posts  (map post-id post-node)
++$  post-node
+  $~  [*post ~]
+  $:  =post
+      replies=posts
+  ==
 +$  post
-  $~  [*@p *@t ~]
   $:  author=@p
       content=@t
-      replies=posts
   ==
 +$  user-sessions  (map @p user-session)
 +$  user-session
