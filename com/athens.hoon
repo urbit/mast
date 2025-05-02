@@ -26,6 +26,7 @@
 ++  sail
   ^-  manx
   ;div.athens
+    ;div.user: {(cite:title yon.scud)}
     ;div.posts
       ;+  style
       ;*  %+  turn  kid.scud
@@ -71,10 +72,20 @@
     .options > button:hover {
       color: #FAFAFA;
     }
+    .user {
+      position: absolute;
+      top: 15;
+      right: 30;
+      padding-block: 0.2em;
+      padding-inline: 0.3em;
+      border-radius: 3px;
+      color: #A3A3A3;
+      background-color: #262626;
+    }
     .athens {
       height: 100%;
       width: 100%;
-      /* background: #0f0f0f; */
+      background: #0f0f0f;
       overflow-y: scroll;
     }
     .posts {
