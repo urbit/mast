@@ -181,13 +181,14 @@
   ==
 ::
 ++  make-blow-poke-cards
-  |=  pok=(list (pair @tas cage))
+  |=  [src=ship com=term pok=(list (pair @tas cage))]
   ^-  (list card:agent:gall)
   %+  murn  pok
   |=  [for=@tas dat=cage]
   ?:  =(for dap.bowl)  ~
   :-  ~
-  :*  %pass  /blow-poke  %agent  [our.bowl for]  %poke  dat
+  :*  %pass  /blow-poke  %agent  [our.bowl for]  %poke
+      %mast-poke  !>(`tide`[src com dat])
   ==
 ::
 ++  poke
@@ -376,7 +377,7 @@
       %.  cro
       %~  spar  mast.rig
       :-  (en-scud q.lyn p.p.dat)  [pop.p.dek.com loc.p.dek.com q.p.dat]
-    =/  caz  (make-blow-poke-cards pok.blo)
+    =/  caz  (make-blow-poke-cards yon.ses p.lyn pok.blo)
     ?~  loc.blo
       :-  [| caz]  ui-core
     :-  [& caz]

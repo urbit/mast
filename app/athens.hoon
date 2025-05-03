@@ -1,4 +1,4 @@
-/-  athens
+/-  athens, mast
 |%
 +$  card  card:agent:gall
 +$  state-0  state:athens
@@ -17,7 +17,6 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  =.  posts  init-test-posts
   :-  ~  this
 ::
 ++  on-save
@@ -34,7 +33,7 @@
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
-  =^  cards  state  abet:(poke:cor mark vase)
+  =^  cards  state  abet:(handle-mast-poke:cor mark vase)
   :-  cards  this
 ::
 ++  on-watch
@@ -89,6 +88,15 @@
 ++  emit  |=  =card  cor(cards [card cards])
 ++  emil  |=  caz=(list card)  cor(cards (welp (flop caz) cards))
 ::
+++  handle-mast-poke
+  |=  [=mark =vase]
+  ^+  cor
+  ?.  ?=(%mast-poke mark)  (poke mark vase)
+  ?>  =(/gall/mast sap.bowl)
+  =/  tid  !<  tide:mast  vase
+  =.  src.bowl  src.tid
+  %-  poke  dat.tid
+::
 ++  poke
   |=  [=mark =vase]
   ^+  cor
@@ -127,15 +135,19 @@
   %-  emit
   %-  make-fact-card  (weld /t/posts post-at)
 ::
-++  del-post  :: TODO: auth for deletes
+++  del-post
   |=  at=path
   ^+  cor
   =.  posts
     |-  ^-  posts:athens
     ?~  at  !!
     =/  id  (slav %da i.at)
-    ?~  t.at  (~(del by posts) id)
     =/  [poz=post:athens rez=posts:athens]  (~(got by posts) id)
+    ?~  t.at
+      ?>  ?|  =(author.poz src.bowl)
+              =(src.bowl our.bowl)
+          ==
+      %-  ~(del by posts)  id
     %+  ~(put by posts)  id
     :-  poz
     %=  $
@@ -157,44 +169,6 @@
   ^-  card
   :*  %give  %fact  ~[path]  %noun  !>(~)
   ==
-::
-  ::
-::
-++  init-test-posts
-  %-  ~(gas by *posts:athens)
-  ~
-  :: :~
-  ::   :-  ~2025.3.3
-  ::     :-  :-  ~sampel-palnet  'hello world'  ~
-  ::   :-  ~2025.3.4
-  ::     :-  :-  ~sampel-palnet
-  ::     '''
-  ::     The presence (or absence) of a tilde engraved on the keyboard depends on the territory where it was sold. In either case, computer's system settings determine the keyboard mapping and the default setting will match the engravings on the keys. 
-
-  ::     Even so, it certainly possible to configure a keyboard for a different locale than that supplied by the retailer. On American and British keyboards, the tilde is a standard keytop and pressing it produces a free-standing "ASCII Tilde". To generate a letter with a tilde diacritic requires the US international or UK extended keyboard setting.
-  ::     '''
-  ::     ~
-  ::   :-  ~2025.3.5
-  ::     :-  :-  ~sampel-palnet
-  ::     '''
-  ::     The presence (or absence) of a tilde engraved on the keyboard depends on the territory where it was sold. In either case, computer's system settings determine the keyboard mapping and the default setting will match the engravings on the keys. 
-
-  ::     Even so, it certainly possible to configure a keyboard for a different locale than that supplied by the retailer. On American and British keyboards, the tilde is a standard keytop and pressing it produces a free-standing "ASCII Tilde". To generate a letter with a tilde diacritic requires the US international or UK extended keyboard setting.
-  ::     '''
-  ::     ~
-  ::   :-  ~2025.3.6
-  ::     :-  :-  ~sampel-palnet
-  ::     '''
-  ::     The presence (or absence) of a tilde engraved on the keyboard depends on the territory where it was sold. In either case, computer's system settings determine the keyboard mapping and the default setting will match the engravings on the keys. 
-
-  ::     Even so, it certainly possible to configure a keyboard for a different locale than that supplied by the retailer. On American and British keyboards, the tilde is a standard keytop and pressing it produces a free-standing "ASCII Tilde". To generate a letter with a tilde diacritic requires the US international or UK extended keyboard setting.
-  ::     '''
-  ::     ~
-  ::   :-  ~2025.3.7
-  ::     :-  :-  ~sampel-palnet
-  ::     'https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html'
-  ::     ~
-  :: ==
 ::
 --
 

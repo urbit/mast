@@ -1,4 +1,9 @@
 |%
++$  tide                                         :: poke sent out from a component
+  $:  src=ship                                   ::   client id
+      com=term                                   ::   component provenance
+      dat=cage                                   ::   poke data
+  ==                                             ::
 +$  crow  [=path data=(map @t @t)]               :: client event
 +$  blow                                         :: event effects
   $:  pok=(list (pair @tas cage))                ::
@@ -6,7 +11,7 @@
   ==                                             ::
 +$  prop  (map @tas vase)                        :: component props state
 +$  coms  (list term)                            :: component list
-+$  kids  (list path)                            :: :: TODO:
++$  kids  (list path)                            ::
 +$  scud                                         :: component context
   $:  $:  our=ship                               ::   server
           yon=ship                               ::   client
