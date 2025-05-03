@@ -30,7 +30,15 @@
     ;div.user
       ;+  ?.  is-comet
             ;/  (cite:title yon.scud)
-          ;a.login-link(href "/~/login"): login
+          ;form
+            =action  "/~/login"
+            =method  "POST"
+            ;label(for "login-input"): login:
+            ;input(id "login-input", name "name", required "");
+            ;input(type "hidden", name "redirect", value (spud ;:(weld /mast pax.scud /athens)));
+            ;input(type "hidden", name "eauth", value "");
+            ;button(type "submit"): 🠊
+          ==
     ==
     ;div.posts
       ;+  style
