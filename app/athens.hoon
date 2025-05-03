@@ -22,12 +22,13 @@
 ::
 ++  on-save
   ^-  vase
-  !>  ~
+  !>  state
 ::
 ++  on-load
   |=  =vase
   ^-  (quip card _this)
-  =.  posts  init-test-posts
+  =/  old  (mole |.(!<(state-n vase)))
+  =?  state  ?=(^ old)  u.old
   :-  ~  this
 ::
 ++  on-poke
