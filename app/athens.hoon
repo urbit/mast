@@ -103,6 +103,7 @@
   ?+  mark  ~|(bad-poke/mark !!) 
     ::
       %athens-action
+    ?:  ?=(%pawn (clan:title src.bowl))  !!
     =/  act  !<  action:athens  vase
     ?-  -.act
       ::

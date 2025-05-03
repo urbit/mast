@@ -25,18 +25,25 @@
 ::
 ++  sail
   ^-  manx
+  =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   ;div.athens
-    ;div.user: {(cite:title yon.scud)}
+    ;div.user
+      ;+  ?.  is-comet
+            ;/  (cite:title yon.scud)
+          ;a.login-link(href "/~/login"): login
+    ==
     ;div.posts
       ;+  style
       ;*  %+  turn  kid.scud
           |=  p=path
           (make:mast %athens-post (weld pax.scud p) ~)
-      ;form.post-form(event "/submit/post")
-        =key  "athens-post-form"
-        ;textarea(name "post-input");
-        ;button: 🠊
-      ==
+      ;+  ?:  is-comet
+            ;div.post-form.login-block: Login to post
+          ;form.post-form(event "/submit/post")
+            =key  "athens-post-form"
+            ;textarea(name "post-input");
+            ;button: 🠊
+          ==
     ==
   ==
 ::
@@ -66,6 +73,10 @@
       visibility: visible;
     }
     .options > button:hover {
+      color: #FAFAFA;
+    }
+    .login-link {
+      margin-right: 0.2em;
       color: #FAFAFA;
     }
     .user {
@@ -166,6 +177,14 @@
       border-radius: 6px;
       border-color: #575757;
       display: flex;
+    }
+    .post-form.login-block {
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      justify-content: center;
+      font-family: Inter, sans-serif;
+      font-size: 0.85rem;
     }
     .post-form > textarea {
       color: #FAFAFA;

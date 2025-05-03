@@ -43,6 +43,7 @@
   ^-  manx
   =/  loc  !<  [hidden=? reply=?]  loc.sack
   =/  dat  !<  post:athens  fil.sack
+  =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   ;div.post-node-container
     ;div.post-container
       ;div.post.pointer
@@ -63,7 +64,10 @@
                   ;button: 🠊
                 ==
           ==
-      ;+  ?:  hidden.loc  ;div;
+      ;+  ?:  ?|  hidden.loc
+                  is-comet
+              ==
+            ;div;
           ;div.options
             ;button(event "/click/toggle-reply"): reply
             ;button: edit
