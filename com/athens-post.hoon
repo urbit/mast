@@ -27,14 +27,14 @@
     ?>  ?=([%athens %posts *] pax.scud)
     =/  dat  (~(got by data.crow) 'reply-input')
     ?:  =('' dat)  ~^~
-    :_  !>  loc(reply !reply.loc)
-    :~  (make-action-card scud %put-post t.t.pax.scud dat)
+    :_  !>(loc(reply !reply.loc))
+    :~  [%athens %athens-action !>([%put-post t.t.pax.scud dat])]
     ==
     ::
       [%click %delete ~]
     ?>  ?=([%athens %posts *] pax.scud)
     :_  ~
-    :~  (make-action-card scud %del-post t.t.pax.scud)
+    :~  [%athens %athens-action !>([%del-post t.t.pax.scud])]
     ==
     ::
   ==
@@ -84,10 +84,7 @@
 --
 |%
 ::
-++  make-action-card
-  |=  [sud=scud:mast act=action:athens]
-  ^-  card:agent:gall
-  [%pass /athens-post %agent [our.sud %athens] %poke %athens-action !>(act)]
+++  mysterious-arm  ~
 ::
 --
 

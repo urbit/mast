@@ -18,7 +18,7 @@
     =/  dat  (~(got by data.crow) 'post-input')
     ?:  =('' dat)  ~^~
     :_  ~
-    :~  (make-action-card scud [%put-post ~ dat])
+    :~  [%athens %athens-action !>([%put-post ~ dat])]
     ==
     ::
   ==
@@ -33,6 +33,7 @@
           |=  p=path
           (make:mast %athens-post (weld pax.scud p) ~)
       ;form.post-form(event "/submit/post")
+        =key  "athens-post-form"
         ;textarea(name "post-input");
         ;button: 🠊
       ==
@@ -41,11 +42,6 @@
 ::
 --
 |%
-::
-++  make-action-card
-  |=  [sud=scud:mast act=action:athens]
-  ^-  card:agent:gall
-  [%pass /athens-post %agent [our.sud %athens] %poke %athens-action !>(act)]
 ::
 ++  style
   ^-  manx

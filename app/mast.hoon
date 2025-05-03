@@ -180,6 +180,16 @@
       [%give %kick ~[/http-response/[rid]] ~]
   ==
 ::
+++  make-blow-poke-cards
+  |=  pok=(list (pair @tas cage))
+  ^-  (list card:agent:gall)
+  %+  murn  pok
+  |=  [for=@tas dat=cage]
+  ?:  =(for dap.bowl)  ~
+  :-  ~
+  :*  %pass  /blow-poke  %agent  [our.bowl for]  %poke  dat
+  ==
+::
 ++  poke
   |=  [=mark =vase]
   ^+  cor
@@ -366,9 +376,10 @@
       %.  cro
       %~  spar  mast.rig
       :-  (en-scud q.lyn p.p.dat)  [pop.p.dek.com loc.p.dek.com q.p.dat]
+    =/  caz  (make-blow-poke-cards pok.blo)
     ?~  loc.blo
-      :-  [| caz.blo]  ui-core
-    :-  [& caz.blo]
+      :-  [| caz]  ui-core
+    :-  [& caz]
     %_  ui-core
       loc.p.dek.com  loc.blo
     ==

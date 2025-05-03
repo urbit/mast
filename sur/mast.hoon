@@ -1,6 +1,9 @@
 |%
 +$  crow  [=path data=(map @t @t)]               :: client event
-+$  blow  [caz=(list card) loc=$@(~ vase)]       :: event effects
++$  blow                                         :: event effects
+  $:  pok=(list (pair @tas cage))                ::
+      loc=$@(~ vase)                             ::
+  ==                                             ::
 +$  prop  (map @tas vase)                        :: component props state
 +$  coms  (list term)                            :: component list
 +$  kids  (list path)                            :: :: TODO:
