@@ -544,6 +544,8 @@
       :+  %&  kid  !>(~)
     =/  des  .^(desk %gd (bam age /$))
     =/  fil  .^(cage %gr for)
+    ?:  =(p.fil mar.bom)
+      :+  %&  kid  q.fil
     =/  tub  .^(tube:clay %cc (bam des /[p.fil]/[mar.bom]))
     :+  %&  kid  (tub q.fil)
   ::
