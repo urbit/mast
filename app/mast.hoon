@@ -8,7 +8,8 @@
 ::
 |%
 +$  state-0
-  $:  =dock
+  $:  =coms 
+      =dock
   ==
 +$  state-n
   $%  [%state-0 state-0]
@@ -25,20 +26,27 @@
 ::
 ++  on-init
   ^-  (quip card _this)
+  =.  coms  (sort ~(tap in ~(key by rigs)) aor)
   :_  this
   :~  (bind-url dap.bowl /mast)
   ==
 ::
 ++  on-save
   ^-  vase
-  !>  ~
+  !>  dock
 ::
 ++  on-load
   |=  =vase
   ^-  (quip card _this)
+  =.  coms  (sort ~(tap in ~(key by rigs)) aor)
+  =/  doc  (mole |.(!<(^dock vase)))
   :_  this
-  :~  (bind-url dap.bowl /mast)
-  ==
+  ?~  doc  ~
+  %-  ~(rep by u.doc)
+  |=  [[k=(pair ship line) v=deck] a=(list card)]
+  %+  weld  a
+  %-  make-resource-subscription-cards
+  %+  unsubscribe-branch:(ui-abed:ui k)  [q.k ~]  v
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -49,13 +57,17 @@
 ++  on-watch  |=(path ^-((quip card _this) `this))
 ++  on-leave  |=(path ^-((quip card _this) !!))
 ++  on-peek   |=(path ^-((unit (unit cage)) !!))
-++  on-agent  |=([wire sign:agent:gall] ^-((quip card _this) !!))
+::
+++  on-agent
+  |=  [=wire =sign:agent:gall]
+  ^-  (quip card _this)
+  =^  cards  state  abet:(agent:cor wire sign)
+  :-  cards  this
 ::
 ++  on-arvo
   |=  [=wire sign=sign-arvo]
   ^-  (quip card _this)
-  =^  cards  state  abet:(arvo:cor wire sign)
-  :-  cards  this
+  :-  ~  this
 ::
 ++  on-fail   |=([term tang] ^-((quip card _this) !!))
 --
@@ -90,18 +102,23 @@
   :*  %pass  /bind  %arvo  %e  %connect  [~ url]  app
   ==
 ::
-++  ship-rope-to-wire
-  |=  [yon=ship rop=rope]
+++  make-component-wire
+  |=  [car=@tas yon=ship rop=rope]
   ^-  wire
+  :-  car
   :-  (scot %p yon)
-  (turn rop |=(i=line (spat i)))
+  %+  turn  rop
+  |=  i=line  (spat i)
 ::
-++  wire-to-ship-rope
+++  parse-component-wire
   |=  wir=wire
-  ^-  [ship rope]
-  ?<  ?=(~ wir)
-  :-  (slav %p i.wir)
-  (turn t.wir |=(i=knot =>((stab i) ?>(?=(^ .) .))))
+  ^-  [@tas ship rope]
+  ?>  ?=([@ @ *] wir)
+  :-  i.wir
+  :-  (slav %p i.t.wir)
+  %+  turn  t.t.wir
+  |=  i=knot
+  =>  (stab i)  ?>(?=(^ .) .)
 ::
 ++  parse-channel-data
   |=  jon=json
@@ -127,20 +144,31 @@
       !>  `json`[%a jon]
   ==
 ::
+:: ++make-resource-subscription-cards
+:: the %mast agent subscribes to an on-watch path
+:: in the agent specified in the first path segment.
+:: note: in the target agent,
+:: peek and watch paths must be implemented with both %r and %t cares,
+:: where %r produces a cage and %t produces a list of paths
 ++  make-resource-subscription-cards
   |=  bos=(list buoy)
   ^-  (list card)
-  %+  turn  bos
-  |=  i=buoy
+  %+  roll  bos
+  |=  [i=buoy a=(list card)]
+  =/  pax  q:(rear q.i)
+  ?<  ?=(~ pax)
+  =/  age  i.pax
+  =/  for  t.pax
+  %+  weld  a
+  ^-  (list card)
   ?-  -.i
       %add
-    =/  for  q:(rear q.i)
-    :*  %pass  (ship-rope-to-wire +.i)  %arvo  %c
-        [%warp our.bowl %base ~ %next %x da+now.bowl for]
+    :~  [%pass (make-component-wire %r +.i) %agent [our.bowl age] %watch [%r for]]
+        [%pass (make-component-wire %t +.i) %agent [our.bowl age] %watch [%t for]]
     ==
       %del
-    :*  %pass  (ship-rope-to-wire +.i)  %arvo  %c
-        [%warp our.bowl %base ~]
+    :~  [%pass (make-component-wire %r +.i) %agent [our.bowl age] %leave ~]
+        [%pass (make-component-wire %t +.i) %agent [our.bowl age] %leave ~]
     ==
   ==
 ::
@@ -150,6 +178,17 @@
   :~  [%give %fact ~[/http-response/[rid]] [%http-response-header !>(hed)]]
       [%give %fact ~[/http-response/[rid]] [%http-response-data !>(dat)]]
       [%give %kick ~[/http-response/[rid]] ~]
+  ==
+::
+++  make-blow-poke-cards
+  |=  [src=ship com=term pok=(list (pair @tas cage))]
+  ^-  (list card:agent:gall)
+  %+  murn  pok
+  |=  [for=@tas dat=cage]
+  ?:  =(for dap.bowl)  ~
+  :-  ~
+  :*  %pass  /blow-poke  %agent  [our.bowl for]  %poke
+      %mast-poke  !>(`tide`[src com dat])
   ==
 ::
 ++  poke
@@ -169,7 +208,9 @@
         ui-gale:ui-open:(ui-abed:ui src.bowl [vew pax])
       =?  sal  !?=(%html n.g.sal)
         ;html
-          ;head;
+          ;head
+            ;meta(charset "UTF-8");
+          ==
           ;body
             ;+  sal
           ==
@@ -215,22 +256,22 @@
     =/  [rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
     ?<  ?=(~ rop)
     =/  ui-core  (ui-moor:(ui-abed:ui src.bowl i.rop) rop)
-    =^  cards  ui-core  (ui-sway:ui-core cro)
+    =^  [local-update=? cards=(list card)]  ui-core  (ui-sway:ui-core cro)
+    ?.  local-update
+      %-  emil  cards
     =^  [bos=(list buoy) jon=(list json)]  cor  ui-gust:ui-core
     %-  emil
     %+  weld  (make-diff-cards src.bowl jon)  cards
     ::
   ==
 ::
-++  arvo
-  |=  [=wire sign=sign-arvo]
+++  agent
+  |=  [=wire =sign:agent:gall]
   ^+  cor
-  :: ~&  >  :-  %arvo-wire  wire
-  :: ~&  >>  :-  %arvo-sign  sign
-  ?+  sign  cor
+  ?+  -.sign  cor
     ::
-      [%clay %writ *]
-    =/  [yon=ship rop=rope]  (wire-to-ship-rope wire)
+      %fact
+    =/  [car=@tas yon=ship rop=rope]  (parse-component-wire wire)
     ?<  ?=(~ rop)
     =^  [bos=(list buoy) jon=(list json)]  cor
       ui-gust:(ui-moor:(ui-abed:ui yon i.rop) rop)
@@ -241,9 +282,9 @@
   ==
 ::
 ++  ui
-  =|  $=  ses  [yon=ship lin=line dek=$@(~ deck)]          :: session
-  =|  $=  com  $@(~ [local-update=? rop=rope dek=deck])    :: target component
-  =|  $=  fex  wake                                        :: effects
+  =|  $=  ses  [yon=ship lin=line dek=$@(~ deck)]  :: session
+  =|  $=  com  $@(~ [rop=rope dek=deck])           :: target component
+  =|  $=  fex  wake                                :: effects
   |%
   ++  ui-core  .
   ::
@@ -289,7 +330,7 @@
     =/  duk  (get-deck rop dek.ses)
     ?~  duk  ui-core
     %_  ui-core
-      com  [| rop duk]
+      com  [rop duk]
     ==
   ::
   :: ++ui-gale
@@ -312,12 +353,12 @@
       :-  boy.fex  ~
     =^  [boy=(list buoy) jon=(list json)]  dek.com
       %:  update-branch
-        local-update.com  rop.com  pop.p.dek.com  dek.com
+        rop.com  pop.p.dek.com  dek.com
       ==
     =.  dock
       %+  ~(put by dock)  [yon.ses lin.ses]
       %^  put-deck  rop.com  dek.com  dek.ses
-    =>  (ui-wake ~ [[%add yon.ses rop.com] boy] jon)
+    =>  (ui-wake ~ boy jon)
     :_  cor
     :-  boy.fex  jon.fex
   ::
@@ -325,7 +366,7 @@
   :: apply an event to the loaded component.
   ++  ui-sway
     |=  cro=crow
-    ^+  [*(list card) ui-core]
+    ^+  [[*? *(list card)] ui-core]
     ?<  ?=(~ com)
     =/  lyn  (rear rop.com)
     =/  rig  (~(got by rigs) p.lyn)
@@ -336,20 +377,20 @@
       %.  cro
       %~  spar  mast.rig
       :-  (en-scud q.lyn p.p.dat)  [pop.p.dek.com loc.p.dek.com q.p.dat]
-    ?~  loc.blo  [caz.blo ui-core]
-    :-  caz.blo
+    =/  caz  (make-blow-poke-cards yon.ses p.lyn pok.blo)
+    ?~  loc.blo
+      :-  [| caz]  ui-core
+    :-  [& caz]
     %_  ui-core
-      local-update.com  &
       loc.p.dek.com  loc.blo
     ==
   ::
   ++  en-scud
     |=  [pax=path kid=kids]
     ^-  scud
-    :*  our.bowl
-        yon.ses
-        pax
-        kid
+    :*  [our.bowl yon.ses]
+        [now.bowl eny.bowl]
+        [coms byk.bowl pax kid]
     ==
   ::
   :: ++sunk-page
@@ -495,33 +536,18 @@
   ++  hydrate-component
     |=  [bom=boom pax=path]
     ^-  (each (pair kids vase) sunk)
-    =/  bym  (bem pax)
-    =/  fil
-      ^-  (each vase sunk)
-      ?:  .=  ~  .^(@uvI %cz bym)
-        :-  %|  [%missing-local-resource bym]
-      ?:  =(%$ mar.bom)
-        :-  %&
-        !>  ~
-      ?.  .^(? %cu bym)
-        :-  %|  [%no-tube pax mar.bom]
-      =/  fil  .^(vase %cr bym)
-      =/  mar  (rear pax)
-      ?:  =(mar mar.bom)
-        :-  %&  fil
-      =;  con
-        ?~  con
-          :-  %|  [%no-tube pax mar.bom]
-        :-  %&  u.con
-      %-  mole                       :: TODO: remove
-      |.  ^-  vase
-      =/  tub  .^(tube:clay %cc (bem /[mar]/[mar.bom]))
-      %-  tub  fil
-    ?:  ?=(%| -.fil)
-      :-  %|  p.fil
-    :-  %&
-    :_  p.fil
-    .^((list path) %ct bym)
+    ?<  ?=(~ pax)
+    =/  age  i.pax  :: the path is prefixed with an agent name
+    =/  for  (bam age t.pax)
+    =/  kid  .^((list path) %gt for)
+    ?:  =(%$ mar.bom)
+      :+  %&  kid  !>(~)
+    =/  des  .^(desk %gd (bam age /$))
+    =/  fil  .^(cage %gr for)
+    ?:  =(p.fil mar.bom)
+      :+  %&  kid  q.fil
+    =/  tub  .^(tube:clay %cc (bam des /[p.fil]/[mar.bom]))
+    :+  %&  kid  (tub q.fil)
   ::
   :: ++make-branch
   :: creates a component state branch
@@ -567,8 +593,6 @@
     :-  [[%add yon.ses rop] boy]
     :_  dak
     %_  cew
-      fil  (mug q.p.dat)
-      kid  p.p.dat
       pop  pop
       loc  loc.boom.u.rig
       bom  boom.u.rig
@@ -623,8 +647,7 @@
   :: components.
   ++  update-branch
     =|  n=@
-    |=  $:  local-state-change=?
-            rop=rope
+    |=  $:  rop=rope
             pop=prop
             dek=deck
         ==
@@ -636,13 +659,6 @@
     =/  lyn  (rear rop)
     =/  dat  (hydrate-component bom.p.dek q.lyn)
     ?>  ?=(%& -.dat)
-    =/  fih  (mug q.p.dat)
-    ?:  ?&  !local-state-change  :: infer the update was triggered
-            =(0 n)               :: by a change in the state of an
-            =(fih fil.p.dek)     :: existing child in the resource's dir.
-            =(p.p.dat kid.p.dek) :: this is not cause for a rerender.
-        ==
-      [~^~ dek]
     =/  [sal=manx lot=loot]
       =/  rig  (~(got by rigs) p.lyn)
       =/  man
@@ -677,7 +693,7 @@
       ==
     :-  [(weld boy.p.dif bo) (weld q.dif jo)]
     %_  dek
-      p  p.dek(fil fih, kid p.p.dat, pop pop, aft sal)
+      p  p.dek(pop pop, aft sal)
       q  (~(uni by q.dek) add.p.dif)
     ==
   ::

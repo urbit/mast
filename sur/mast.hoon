@@ -1,13 +1,29 @@
 |%
++$  tide                                         :: poke sent out from a component
+  $:  src=ship                                   ::   client id
+      com=term                                   ::   component provenance
+      dat=cage                                   ::   poke data
+  ==                                             ::
 +$  crow  [=path data=(map @t @t)]               :: client event
-+$  blow  [caz=(list card) loc=$@(~ vase)]       :: event effects
++$  blow                                         :: event effects
+  $:  pok=(list (pair @tas cage))                ::
+      loc=$@(~ vase)                             ::
+  ==                                             ::
 +$  prop  (map @tas vase)                        :: component props state
-+$  kids  (list path)                            :: child component paths :: TODO:
++$  coms  (list term)                            :: component list
++$  kids  (list path)                            ::
 +$  scud                                         :: component context
-  $:  our=ship                                   ::   server
-      yon=ship                                   ::   client
-      pax=path                                   ::   namespace node identity
-      kid=kids                                   ::   child node paths
+  $:  $:  our=ship                               ::   server
+          yon=ship                               ::   client
+      ==                                         ::
+      $:  now=@da                                ::   now
+          eny=@uvJ                               ::   entropy
+      ==                                         ::
+      $:  com=coms                               ::   all available components
+          byk=beak                               ::   beak
+          pax=path                               ::   resource path
+          kid=kids                               ::   data under resource
+      ==                                         ::
   ==                                             ::
 +$  sack                                         :: component state
   $:  pop=prop                                   ::   props state
@@ -26,7 +42,7 @@
   ++  spar  *$-(crow blow)                       ::
   ++  sail  *$^([%hoot manx:hoot] manx)          ::
   --                                             ::
-+$  line  (pair term path)                       :: component name + file node path
++$  line  (pair term path)                       :: component name + file path
 +$  rope  (list line)                            :: component locational id
 +$  dock  (map [ship line] deck)                 :: ui sessions
 +$  deck                                         :: component node tree
@@ -34,9 +50,7 @@
   %+  pair  clew                                 ::
   %+  map  line  deck                            ::
 +$  clew                                         :: component node state
-  $:  fil=@      :: temp                         ::
-      kid=kids   :: temp                         ::
-      pop=prop                                   ::
+  $:  pop=prop                                   ::
       loc=vase                                   ::
       bom=boom                                   ::
       aft=manx                                   ::

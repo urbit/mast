@@ -1,0 +1,8 @@
+:~  title+'%athens-demo'
+    info+''
+    color+0x2f.11d6
+    website+'https://github.com/urbit/mast'
+    version+[0 0 1]
+    license+'MIT'
+    site+/mast/athens/posts/athens
+==
