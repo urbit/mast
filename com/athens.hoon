@@ -26,32 +26,58 @@
 ++  sail
   ^-  manx
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
-  ;div.athens
-    ;div.user
-      ;+  ?.  is-comet
-            ;/  (cite:title yon.scud)
-          ;form
-            =action  "/~/login"
-            =method  "POST"
-            ;label(for "login-input"): login:
-            ;input(id "login-input", name "name", required "");
-            ;input(type "hidden", name "redirect", value (spud ;:(weld /mast pax.scud /athens)));
-            ;input(type "hidden", name "eauth", value "");
-            ;button(type "submit"): 🠊
+    ;html
+      ;head
+        ;title: sup
+        ;meta(charset "UTF-8");
+        ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
+        ;style(type "text/tailwindcss")
+          ;-  %-  trip
+          '''
+          @theme {
+            --color-neutral-bg: #0f0f0f;
+            --color-neutral-400: #A3A3A3;
+          }
+          '''
+        ==
+        ;link
+          =href  "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+          =rel  "stylesheet"
+          ;
+        ==
+      ==
+      ;body
+        =class  ""
+        ;div
+          =class  "bg-neutral-bg text-neutral-400 athens"
+          ;div: text text
+          ;div.user
+            ;+  ?.  is-comet
+                  ;/  (cite:title yon.scud)
+                ;form
+                  =action  "/~/login"
+                  =method  "POST"
+                  ;label(for "login-input"): login:
+                  ;input(id "login-input", name "name", required "");
+                  ;input(type "hidden", name "redirect", value (spud ;:(weld /mast pax.scud /athens)));
+                  ;input(type "hidden", name "eauth", value "");
+                  ;button.material-symbols-outlined(type "submit"): arrow_forward
+                ==
           ==
-    ==
-    ;div.posts
-      ;+  style
-      ;*  %+  turn  kid.scud
-          |=  p=path
-          (make:mast %athens-post (weld pax.scud p) ~)
-      ;+  ?:  is-comet
-            ;div.post-form.login-block: Login to post
-          ;form.post-form(event "/submit/post")
-            =key  "athens-post-form"
-            ;textarea(name "post-input");
-            ;button: 🠊
+          ;div.posts
+            ;+  style
+            ;*  %+  turn  kid.scud
+                |=  p=path
+                (make:mast %athens-post (weld pax.scud p) ~)
+            ;+  ?:  is-comet
+                  ;div.post-form.login-block: Login to post
+                ;form.post-form(event "/submit/post")
+                  =key  "athens-post-form"
+                  ;textarea(name "post-input");
+                  ;button: 🠊
+                ==
           ==
+      ==
     ==
   ==
 ::
@@ -103,7 +129,7 @@
     .athens {
       height: 100%;
       width: 100%;
-      background: #0f0f0f;
+      /* background: #0f0f0f; */
       overflow-y: scroll;
     }
     .posts {

@@ -87,9 +87,6 @@
 ++  script-node
   ^-  manx
   ;script: {(trip mast-js)}
-++  style-node
-  ^-  manx
-  ;link(rel "stylesheet", href "https://nyc3.digitaloceanspaces.com/drain/hawk/1744044773876.css");
 ::
 ++  make-sub-path
   |=  src=@p
@@ -229,6 +226,7 @@
       :-  ~
       %-  as-octt:mimes:html
       %-  en-xml:html
+      ~|  %crash-here
       ?>  ?&  ?=(%html n.g.sal)
               ?=(^ c.sal)
               ?=(%head n.g.i.c.sal)
@@ -239,7 +237,6 @@
           ;=
             ;*  c.i.c.sal
             ;+  script-node
-            ;+  style-node
           ==
       ==
       ::
