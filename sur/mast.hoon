@@ -1,67 +1,94 @@
 |%
-+$  tide                                         :: poke sent out from a component
++$  gull                                         :: poke, component --> agent
   $:  src=ship                                   ::   client id
       com=term                                   ::   component provenance
       dat=cage                                   ::   poke data
   ==                                             ::
-+$  crow  [=path data=(map @t @t)]               :: client event
-+$  blow                                         :: event effects
-  $:  pok=(list (pair @tas cage))                ::
-      loc=$@(~ vase)                             ::
++$  crow  [=path data=(map @t @t)]               :: event poke, client --> component
++$  blow  (list (pair @tas cage))                :: pokes emitted from a component
++$  quay                                         :: url + query params
+  $:  url=path                                   ::
+      wut=(map @t @t)                            ::
   ==                                             ::
-+$  prop  (map @tas vase)                        :: component props state
-+$  coms  (list term)                            :: component list
-+$  kids  (list path)                            ::
-+$  scud                                         :: component context
-  $:  $:  our=ship                               ::   server
-          yon=ship                               ::   client
-      ==                                         ::
-      $:  now=@da                                ::   now
-          eny=@uvJ                               ::   entropy
-      ==                                         ::
-      $:  com=coms                               ::   all available components
-          byk=beak                               ::   beak
-          pax=path                               ::   resource path
-          kid=kids                               ::   data under resource
-      ==                                         ::
++$  keel                                         :: root component sample
+  $:  our=ship                                   ::
+      quay                                       ::
   ==                                             ::
-+$  sack                                         :: component state
-  $:  pop=prop                                   ::   props state
-      loc=vase                                   ::   local state
-      fil=vase                                   ::   node state
++$  brig                                         :: auth component sample
+  $:  src=ship                                   ::
+      hull                                       ::
   ==                                             ::
-+$  boom                                         :: component header
-  :: $@  mark
-  $:  mar=mark
-      kid=?(%x %y %z)  :: TODO:
-      loc=vase
++$  hull                                         :: component sample
+  $:  our=ship                                   ::
+      pop=prop                                   ::
+      sac=sack                                   ::
+  ==                                             ::
++$  prop  (map @tas vase)                        :: component props
++$  sack  (map @tas loot)                        :: component resource map
++$  loot                                         :: resource data
+  $:  src=path                                   ::
+      dir=(list path)                            ::
+      fil=vase                                   ::
+  ==                                             ::
++$  clew  (list (pair cord cord))                :: client state object init
++$  boom                                         :: resource spec
+  %-  list                                       ::
+  $:  name=@tas                                  ::   key
+      mark=@tas                                  ::   mark, potentially converted to
+      care=?(%x %z)                              ::   %x no kids, %z kids
+  ==                                             ::
++$  mast                                         :: component core                     :: TODO: refactor +$mast
+  $^  $:  [boom clew]                            ::   the default component creates
+          $_  ^|                                 ::   a publicly accessible, cached 
+          |_  hull                               ::   branch, unless it nests under
+          ++  spar  *$-(crow blow)               ::   an auth component branch
+          ++  sail  *$^(manx [%hoot manx:hoot])  ::
+          --                                     ::
+      ==                                         ::
+  $%  $:  %auth                                  :: auth component
+          [boom clew]                            ::   creates a branch that enables
+          $_  ^|                                 ::   client specific authorization
+          |_  brig                               ::   and rendering logic
+          ++  spar  *$-(crow blow)               ::
+          ++  sail  *$^(manx [%hoot manx:hoot])  ::
+          --                                     ::
+      $:  %root                                  :: root component
+          $_                                     ::   used to define the root of your
+          |~  keel                               ::   interface, and all valid routes
+          $_
+          ;html
+            ;head
+              ;*  *marl
+            ==
+            ;+  :~  [%body *mart]
+                :-  [[%mast *@tas] *mart]
+                    *marl
+                ==
+          ==
+      ==
   ==
-+$  mast                                         :: component core
-  $_  ^|                                         ::
-  |_  [scud sack]                                ::
-  ++  spar  *$-(crow blow)                       ::
-  ++  sail  *$^([%hoot manx:hoot] manx)          ::
-  --                                             ::
-+$  line  (pair term path)                       :: component name + file path
-+$  rope  (list line)                            :: component locational id
-+$  dock  (map [ship line] deck)                 :: ui sessions
-+$  deck                                         :: component node tree
-  $~  [*clew ~]                                  ::
-  %+  pair  clew                                 ::
-  %+  map  line  deck                            ::
-+$  clew                                         :: component node state
-  $:  pop=prop                                   ::
-      loc=vase                                   ::
-      bom=boom                                   ::
-      aft=manx                                   ::
-  ==                                             ::
-+$  loot  (map line prop)                        :: props for components to render
-+$  buoy  [?(%add %del) p=ship q=rope]           :: subscription effect
+::
+  ::
+::
++$  line  @t                                     :: component key
++$  rope  (list line)                            :: component node id
++$  dock  (map quay bitt)                        :: routes to components
++$  deck  (map $@(line [ship line]) bitt)        :: nested components
++$  bitt                                         :: component state
+  $:  bom=boom
+      sac=sack
+      aft=manx
+      kid=deck
+  ==
++$  buoy  [?(%add %del) p=rope]                  :: subscription effect
 +$  sunk                                         :: component creation error
-  $%  [%missing-component-file name=@tas]        ::
-      [%missing-local-resource =path]            ::
-      [%no-tube fil=path com=mark]               ::
+  $%  [%missing-component desk=@tas file=@tas]   ::
+      [%missing-resource =path]                  ::
+      [%no-tube fil=path for=mark]               ::
   ==                                             ::
+
+:: :: :: :: :: :: :: :: :: :: ::
+
 +$  wake                                         :: ui effects
   $:  sun=(list sunk)                            ::
       boy=(list buoy)                            ::
@@ -72,6 +99,10 @@
       boy=(list buoy)                            ::
       dek=$@(~ deck)                             ::
   ==                                             ::
+
+:: :: :: :: :: :: :: :: :: :: ::
+
+
 +$  diff                                         :: ++luff diff output
   %+  pair                                       ::
     $:  boy=(list buoy)                          ::
@@ -86,36 +117,55 @@
       [%change-attr key=_s+'' del=[%a (list k=_s+'')] new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
       [%text container-key=_s+'' data=_s+'']
   ==
-+$  card  card:agent:gall
-::
 ::
 :: ++make
-:: produce a component element.
-:: takes the name of the component, a filesystem path to render,
-:: and a list of props that are limited to tape values.
+:: produce a %mast component element.
 ++  make
-  |=  [component=term file=path limited-props=(list [@tas tape])]
+  |=  $:  component=[desk=@tas file=path]
+          key=tape
+          props=(list [@tas cord])
+          resources=(list [@tas path])
+      ==
   ^-  manx
-  [[[%mast component] (snoc limited-props [%path (spud file)])] ~]
-::
-:: ++make-hoot
-:: produce a component element when a ++sail arm is in hoot mode.
-:: works the same as ++make,
-:: but lets you pass in a list of full props with vase values.
-++  make-hoot
-  |=  [component=term file=path props=(list [@tas vase])]
-  ^-  manx:hoot
-  =;  pop
-    [[[%mast component] [[%prop pop] [%path (spud file)] ~]] ~]
-  ^-  (list beer:hoot)
-  %+  turn  props
-  |=  [k=@tas v=vase]
-  ^-  beer:hoot
-  :-  ~
-  :*  [%rock [%tas k]]
-      [%hand [p.v [%1 q.v]]]
+  :_  ~
+  :*  :-  %mast  (spat component)
+      :-  %key  key
+      %+  weld
+      %+  turn  props
+      |=  [k=@tas v=tape]
+      :-  [%prop k]  (trip v)
+      %+  turn  resources
+      |=  [k=@tas v=path]
+      :-  [%path k]  (spud v)
   ==
 ::
-
+:: ++make-hoot
+:: produce a %mast component element
+:: for a sail arm in %hoot mode,
+:: allowing you to pass in vases as props.
+++  make-hoot
+  |=  $:  component=[desk=@tas file=path]
+          key=tape
+          props=(list [@tas vase])
+          resources=(list [@tas path])
+      ==
+  ^-  manx:hoot
+  :_  ~
+  :*  :-  %mast  (spat component)
+      :-  %key  key
+      :_  %+  turn  resources
+          |=  [k=@tas v=path]
+          :-  [%path k]  (spud v)
+      :-  %prop
+      ^-  (list beer:hoot)
+      %+  turn  props
+      |=  [k=@tas v=vase]
+      ^-  beer:hoot
+      :-  ~
+      :*  [%rock [%tas k]]
+          [%hand [p.v [%1 q.v]]]
+      ==
+  ==
+::
 --
 
