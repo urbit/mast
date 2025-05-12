@@ -2,7 +2,7 @@
 :-  ^-  boom:mast
     :*  %athens-post
         %z
-        !>(|^|^|)
+        !>(&^|^|)
     ==
 =<
 ^-  mast:mast
@@ -59,58 +59,62 @@
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   ;div.post-node-container
     ;div.post-container.flex.items-center.justify-between
-      ;div.post.pointer
-        ;div(event "/click/toggle-hide")
-          =class  "author {?:(hidden.loc "hide" "")}"
-          ;+  ;/  (cite:title author.dat)
+      ;div.flex.flex-row.w-full
+        ;div.post.pointer
+          ;div(event "/click/toggle-hide")
+            =class  "author {?:(hidden.loc "hide" "")}"
+            ;+  ;/  (cite:title author.dat)
+          ==
         ==
-      ==
-      ;+  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
+        ;+  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
           ;div
-            =class  "message {?:(hidden.loc "hide" "full")} {?:(=(0 depth) "" "reply")} mx-4"
+            =class  "message {?:(hidden.loc "hide" "full")} {?:(=(0 depth) "" "reply")} flex flex-col gap-4"
             =style  "margin-left: {((d-co:co 1) depth)}em"
             ;+  ?:  edit.loc
-                  ;form.post-form(event "/submit/edit")
-                    ;athens-textarea(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-hidden font-inherit box-border p-1 text-sm", name "edit-input");
-                    ;button(event "/click/toggle-edit"): edit 
-                  ==
-                ;div
-                ;*  %+  turn  content-wall
-                    |=  =tape
-                    ^-  manx
-                    =/  new-line  (find "\0a" tape)
-                    =/  urli  (find "://" tape)
-                    ?.  =(~ urli)
-                      ;a.underline/"{tape}": {(weld tape " ")}
-                    ;/  (weld tape " ")
+                ;form.post-reply-form(event "/submit/edit")
+                  ;athens-textarea(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-hidden font-inherit box-border p-1 text-sm", name "edit-input");
+                  ;button.button(event "/click/toggle-edit"): edit 
                 ==
-                ;+  ?:  |(!reply.loc hidden.loc)
-                      ;div.hidden;
-                    ;form.post-form(event "/submit/reply")
-                      ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden font-inherit box-border p-1 text-sm", name "reply-input");
-                      ;button(event "/click/toggle-reply"): Cancel
-                      ;button.reply-button(type "submit"): Reply
-                    ==
+              ;div
+              ;*  %+  turn  content-wall
+                  |=  =tape
+                  ^-  manx
+                  =/  new-line  (find "\0a" tape)
+                  =/  urli  (find "://" tape)
+                  ?.  =(~ urli)
+                    ;a.underline/"{tape}": {(weld tape " ")}
+                  ;/  (weld tape " ")
+              ==
+              ;+  ?:  |(!reply.loc hidden.loc)
+                    ;div.hidden;
+                  ;form.post-reply-form(event "/submit/reply")
+                    ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden font-inherit box-border p-1 text-sm", name "reply-input");
+                    ;button(event "/click/toggle-reply"): Cancel
+                    ;button.reply-button(type "submit"): Reply
+                  ==
           ==
+      ==
+      ;div.flex.flex-row
         ;+  ?:  =(0 (lent kid.scud))
-              ;div.hidden;
-            ;div
-              =class  "reply-num {?:(hidden.loc "hide" "full")}"
-              ;p.inline.whitespace-nowrap.w-auto: {<(lent kid.scud)>} {?:(=(1 (lent kid.scud)) " reply" " replies")}
-            ==
+            ;div.hidden;
+          ;div
+            =class  "reply-num {?:(hidden.loc "hide" "full")} pr-2"
+            ;p.inline.whitespace-nowrap.w-auto: {<(lent kid.scud)>} {?:(=(1 (lent kid.scud)) " reply" " replies")}
+          ==
         ;div
           =class  "reply-date {?:(hidden.loc "hide" "full")} inline whitespace-nowrap w-auto"
           {(date-to-tape (slav %da (rear pax.scud)) now.scud)}
         ==
-        ;+  ?:  ?|  hidden.loc
-                    is-comet
-                ==
-              ;div.hidden;
-            ;div.options
-              ;button(event "/click/toggle-reply"): reply
-              ;button(event "/click/toggle-edit"): edit
-              ;button(event "/click/delete"): delete
-            ==
+      ==
+      ;+  ?:  ?|  hidden.loc
+                  is-comet
+              ==
+            ;div.hidden;
+          ;div.options.flex
+            ;button(event "/click/toggle-reply"): reply
+            ;button(event "/click/toggle-edit"): edit
+            ;button(event "/click/delete"): delete
+          ==
     ==
     ;+  ?:  ?|  hidden.loc
                 ?=(~ kid.scud)

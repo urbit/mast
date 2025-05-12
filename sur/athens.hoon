@@ -3,6 +3,9 @@
   $%  [%put-post post-at=path content=@t]
       [%patch-post post-at=path content=@t]
       [%del-post at=path]
+      [%access-public public=?]
+      [%edit-access-id ids=(list @p)]
+      [%del-access-id id=@p]
   ==
 ::
 +$  post-id  @da
@@ -20,10 +23,15 @@
 +$  user-session
   $:  read-posts=(set post-id)
   ==
++$  access  
+  $:  public=? 
+      ids=(list @p)
+  ==
 ::
 +$  state
   $:  =posts
       =user-sessions
+      =access
   ==
 --
 

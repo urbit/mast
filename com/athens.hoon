@@ -1,7 +1,7 @@
 /-  mast, athens
 /*  athens-textarea  %js  /fil/athens-textarea/js
 :-  ^-  boom:mast
-    :*  %$
+    :*  %athens-access
         %z
         !>(~)
     ==
@@ -13,6 +13,7 @@
   |=  =crow:mast
   ^-  blow:mast
   =/  pol  ^-  (pole @ta)  path.crow
+  ~&  :-  %pol  pol
   ?+  pol  ~^~
     ::
       [%submit %post ~]
@@ -27,9 +28,10 @@
 ++  sail
   ^-  manx
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
+  =/  access  !<  access:athens  fil.sack
     ;html
       ;head
-        ;title: sup
+        ;title: Athens
         ;meta(charset "UTF-8");
         ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
         ;script: {(trip athens-textarea)}
@@ -45,6 +47,10 @@
       ==
       ;body
         =class  ""
+        ;+  ?.  |(=(our.scud yon.scud) (access-check yon.scud access))
+          ;div
+            ;  "No access"
+          ==
         ;div
           =class  "bg-neutral-bg text-neutral-400 athens"
           ;div.user
@@ -82,6 +88,13 @@
 ::
 --
 |%
+::
+++  access-check
+  |=  [=ship =access:athens]
+  ^-  ?
+  ?.  public.access  
+    ?.  =(~ (find [ship]~ ids.access))  |  &
+  ?.  =(~ (find [ship]~ ids.access))  &  |
 ::
 ++  style
   ^-  manx
@@ -252,6 +265,16 @@
     .post-form > button:hover {
       color: #FAFAFA;
     }
+    .post-reply-form {
+      width: 100%;
+      padding: 0.15em;
+      border: solid;
+      border-width: 1px;
+      border-radius: 6px;
+      border-color: #575757;
+      display: flex;
+      gap: 8px;
+    }
     .reply-button{
       padding: 0.15em;
       border: solid;
@@ -259,8 +282,6 @@
       border-radius: 6px;
       border-color: #2C2C2C;
       background-color: #2C2C2C;
-
-      display: flex;
     }
     '''
   ==

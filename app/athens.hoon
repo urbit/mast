@@ -55,7 +55,7 @@
       ?+  care  ~
         %r
           :^  ~  ~  %$  !>
-          [%noun !>(~)]
+          [%athens-access !>(access.state)]
         %t
           :^  ~  ~  %$  !>
           (get-post-key-paths posts)
@@ -116,6 +116,14 @@
         %del-post
       %-  del-post  at.act
       ::
+        %access-public
+      %-  access-public  public.act
+      ::
+        %edit-access-id
+      %-  edit-access-id  ids.act
+      ::
+        %del-access-id
+      %-  del-access-id  id.act
     ==
     ::
   == 
@@ -176,6 +184,28 @@
   %-  emit
   %-  make-fact-card  (weld /t/posts (snip at))
 ::
+++  access-public
+  |=  public=?
+  ^+  cor
+  ?:  =(public public.access)  cor
+  =.  access  [public ~]
+  cor
+::
+++  edit-access-id
+  |=  ids=(list @p)
+  ^+  cor
+  =.  access  :-  public.access 
+              (welp ids.access ids)
+  cor
+::
+++  del-access-id
+  |=  id=@p
+  ^+  cor
+  =/  index-id  (find [id]~ ids.access)
+  ?~  index-id  cor
+  =.  access  :-  public.access
+              (oust [(need index-id) 1] ids.access)
+  cor
 ++  get-post-key-paths
   |=  poz=posts:athens
   ^-  (list path)
