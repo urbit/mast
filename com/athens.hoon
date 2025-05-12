@@ -1,4 +1,5 @@
 /-  mast, athens
+/*  athens-textarea  %js  /fil/athens-textarea/js
 :-  ^-  boom:mast
     :*  %$
         %z
@@ -31,6 +32,7 @@
         ;title: sup
         ;meta(charset "UTF-8");
         ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
+        ;script: {(trip athens-textarea)}
         ;style(type "text/tailwindcss")
           ;-  %-  trip
           '''
@@ -40,28 +42,23 @@
           }
           '''
         ==
-        ;link
-          =href  "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-          =rel  "stylesheet"
-          ;
-        ==
       ==
       ;body
         =class  ""
         ;div
           =class  "bg-neutral-bg text-neutral-400 athens"
-          ;div: text text
           ;div.user
             ;+  ?.  is-comet
                   ;/  (cite:title yon.scud)
-                ;form
+                ;form.flex
                   =action  "/~/login"
                   =method  "POST"
                   ;label(for "login-input"): login:
                   ;input(id "login-input", name "name", required "");
                   ;input(type "hidden", name "redirect", value (spud ;:(weld /mast pax.scud /athens)));
                   ;input(type "hidden", name "eauth", value "");
-                  ;button.material-symbols-outlined(type "submit"): arrow_forward
+                  ;button(type "submit"): 
+                    ;i(data-lucide "arrow-right");
                 ==
           ==
           ;div.posts
@@ -73,12 +70,14 @@
                   ;div.post-form.login-block: Login to post
                 ;form.post-form(event "/submit/post")
                   =key  "athens-post-form"
-                  ;textarea(name "post-input");
-                  ;button: 🠊
+                  ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden font-inherit box-border p-1 text-sm", name "post-input");
+                  ;button: ↵
                 ==
           ==
       ==
     ==
+    ;script(src "https://unpkg.com/lucide@latest");
+    ;script:  lucide.createIcons();
   ==
 ::
 --
@@ -89,7 +88,6 @@
   ;style
     ;+  ;/  %-  trip
     '''
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
     .options {
       color: #A3A3A3;
     }
@@ -146,9 +144,7 @@
       flex-direction: column;
     }
     .post-container {
-      display: flex;
       flex-direction: row;
-      gap: 16px
     }
     .post {
       display: flex;
@@ -202,6 +198,24 @@
     .replies {
       padding-left: 0px;
     }
+    .reply-num{
+      color: #737373;
+      font-size: 14px;
+    }
+    .reply-num.full{
+      display: none;
+    }
+    .reply-num.hide{
+      display: flex;
+    }
+    .reply-date.full{
+      display: none;
+    }
+    .reply-date.hide{
+      display: flex;
+      color: #737373;
+      font-size: 14px;
+    }
     .post-form {
       width: 100%;
       margin-top: 0.45em;
@@ -237,6 +251,16 @@
     }
     .post-form > button:hover {
       color: #FAFAFA;
+    }
+    .reply-button{
+      padding: 0.15em;
+      border: solid;
+      border-width: 1px;
+      border-radius: 6px;
+      border-color: #2C2C2C;
+      background-color: #2C2C2C;
+
+      display: flex;
     }
     '''
   ==

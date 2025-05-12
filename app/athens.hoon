@@ -110,6 +110,9 @@
         %put-post
       %+  put-post  post-at.act  content.act
       ::
+        %patch-post 
+      %+  patch-post  post-at.act  content.act
+      ::
         %del-post
       %-  del-post  at.act
       ::
@@ -133,6 +136,21 @@
       post-at  t.post-at
       posts  rez
     ==
+  %-  emit
+  %-  make-fact-card  (weld /t/posts post-at)
+::
+++  patch-post 
+  |=  [post-at=path dat=@t]
+  ^+  cor 
+  =.  posts
+    |-  ^-  posts:athens
+    ?~  post-at  posts
+    =/  id  (slav %da i.post-at)
+    =/  [poz=post:athens rez=posts:athens]  (~(got by posts) id)
+    %+  ~(put by posts)  id
+    :_  rez
+    :-  author.poz
+        dat
   %-  emit
   %-  make-fact-card  (weld /t/posts post-at)
 ::
