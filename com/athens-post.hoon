@@ -20,7 +20,6 @@
     !>  loc(hidden !hidden.loc)
     ::
       [%click %toggle-reply ~]
-    ~&  >  %toggle-reply
     :-  ~
     !>  loc(reply !reply.loc)
     ::
@@ -73,7 +72,7 @@
             ;+  ?:  edit.loc
                 ;form.post-reply-form(event "/submit/edit")
                   ;athens-textarea(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-hidden font-inherit box-border p-1 text-sm", name "edit-input");
-                  ;button.button(event "/click/toggle-edit"): edit 
+                  ;button(event "/click/toggle-edit"): edit 
                 ==
               ;div
               ;*  %+  turn  content-wall

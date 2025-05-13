@@ -3,7 +3,7 @@
 :-  ^-  boom:mast
     :*  %athens-access
         %z
-        !>(~)
+        !>(|)
     ==
 =<
 ^-  mast:mast
@@ -13,20 +13,52 @@
   |=  =crow:mast
   ^-  blow:mast
   =/  pol  ^-  (pole @ta)  path.crow
+  =/  loc  !<  ?  loc.sack
   ~&  :-  %pol  pol
   ?+  pol  ~^~
     ::
       [%submit %post ~]
     =/  dat  (~(got by data.crow) 'post-input')
     ?:  =('' dat)  ~^~
-    :_  ~
+    :_  !>  loc
     :~  [%athens %athens-action !>([%put-post ~ dat])]
     ==
     ::
+      [%mouseenter %show-settings ~]
+    ?:  loc  ~^~
+    :_   !>  !loc
+    ~
+    ::
+      [%mouseleave %show-settings ~]
+    ?.  loc  ~^~
+    :_   !>  !loc
+    ~
+    ::
+      [%change %toggle-private ~]
+    =/  access  !<  access:athens  fil.sack
+    :_  !>  loc
+    :~  [%athens %athens-action !>([%access-public !public.access])]
+    ==
+    ::
+      [%submit %remove-ship ~]
+    =/  dat  (~(got by data.crow) 'ship-input')
+    ?:  =('' dat)  ~^~
+    :_  !>  loc
+    :~  [%athens %athens-action !>([%del-access-id (slav %p dat)])]
+    ==
+    ::
+      [%submit %add-ship ~]
+    ::  TODO: parser from tape to list of @p
+    =/  dat  (~(got by data.crow) 'ship-input')
+    ?:  =('' dat)  ~^~
+    :_  !>  loc
+    :~  [%athens %athens-action !>([%edit-access-id [`@p`(slav %p dat)]~])]
+    ==
   ==
 ::
 ++  sail
   ^-  manx
+  =/  loc  !<  ?  loc.sack
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   =/  access  !<  access:athens  fil.sack
     ;html
@@ -55,7 +87,40 @@
           =class  "bg-neutral-bg text-neutral-400 athens"
           ;div.user
             ;+  ?.  is-comet
-                  ;/  (cite:title yon.scud)
+                  ;div(event "/mouseenter/show-settings /mouseleave/show-settings")
+                    ;  {(cite:title yon.scud)}
+                    ;+  ?:  =(our.scud yon.scud)
+                      ;div
+                      =class  "{?.(loc "hidden" "")}"
+                        ;  Public Access:
+                        ;label.relative.inline-flex.items-center
+                          ;+  ?:  public.access
+                            ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
+                              ;*  toggle
+                            ==
+                          ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
+                            ;*  toggle
+                          ==
+                        ==
+                        ;+  ?:  public.access
+                          ;div: Black list
+                        ;div: White list
+                        ;*  %+  turn  ids.access
+                            |=  =ship
+                            ;div
+                              ; {(scow %p ship)}
+                              ;form(event "/submit/remove-ship")
+                                ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
+                                ;button: x
+                              ==
+                            ==
+                          ;form(event "/submit/add-ship")
+                            ;input(type "textbox", name "ship-input");
+                            ;button: add
+                          ==
+                      ==
+                    ;div;
+                  ==
                 ;form.flex
                   =action  "/~/login"
                   =method  "POST"
@@ -67,6 +132,7 @@
                     ;i(data-lucide "arrow-right");
                 ==
           ==
+          ;div;
           ;div.posts
             ;+  style
             ;*  %+  turn  kid.scud
@@ -95,6 +161,13 @@
   ?.  public.access  
     ?.  =(~ (find [ship]~ ids.access))  |  &
   ?.  =(~ (find [ship]~ ids.access))  &  |
+::
+++  toggle
+  ^-  marl
+  ;=
+    ;div.w-9.h-4.bg-gray-300.rounded-full.peer-checked:bg-blue-500.peer-focus:ring-2.peer-focus:ring-blue-500.peer-focus:ring-offset-2.transition-colors;
+    ;div(class "absolute w-4 h-3 bg-white rounded-full left-0.5 top-0.5 peer-checked:translate-x-full transition-transform");
+  ==
 ::
 ++  style
   ^-  manx

@@ -145,7 +145,7 @@
       posts  rez
     ==
   %-  emit
-  %-  make-fact-card  (weld /t/posts post-at)
+  %+  make-fact-card  (weld /r/posts post-at)  ~
 ::
 ++  patch-post 
   |=  [post-at=path dat=@t]
@@ -160,7 +160,7 @@
     :-  author.poz
         dat
   %-  emit
-  %-  make-fact-card  (weld /t/posts post-at)
+  %+  make-fact-card  (weld /r/posts post-at)  ~
 ::
 ++  del-post
   |=  at=path
@@ -182,21 +182,24 @@
       posts  rez
     ==
   %-  emit
-  %-  make-fact-card  (weld /t/posts (snip at))
+  %+  make-fact-card  (weld /r/posts (snip at))  ~
 ::
 ++  access-public
   |=  public=?
   ^+  cor
+  ~&  access
   ?:  =(public public.access)  cor
   =.  access  [public ~]
-  cor
+  %-  emit
+  %+  make-fact-card  /t/posts  `access
 ::
 ++  edit-access-id
   |=  ids=(list @p)
   ^+  cor
   =.  access  :-  public.access 
               (welp ids.access ids)
-  cor
+  %-  emit
+  %+  make-fact-card  /t/posts  `access
 ::
 ++  del-access-id
   |=  id=@p
@@ -205,7 +208,9 @@
   ?~  index-id  cor
   =.  access  :-  public.access
               (oust [(need index-id) 1] ids.access)
-  cor
+  %-  emit
+  %+  make-fact-card  /t/posts  `access
+::
 ++  get-post-key-paths
   |=  poz=posts:athens
   ^-  (list path)
@@ -214,9 +219,12 @@
   /[(scot %da k)]
 ::
 ++  make-fact-card
-  |=  =path
+  |=  [=path uacc=(unit access:athens)]
   ^-  card
-  :*  %give  %fact  ~[path]  %noun  !>(~)
+  ?:  =(~ uacc)
+    :*  %give  %fact  ~[path]  %athens-access  !>(access.state)
+    ==
+  :*  %give  %fact  ~[path]  %athens-access  !>((need uacc))
   ==
 ::
 --
