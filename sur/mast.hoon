@@ -1,7 +1,7 @@
 |%
 +$  gull                                         :: poke, component --> agent
   $:  src=ship                                   ::   client id
-      com=term                                   ::   component provenance
+      com=path                                   ::   component
       dat=cage                                   ::   poke data
   ==                                             ::
 +$  crow  [=path data=(map @t @t)]               :: event poke, client --> component
@@ -11,8 +11,9 @@
       wut=(map @t @t)                            ::
   ==                                             ::
 +$  keel                                         :: root component sample
-  $:  our=ship                                   ::
-      quay                                       ::
+  $:  our=ship                                   ::   our
+      bas=knot                                   ::   base path segment bound to
+      quay                                       ::   request url + query params
   ==                                             ::
 +$  brig                                         :: auth component sample
   $:  src=ship                                   ::
@@ -20,12 +21,12 @@
   ==                                             ::
 +$  hull                                         :: component sample
   $:  our=ship                                   ::
-      pop=prop                                   ::
-      sac=sack                                   ::
+      par=gust                                   ::
+      res=gale                                   ::
   ==                                             ::
-+$  prop  (map @tas vase)                        :: component props
-+$  sack  (map @tas loot)                        :: component resource map
-+$  loot                                         :: resource data
++$  gust  (map @tas @t)                          :: component params
++$  gale                                         :: component resources
+  %+  map  @tas                                  ::
   $:  src=path                                   ::
       dir=(list path)                            ::
       fil=vase                                   ::
@@ -42,7 +43,7 @@
           $_  ^|                                 ::   a publicly accessible, cached 
           |_  hull                               ::   branch, unless it nests under
           ++  spar  *$-(crow blow)               ::   an auth component branch
-          ++  sail  *$^(manx [%hoot manx:hoot])  ::
+          ++  sail  *manx                        ::
           --                                     ::
       ==                                         ::
   $%  $:  %auth                                  :: auth component
@@ -50,11 +51,11 @@
           $_  ^|                                 ::   client specific authorization
           |_  brig                               ::   and rendering logic
           ++  spar  *$-(crow blow)               ::
-          ++  sail  *$^(manx [%hoot manx:hoot])  ::
+          ++  sail  *manx                        ::
           --                                     ::
       $:  %root                                  :: root component
-          $_                                     ::   used to define the root of your
-          |~  keel                               ::   interface, and all valid routes
+          $-  keel                               ::   used to define the root of your
+          $^                                     ::   interface, and all valid routes
           $_
           ;html
             ;head
@@ -65,21 +66,28 @@
                     *marl
                 ==
           ==
+          $%  [%redirect p=path]
+          ==
       ==
   ==
++$  bind  [name=knot =desk file=path]            :: bind base path name to root component
 ::
   ::
 ::
-+$  line  @t                                     :: component key
-+$  rope  (list line)                            :: component node id
++$  lake  (map knot dock)                        :: all base paths to components
++$  line  cord                                   :: component key
++$  rope  (list line)                            :: component locational id
 +$  dock  (map quay bitt)                        :: routes to components
 +$  deck  (map $@(line [ship line]) bitt)        :: nested components
 +$  bitt                                         :: component state
   $:  bom=boom
-      sac=sack
+      par=gust
+      res=tide
       aft=manx
       kid=deck
   ==
++$  tide  (map @tas path)                        :: current resources
++$  pool  (map line [par=gust res=tide])         :: nested component element data on render
 +$  buoy  [?(%add %del) p=rope]                  :: subscription effect
 +$  sunk                                         :: component creation error
   $%  [%missing-component desk=@tas file=@tas]   ::
@@ -123,7 +131,7 @@
 ++  make
   |=  $:  component=[desk=@tas file=path]
           key=tape
-          props=(list [@tas cord])
+          params=(list [@tas cord])
           resources=(list [@tas path])
       ==
   ^-  manx
@@ -131,40 +139,12 @@
   :*  :-  %mast  (spat component)
       :-  %key  key
       %+  weld
-      %+  turn  props
-      |=  [k=@tas v=tape]
-      :-  [%prop k]  (trip v)
+      %+  turn  params
+      |=  [k=@tas v=cord]
+      :-  [%para k]  (trip v)
       %+  turn  resources
       |=  [k=@tas v=path]
       :-  [%path k]  (spud v)
-  ==
-::
-:: ++make-hoot
-:: produce a %mast component element
-:: for a sail arm in %hoot mode,
-:: allowing you to pass in vases as props.
-++  make-hoot
-  |=  $:  component=[desk=@tas file=path]
-          key=tape
-          props=(list [@tas vase])
-          resources=(list [@tas path])
-      ==
-  ^-  manx:hoot
-  :_  ~
-  :*  :-  %mast  (spat component)
-      :-  %key  key
-      :_  %+  turn  resources
-          |=  [k=@tas v=path]
-          :-  [%path k]  (spud v)
-      :-  %prop
-      ^-  (list beer:hoot)
-      %+  turn  props
-      |=  [k=@tas v=vase]
-      ^-  beer:hoot
-      :-  ~
-      :*  [%rock [%tas k]]
-          [%hand [p.v [%1 q.v]]]
-      ==
   ==
 ::
 --

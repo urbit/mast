@@ -1,5 +1,4 @@
 /-  *mast
-/~  rigs  [=boom =mast]  /com
 /*  mast-js  %js  /lib/mast/js
 ::
 :: O╭ ┌┬╮╭─╮╭─╮┌┬┐
@@ -8,8 +7,7 @@
 ::
 |%
 +$  state-0
-  $:  =coms 
-      =dock
+  $:  =lake
   ==
 +$  state-n
   $%  [%state-0 state-0]
@@ -26,27 +24,18 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  =.  coms  (sort ~(tap in ~(key by rigs)) aor)
   :_  this
   :~  (bind-url dap.bowl /mast)
   ==
 ::
 ++  on-save
   ^-  vase
-  !>  dock
+  !>  ~
 ::
 ++  on-load
   |=  =vase
   ^-  (quip card _this)
-  =.  coms  (sort ~(tap in ~(key by rigs)) aor)
-  =/  doc  (mole |.(!<(^dock vase)))
-  :_  this
-  ?~  doc  ~
-  %-  ~(rep by u.doc)
-  |=  [[k=(pair ship line) v=deck] a=(list card)]
-  %+  weld  a
-  %-  make-resource-subscription-cards
-  %+  unsubscribe-branch:(ui-abed:ui k)  [q.k ~]  v
+  :-  ~  this
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -87,11 +76,8 @@
 ++  script-node
   ^-  manx
   ;script: {(trip mast-js)}
-++  style-node
-  ^-  manx
-  ;link(rel "stylesheet", href "https://nyc3.digitaloceanspaces.com/drain/hawk/1744044773876.css");
 ::
-++  make-sub-path
+++  make-sub-path               :: TODO:
   |=  src=@p
   ^-  path
   [%mast (scot %p src) ~]
@@ -102,7 +88,7 @@
   :*  %pass  /bind  %arvo  %e  %connect  [~ url]  app
   ==
 ::
-++  make-component-wire
+++  make-component-wire                   :: TODO:
   |=  [car=@tas yon=ship rop=rope]
   ^-  wire
   :-  car
@@ -110,7 +96,7 @@
   %+  turn  rop
   |=  i=line  (spat i)
 ::
-++  parse-component-wire
+++  parse-component-wire                   :: TODO:
   |=  wir=wire
   ^-  [@tas ship rope]
   ?>  ?=([@ @ *] wir)
@@ -135,7 +121,7 @@
   :-  route.pok
   :-  path.pok  data.pok
 ::
-++  make-diff-cards
+++  make-diff-cards                   :: TODO:
   |=  [yon=ship jon=(list json)]
   ^-  (list card)
   ?.  .?  jon  ~
@@ -180,15 +166,15 @@
       [%give %kick ~[/http-response/[rid]] ~]
   ==
 ::
-++  make-blow-poke-cards
-  |=  [src=ship com=term pok=(list (pair @tas cage))]
+++  make-gull-cards
+  |=  [src=ship com=path pok=(list (pair @tas cage))]
   ^-  (list card:agent:gall)
   %+  murn  pok
   |=  [for=@tas dat=cage]
   ?:  =(for dap.bowl)  ~
   :-  ~
   :*  %pass  /blow-poke  %agent  [our.bowl for]  %poke
-      %mast-poke  !>(`tide`[src com dat])
+      %mast-poke  !>(`gull`[src com dat])
   ==
 ::
 ++  poke
@@ -377,20 +363,12 @@
       %.  cro
       %~  spar  mast.rig
       :-  (en-scud q.lyn p.p.dat)  [pop.p.dek.com loc.p.dek.com q.p.dat]
-    =/  caz  (make-blow-poke-cards yon.ses p.lyn pok.blo)
+    =/  caz  (make-gull-cards yon.ses p.lyn pok.blo)
     ?~  loc.blo
       :-  [| caz]  ui-core
     :-  [& caz]
     %_  ui-core
       loc.p.dek.com  loc.blo
-    ==
-  ::
-  ++  en-scud
-    |=  [pax=path kid=kids]
-    ^-  scud
-    :*  [our.bowl yon.ses]
-        [now.bowl eny.bowl]
-        [coms byk.bowl pax kid]
     ==
   ::
   :: ++sunk-page
@@ -452,83 +430,72 @@
         ==
     ==
   ::
-  :: ++take-hoot
-  :: process manx:hoot from ++sail:mast.
-  :: turns the manx:hoot into regular manx,
-  :: and collects any props from component elements.
-  ++  take-hoot
-    |=  mat=manx:hoot
-    ^-  [manx loot]
-    =|  lot=loot
-    =/  mar=marl:hoot  [mat ~]
-    =<  ?>  ?=(^ p)  [i.p q]
-    |-  ^-  (pair marl loot)
-    %^  spin  mar  lot
-    |=  [i=tuna:hoot a=loot]
-    ^-  [manx loot]
-    ?>  ?=(^ -.i)
-    ?.  ?=([%mast @] n.g.i)
-      =/  [m=marl b=loot]  ^$(mar c.i)
-      :_  (~(uni by a) b)
-      :_  m
-      :-  n.g.i
-      %-  mart  a.g.i
-    =;  [paf=(unit tape) pop=prop]
-      ?>  ?=(^ paf)
-      :-  [[n.g.i [[%path u.paf] ~]] ~]
-      %+  ~(put by a)  [+.n.g.i (scan u.paf stap)]  pop
-    %+  roll  a.g.i
-    |=  $:  [k=mane:hoot v=(list beer:hoot)]
-            [pa=(unit tape) po=prop]
+  :: ++furl
+  :: processes all rendered sail;
+  :: controls keys, and handles component elements
+  ++  furl
+    |=  [lin=line sal=manx]
+    :: set prev-key with the component key of this sail
+    =/  prev-key  `@uw`(slav %uw lin)
+    =/  pos-key  *(list @)
+    :: add a mast:component attribute to tell the script this is a component
+    =.  a.g.sal  [[[%mast %component] ""] a.g.sal]
+    |-  ^-  [pool manx]
+    :: temporary: if text node, add text node wrapper
+    =?  sal  =(%$ n.g.sal)  ;t-  ;+  sal  ==
+    :: build the current element's key:
+    =/  found-key
+      ^-  tape
+      %+  roll  a.g.sal
+      |=  [[n=mane v=tape] a=tape]
+      ?:  =(%key n)  v  a
+    =/  this-key  `@uw`(mug [prev-key pos-key found-key])
+    =.  a.g.sal
+      :-  [%key ((w-co:co 1) this-key)]
+      ?~  found-key  a.g.sal
+      %+  skip  a.g.sal
+      |=  [n=mane v=tape]  =(%key n)
+    :: don't recurse for these elements:
+    ?:  ?|  =(%t- n.g.sal)
+            =(%input n.g.sal)   =(%textarea n.g.sal)
+            =(%script n.g.sal)  =(%img n.g.sal)
+            =(%link n.g.sal)    =(%hr n.g.sal)
+            =(%meta n.g.sal)    =(%base n.g.sal)
         ==
-    ^+  [pa po]
-    ?:  ?=(%prop k)
-      :-  pa
-      %-  malt
-      %+  turn  v
-      |=  ber=beer:hoot
-      ^-  [@tas vase]
-      ?>  ?&  ?=(^ ber)
-              ?=(^ -.p.ber)
-              ?=(%rock -.p.p.ber)
-              ?=(@ q.p.p.ber)
-              ?=(%hand -.q.p.ber)
-              ?=(%1 -.q.q.p.ber)
-          ==
-      :-  q.p.p.ber
-      :-  p.q.p.ber  p.q.q.p.ber
-    ?:  ?=(%path k)
-      :_  po
-      :-  ~
-      %-  tape  v
-    :-  pa  po
-  ::
-  :: ++get-loot
-  :: collects props from any component elements.
-  :: this arm is run in place of ++take-hoot when the sail is not hoot mode.
-  ++  get-loot
-    =|  lot=loot
-    |=  man=manx
-    ^-  loot
-    =?  lot  ?=([%mast @] n.g.man)
-      =;  [paf=(unit tape) pop=prop]
-        ?>  ?=(^ paf)
-        %+  ~(put by lot)  [+.n.g.man (scan u.paf stap)]  pop
-      %+  roll  a.g.man
-      |=  $:  [k=mane v=tape]
-              [pa=(unit tape) po=prop]
-          ==
-      ?:  ?=(%path k)
-        :-  [~ v]  po
-      :-  pa
-      ?^  k  po
-      %+  ~(put by po)  k  !>(v)
-    %+  roll  c.man
-    |=  [i=manx a=_lot]
-    %=  ^$
-      man  i
-      lot  a
-    ==
+      :-  ~  sal
+    :: process child elements, giving them the next key state
+    =^  pol  c.sal
+      =:  prev-key  ?^  found-key  this-key  prev-key
+          pos-key  ?^  found-key  ~  pos-key
+        ==
+      =<  [+.q p]
+      %^  spin  c.sal  [~ *pool]
+      |=  [m=manx [i=@ a=pool]]
+      =^  b  m  ^$(sal m, pos-key [i pos-key])
+      :-  m
+      :-  +(i)
+      ?~  b  a
+      %-  ~(uni by a)  b
+    ?.  ?=([%mast @] n.g.sal)  [pol sal]
+    :: if this is a component element,
+    :: remove the data-containing attributes and add them to pol
+    =^  [par=gust res=tide]  a.g.sal
+      %+  roll  a.g.sal
+      |=  [[n=mane v=tape] a=[[par=gust res=tide] mat=mart]]
+      ?:  ?=([%para @] n)
+        %_  a
+          par  (~(put by par.a) +.n (crip v))
+        ==
+      ?:  ?=([%path @] n)
+        %_  a
+          res  (~(put by res.a) +.n (scan v stap))
+        ==
+      ?.  ?=(%key n)  a
+      %_  a
+        mat  [[n v] mat.a]
+      ==
+    :_  sal
+    %+  ~(put by pol)  (scot %uw this-key)  [par res]
   ::
   :: ++hydrate-component
   :: scries the namespace for data to supply
@@ -734,88 +701,6 @@
       sun  (weld sun.a sun.b)
       boy  (weld boy.a boy.b)
     ==
-  ::
-  :: ++haul
-  :: applies preprocessing to a component's rendered sail.
-  :: primarily adds locational keys to elements without explicit ones
-  :: for the sake of diffing in ++luff.
-  :: also adds component name attributes to the root.
-  ++  haul
-    |_  [rop=rope man=manx]                 :: TODO: REFACTOR
-    ++  $
-      ^-  manx
-      =/  lin  (rear rop)
-      =/  component-attr  [%component (trip p.lin)]
-      =/  path-attr  [%path (spud q.lin)]
-      =/  key  (make-component-key rop)
-      ?:  ?&  =(%html n.g.man)
-              ?=(^ c.man)
-              =(%head n.g.i.c.man)
-              ?=(^ t.c.man)
-              =(%body n.g.i.t.c.man)
-          ==
-        =.  a.g.i.t.c.man  [component-attr path-attr a.g.i.t.c.man]
-        %_  man
-          i.t.c  (anx i.t.c.man [key ~])
-        ==
-      =.  a.g.man  [component-attr path-attr a.g.man]
-      %+  anx  man  [key ~]
-    ::
-    ++  anx
-      |=  [m=manx key=(pair tape (list @))]
-      ^-  manx
-      ?:  ?=([%mast @] n.g.m)
-        =/  lin  `line`[+.n.g.m (stab (getv %path a.g.m))]
-        =/  com-key  [%key (make-component-key (snoc rop lin))]
-        %_  m
-          a.g  [com-key a.g.m]
-        ==
-      =/  fkey
-        ^-  @t
-        %+  getv  %key  a.g.m
-      =/  nkey
-        ^-  (pair tape (list @))
-        ?:  =('' fkey)  key
-        :-  ((w-co:co 1) `@uw`(mug fkey))  ~
-      =/  ntap
-        ^-  tape
-        ?~  q.nkey  p.nkey
-        %+  weld  p.nkey  ((w-co:co 1) `@uw`(jam q.nkey))
-      ?:  =(%$ n.g.m)
-        ;t-
-          =key  ntap
-          ;+  m
-        ==
-      %_  m
-        a.g
-          ^-  mart
-          ?.  =('' fkey)  a.g.m
-          :-  [%key ntap]  a.g.m
-        c
-          ?:  ?|  =(%input n.g.m)   =(%textarea n.g.m)
-                  =(%script n.g.m)  =(%img n.g.m)
-                  =(%link n.g.m)    =(%hr n.g.m)
-                  =(%meta n.g.m)    =(%base n.g.m)
-              ==
-            c.m
-          %+  arl  c.m  nkey
-      ==
-    ::
-    ++  arl
-      |=  [m=marl key=(pair tape (list @))]
-      =|  i=@
-      |-  ^-  marl
-      ?~  m  ~
-      :-  %+  anx
-            i.m
-          key(q [i q.key])
-      $(m t.m, i +(i))
-    ::
-    ++  make-component-key
-      |=  rop=rope
-      ((w-co:co 1) `@uw`(mug rop))
-    ::
-    --
   ::
   :: ++luff
   :: diffs manx into a format that gets sent and applied to sync the client.
