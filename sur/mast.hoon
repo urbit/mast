@@ -15,14 +15,11 @@
       bas=knot                                   ::   base path segment bound to
       quay                                       ::   request url + query params
   ==                                             ::
-+$  brig                                         :: auth component sample
-  $:  src=ship                                   ::
-      hull                                       ::
-  ==                                             ::
 +$  hull                                         :: component sample
-  $:  our=ship                                   ::
-      par=gust                                   ::
-      res=gale                                   ::
+  $:  our=ship                                   ::   our
+      src=(unit ship)                            ::   src, null unless mode is %auth
+      par=gust                                   ::   params
+      res=gale                                   ::   resources
   ==                                             ::
 +$  gust  (map @tas @t)                          :: component params
 +$  gale                                         :: component resources
@@ -31,63 +28,61 @@
       dir=(list path)                            ::
       fil=vase                                   ::
   ==                                             ::
++$  mode  ?(~ %auth)                             :: component mode
 +$  clew  (list (pair cord cord))                :: client state object init
 +$  boom                                         :: resource spec
   %-  list                                       ::
-  $:  name=@tas                                  ::   key
-      mark=@tas                                  ::   mark, potentially converted to
-      care=?(%x %z)                              ::   %x no kids, %z kids
+  $:  name=@tas                                  ::
+      mark=@tas                                  ::
   ==                                             ::
-+$  mast                                         :: component core                     :: TODO: refactor +$mast
-  $^  $:  [boom clew]                            ::   the default component creates
-          $_  ^|                                 ::   a publicly accessible, cached 
-          |_  hull                               ::   branch, unless it nests under
-          ++  spar  *$-(crow blow)               ::   an auth component branch
-          ++  sail  *manx                        ::
-          --                                     ::
++$  mast                                         :: component core
+  $:  $:  =mode                                  ::
+          =boom                                  ::
+          =clew                                  ::
       ==                                         ::
-  $%  $:  %auth                                  :: auth component
-          [boom clew]                            ::   creates a branch that enables
-          $_  ^|                                 ::   client specific authorization
-          |_  brig                               ::   and rendering logic
-          ++  spar  *$-(crow blow)               ::
-          ++  sail  *manx                        ::
-          --                                     ::
-      $:  %root                                  :: root component
-          $-  keel                               ::   used to define the root of your
-          $^                                     ::   interface, and all valid routes
-          $_
-          ;html
-            ;head
-              ;*  *marl
-            ==
-            ;+  :~  [%body *mart]
-                :-  [[%mast *@tas] *mart]
-                    *marl
-                ==
-          ==
-          $%  [%redirect p=path]
-          ==
-      ==
-  ==
-+$  bind  [name=knot =desk file=path]            :: bind base path name to root component
+      $_  ^|                                     ::
+      |_  hull                                   ::
+      ++  spar  *$-(crow blow)                   ::
+      ++  sail  *manx                            ::
+      --                                         ::
+  ==                                             ::
++$  mist                                         :: router gate
+  $-  keel                                       ::   the root of an interface,
+  $^  $_                                         ::   bound to a base url segment,
+  ;html                                          ::   the router gate defines a
+    ;head                                        ::   function of route+params
+      ;*  *marl                                  ::   to a document which nests
+    ==                                           ::   an initial mast component,
+    ;+  :~  [%body *mart]                        ::   (or a custom response)
+        :-  [[%mast *@tas] *mart]                ::
+            *marl                                ::
+        ==                                       ::
+  ==                                             ::
+  $%  [%custom simple-payload:http]              ::
+  ==                                             ::
++$  hook  [=desk file=path]                      :: component file
++$  bind  [name=knot hook]                       :: bind base path name to root component
 ::
   ::
 ::
-+$  lake  (map knot dock)                        :: all base paths to components
-+$  line  cord                                   :: component key
-+$  rope  (list line)                            :: component locational id
-+$  dock  (map quay bitt)                        :: routes to components
-+$  deck  (map $@(line [ship line]) bitt)        :: nested components
++$  lake  (map knot hook)                        :: base path to root component bindings
++$  line                                         :: component state identity
+  $:  src=(unit ship)                            ::
+      com=hook                                   ::
+      par=gust                                   ::
+      res=tide                                   ::
+  ==                                             ::
++$  rope  (set @)                                :: containing parent key hashes
++$  deck  (map line bitt)                        :: component state map
 +$  bitt                                         :: component state
-  $:  bom=boom
-      par=gust
-      res=tide
-      aft=manx
-      kid=deck
-  ==
+  $:  mod=mode                                   ::
+      bom=boom                                   ::
+      rop=rope                                   ::
+      aft=manx                                   ::
+  ==                                             ::
 +$  tide  (map @tas path)                        :: current resources
-+$  pool  (map line [par=gust res=tide])         :: nested component element data on render
++$  pool  (set [com=hook par=gust res=tide])     :: nested component element data
+
 +$  buoy  [?(%add %del) p=rope]                  :: subscription effect
 +$  sunk                                         :: component creation error
   $%  [%missing-component desk=@tas file=@tas]   ::
@@ -141,10 +136,10 @@
       %+  weld
       %+  turn  params
       |=  [k=@tas v=cord]
-      :-  [%para k]  (trip v)
+      :-  [%gust k]  (trip v)
       %+  turn  resources
       |=  [k=@tas v=path]
-      :-  [%path k]  (spud v)
+      :-  [%gale k]  (spud v)
   ==
 ::
 --

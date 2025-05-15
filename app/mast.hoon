@@ -182,6 +182,26 @@
   ^+  cor
   ?+  mark  ~|(bad-poke/mark !!) 
     ::
+      %mast-bind
+    =/  bid  !<  bind  vase
+    ?:  (~(has by lake) name.bid)
+      ~&  >>>  "%mast-bind failed: {(trip name.bid)} already exists"
+      !!
+    ~&  "%mast-bind: checking file at {(trip desk.bid)} {(spud file.bid)}"
+    =/  com  !<  mist  .^(vase %ca (bam +.bid))
+    =.  lake  (~(put by lake) bid)
+    ~&  >  "%mast-bind: {(trip name.bid)} --> {(trip desk.bid)} {(spud file.bid)}"
+    cor
+    ::
+      %mast-unbind
+    =/  not  !<  knot  vase
+    ?.  (~(has by lake) not)
+      ~&  >>  "%mast-unbind: {(trip not)} is already unbound"
+      !!
+    =.  lake  (~(del by lake) not)                                  :: TODO: close subscriptions, prune state
+    ~&  >  "%mast-unbind: {(trip not)} unbound"
+    cor
+    ::
       %handle-http-request
     =+  !<  [rid=@ta req=inbound-request:eyre]  vase
     ?+  method.request.req  ~|(bad-method/method.request.req !!)
@@ -431,7 +451,7 @@
     ==
   ::
   :: ++furl
-  :: processes all rendered sail;
+  :: processes rendered sail;
   :: controls keys, and handles component elements
   ++  furl
     |=  [lin=line sal=manx]
