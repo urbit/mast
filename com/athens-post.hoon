@@ -38,6 +38,7 @@
     ?>  ?=([%athens %posts *] pax.scud)
     =/  dat  (~(got by data.crow) 'edit-input')
     ?:  =('' dat)  ~^~
+    ~&  t.t.pax.scud
     :_  !>  loc
     :~  [%athens %athens-action !>([%patch-post t.t.pax.scud dat])]
     ==
@@ -54,7 +55,7 @@
   ^-  manx
   =/  loc  !<  [hidden=? reply=? edit=?]  loc.sack
   =/  dat  !<  post:athens  fil.sack
-  =/  content-wall  (parse-content (trip content.dat))
+  ::=/  content-wall  (parse-content (trip content.dat))
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   ;div.post-node-container
     ;div.post-container.flex.items-center.justify-between
@@ -71,26 +72,16 @@
             =style  "margin-left: {((d-co:co 1) depth)}em"
             ;+  ?:  edit.loc
                 ;form.post-reply-form(event "/submit/edit")
-                  ;athens-textarea(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-hidden font-inherit box-border p-1 text-sm", name "edit-input");
+                  ;athens-textarea(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1 text-sm", name "edit-input", preview-only "false");
                   ;button(event "/click/toggle-edit"): edit 
                 ==
-              ;div
-              ;*  %+  turn  content-wall
-                  |=  =tape
-                  ^-  manx
-                  =/  new-line  (find "\0a" tape)
-                  =/  urli  (find "://" tape)
-                  ?.  =(~ urli)
-                    ;a.underline/"{tape}": {(weld tape " ")}
-                  ;/  (weld tape " ")
-              ==
+              ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1 text-sm", name "reply-input", value (trip content.dat), preview-only "true");
               ;+  ?:  |(!reply.loc hidden.loc)
-                    ;div.hidden;
-                  ;form.post-reply-form(event "/submit/reply")
-                    ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden font-inherit box-border p-1 text-sm", name "reply-input");
-                    ;button(event "/click/toggle-reply"): Cancel
-                    ;button.reply-button(type "submit"): Reply
-                  ==
+                ;div.hidden;
+              ;form.post-reply-form(event "/submit/reply")
+                ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1 text-sm", name "reply-input", preview-only "false");
+                ;button.reply-button(type "submit"): →
+              ==
           ==
       ==
       ;div.flex.flex-row
@@ -133,7 +124,7 @@
 ::
 ++  parse-content
   |=  tap=tape
-  %-  new-line-url
+  ::%-  new-line-url
   ~&  tap
   =/  index  0  
   =/  result  *(list tape)  

@@ -48,7 +48,6 @@
     ==
     ::
       [%submit %add-ship ~]
-    ::  TODO: parser from tape to list of @p
     =/  dat  (~(got by data.crow) 'ship-input')
     ?:  =('' dat)  ~^~
     :_  !>  loc
@@ -67,6 +66,9 @@
         ;meta(charset "UTF-8");
         ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
         ;script: {(trip athens-textarea)}
+        ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js")
+          window.marked = marked
+        ==
         ;style(type "text/tailwindcss")
           ;-  %-  trip
           '''
@@ -79,7 +81,7 @@
       ==
       ;body
         =class  ""
-        ;+  ?.  |(=(our.scud yon.scud) (access-check yon.scud access))
+        ;+  ?.  |(=(our.scud yon.scud) (has-access yon.scud access))
           ;div
             ;  "No access"
           ==
@@ -107,7 +109,7 @@
                         ;div: White list
                         ;*  %+  turn  ids.access
                             |=  =ship
-                            ;div
+                            ;div.flex.flex-row.gap-2
                               ; {(scow %p ship)}
                               ;form(event "/submit/remove-ship")
                                 ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
@@ -142,7 +144,7 @@
                   ;div.post-form.login-block: Login to post
                 ;form.post-form(event "/submit/post")
                   =key  "athens-post-form"
-                  ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden font-inherit box-border p-1 text-sm", name "post-input");
+                  ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1", name "post-input");
                   ;button: ↵
                 ==
           ==
@@ -154,8 +156,7 @@
 ::
 --
 |%
-::
-++  access-check
+++  has-access
   |=  [=ship =access:athens]
   ^-  ?
   ?.  public.access  

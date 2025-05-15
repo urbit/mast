@@ -182,7 +182,7 @@
       posts  rez
     ==
   %-  emit
-  %+  make-fact-card  (weld /r/posts (snip at))  ~
+  %+  make-fact-card  (weld /t/posts (snip at))  ~
 ::
 ++  access-public
   |=  public=?
