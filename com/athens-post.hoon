@@ -39,7 +39,7 @@
     =/  dat  (~(got by data.crow) 'edit-input')
     ?:  =('' dat)  ~^~
     ~&  t.t.pax.scud
-    :_  !>  loc
+    :_  !>  loc(edit |)
     :~  [%athens %athens-action !>([%patch-post t.t.pax.scud dat])]
     ==
     ::
@@ -58,7 +58,7 @@
   ::=/  content-wall  (parse-content (trip content.dat))
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   ;div.post-node-container
-    ;div.post-container.flex.items-center.justify-between
+    ;div.post-container.flex.items-start.justify-between
       ;div.flex.flex-row.w-full
         ;div.post.pointer
           ;div(event "/click/toggle-hide")
@@ -67,21 +67,21 @@
           ==
         ==
         ;+  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
-          ;div
+          ;div 
             =class  "message {?:(hidden.loc "hide" "full")} {?:(=(0 depth) "" "reply")} flex flex-col gap-4"
             =style  "margin-left: {((d-co:co 1) depth)}em"
-            ;+  ?:  edit.loc
+            ;+  ?:  &(edit.loc !hidden.loc)
                 ;form.post-reply-form(event "/submit/edit")
-                  ;athens-textarea(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1 text-sm", name "edit-input", preview-only "false");
+                  ;athens-textarea(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-hidden box-border text-sm", name "edit-input", preview-only "false");
                   ;button(event "/click/toggle-edit"): edit 
+                == 
+              ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden box-border text-sm {?:(hidden.loc "hide" "")}", name "preview-only", value (trip content.dat), preview-only "true"); 
+             ;+  ?:  |(!reply.loc hidden.loc)
+                  ;div.hidden;
+                ;form.post-reply-form(event "/submit/reply")
+                  ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden box-border text-sm", name "reply-input", preview-only "false");
+                  ;button.reply-button(type "submit"): →
                 ==
-              ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1 text-sm", name "reply-input", value (trip content.dat), preview-only "true");
-              ;+  ?:  |(!reply.loc hidden.loc)
-                ;div.hidden;
-              ;form.post-reply-form(event "/submit/reply")
-                ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1 text-sm", name "reply-input", preview-only "false");
-                ;button.reply-button(type "submit"): →
-              ==
           ==
       ==
       ;div.flex.flex-row

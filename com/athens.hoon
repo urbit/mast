@@ -89,37 +89,43 @@
           =class  "bg-neutral-bg text-neutral-400 athens"
           ;div.user
             ;+  ?.  is-comet
-                  ;div(event "/mouseenter/show-settings /mouseleave/show-settings")
-                    ;  {(cite:title yon.scud)}
+                  ;div.flex.flex-col(event "/mouseenter/show-settings /mouseleave/show-settings")
+                    ;div.flex.flex-row
+                      ;  {(cite:title yon.scud)}
+                    ==
                     ;+  ?:  =(our.scud yon.scud)
                       ;div
                       =class  "{?.(loc "hidden" "")}"
-                        ;  Public Access:
-                        ;label.relative.inline-flex.items-center
-                          ;+  ?:  public.access
-                            ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
+                        ;div.flex.flex-row
+                          ;  Public Access:
+                          ;label.relative.inline-flex.items-center
+                            ;+  ?:  public.access
+                              ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
+                                ;*  toggle
+                              ==
+                            ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
                               ;*  toggle
                             ==
-                          ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
-                            ;*  toggle
                           ==
                         ==
-                        ;+  ?:  public.access
-                          ;div: Black list
-                        ;div: White list
-                        ;*  %+  turn  ids.access
-                            |=  =ship
-                            ;div.flex.flex-row.gap-2
-                              ; {(scow %p ship)}
-                              ;form(event "/submit/remove-ship")
-                                ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
-                                ;button: x
+                        ;div.flex.flex-col
+                          ;+  ?:  public.access
+                            ;div: Block list
+                          ;div: Member list
+                          ;*  %+  turn  ids.access
+                              |=  =ship
+                              ;div.flex.flex-row.gap-2
+                                ; {(scow %p ship)}
+                                ;form(event "/submit/remove-ship")
+                                  ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
+                                  ;button: x
+                                ==
                               ==
+                            ;form(event "/submit/add-ship")
+                              ;input(type "textbox", name "ship-input");
+                              ;button: add
                             ==
-                          ;form(event "/submit/add-ship")
-                            ;input(type "textbox", name "ship-input");
-                            ;button: add
-                          ==
+                        ==
                       ==
                     ;div;
                   ==
@@ -349,7 +355,7 @@
       display: flex;
       gap: 8px;
     }
-    .reply-button{
+    .reply-button:hover{
       padding: 0.15em;
       border: solid;
       border-width: 1px;
