@@ -7,7 +7,7 @@
 ::
 |%
 +$  state-0
-  $:  =lake
+  $:  =dock
   ==
 +$  state-n
   $%  [%state-0 state-0]
@@ -184,21 +184,21 @@
     ::
       %mast-bind
     =/  bid  !<  bind  vase
-    ?:  (~(has by lake) name.bid)
+    ?:  (~(has by dock) name.bid)
       ~&  >>>  "%mast-bind failed: {(trip name.bid)} already exists"
       !!
     ~&  "%mast-bind: checking file at {(trip desk.bid)} {(spud file.bid)}"
     =/  com  !<  mist  .^(vase %ca (bam +.bid))
-    =.  lake  (~(put by lake) bid)
+    =.  dock  (~(put by dock) name.bid [+.bid ~])
     ~&  >  "%mast-bind: {(trip name.bid)} --> {(trip desk.bid)} {(spud file.bid)}"
     cor
     ::
       %mast-unbind
     =/  not  !<  knot  vase
-    ?.  (~(has by lake) not)
+    ?.  (~(has by dock) not)
       ~&  >>  "%mast-unbind: {(trip not)} is already unbound"
       !!
-    =.  lake  (~(del by lake) not)                                  :: TODO: close subscriptions, prune state
+    =.  dock  (~(del by dock) not)                                  :: TODO: close subscriptions
     ~&  >  "%mast-unbind: {(trip not)} unbound"
     cor
     ::
@@ -450,19 +450,43 @@
         ==
     ==
   ::
+  ++  make-com-sub-path
+    |=  [bas=knot rop=rope]
+    ^-  path
+    /[bas]/[(scot %uw p.rop)]/[?~(q.rop %$ (scot %p u.q.rop))]
+  ::
   :: ++furl
   :: processes rendered sail;
   :: controls keys, and handles component elements
   ++  furl
-    |=  [lin=line sal=manx]
-    :: set prev-key with the component key of this sail
-    =/  prev-key  `@uw`(slav %uw lin)
+    |=  [bas=knot rop=rope sal=manx]
+    =|  lin=line
+    :: set prev-key using the component key of this sail
+    =/  prev-key  p.rop
     =/  pos-key  *(list @)
-    :: add a mast:component attribute to tell the script this is a component
-    =.  a.g.sal  [[[%mast %component] ""] a.g.sal]
+    :: add a mast:component attribute with the component subscription key
+    =.  a.g.sal
+      :_  a.g.sal
+      :-  [%mast %component]  (spud (make-com-sub-path bas rop))
     |-  ^-  [pool manx]
     :: temporary: if text node, add text node wrapper
     =?  sal  =(%$ n.g.sal)  ;t-  ;+  sal  ==
+    :: handle component elements separately
+    ?:  ?=([%mast @] n.g.sal)
+      =:  -.lin  `hook`=>((stab +.n.g.sal) ?<(?=(~ .) .))
+          +.lin
+            %+  roll  a.g.sal
+            |=  [[n=mane v=tape] a=[par=gust res=tide]]
+            ?+  n  a
+              [%gust @]  a(par (~(put by par.a) +.n (crip v)))
+              [%gale @]  a(res (~(put by res.a) +.n (scan v stap)))
+            ==
+        ==
+      =/  key  `@uw`(mug lin)
+      :-  [[key lin] ~ ~]
+      :~  [n.g.sal [[%key ((w-co:co 1) key)] ~]]
+      ==
+    :: else, if not a component element,
     :: build the current element's key:
     =/  found-key
       ^-  tape
@@ -495,27 +519,8 @@
       :-  m
       :-  +(i)
       ?~  b  a
-      %-  ~(uni by a)  b
-    ?.  ?=([%mast @] n.g.sal)  [pol sal]
-    :: if this is a component element,
-    :: remove the data-containing attributes and add them to pol
-    =^  [par=gust res=tide]  a.g.sal
-      %+  roll  a.g.sal
-      |=  [[n=mane v=tape] a=[[par=gust res=tide] mat=mart]]
-      ?:  ?=([%para @] n)
-        %_  a
-          par  (~(put by par.a) +.n (crip v))
-        ==
-      ?:  ?=([%path @] n)
-        %_  a
-          res  (~(put by res.a) +.n (scan v stap))
-        ==
-      ?.  ?=(%key n)  a
-      %_  a
-        mat  [[n v] mat.a]
-      ==
-    :_  sal
-    %+  ~(put by pol)  (scot %uw this-key)  [par res]
+      %-  ~(uni in a)  b
+    :-  pol  sal
   ::
   :: ++hydrate-component
   :: scries the namespace for data to supply

@@ -17,10 +17,11 @@
   ==                                             ::
 +$  hull                                         :: component sample
   $:  our=ship                                   ::   our
-      src=(unit ship)                            ::   src, null unless mode is %auth
+      src=navy                                   ::   src, null unless mode is %auth
       par=gust                                   ::   params
       res=gale                                   ::   resources
   ==                                             ::
++$  navy  (unit ship)                            :: component src ship
 +$  gust  (map @tas @t)                          :: component params
 +$  gale                                         :: component resources
   %+  map  @tas                                  ::
@@ -65,30 +66,32 @@
 ::
   ::
 ::
-+$  lake  (map knot hook)                        :: base path to root component bindings
-+$  line                                         :: component state identity
-  $:  src=(unit ship)                            ::
-      com=hook                                   ::
++$  dock  (map knot (pair hook deck))            :: base path to component state
++$  deck  (map rope bitt)                        :: component state map
++$  rope  (pair @uw navy)                        :: component key
++$  line                                         :: component essential state
+  $:  com=hook                                   ::
       par=gust                                   ::
       res=tide                                   ::
   ==                                             ::
-+$  rope  (set @)                                :: containing parent key hashes
-+$  deck  (map line bitt)                        :: component state map
 +$  bitt                                         :: component state
-  $:  mod=mode                                   ::
+  $:  src=navy                                   ::
+      mod=mode                                   ::
+      par=(set rope)                             ::
+      kid=(map rope)                             ::
       bom=boom                                   ::
-      rop=rope                                   ::
       aft=manx                                   ::
+      line                                       ::
   ==                                             ::
-+$  tide  (map @tas path)                        :: current resources
-+$  pool  (set [com=hook par=gust res=tide])     :: nested component element data
++$  tide  (map @tas path)                        :: resources for a component
++$  pool  (set [key=@uw line])                   :: nested component element data
 
-+$  buoy  [?(%add %del) p=rope]                  :: subscription effect
-+$  sunk                                         :: component creation error
-  $%  [%missing-component desk=@tas file=@tas]   ::
-      [%missing-resource =path]                  ::
-      [%no-tube fil=path for=mark]               ::
-  ==                                             ::
+:: +$  buoy  [?(%add %del) p=rope]                  :: subscription effect
+:: +$  sunk                                         :: component creation error
+::   $%  [%missing-component desk=@tas file=@tas]   ::
+::       [%missing-resource =path]                  ::
+::       [%no-tube fil=path for=mark]               ::
+::   ==                                             ::
 
 :: :: :: :: :: :: :: :: :: :: ::
 
@@ -125,14 +128,12 @@
 :: produce a %mast component element.
 ++  make
   |=  $:  component=[desk=@tas file=path]
-          key=tape
           params=(list [@tas cord])
           resources=(list [@tas path])
       ==
   ^-  manx
   :_  ~
   :*  :-  %mast  (spat component)
-      :-  %key  key
       %+  weld
       %+  turn  params
       |=  [k=@tas v=cord]
