@@ -3,7 +3,7 @@
 :-  ^-  boom:mast
     :*  %athens-access
         %z
-        !>(|)
+        !>(|^~)
     ==
 =<
 ^-  mast:mast
@@ -13,8 +13,7 @@
   |=  =crow:mast
   ^-  blow:mast
   =/  pol  ^-  (pole @ta)  path.crow
-  =/  loc  !<  ?  loc.sack
-  ~&  :-  %pol  pol
+  =/  loc  !<  [settings=? show-del=(unit @p)]  loc.sack
   ?+  pol  ~^~
     ::
       [%submit %post ~]
@@ -25,13 +24,13 @@
     ==
     ::
       [%mouseenter %show-settings ~]
-    ?:  loc  ~^~
-    :_   !>  !loc
+    ?:  settings.loc  ~^~
+    :_   !>  loc(settings !settings.loc)
     ~
     ::
       [%mouseleave %show-settings ~]
-    ?.  loc  ~^~
-    :_   !>  !loc
+    ?.  settings.loc  ~^~
+    :_   !>  loc(settings !settings.loc)
     ~
     ::
       [%change %toggle-private ~]
@@ -53,11 +52,21 @@
     :_  !>  loc
     :~  [%athens %athens-action !>([%edit-access-id [`@p`(slav %p dat)]~])]
     ==
+    ::
+      [%mouseenter %show-del * ~]
+    =/  u-ship=(unit ship)  (slaw %p -.+.+.pol)
+    :_  !>  loc(show-del u-ship)
+    ~
+    ::
+      [%mouseleave %show-del ~]
+    :_  !>  loc(show-del ~)
+    ~
+    ::
   ==
 ::
 ++  sail
   ^-  manx
-  =/  loc  !<  ?  loc.sack
+  =/  loc  !<  [settings=? show-del=(unit @p)]  loc.sack
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   =/  access  !<  access:athens  fil.sack
     ;html
@@ -89,43 +98,49 @@
           =class  "bg-neutral-bg text-neutral-400 athens"
           ;div.user
             ;+  ?.  is-comet
-                  ;div.flex.flex-col(event "/mouseenter/show-settings /mouseleave/show-settings")
-                    ;div.flex.flex-row
+                  ;div(event "/mouseenter/show-settings /mouseleave/show-settings")
+                  =class  "border border-[#323232] rounded bg-[#1F1F1C]"
+                    ;div
+                    =class  "flex flex-row px-4 py-2 {?.(settings.loc "" "hidden")}"
                       ;  {(cite:title yon.scud)}
                     ==
                     ;+  ?:  =(our.scud yon.scud)
                       ;div
-                      =class  "{?.(loc "hidden" "")}"
-                        ;div.flex.flex-row
-                          ;  Public Access:
-                          ;label.relative.inline-flex.items-center
-                            ;+  ?:  public.access
-                              ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
-                                ;*  toggle
-                              ==
-                            ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
+                      =class  "grid grid-cols-2 max-w-[227px] divide-y divide-[#323232] {?.(settings.loc "hidden" "")}"
+                        ;div.px-4.py-2.text-white: Urbit ID
+                        ;div.px-4.py-2.justify-self-end: {(cite:title yon.scud)}
+                        ;div.px-4.py-2.text-white: Public Access:
+                        ;label.relative.inline-flex.items-center.p-4.justify-self-end
+                          ;+  ?:  public.access
+                            ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
                               ;*  toggle
                             ==
+                          ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
+                            ;*  toggle
                           ==
                         ==
-                        ;div.flex.flex-col
-                          ;+  ?:  public.access
-                            ;div: Block list
-                          ;div: Member list
+                        ;+  ?:  public.access
+                          ;div.col-span-2.px-4.py-2.text-white: Block list
+                        ;div.col-span-2.px-4.py-2.text-white: Member list
                           ;*  %+  turn  ids.access
                               |=  =ship
-                              ;div.flex.flex-row.gap-2
-                                ; {(scow %p ship)}
-                                ;form(event "/submit/remove-ship")
-                                  ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
-                                  ;button: x
-                                ==
+                              ;div.col-span-2.flex(event "/mouseleave/show-del")
+                                ;div.px-4.py-2(event "/mouseenter/show-del/{(scow %p ship)}"): {(scow %p ship)}
+                                ;+  ?:  =(show-del.loc `ship)
+                                    ;form.px-4.py-2.ml-auto(event "/submit/remove-ship")
+                                    =id  (scow %p ship)
+                                      ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
+                                      ;button: x
+                                    ==
+                                  ;div;
                               ==
-                            ;form(event "/submit/add-ship")
-                              ;input(type "textbox", name "ship-input");
-                              ;button: add
+                            ;form.col-span-2.px-4.py-2.flex(event "/submit/add-ship")
+                              ;input(type "textbox", name "ship-input")
+                                =class  "border-0 focus:outline-none"
+                              ;
+                              ==
+                              ;button.ml-auto: +
                             ==
-                        ==
                       ==
                     ;div;
                   ==
@@ -172,8 +187,8 @@
 ++  toggle
   ^-  marl
   ;=
-    ;div.w-9.h-4.bg-gray-300.rounded-full.peer-checked:bg-blue-500.peer-focus:ring-2.peer-focus:ring-blue-500.peer-focus:ring-offset-2.transition-colors;
-    ;div(class "absolute w-4 h-3 bg-white rounded-full left-0.5 top-0.5 peer-checked:translate-x-full transition-transform");
+    ;div(class "w-11 h-6 bg-[#323232] rounded-full transition-colors");
+    ;div(class "absolute w-5 h-5 bg-[#1F1F1C] rounded-full peer-checked:translate-x-full transition-transform");
   ==
 ::
 ++  style
@@ -210,10 +225,7 @@
       right: 30;
       padding-block: 0.2em;
       padding-inline: 0.3em;
-      border-radius: 3px;
       color: #A3A3A3;
-      background-color: #262626;
-      font-family: 'Source Code Pro', monospace;
       font-weight: 500;
       font-size: 14px;
     }
