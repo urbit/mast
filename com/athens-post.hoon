@@ -2,7 +2,7 @@
 :-  ^-  boom:mast
     :*  %athens-post
         %z
-        !>(&^|^|)
+        !>(|^|^|)
     ==
 =<
 ^-  mast:mast

@@ -148,19 +148,27 @@
   %+  make-fact-card  (weld /r/posts post-at)  ~
 ::
 ++  patch-post 
-  |=  [post-at=path dat=@t]
+  |=  [patch-at=path dat=@t]
   ^+  cor 
   =.  posts
     |-  ^-  posts:athens
-    ?~  post-at  posts
-    =/  id  (slav %da i.post-at)
+    ?~  patch-at  !!
+    =/  id  (slav %da i.patch-at)
     =/  [poz=post:athens rez=posts:athens]  (~(got by posts) id)
+    ?~  t.patch-at
+      ?>  =(author.poz src.bowl)
+      %+  ~(put by posts)  id
+      :_  rez
+      :-  author.poz
+          dat
     %+  ~(put by posts)  id
-    :_  rez
-    :-  author.poz
-        dat
+    :-  poz
+    %=  $
+      patch-at  t.patch-at
+      posts  rez
+    ==
   %-  emit
-  %+  make-fact-card  (weld /r/posts post-at)  ~
+  %+  make-fact-card  (weld /r/posts patch-at)  ~
 ::
 ++  del-post
   |=  at=path
