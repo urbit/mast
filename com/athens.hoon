@@ -1,8 +1,9 @@
 /-  mast, athens
+/*  athens-textarea  %js  /fil/athens-textarea/js
 :-  ^-  boom:mast
-    :*  %$
+    :*  %athens-access
         %z
-        !>(~)
+        !>(|^~)
     ==
 =<
 ^-  mast:mast
@@ -12,25 +13,71 @@
   |=  =crow:mast
   ^-  blow:mast
   =/  pol  ^-  (pole @ta)  path.crow
+  =/  loc  !<  [settings=? show-del=(unit @p)]  loc.sack
   ?+  pol  ~^~
     ::
       [%submit %post ~]
     =/  dat  (~(got by data.crow) 'post-input')
     ?:  =('' dat)  ~^~
-    :_  ~
+    :_  !>  loc
     :~  [%athens %athens-action !>([%put-post ~ dat])]
     ==
+    ::
+      [%mouseenter %show-settings ~]
+    ?:  settings.loc  ~^~
+    :_   !>  loc(settings !settings.loc)
+    ~
+    ::
+      [%mouseleave %show-settings ~]
+    ?.  settings.loc  ~^~
+    :_   !>  loc(settings !settings.loc)
+    ~
+    ::
+      [%change %toggle-private ~]
+    =/  access  !<  access:athens  fil.sack
+    :_  !>  loc
+    :~  [%athens %athens-action !>([%access-public !public.access])]
+    ==
+    ::
+      [%submit %remove-ship ~]
+    =/  dat  (~(got by data.crow) 'ship-input')
+    ?:  =('' dat)  ~^~
+    :_  !>  loc
+    :~  [%athens %athens-action !>([%del-access-id (slav %p dat)])]
+    ==
+    ::
+      [%submit %add-ship ~]
+    =/  dat  (~(got by data.crow) 'ship-input')
+    ?:  =('' dat)  ~^~
+    :_  !>  loc
+    :~  [%athens %athens-action !>([%edit-access-id [`@p`(slav %p dat)]~])]
+    ==
+    ::
+      [%mouseenter %show-del * ~]
+    =/  u-ship=(unit ship)  (slaw %p -.+.+.pol)
+    :_  !>  loc(show-del u-ship)
+    ~
+    ::
+      [%mouseleave %show-del ~]
+    :_  !>  loc(show-del ~)
+    ~
     ::
   ==
 ::
 ++  sail
   ^-  manx
+  =/  loc  !<  [settings=? show-del=(unit @p)]  loc.sack
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
+  =/  access  !<  access:athens  fil.sack
     ;html
       ;head
-        ;title: sup
+        ;title: Athens
         ;meta(charset "UTF-8");
         ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
+        ;script: {(trip athens-textarea)}
+        ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js")
+          window.marked = marked
+        ==
         ;style(type "text/tailwindcss")
           ;-  %-  trip
           '''
@@ -40,30 +87,75 @@
           }
           '''
         ==
-        ;link
-          =href  "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-          =rel  "stylesheet"
-          ;
-        ==
       ==
       ;body
         =class  ""
+        ;+  ?.  |(=(our.scud yon.scud) (has-access yon.scud access))
+          ;div
+            ;  "No access"
+          ==
         ;div
           =class  "bg-neutral-bg text-neutral-400 athens"
-          ;div: text text
           ;div.user
             ;+  ?.  is-comet
-                  ;/  (cite:title yon.scud)
-                ;form
+                  ;div(event "/mouseenter/show-settings /mouseleave/show-settings")
+                  =class  "border border-[#323232] rounded bg-[#1F1F1C]"
+                    ;div
+                    =class  "flex flex-row px-4 py-2 {?.(settings.loc "" "hidden")}"
+                      ;  {(cite:title yon.scud)}
+                    ==
+                    ;+  ?:  =(our.scud yon.scud)
+                      ;div
+                      =class  "grid grid-cols-2 max-w-[227px] divide-y divide-[#323232] {?.(settings.loc "hidden" "")}"
+                        ;div.px-4.py-2.text-white: Urbit ID
+                        ;div.px-4.py-2.justify-self-end: {(cite:title yon.scud)}
+                        ;div.px-4.py-2.text-white: Public Access:
+                        ;label.relative.inline-flex.items-center.p-4.justify-self-end
+                          ;+  ?:  public.access
+                            ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
+                              ;*  toggle
+                            ==
+                          ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
+                            ;*  toggle
+                          ==
+                        ==
+                        ;+  ?:  public.access
+                          ;div.col-span-2.px-4.py-2.text-white: Block list
+                        ;div.col-span-2.px-4.py-2.text-white: Member list
+                          ;*  %+  turn  ids.access
+                              |=  =ship
+                              ;div.col-span-2.flex(event "/mouseleave/show-del")
+                                ;div.px-4.py-2(event "/mouseenter/show-del/{(scow %p ship)}"): {(scow %p ship)}
+                                ;+  ?:  =(show-del.loc `ship)
+                                    ;form.px-4.py-2.ml-auto(event "/submit/remove-ship")
+                                    =id  (scow %p ship)
+                                      ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
+                                      ;button: x
+                                    ==
+                                  ;div;
+                              ==
+                            ;form.col-span-2.px-4.py-2.flex(event "/submit/add-ship")
+                              ;input(type "textbox", name "ship-input")
+                                =class  "border-0 focus:outline-none"
+                              ;
+                              ==
+                              ;button.ml-auto: +
+                            ==
+                      ==
+                    ;div;
+                  ==
+                ;form.flex
                   =action  "/~/login"
                   =method  "POST"
                   ;label(for "login-input"): login:
                   ;input(id "login-input", name "name", required "");
                   ;input(type "hidden", name "redirect", value (spud ;:(weld /mast pax.scud /athens)));
                   ;input(type "hidden", name "eauth", value "");
-                  ;button.material-symbols-outlined(type "submit"): arrow_forward
+                  ;button(type "submit"): 
+                    ;i(data-lucide "arrow-right");
                 ==
           ==
+          ;div;
           ;div.posts
             ;+  style
             ;*  %+  turn  kid.scud
@@ -73,23 +165,37 @@
                   ;div.post-form.login-block: Login to post
                 ;form.post-form(event "/submit/post")
                   =key  "athens-post-form"
-                  ;textarea(name "post-input");
-                  ;button: 🠊
+                  ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1", name "post-input");
+                  ;button: ↵
                 ==
           ==
       ==
     ==
+    ;script(src "https://unpkg.com/lucide@latest");
+    ;script:  lucide.createIcons();
   ==
 ::
 --
 |%
+++  has-access
+  |=  [=ship =access:athens]
+  ^-  ?
+  ?.  public.access  
+    ?.  =(~ (find [ship]~ ids.access))  |  &
+  ?.  =(~ (find [ship]~ ids.access))  &  |
+::
+++  toggle
+  ^-  marl
+  ;=
+    ;div(class "w-11 h-6 bg-[#323232] rounded-full transition-colors");
+    ;div(class "absolute w-5 h-5 bg-[#1F1F1C] rounded-full peer-checked:translate-x-full transition-transform");
+  ==
 ::
 ++  style
   ^-  manx
   ;style
     ;+  ;/  %-  trip
     '''
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
     .options {
       color: #A3A3A3;
     }
@@ -119,10 +225,7 @@
       right: 30;
       padding-block: 0.2em;
       padding-inline: 0.3em;
-      border-radius: 3px;
       color: #A3A3A3;
-      background-color: #262626;
-      font-family: 'Source Code Pro', monospace;
       font-weight: 500;
       font-size: 14px;
     }
@@ -146,9 +249,7 @@
       flex-direction: column;
     }
     .post-container {
-      display: flex;
       flex-direction: row;
-      gap: 16px
     }
     .post {
       display: flex;
@@ -202,6 +303,24 @@
     .replies {
       padding-left: 0px;
     }
+    .reply-num{
+      color: #737373;
+      font-size: 14px;
+    }
+    .reply-num.full{
+      display: none;
+    }
+    .reply-num.hide{
+      display: flex;
+    }
+    .reply-date.full{
+      display: none;
+    }
+    .reply-date.hide{
+      display: flex;
+      color: #737373;
+      font-size: 14px;
+    }
     .post-form {
       width: 100%;
       margin-top: 0.45em;
@@ -237,6 +356,24 @@
     }
     .post-form > button:hover {
       color: #FAFAFA;
+    }
+    .post-reply-form {
+      width: 100%;
+      padding: 0.15em;
+      border: solid;
+      border-width: 1px;
+      border-radius: 6px;
+      border-color: #575757;
+      display: flex;
+      gap: 8px;
+    }
+    .reply-button:hover{
+      padding: 0.15em;
+      border: solid;
+      border-width: 1px;
+      border-radius: 6px;
+      border-color: #2C2C2C;
+      background-color: #2C2C2C;
     }
     '''
   ==
