@@ -77,34 +77,29 @@
   ^-  manx
   ;script: {(trip mast-js)}
 ::
-++  make-sub-path               :: TODO:
-  |=  src=@p
-  ^-  path
-  [%mast (scot %p src) ~]
-::
 ++  bind-url
   |=  [app=@tas url=path]
   ^-  card:agent:gall
   :*  %pass  /bind  %arvo  %e  %connect  [~ url]  app
   ==
 ::
-++  make-component-wire                   :: TODO:
-  |=  [car=@tas yon=ship rop=rope]
-  ^-  wire
-  :-  car
-  :-  (scot %p yon)
-  %+  turn  rop
-  |=  i=line  (spat i)
+:: ++  make-component-wire                   :: TODO:
+::   |=  [car=@tas yon=ship rop=rope]
+::   ^-  wire
+::   :-  car
+::   :-  (scot %p yon)
+::   %+  turn  rop
+::   |=  i=line  (spat i)
 ::
-++  parse-component-wire                   :: TODO:
-  |=  wir=wire
-  ^-  [@tas ship rope]
-  ?>  ?=([@ @ *] wir)
-  :-  i.wir
-  :-  (slav %p i.t.wir)
-  %+  turn  t.t.wir
-  |=  i=knot
-  =>  (stab i)  ?>(?=(^ .) .)
+:: ++  parse-component-wire                   :: TODO:
+::   |=  wir=wire
+::   ^-  [@tas ship rope]
+::   ?>  ?=([@ @ *] wir)
+::   :-  i.wir
+::   :-  (slav %p i.t.wir)
+::   %+  turn  t.t.wir
+::   |=  i=knot
+::   =>  (stab i)  ?>(?=(^ .) .)
 ::
 ++  parse-channel-data
   |=  jon=json
@@ -121,14 +116,13 @@
   :-  route.pok
   :-  path.pok  data.pok
 ::
-++  make-diff-cards                   :: TODO:
-  |=  [yon=ship jon=(list json)]
-  ^-  (list card)
-  ?.  .?  jon  ~
-  :_  ~
-  :*  %give  %fact  [(make-sub-path yon) ~]  %json
-      !>  `json`[%a jon]
-  ==
+:: ++  make-diff-cards
+::   |=  [yon=ship jon=(list json)]
+::   ^-  (list card)
+::   ?.  .?  jon  ~
+::   :_  ~
+::   :*  %give  %fact  [(make-sub-path yon) ~]  %json  !>(`json`[%a jon])
+::   ==
 ::
 :: ++make-resource-subscription-cards
 :: the %mast agent subscribes to an on-watch path
@@ -288,179 +282,163 @@
   ==
 ::
 ++  ui
-  =|  $=  ses  [yon=ship lin=line dek=$@(~ deck)]  :: session
-  =|  $=  com  $@(~ [rop=rope dek=deck])           :: target component
-  =|  $=  fex  wake                                :: effects
+  :: =|  $=  ses  [yon=ship lin=line dek=$@(~ deck)]  :: session
+  :: =|  $=  com  $@(~ [rop=rope dek=deck])           :: target component
+  :: =|  $=  fex  wake                                :: effects
   |%
   ++  ui-core  .
   ::
-  ++  ui-abed
-    |=  [yon=ship lin=line]
-    ^+  ui-core
-    =:  yon.ses  yon
-        lin.ses  lin
-      ==
-    =/  duk  (~(get by dock) [yon.ses lin.ses])
-    ?~  duk  ui-core
-    %_  ui-core
-      dek.ses  u.duk
-    ==
+  :: ++  ui-abed
+  ::   |=  [yon=ship lin=line]
+  ::   ^+  ui-core
+  ::   =:  yon.ses  yon
+  ::       lin.ses  lin
+  ::     ==
+  ::   =/  duk  (~(get by dock) [yon.ses lin.ses])
+  ::   ?~  duk  ui-core
+  ::   %_  ui-core
+  ::     dek.ses  u.duk
+  ::   ==
   ::
   :: ++ui-wake
   :: emit ui effects
-  ++  ui-wake
-    |=  [s=(list sunk) b=(list buoy) j=(list json)]
-    %_  ui-core
-      sun.fex  (welp (flop s) sun.fex)
-      boy.fex  (welp (flop b) boy.fex)
-      jon.fex  (welp j jon.fex)
-    ==
+  :: ++  ui-wake
+  ::   |=  [s=(list sunk) b=(list buoy) j=(list json)]
+  ::   %_  ui-core
+  ::     sun.fex  (welp (flop s) sun.fex)
+  ::     boy.fex  (welp (flop b) boy.fex)
+  ::     jon.fex  (welp j jon.fex)
+  ::   ==
   ::
   :: ++ui-open
   :: create a new root branch if one does not exist.
-  ++  ui-open
-    ^+  ui-core
-    ?:  .?  dek.ses  ui-core
-    =/  wod  (make-branch lin.ses [lin.ses ~] ~)
-    =.  dek.ses  dek.wod
-    %:  ui-wake
-      sun.wod  boy.wod  ~
-    ==
+  :: ++  ui-open
+  ::   ^+  ui-core
+  ::   ?:  .?  dek.ses  ui-core
+  ::   =/  wod  (make-branch lin.ses [lin.ses ~] ~)
+  ::   =.  dek.ses  dek.wod
+  ::   %:  ui-wake
+  ::     sun.wod  boy.wod  ~
+  ::   ==
   ::
   :: ++ui-moor
   :: load a component from the session by rope.
-  ++  ui-moor
-    |=  rop=rope
-    ^+  ui-core
-    ?<  ?=(~ dek.ses)
-    =/  duk  (get-deck rop dek.ses)
-    ?~  duk  ui-core
-    %_  ui-core
-      com  [rop duk]
-    ==
+  :: ++  ui-moor
+  ::   |=  rop=rope
+  ::   ^+  ui-core
+  ::   ?<  ?=(~ dek.ses)
+  ::   =/  duk  (get-deck rop dek.ses)
+  ::   ?~  duk  ui-core
+  ::   %_  ui-core
+  ::     com  [rop duk]
+  ::   ==
   ::
   :: ++ui-gale
   :: finalize, producing a full page.
-  ++  ui-gale
-    ^+  [*[(list buoy) manx] cor]
-    ?~  dek.ses  [[~ (sunk-page sun.fex)] cor]
-    =.  dock  (~(put by dock) [yon.ses lin.ses] dek.ses)
-    :_  cor
-    :-  boy.fex
-    %-  assemble-branch-manx  dek.ses
+  :: ++  ui-gale
+  ::   ^+  [*[(list buoy) manx] cor]
+  ::   ?~  dek.ses  [[~ (sunk-page sun.fex)] cor]
+  ::   =.  dock  (~(put by dock) [yon.ses lin.ses] dek.ses)
+  ::   :_  cor
+  ::   :-  boy.fex
+  ::   %-  assemble-branch-manx  dek.ses
   ::
   :: ++ui-gust
   :: finalize, rerendering and producing a diff for the loaded component.
-  ++  ui-gust
-    ^+  [*[(list buoy) (list json)] cor]
-    ?<  ?=(~ dek.ses)
-    ?~  com
-      :_  cor
-      :-  boy.fex  ~
-    =^  [boy=(list buoy) jon=(list json)]  dek.com
-      %:  update-branch
-        rop.com  pop.p.dek.com  dek.com
-      ==
-    =.  dock
-      %+  ~(put by dock)  [yon.ses lin.ses]
-      %^  put-deck  rop.com  dek.com  dek.ses
-    =>  (ui-wake ~ boy jon)
-    :_  cor
-    :-  boy.fex  jon.fex
+  :: ++  ui-gust
+  ::   ^+  [*[(list buoy) (list json)] cor]
+  ::   ?<  ?=(~ dek.ses)
+  ::   ?~  com
+  ::     :_  cor
+  ::     :-  boy.fex  ~
+  ::   =^  [boy=(list buoy) jon=(list json)]  dek.com
+  ::     %:  update-branch
+  ::       rop.com  pop.p.dek.com  dek.com
+  ::     ==
+  ::   =.  dock
+  ::     %+  ~(put by dock)  [yon.ses lin.ses]
+  ::     %^  put-deck  rop.com  dek.com  dek.ses
+  ::   =>  (ui-wake ~ boy jon)
+  ::   :_  cor
+  ::   :-  boy.fex  jon.fex
   ::
   :: ++ui-sway
   :: apply an event to the loaded component.
-  ++  ui-sway
-    |=  cro=crow
-    ^+  [[*? *(list card)] ui-core]
-    ?<  ?=(~ com)
-    =/  lyn  (rear rop.com)
-    =/  rig  (~(got by rigs) p.lyn)
-    =/  dat  (hydrate-component bom.p.dek.com q.lyn)
-    ?>  ?=(%& -.dat)
-    =/  blo
-      ^-  blow
-      %.  cro
-      %~  spar  mast.rig
-      :-  (en-scud q.lyn p.p.dat)  [pop.p.dek.com loc.p.dek.com q.p.dat]
-    =/  caz  (make-gull-cards yon.ses p.lyn pok.blo)
-    ?~  loc.blo
-      :-  [| caz]  ui-core
-    :-  [& caz]
-    %_  ui-core
-      loc.p.dek.com  loc.blo
-    ==
+  :: ++  ui-sway
+  ::   |=  cro=crow
+  ::   ^+  [[*? *(list card)] ui-core]
+  ::   ?<  ?=(~ com)
+  ::   =/  lyn  (rear rop.com)
+  ::   =/  rig  (~(got by rigs) p.lyn)
+  ::   =/  dat  (hydrate-component bom.p.dek.com q.lyn)
+  ::   ?>  ?=(%& -.dat)
+  ::   =/  blo
+  ::     ^-  blow
+  ::     %.  cro
+  ::     %~  spar  mast.rig
+  ::     :-  (en-scud q.lyn p.p.dat)  [pop.p.dek.com loc.p.dek.com q.p.dat]
+  ::   =/  caz  (make-gull-cards yon.ses p.lyn pok.blo)
+  ::   ?~  loc.blo
+  ::     :-  [| caz]  ui-core
+  ::   :-  [& caz]
+  ::   %_  ui-core
+  ::     loc.p.dek.com  loc.blo
+  ::   ==
   ::
   :: ++sunk-page
   :: produces an error page.
-  ++  sunk-page              :: TODO: better error pages
-    |=  sun=(list sunk)
-    ^-  manx
-    ;div
-      ;*  %+  turn  sun
-          |=  i=sunk
-          ^-  manx
-          ?-  -.i
-              %missing-component-file
-            ;div
-              ;h1: {<-.i>}
-              ;p: {<name.i>}
-            ==
-              %missing-local-resource
-            ;div
-              ;h1: {<-.i>}
-              ;p: {(spud path.i)}
-            ==
-              %no-tube
-            ;div
-              ;h1: {<-.i>}
-              ;p: {(spud fil.i)}
-              ;p: {<com.i>}
-            ==
-          ==
-    ==
-  ::
-  :: ++get-deck
-  :: gets a branch from a component state tree.
-  ++  get-deck
-    |=  [rop=rope dek=deck]
-    ^-  $@(~ deck)
-    ?~  rop  ~
-    ?~  t.rop  dek
-    =/  nex  (~(get by q.dek) i.t.rop)
-    ?~  nex  ~
-    %=  $
-      rop  t.rop
-      dek  u.nex
-    ==
-  ::
-  :: ++put-deck
-  :: puts a branch into a component state tree.
-  ++  put-deck
-    |=  [rop=rope new=deck dek=deck]
-    ^-  deck
-    ?~  rop  dek
-    ?~  t.rop  new
-    %_  dek
-      q
-        %+  ~(put by q.dek)  i.t.rop
-        %=  $
-          rop  t.rop
-          dek  (~(got by q.dek) i.t.rop)
-        ==
-    ==
+  :: ++  sunk-page              :: TODO: better error pages
+  ::   |=  sun=(list sunk)
+  ::   ^-  manx
+  ::   ;div
+  ::     ;*  %+  turn  sun
+  ::         |=  i=sunk
+  ::         ^-  manx
+  ::         ?-  -.i
+  ::             %missing-component-file
+  ::           ;div
+  ::             ;h1: {<-.i>}
+  ::             ;p: {<name.i>}
+  ::           ==
+  ::             %missing-local-resource
+  ::           ;div
+  ::             ;h1: {<-.i>}
+  ::             ;p: {(spud path.i)}
+  ::           ==
+  ::             %no-tube
+  ::           ;div
+  ::             ;h1: {<-.i>}
+  ::             ;p: {(spud fil.i)}
+  ::             ;p: {<com.i>}
+  ::           ==
+  ::         ==
+  ::   ==
   ::
   ++  make-com-sub-path
     |=  [bas=knot rop=rope]
     ^-  path
     /[bas]/[(scot %uw p.rop)]/[?~(q.rop %$ (scot %p u.q.rop))]
   ::
+  ++  parse-component-element
+    |=  sal=manx
+    ^-  [@uw line]
+    ?>  ?=([%mast @] n.g.sal)
+    =|  lin=line
+    =:  -.lin  `hook`=>((stab +.n.g.sal) ?<(?=(~ .) .))
+        +.lin
+          %+  roll  a.g.sal
+          |=  [[n=mane v=tape] a=[par=gust res=tide]]
+          ?+  n  a
+            [%gust @]  a(par (~(put by par.a) +.n (crip v)))
+            [%gale @]  a(res (~(put by res.a) +.n (scan v stap)))
+          ==
+      ==
+    :-  (mug lin)  lin
+  ::
   :: ++furl
-  :: processes rendered sail;
-  :: controls keys, and handles component elements
+  :: processing step for rendered sail
   ++  furl
     |=  [bas=knot rop=rope sal=manx]
-    =|  lin=line
     :: set prev-key using the component key of this sail
     =/  prev-key  p.rop
     =/  pos-key  *(list @)
@@ -473,16 +451,7 @@
     =?  sal  =(%$ n.g.sal)  ;t-  ;+  sal  ==
     :: handle component elements separately
     ?:  ?=([%mast @] n.g.sal)
-      =:  -.lin  `hook`=>((stab +.n.g.sal) ?<(?=(~ .) .))
-          +.lin
-            %+  roll  a.g.sal
-            |=  [[n=mane v=tape] a=[par=gust res=tide]]
-            ?+  n  a
-              [%gust @]  a(par (~(put by par.a) +.n (crip v)))
-              [%gale @]  a(res (~(put by res.a) +.n (scan v stap)))
-            ==
-        ==
-      =/  key  `@uw`(mug lin)
+      =/  [key=@uw lin=line]  (parse-component-element sal)
       :-  [[key lin] ~ ~]
       :~  [n.g.sal [[%key ((w-co:co 1) key)] ~]]
       ==
@@ -525,21 +494,21 @@
   :: ++hydrate-component
   :: scries the namespace for data to supply
   :: to a component.
-  ++  hydrate-component
-    |=  [bom=boom pax=path]
-    ^-  (each (pair kids vase) sunk)
-    ?<  ?=(~ pax)
-    =/  age  i.pax  :: the path is prefixed with an agent name
-    =/  for  (bam age t.pax)
-    =/  kid  .^((list path) %gt for)
-    ?:  =(%$ mar.bom)
-      :+  %&  kid  !>(~)
-    =/  des  .^(desk %gd (bam age /$))
-    =/  fil  .^(cage %gr for)
-    ?:  =(p.fil mar.bom)
-      :+  %&  kid  q.fil
-    =/  tub  .^(tube:clay %cc (bam des /[p.fil]/[mar.bom]))
-    :+  %&  kid  (tub q.fil)
+  :: ++  hydrate-component
+  ::   |=  [bom=boom pax=path]
+  ::   ^-  (each (pair kids vase) sunk)
+  ::   ?<  ?=(~ pax)
+  ::   =/  age  i.pax  :: the path is prefixed with an agent name
+  ::   =/  for  (bam age t.pax)
+  ::   =/  kid  .^((list path) %gt for)
+  ::   ?:  =(%$ mar.bom)
+  ::     :+  %&  kid  !>(~)
+  ::   =/  des  .^(desk %gd (bam age /$))
+  ::   =/  fil  .^(cage %gr for)
+  ::   ?:  =(p.fil mar.bom)
+  ::     :+  %&  kid  q.fil
+  ::   =/  tub  .^(tube:clay %cc (bam des /[p.fil]/[mar.bom]))
+  ::   :+  %&  kid  (tub q.fil)
   ::
   :: ++make-branch
   :: creates a component state branch
@@ -548,48 +517,48 @@
   :: component elements rendered in the parent's sail.
   :: produces effects for resource subscriptions
   :: and component creation errors.
-  ++  make-branch
-    |=  [new=line rop=rope pop=prop]
-    ^-  wood
-    =/  rig  (~(get by rigs) p.new)
-    ?~  rig
-      :-  [%missing-component-file p.new]^~  ~^~
-    =/  dat  (hydrate-component boom.u.rig q.new)
-    ?:  ?=(%| -.dat)
-      :-  p.dat^~  ~^~
-    =/  [sal=manx lot=loot]
-      =/  man
-        %~  sail  mast.u.rig
-        :-  (en-scud q.new p.p.dat)  [pop loc.boom.u.rig q.p.dat]
-      ?.  ?=(%hoot -.man)
-        :-  man  (get-loot man)
-      %-  take-hoot  +.man
-    =.  sal  (haul rop sal)
-    =/  [sun=(list sunk) boy=(list buoy) dak=(map line deck)]
-      %-  ~(rep by lot)
-      |=  $:  [k=line v=prop]
-              [s=(list sunk) b=(list buoy) d=(map line deck)]
-          ==
-      =;  wod
-        :-  (weld s sun.wod)
-        :-  (weld b boy.wod)
-        ?~  dek.wod  d
-        %+  ~(put by d)  k  dek.wod
-      %=  ^$
-        new  k
-        rop  (snoc rop k)
-        pop  v
-      ==
-    =|  cew=clew
-    :-  sun
-    :-  [[%add yon.ses rop] boy]
-    :_  dak
-    %_  cew
-      pop  pop
-      loc  loc.boom.u.rig
-      bom  boom.u.rig
-      aft  sal
-    ==
+  :: ++  make-branch
+  ::   |=  [new=line rop=rope pop=prop]
+  ::   ^-  wood
+  ::   =/  rig  (~(get by rigs) p.new)
+  ::   ?~  rig
+  ::     :-  [%missing-component-file p.new]^~  ~^~
+  ::   =/  dat  (hydrate-component boom.u.rig q.new)
+  ::   ?:  ?=(%| -.dat)
+  ::     :-  p.dat^~  ~^~
+  ::   =/  [sal=manx lot=loot]
+  ::     =/  man
+  ::       %~  sail  mast.u.rig
+  ::       :-  (en-scud q.new p.p.dat)  [pop loc.boom.u.rig q.p.dat]
+  ::     ?.  ?=(%hoot -.man)
+  ::       :-  man  (get-loot man)
+  ::     %-  take-hoot  +.man
+  ::   =.  sal  (haul rop sal)
+  ::   =/  [sun=(list sunk) boy=(list buoy) dak=(map line deck)]
+  ::     %-  ~(rep by lot)
+  ::     |=  $:  [k=line v=prop]
+  ::             [s=(list sunk) b=(list buoy) d=(map line deck)]
+  ::         ==
+  ::     =;  wod
+  ::       :-  (weld s sun.wod)
+  ::       :-  (weld b boy.wod)
+  ::       ?~  dek.wod  d
+  ::       %+  ~(put by d)  k  dek.wod
+  ::     %=  ^$
+  ::       new  k
+  ::       rop  (snoc rop k)
+  ::       pop  v
+  ::     ==
+  ::   =|  cew=clew
+  ::   :-  sun
+  ::   :-  [[%add yon.ses rop] boy]
+  ::   :_  dak
+  ::   %_  cew
+  ::     pop  pop
+  ::     loc  loc.boom.u.rig
+  ::     bom  boom.u.rig
+  ::     aft  sal
+  ::   ==
   ::
   :: ++assemble-branch-manx
   :: descends through a branch of component state
@@ -598,134 +567,134 @@
   :: of the associated component.
   :: if the component is missing from the map of children,
   :: then we assume that it failed to create and skip the element.
-  ++  assemble-branch-manx
-    |=  dek=deck
-    ^-  manx
-    =/  mar=marl  [aft.p.dek ~]
-    =<  ?>  ?=(^ -)  i
-    |-  ^-  marl
-    %+  murn  mar
-    |=  i=manx
-    ^-  (unit manx)
-    ?.  ?=([%mast @] n.g.i)
-      :-  ~
-      %_  i
-        c  ^$(mar c.i)
-      ==
-    =/  paf  (getv %path a.g.i)
-    =/  duk  (~(get by q.dek) [+.n.g.i (stab paf)])
-    ?~  duk  ~
-    :-  ~
-    %=  ^^$
-      dek  u.duk
-    ==
+  :: ++  assemble-branch-manx
+  ::   |=  dek=deck
+  ::   ^-  manx
+  ::   =/  mar=marl  [aft.p.dek ~]
+  ::   =<  ?>  ?=(^ -)  i
+  ::   |-  ^-  marl
+  ::   %+  murn  mar
+  ::   |=  i=manx
+  ::   ^-  (unit manx)
+  ::   ?.  ?=([%mast @] n.g.i)
+  ::     :-  ~
+  ::     %_  i
+  ::       c  ^$(mar c.i)
+  ::     ==
+  ::   =/  paf  (getv %path a.g.i)
+  ::   =/  duk  (~(get by q.dek) [+.n.g.i (stab paf)])
+  ::   ?~  duk  ~
+  ::   :-  ~
+  ::   %=  ^^$
+  ::     dek  u.duk
+  ::   ==
   ::
-  ++  unsubscribe-branch
-    |=  [r=rope d=deck]
-    ^-  (list buoy)
-    :-  [%del yon.ses r]
-    %-  ~(rep by q.d)
-    |=  [[k=line v=deck] a=(list buoy)]
-    %+  weld  a
-    %=  ^$
-      r  (snoc r k)
-      d  v
-    ==
+  :: ++  unsubscribe-branch
+  ::   |=  [r=rope d=deck]
+  ::   ^-  (list buoy)
+  ::   :-  [%del yon.ses r]
+  ::   %-  ~(rep by q.d)
+  ::   |=  [[k=line v=deck] a=(list buoy)]
+  ::   %+  weld  a
+  ::   %=  ^$
+  ::     r  (snoc r k)
+  ::     d  v
+  ::   ==
   ::
   :: ++update-branch
   :: takes a component and its rope
   :: and potentially updates and rerenders it,
   :: and recursively does this for any nested
   :: components.
-  ++  update-branch
-    =|  n=@
-    |=  $:  rop=rope
-            pop=prop
-            dek=deck
-        ==
-    ^-  [[(list buoy) (list json)] deck]
-    ?:  ?&  !=(0 n)
-            =(pop pop.p.dek)
-        ==
-      [~^~ dek]
-    =/  lyn  (rear rop)
-    =/  dat  (hydrate-component bom.p.dek q.lyn)
-    ?>  ?=(%& -.dat)
-    =/  [sal=manx lot=loot]
-      =/  rig  (~(got by rigs) p.lyn)
-      =/  man
-        %~  sail  mast.rig
-        :-  (en-scud q.lyn p.p.dat)  [pop loc.p.dek q.p.dat]
-      ?.  ?=(%hoot -.man)
-        :-  man  (get-loot man)
-      %-  take-hoot  +.man
-    =.  sal  (haul rop sal)
-    =/  dif  (luff rop lot [aft.p.dek ~] [sal ~])
-    =^  [bo=(list buoy) jo=(list json)]  q.dek
-      %-  ~(rep by q.dek)
-      |=  $:  [k=line v=deck]
-              a=[[b=(list buoy) j=(list json)] a=(map line deck)]
-          ==
-      ?:  (~(has in del.p.dif) k)
-        %_  a
-          b  %+  weld  (unsubscribe-branch (snoc rop k) v)  b.a
-        ==
-      =/  l  (~(get by lot) k)
-      =^  b=[b=(list buoy) j=(list json)]  v
-        %=  ^$
-          n    +(n)
-          rop  (snoc rop k)
-          pop  ?~(l ~ u.l)
-          dek  v
-        ==
-      %_  a
-        b  %+  weld  b.b  b.a
-        j  %+  weld  j.b  j.a
-        a  %+  ~(put by a.a)  k  v
-      ==
-    :-  [(weld boy.p.dif bo) (weld q.dif jo)]
-    %_  dek
-      p  p.dek(pop pop, aft sal)
-      q  (~(uni by q.dek) add.p.dif)
-    ==
+  :: ++  update-branch
+  ::   =|  n=@
+  ::   |=  $:  rop=rope
+  ::           pop=prop
+  ::           dek=deck
+  ::       ==
+  ::   ^-  [[(list buoy) (list json)] deck]
+  ::   ?:  ?&  !=(0 n)
+  ::           =(pop pop.p.dek)
+  ::       ==
+  ::     [~^~ dek]
+  ::   =/  lyn  (rear rop)
+  ::   =/  dat  (hydrate-component bom.p.dek q.lyn)
+  ::   ?>  ?=(%& -.dat)
+  ::   =/  [sal=manx lot=loot]
+  ::     =/  rig  (~(got by rigs) p.lyn)
+  ::     =/  man
+  ::       %~  sail  mast.rig
+  ::       :-  (en-scud q.lyn p.p.dat)  [pop loc.p.dek q.p.dat]
+  ::     ?.  ?=(%hoot -.man)
+  ::       :-  man  (get-loot man)
+  ::     %-  take-hoot  +.man
+  ::   =.  sal  (haul rop sal)
+  ::   =/  dif  (luff rop lot [aft.p.dek ~] [sal ~])
+  ::   =^  [bo=(list buoy) jo=(list json)]  q.dek
+  ::     %-  ~(rep by q.dek)
+  ::     |=  $:  [k=line v=deck]
+  ::             a=[[b=(list buoy) j=(list json)] a=(map line deck)]
+  ::         ==
+  ::     ?:  (~(has in del.p.dif) k)
+  ::       %_  a
+  ::         b  %+  weld  (unsubscribe-branch (snoc rop k) v)  b.a
+  ::       ==
+  ::     =/  l  (~(get by lot) k)
+  ::     =^  b=[b=(list buoy) j=(list json)]  v
+  ::       %=  ^$
+  ::         n    +(n)
+  ::         rop  (snoc rop k)
+  ::         pop  ?~(l ~ u.l)
+  ::         dek  v
+  ::       ==
+  ::     %_  a
+  ::       b  %+  weld  b.b  b.a
+  ::       j  %+  weld  j.b  j.a
+  ::       a  %+  ~(put by a.a)  k  v
+  ::     ==
+  ::   :-  [(weld boy.p.dif bo) (weld q.dif jo)]
+  ::   %_  dek
+  ::     p  p.dek(pop pop, aft sal)
+  ::     q  (~(uni by q.dek) add.p.dif)
+  ::   ==
   ::
-  ++  handle-diff-branch-add
-    |=  [rop=rope lot=loot man=manx]
-    =|  $=  acc
-        $:  des=(map line deck)
-            sun=(list sunk)
-            boy=(list buoy)
-        ==
-    =/  mal=marl  [man ~]
-    ^-  [_acc manx]
-    =<  ?>  ?=(^ p)
-        :-  q  i.p
-    |-  ^-  (pair marl _acc)
-    %^  spin  mal  acc
-    |=  [i=manx a=_acc]
-    ?:  ?=([%mast @] n.g.i)
-      =/  paf  (getv %path a.g.i)
-      =/  lin  `line`[+.n.g.i (stab paf)]
-      =/  pup  (~(get by lot) lin)
-      =/  wod  (make-branch lin (snoc rop lin) ?~(pup ~ u.pup))
-      ?~  dek.wod
-        :-  i(c [(sunk-page sun.wod) ~])
-        %_  a
-          sun  (weld sun.a sun.wod)
-        ==
-      :-  (assemble-branch-manx dek.wod)
-      %_  a
-        des  (~(put by des.a) lin dek.wod)
-        sun  (weld sun.a sun.wod)
-        boy  (weld boy.a boy.wod)
-      ==
-    =^  b=_acc  c.i  =>  ^$(mal c.i)  [q p]
-    :-  i
-    %_  a
-      des  (~(uni by des.a) des.b)
-      sun  (weld sun.a sun.b)
-      boy  (weld boy.a boy.b)
-    ==
+  :: ++  handle-diff-branch-add
+  ::   |=  [rop=rope lot=loot man=manx]
+  ::   =|  $=  acc
+  ::       $:  des=(map line deck)
+  ::           sun=(list sunk)
+  ::           boy=(list buoy)
+  ::       ==
+  ::   =/  mal=marl  [man ~]
+  ::   ^-  [_acc manx]
+  ::   =<  ?>  ?=(^ p)
+  ::       :-  q  i.p
+  ::   |-  ^-  (pair marl _acc)
+  ::   %^  spin  mal  acc
+  ::   |=  [i=manx a=_acc]
+  ::   ?:  ?=([%mast @] n.g.i)
+  ::     =/  paf  (getv %path a.g.i)
+  ::     =/  lin  `line`[+.n.g.i (stab paf)]
+  ::     =/  pup  (~(get by lot) lin)
+  ::     =/  wod  (make-branch lin (snoc rop lin) ?~(pup ~ u.pup))
+  ::     ?~  dek.wod
+  ::       :-  i(c [(sunk-page sun.wod) ~])
+  ::       %_  a
+  ::         sun  (weld sun.a sun.wod)
+  ::       ==
+  ::     :-  (assemble-branch-manx dek.wod)
+  ::     %_  a
+  ::       des  (~(put by des.a) lin dek.wod)
+  ::       sun  (weld sun.a sun.wod)
+  ::       boy  (weld boy.a boy.wod)
+  ::     ==
+  ::   =^  b=_acc  c.i  =>  ^$(mal c.i)  [q p]
+  ::   :-  i
+  ::   %_  a
+  ::     des  (~(uni by des.a) des.b)
+  ::     sun  (weld sun.a sun.b)
+  ::     boy  (weld boy.a boy.b)
+  ::   ==
   ::
   :: ++luff
   :: diffs manx into a format that gets sent and applied to sync the client.
