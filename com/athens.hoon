@@ -120,7 +120,7 @@
                         ==
                         ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
                           ;div.relative.inline-block
-                            ;+  ?:  public.access
+                            ;+  ?.  public.access
                               ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
                                 ;*  toggle
                               ==
@@ -156,12 +156,13 @@
                 ;form.flex
                   =action  "/~/login"
                   =method  "POST"
-                  ;label(for "login-input"): login:
+                  ;label.p-2(for "login-input"): login:
                   ;input(id "login-input", name "name", required "");
                   ;input(type "hidden", name "redirect", value (spud ;:(weld /mast pax.scud /athens)));
                   ;input(type "hidden", name "eauth", value "");
-                  ;button(type "submit"): 
+                  ;button(type "submit")
                     ;i(data-lucide "arrow-right");
+                  ==
                 ==
           ==
           ;div;
