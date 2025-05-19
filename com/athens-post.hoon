@@ -63,7 +63,7 @@
         ;div.post.pointer
           ;div(event "/click/toggle-hide")
             =class  "author {?:(hidden.loc "hide" "")}"
-            ;+  ;/  (cite:title author.dat)
+            ;-  (cite:title author.dat)
           ==
         ==
         ;+  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)

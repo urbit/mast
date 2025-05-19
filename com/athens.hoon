@@ -75,9 +75,8 @@
         ;meta(charset "UTF-8");
         ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
         ;script: {(trip athens-textarea)}
-        ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js")
-          window.marked = marked
-        ==
+        ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
+        ;script:  window.marked = marked
         ;style(type "text/tailwindcss")
           ;-  %-  trip
           '''
@@ -216,7 +215,7 @@
 ++  style
   ^-  manx
   ;style
-    ;+  ;/  %-  trip
+    ;-  %-  trip
     '''
     .options {
       color: #A3A3A3;
