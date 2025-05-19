@@ -55,7 +55,7 @@
       ?+  care  ~
         %r
           :^  ~  ~  %$  !>
-          [%noun !>(~)]
+          [%athens-access !>(access.state)]
         %t
           :^  ~  ~  %$  !>
           (get-post-key-paths posts)
@@ -110,9 +110,20 @@
         %put-post
       %+  put-post  post-at.act  content.act
       ::
+        %patch-post 
+      %+  patch-post  post-at.act  content.act
+      ::
         %del-post
       %-  del-post  at.act
       ::
+        %access-public
+      %-  access-public  public.act
+      ::
+        %edit-access-id
+      %-  edit-access-id  ids.act
+      ::
+        %del-access-id
+      %-  del-access-id  id.act
     ==
     ::
   == 
@@ -134,7 +145,30 @@
       posts  rez
     ==
   %-  emit
-  %-  make-fact-card  (weld /t/posts post-at)
+  %+  make-fact-card  (weld /r/posts post-at)  ~
+::
+++  patch-post 
+  |=  [patch-at=path dat=@t]
+  ^+  cor 
+  =.  posts
+    |-  ^-  posts:athens
+    ?~  patch-at  !!
+    =/  id  (slav %da i.patch-at)
+    =/  [poz=post:athens rez=posts:athens]  (~(got by posts) id)
+    ?~  t.patch-at
+      ?>  =(author.poz src.bowl)
+      %+  ~(put by posts)  id
+      :_  rez
+      :-  author.poz
+          dat
+    %+  ~(put by posts)  id
+    :-  poz
+    %=  $
+      patch-at  t.patch-at
+      posts  rez
+    ==
+  %-  emit
+  %+  make-fact-card  (weld /r/posts patch-at)  ~
 ::
 ++  del-post
   |=  at=path
@@ -156,7 +190,49 @@
       posts  rez
     ==
   %-  emit
-  %-  make-fact-card  (weld /t/posts (snip at))
+  %+  make-fact-card  (weld /t/posts (snip at))  ~
+::
+++  access-public
+  |=  public=?
+  ^+  cor
+  ~&  access
+  ?:  =(public public.access)  cor
+  =.  access  :*  public 
+                  members.access
+                  blacklist.access
+              ==
+  %-  emit
+  %+  make-fact-card  /t/posts  `access
+::
+++  edit-access-id
+  |=  ids=(list @p)
+  ^+  cor
+  =.  access  
+    :-  public.access 
+    ?.  public.access
+      :-  (welp members.access ids)
+      blacklist.access
+    :-  members.access
+    (welp blacklist.access ids)
+  %-  emit
+  %+  make-fact-card  /t/posts  `access
+::
+++  del-access-id
+  |=  id=@p
+  ^+  cor
+  =/  index-id  %+  find  [id]~ 
+                ?.  public.access
+                  members.access
+                blacklist.access
+  ?~  index-id  cor
+  =.  access  :-  public.access
+              ?.  public.access
+                :-  (oust [(need index-id) 1] members.access)
+                blacklist.access
+              :-  members.access
+              (oust [(need index-id) 1] blacklist.access)
+  %-  emit
+  %+  make-fact-card  /t/posts  `access
 ::
 ++  get-post-key-paths
   |=  poz=posts:athens
@@ -166,9 +242,12 @@
   /[(scot %da k)]
 ::
 ++  make-fact-card
-  |=  =path
+  |=  [=path uacc=(unit access:athens)]
   ^-  card
-  :*  %give  %fact  ~[path]  %noun  !>(~)
+  ?:  =(~ uacc)
+    :*  %give  %fact  ~[path]  %athens-access  !>(access.state)
+    ==
+  :*  %give  %fact  ~[path]  %athens-access  !>((need uacc))
   ==
 ::
 --
