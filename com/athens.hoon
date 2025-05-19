@@ -3,7 +3,7 @@
 :-  ^-  boom:mast
     :*  %athens-access
         %z
-        !>(|^~)
+        !>(|^|^~)
     ==
 =<
 ^-  mast:mast
@@ -13,7 +13,7 @@
   |=  =crow:mast
   ^-  blow:mast
   =/  pol  ^-  (pole @ta)  path.crow
-  =/  loc  !<  [settings=? show-del=(unit @p)]  loc.sack
+  =/  loc  !<  [settings=? show-ids=? show-del=(unit @p)]  loc.sack
   ?+  pol  ~^~
     ::
       [%submit %post ~]
@@ -38,6 +38,11 @@
     :_  !>  loc
     :~  [%athens %athens-action !>([%access-public !public.access])]
     ==
+    ::
+      [%click %toggle-show-ids ~]
+    =/  access  !<  access:athens  fil.sack
+    :_  !>  loc(show-ids !show-ids.loc)
+    ~
     ::
       [%submit %remove-ship ~]
     =/  dat  (~(got by data.crow) 'ship-input')
@@ -66,7 +71,7 @@
 ::
 ++  sail
   ^-  manx
-  =/  loc  !<  [settings=? show-del=(unit @p)]  loc.sack
+  =/  loc  !<  [settings=? show-ids=? show-del=(unit @p)]  loc.sack
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   =/  access  !<  access:athens  fil.sack
     ;html
@@ -98,18 +103,22 @@
           ;div.user
             ;+  ?.  is-comet
                   ;div(event "/mouseenter/show-settings /mouseleave/show-settings")
-                  =class  "border border-[#323232] rounded bg-[#1F1F1C]"
+                  =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
                     ;div
                     =class  "flex flex-row px-4 py-2 {?.(settings.loc "" "hidden")}"
                       ;  {(cite:title yon.scud)}
                     ==
                     ;+  ?:  =(our.scud yon.scud)
                       ;div
-                      =class  "grid grid-cols-2 max-w-[227px] divide-y divide-[#323232] {?.(settings.loc "hidden" "")}"
+                      =class  "grid grid-cols-[auto_1fr] max-w-[227px] divide-y divide-[#A3A3A3] {?.(settings.loc "hidden" "")}"
                         ;div.px-4.py-2: Urbit ID
-                        ;div.px-4.py-2.w-full.flex.justify-end: {(cite:title yon.scud)}
-                        ;div.px-4.py-2: Public Access:
-                        ;label.px-4.py-2.w-full.flex.justify-end.relative
+                        ;div.px-4.py-2
+                          ; {(cite:title yon.scud)}
+                        ==
+                        ;div.px-4.py-2
+                          ; Public Access
+                        ==
+                        ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
                           ;div.relative.inline-block
                             ;+  ?:  public.access
                               ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
@@ -122,14 +131,24 @@
                         ==
                         ;*  ?:  public.access
                           ;=
-                            ;div.col-span-2.px-4.py-2: Blocked
+                            ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Blocked
+                            ;+  ?:  show-ids.loc
+                              ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  <
+                            ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  >
                             ;+  (edit-access-form public.access)
-                            ;*  (id-list blacklist.access show-del.loc)
+                            ;*  ?:  show-ids.loc
+                              (id-list blacklist.access show-del.loc)
+                            ~
                           ==
                         ;=
-                          ;div.col-span-2.px-4.py-2: Members
+                          ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Members
+                          ;+  ?:  show-ids.loc
+                            ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  <
+                          ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  >
                           ;+  (edit-access-form public.access)
-                          ;*  (id-list members.access show-del.loc)
+                          ;*  ?:  show-ids.loc
+                            (id-list members.access show-del.loc)
+                          ~
                         ==
                       ==
                     ;div;
@@ -178,8 +197,8 @@
 ++  toggle
   ^-  marl
   ;=
-    ;div(class "w-11 h-6 bg-[#323232] rounded-full transition-colors");
-    ;div(class "absolute left-0 top-0 w-5 h-5 bg-[#1F1F1C] rounded-full transition-transform transform peer-checked:translate-x-full m-[2px]");
+    ;div(class "w-[20px] h-[11px] bg-[#A3A3A3] rounded-full transition-colors");
+    ;div(class "absolute left-[0] top-[0] w-[9px] h-[9px] bg-[#0F0F0F] rounded-full transition-transform transform peer-checked:translate-x-full m-[1px]");
   ==
 ::
 ++  edit-access-form
@@ -201,7 +220,8 @@
   ;*  %+  turn  ids
   |=  =ship
   ^-  manx
-  ;div.col-span-2.flex(event "/mouseleave/show-del /mouseenter/show-del/{(scow %p ship)}")
+  ;div(event "/mouseleave/show-del /mouseenter/show-del/{(scow %p ship)}")
+    =class  "col-span-2 flex"
     ;div.px-4.py-2: {(scow %p ship)}
     ;+  ?:  =(show-del `ship)
         ;form.px-4.py-2.ml-auto(event "/submit/remove-ship")
