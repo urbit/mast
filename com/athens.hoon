@@ -177,12 +177,13 @@
 ::
 --
 |%
+::
 ++  has-access
   |=  [=ship =access:athens]
   ^-  ?
-  ?.  public.access  
-    ?.  =(~ (find [ship]~ ids.access))  |  &
-  ?.  =(~ (find [ship]~ ids.access))  &  |
+  ?.  public.access
+    ?.  =(~ (find [ship]~ ids.access))  &  |
+  ?.  =(~ (find [ship]~ ids.access))  |  &
 ::
 ++  toggle
   ^-  marl
