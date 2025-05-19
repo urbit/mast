@@ -25,7 +25,8 @@
   ==
 +$  access  
   $:  public=? 
-      ids=(list @p)
+      members=(list @p)
+      blacklist=(list @p)
   ==
 ::
 +$  state

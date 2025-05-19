@@ -92,7 +92,7 @@
         =class  ""
         ;+  ?.  |(=(our.scud yon.scud) (has-access yon.scud access))
           ;div
-            ;  "No access"
+            ; No access
           ==
         ;div
           =class  "bg-neutral-bg text-neutral-400 athens"
@@ -107,40 +107,31 @@
                     ;+  ?:  =(our.scud yon.scud)
                       ;div
                       =class  "grid grid-cols-2 max-w-[227px] divide-y divide-[#323232] {?.(settings.loc "hidden" "")}"
-                        ;div.px-4.py-2.text-white: Urbit ID
-                        ;div.px-4.py-2.justify-self-end: {(cite:title yon.scud)}
-                        ;div.px-4.py-2.text-white: Public Access:
-                        ;label.relative.inline-flex.items-center.p-4.justify-self-end
-                          ;+  ?:  public.access
-                            ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
+                        ;div.px-4.py-2: Urbit ID
+                        ;div.px-4.py-2.w-full.flex.justify-end: {(cite:title yon.scud)}
+                        ;div.px-4.py-2: Public Access:
+                        ;label.px-4.py-2.w-full.flex.justify-end.relative
+                          ;div.relative.inline-block
+                            ;+  ?:  public.access
+                              ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
+                                ;*  toggle
+                              ==
+                            ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
                               ;*  toggle
                             ==
-                          ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
-                            ;*  toggle
                           ==
                         ==
-                        ;+  ?:  public.access
-                          ;div.col-span-2.px-4.py-2.text-white: Block list
-                        ;div.col-span-2.px-4.py-2.text-white: Member list
-                          ;*  %+  turn  ids.access
-                              |=  =ship
-                              ;div.col-span-2.flex(event "/mouseleave/show-del")
-                                ;div.px-4.py-2(event "/mouseenter/show-del/{(scow %p ship)}"): {(scow %p ship)}
-                                ;+  ?:  =(show-del.loc `ship)
-                                    ;form.px-4.py-2.ml-auto(event "/submit/remove-ship")
-                                    =id  (scow %p ship)
-                                      ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
-                                      ;button: x
-                                    ==
-                                  ;div;
-                              ==
-                            ;form.col-span-2.px-4.py-2.flex(event "/submit/add-ship")
-                              ;input(type "textbox", name "ship-input")
-                                =class  "border-0 focus:outline-none"
-                              ;
-                              ==
-                              ;button.ml-auto: +
-                            ==
+                        ;*  ?:  public.access
+                          ;=
+                            ;div.col-span-2.px-4.py-2: Blocked
+                            ;+  (edit-access-form public.access)
+                            ;*  (id-list blacklist.access show-del.loc)
+                          ==
+                        ;=
+                          ;div.col-span-2.px-4.py-2: Members
+                          ;+  (edit-access-form public.access)
+                          ;*  (id-list members.access show-del.loc)
+                        ==
                       ==
                     ;div;
                   ==
@@ -181,15 +172,45 @@
 ++  has-access
   |=  [=ship =access:athens]
   ^-  ?
-  ?.  public.access
-    ?.  =(~ (find [ship]~ ids.access))  &  |
-  ?.  =(~ (find [ship]~ ids.access))  |  &
+  ?.  public.access 
+    ?.  =(~ (find [ship]~ members.access))  |  &
+  ?.  =(~ (find [ship]~ blacklist.access))  &  |
 ::
 ++  toggle
   ^-  marl
   ;=
     ;div(class "w-11 h-6 bg-[#323232] rounded-full transition-colors");
-    ;div(class "absolute w-5 h-5 bg-[#1F1F1C] rounded-full peer-checked:translate-x-full transition-transform");
+    ;div(class "absolute left-0 top-0 w-5 h-5 bg-[#1F1F1C] rounded-full transition-transform transform peer-checked:translate-x-full m-[2px]");
+  ==
+::
+++  edit-access-form
+  |=  public=?
+  ^-  manx
+  ;form.col-span-2.px-4.py-2.flex(event "/submit/add-ship")
+    ;input(type "textbox", name "ship-input")
+      =class  "border-0 focus:outline-none text-white"
+    ;
+    ==
+    ;+  ?:  public
+      ;button.ml-auto: ~
+    ;button.ml-auto: +
+  ==
+::
+  ++  id-list
+  |=  [ids=(list @p) show-del=(unit @p)]
+  ^-  marl
+  ;*  %+  turn  ids
+  |=  =ship
+  ^-  manx
+  ;div.col-span-2.flex(event "/mouseleave/show-del /mouseenter/show-del/{(scow %p ship)}")
+    ;div.px-4.py-2: {(scow %p ship)}
+    ;+  ?:  =(show-del `ship)
+        ;form.px-4.py-2.ml-auto(event "/submit/remove-ship")
+        =id  (scow %p ship)
+          ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
+          ;button: x
+        ==
+      ;div;
   ==
 ::
 ++  style

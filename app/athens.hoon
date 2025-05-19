@@ -197,25 +197,40 @@
   ^+  cor
   ~&  access
   ?:  =(public public.access)  cor
-  =.  access  [public ~]
+  =.  access  :*  public 
+                  members.access
+                  blacklist.access
+              ==
   %-  emit
   %+  make-fact-card  /t/posts  `access
 ::
 ++  edit-access-id
   |=  ids=(list @p)
   ^+  cor
-  =.  access  :-  public.access 
-              (welp ids.access ids)
+  =.  access  
+    :-  public.access 
+    ?.  public.access
+      :-  (welp members.access ids)
+      blacklist.access
+    :-  members.access
+    (welp blacklist.access ids)
   %-  emit
   %+  make-fact-card  /t/posts  `access
 ::
 ++  del-access-id
   |=  id=@p
   ^+  cor
-  =/  index-id  (find [id]~ ids.access)
+  =/  index-id  %+  find  [id]~ 
+                ?.  public.access
+                  members.access
+                blacklist.access
   ?~  index-id  cor
   =.  access  :-  public.access
-              (oust [(need index-id) 1] ids.access)
+              ?.  public.access
+                :-  (oust [(need index-id) 1] members.access)
+                blacklist.access
+              :-  members.access
+              (oust [(need index-id) 1] blacklist.access)
   %-  emit
   %+  make-fact-card  /t/posts  `access
 ::
