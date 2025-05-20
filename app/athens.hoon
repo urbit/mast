@@ -207,13 +207,11 @@
 ++  edit-access-id
   |=  ids=(list @p)
   ^+  cor
-  =.  access  
-    :-  public.access 
-    ?.  public.access
-      :-  (welp members.access ids)
-      blacklist.access
-    :-  members.access
-    (welp blacklist.access ids)
+  ?.  public.access
+    =.  members.access  (welp members.access ids)
+    %-  emit
+    %+  make-fact-card  /t/posts  `access
+  =.  blacklist.access  (welp blacklist.access ids)
   %-  emit
   %+  make-fact-card  /t/posts  `access
 ::
@@ -225,12 +223,11 @@
                   members.access
                 blacklist.access
   ?~  index-id  cor
-  =.  access  :-  public.access
-              ?.  public.access
-                :-  (oust [(need index-id) 1] members.access)
-                blacklist.access
-              :-  members.access
-              (oust [(need index-id) 1] blacklist.access)
+  ?.  public.access
+    =.  members.access  (oust [(need index-id) 1] members.access)
+    %-  emit
+    %+  make-fact-card  /t/posts  `access
+  =.  blacklist.access  (oust [(need index-id) 1] blacklist.access)
   %-  emit
   %+  make-fact-card  /t/posts  `access
 ::
