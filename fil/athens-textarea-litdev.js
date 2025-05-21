@@ -35,41 +35,15 @@ class AthensTextareaLitdev extends LitElement {
 
     return html`
       <div class="athens-editor">
-        ${!this.previewOnly
-          ? html`
-              <div class="tab-controls">
-                <button
-                  type="button"
-                  class="tab border rounded-[6px] ${this.activeTab === 'write'
-                    ? 'active'
-                    : ''}"
-                  @click=${() => this._setTab('write')}
-                >
-                  Write
-                </button>
-                <button
-                  type="button"
-                  class="tab border rounded-[6px] ${this.activeTab === 'preview'
-                    ? 'active'
-                    : ''}"
-                  @click=${() => this._setTab('preview')}
-                >
-                  Preview
-                </button>
-              </div>
-            `
-          : null}
-
         <textarea
           style=${isPreview ? 'display: none;' : ''}
           class="${this
-            .class} focus:border rounded-[3px] focus:outline-none focus:border-white focus:ring-0"
+            .class} focus:border rounded-[3px] focus:outline-none focus:border-white focus:ring-0 mt-auto"
           rows="1"
           .value=${this.value}
           @input=${this._onInput}
           @keydown=${this._onKeydown}
         ></textarea>
-
         <div
           style=${!isPreview ? 'display: none;' : ''}
           class="markdown-preview ${clamp} prose"
