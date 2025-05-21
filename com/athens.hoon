@@ -1,5 +1,6 @@
 /-  mast, athens
-/*  athens-textarea  %js  /fil/athens-textarea/js
+/*  athens-textarea-litdev  %js  /fil/athens-textarea-litdev/js
+/*  footnote-parser  %js  /fil/footnote-parser/js
 :-  ^-  boom:mast
     :*  %athens-access
         %z
@@ -25,6 +26,7 @@
     ::
       [%mouseenter %show-settings ~]
     ?:  settings.loc  ~^~
+    ?.  =(our.scud yon.scud)  ~^~
     :_   !>  loc(settings !settings.loc)
     ~
     ::
@@ -78,10 +80,11 @@
       ;head
         ;title: Athens
         ;meta(charset "UTF-8");
+        ;meta(name "viewport", content "width=device-width", initial-scale "1");
         ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
-        ;script: {(trip athens-textarea)}
         ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
-        ;script:  window.marked = marked
+        ;script(type "module"): {(trip footnote-parser)}
+        ;script(type "module"): {(trip athens-textarea-litdev)} 
         ;style(type "text/tailwindcss")
           ;-  %-  trip
           '''
@@ -93,10 +96,10 @@
         ==
       ==
       ;body
-        =class  ""
         ;+  ?.  |(=(our.scud yon.scud) (has-access yon.scud access))
           ;div
-            ; No access
+          =class  "bg-neutral-bg text-neutral-400 athens h-full"
+            ; No access 
           ==
         ;div
           =class  "bg-neutral-bg text-neutral-400 athens"
@@ -166,17 +169,19 @@
                 ==
           ==
           ;div;
-          ;div.posts
+          ;div
+            =class  "posts md:gap-4"
             ;+  style
             ;*  %+  turn  kid.scud
                 |=  p=path
                 (make:mast %athens-post (weld pax.scud p) ~)
             ;+  ?:  is-comet
                   ;div.post-form.login-block: Login to post
-                ;form.post-form(event "/submit/post")
+                ;form(event "/submit/post")
+                  =class  "post-form fixed bottom-4 inset-x-4 z-50 p-2 rounded-md shadow md:w-full md:static md:inset-auto md:rounded-none md:shadow-none md:p-0"
                   =key  "athens-post-form"
-                  ;athens-textarea(class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1", name "post-input");
-                  ;button: ↵
+                  ;athens-textarea-litdev(class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1", name "post-input");
+                  ;button.mt-auto.p-2: ↵
                 ==
           ==
       ==
@@ -218,7 +223,7 @@
   ++  id-list
   |=  [ids=(list @p) show-del=(unit @p)]
   ^-  marl
-  ;*  %+  turn  ids
+  ;*  %+  turn  (flop ids)
   |=  =ship
   ^-  manx
   ;div(event "/mouseleave/show-del /mouseenter/show-del/{(scow %p ship)}")
@@ -240,9 +245,6 @@
     '''
     .options {
       color: #A3A3A3;
-    }
-    .options {
-      /* margin-left: auto; */
     }
     .options > button {
       visibility: hidden;
@@ -284,18 +286,10 @@
       max-width: 1000px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
     }
     .post-node-container {
       display: flex;
       flex-direction: column;
-    }
-    .post-container {
-      flex-direction: row;
-    }
-    .post {
-      display: flex;
-      gap: 16px;
     }
     .author {
       font-family: 'Source Code Pro', monospace;
@@ -309,10 +303,9 @@
       min-width: 120px;
     }
     .author.hide {
-      color: #575757;
+      color: #737373;
     }
     .message {
-      flex-grow: 1;
       font-family: Inter, sans-serif;
       font-weight: 400;
       font-size: 14px;
@@ -322,10 +315,9 @@
       color: #A3A3A3;
       max-width: 645px;
       width: 100%;
-      white-space: pre-line;
     }
     .message.hide {
-      color: #575757;
+      color: #737373;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -364,7 +356,7 @@
       font-size: 14px;
     }
     .post-form {
-      width: 100%;
+      background: #0f0f0f;
       margin-top: 0.45em;
       padding: 0.15em;
       border: solid;
@@ -400,8 +392,6 @@
       color: #FAFAFA;
     }
     .post-reply-form {
-      width: 100%;
-      padding: 0.15em;
       border: solid;
       border-width: 1px;
       border-radius: 6px;
@@ -416,6 +406,148 @@
       border-radius: 6px;
       border-color: #2C2C2C;
       background-color: #2C2C2C;
+    }
+    athens-textarea-litdev .tab-controls {
+      display: flex;
+    }
+    athens-textarea-litdev .tab {
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      outline: none;
+    }
+    athens-textarea-litdev .tab.active {
+      background: #262626;
+    }
+    athens-textarea-litdev textarea {
+      width: 100%;
+      resize: none;
+      font-size: 14px;
+      border: none;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    athens-textarea-litdev .markdown-preview {
+      font-size: 14px;
+    }
+    athens-textarea-litdev .clamp-one-line {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
+      max-width: 400px;
+    }
+    athens-textarea-litdev textarea{
+      background: #0f0f0f;
+    }
+    athens-textarea-litdev .clamp-one-line h1,
+    athens-textarea-litdev .clamp-one-line h2,
+    athens-textarea-litdev .clamp-one-line h3,
+    athens-textarea-litdev .clamp-one-line h4,
+    athens-textarea-litdev .clamp-one-line h5,
+    athens-textarea-litdev .clamp-one-line h6 {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    athens-textarea-litdev .clamp-one-line table {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+      display: inline;
+      border: none;
+    }
+    athens-textarea-litdev .clamp-one-line tbody {
+      display: none;
+    }
+    .prose.clamp-one-line td, 
+    athens-textarea-litdev .prose.clamp-one-line th {
+      display: inline;
+      padding: 0;
+      background: none;
+      border: none;
+      color: #737373;
+    }
+    athens-textarea-litdev h1 {
+      font-size: 48px;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+    }
+    athens-textarea-litdev h2 {
+      font-size: 30px;
+      line-height: 1.2;
+    }
+    athens-textarea-litdev h3 {
+      font-size: 24px;
+    }
+    athens-textarea-litdev h4 {
+      font-size: 20px;
+    }
+    athens-textarea-litdev h5 {
+      font-size: 18px;
+    }
+    athens-textarea-litdev h6 {
+      font-size: 14px;
+    }
+    .prose ul {
+      list-style-type: disc;
+      padding-left: 1.5rem; /* match Tailwind's pl-6 */
+    }
+    .prose ol {
+      list-style-type: decimal;
+      padding-left: 1.5rem;
+    }
+    .prose code {
+      background-color: #f3f4f6; /* Tailwind's bg-gray-100 */
+      padding: 0.125rem 0.25rem; /* px-1 py-0.5 */
+      border-radius: 0.25rem; /* rounded */
+      font-size: 0.875em; /* text-sm */
+    }  
+    .prose pre {
+      background-color: #111827; /* Tailwind's bg-gray-900 */
+      color: #f3f4f6; /* text-gray-100 */
+      padding: 1rem; /* p-4 */
+      border-radius: 0.5rem; /* rounded-lg */
+      overflow-x: auto;
+    }
+    .prose pre code {
+      background: transparent;
+      padding: 0;
+    }
+    .prose table {
+      font-family: Inter, sans-serif;
+      border: 1px solid #A3A3A3;
+      border-radius: 0.5rem;
+    }
+    .prose th {
+      text-align: left;
+      font-family: Inter, sans-serif;
+      font-weight: normal;
+      padding: 16px;
+      color: #A3A3A3;
+      border-bottom: 1px solid #A3A3A3;
+    }
+    .prose td {
+      font-family: Inter, sans-serif;
+      padding: 16px;
+      color: #FAFAFA;
+      border-bottom: 1px solid #A3A3A3;
+    }
+    .prose tr:last-child td {
+      border-bottom: none;
+    }
+    .prose sup.footnote {
+      font-size: 0.75em;
+      color:#A3A3A3;
+    }
+    @media (min-width: 768px) {
+      .author {
+        margin-left: 0 !important;
+      }
     }
     '''
   ==
