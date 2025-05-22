@@ -115,20 +115,20 @@
       q
       t.t.t.wyr
 ::
-:: ++  parse-channel-data
-::   |=  jon=json
-::   ^-  [rope crow]
-::   =,  dejs:format
-::   =/  pok
-::     ^-  [route=rope =path data=(map @t @t)]
-::     %.  jon
-::     %-  ot
-::     :~  route+(ar (ot ~[name+so path+pa]))
-::         path+pa
-::         data+(om so)
-::     ==
-::   :-  route.pok
-::   :-  path.pok  data.pok
+++  parse-channel-data
+  |=  jon=json
+  ^-  [knot rope crow]
+  =,  dejs:format
+  =+  ^-  [com=path eve=path dat=(map @t @t)]
+      %.  jon
+      %-  ot
+      :~  com+pa
+          path+pa
+          data+(om so)
+      ==
+  =/  [bas=knot rop=rope]  (parse-component-path com)
+  :+  bas  rop
+  :-  eve  dat
 ::
 :: ++  make-diff-cards
 ::   |=  [yon=ship jon=(list json)]
@@ -178,9 +178,9 @@
   ==
 ::
 ++  make-gull-cards
-  |=  [src=ship hok=hook pok=(list (pair @tas cage))]
+  |=  [src=ship hok=hook blo=blow]
   ^-  (list card:agent:gall)
-  %+  murn  pok
+  %+  murn  blo
   |=  [for=@tas dat=cage]
   ?:  =(for dap.bowl)  ~
   :-  ~
@@ -303,18 +303,10 @@
             =([%s 'mast'] i.p.jon)
         ==
       cor
-    :: =/  [rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
-    :: ?<  ?=(~ rop)
-
-    :: =/  ui-core  (ui-moor:(ui-abed:ui src.bowl i.rop) rop)
-    :: =^  [local-update=? cards=(list card)]  ui-core  (ui-sway:ui-core cro)
-    :: ?.  local-update
-    ::   %-  emil  cards
-    :: =^  [bos=(list buoy) jon=(list json)]  cor  ui-gust:ui-core
-    :: %-  emil
-    :: %+  weld  (make-diff-cards src.bowl jon)  cards
-    cor
-
+    =/  [bas=knot rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
+    =/  doc  (~(get by dock) bas)
+    ?~  doc  ~&(>>> %missing-binding-on-event !!)
+    %-  emil  (ui-sway:(ui-abed:ui bas src.bowl u.doc) rop cro)
     ::
   ==
 ::
@@ -336,16 +328,16 @@
   ==
 ::
 ++  ui
-  =|  [bos=(set buoy) bas=knot src=ship hok=hook dek=deck]
+  =|  [bos=(set buoy) bas=knot src=ship rut=hook dek=deck]
   |%
   ++  ui-core  .
-  ++  ui-abet  :-  bos  (~(put by dock) bas hok dek)
+  ++  ui-abet  :-  bos  (~(put by dock) bas rut dek)
   ++  ui-abed
-    |=  [b=knot s=ship h=hook d=deck]
+    |=  [b=knot s=ship r=hook d=deck]
     %_  ui-core
       bas  b
       src  s
-      hok  h
+      rut  r
       dek  d
     ==
   ::
@@ -357,7 +349,7 @@
     =/  doc
       %.  kel
       ^-  mist
-      =>  (~(got by lake) hok)
+      =>  (~(got by lake) rut)
       ?>  ?=(%mist -)  +
     =/  [rod=rode lin=line]  (parse-component-element com.doc)
     =/  [sal=manx wak=wake]  (build-component-branch [rod ~] rod lin)  :: fix pre key?
@@ -367,6 +359,24 @@
         ==
     =-  -(a.g [[%our +:(scow %p our.bowl)] ~])
     ^-  manx  doc(hed [script-node hed.doc], com sal)
+  ::
+  :: ++ui-sway
+  :: handle an event from the client
+  ++  ui-sway
+    |=  [rop=rope cro=crow]
+    ^-  (list card)
+    =/  duk  (~(get by dek) rop)
+    ?~  duk  ~&(>>> %missing-component-on-event !!)
+    =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
+    =/  hul
+      ^-  hull
+      :*  our.bowl
+          src.u.duk
+          par.u.duk
+          (hydrate-component bom.u.duk res.u.duk)
+      ==
+    %^  make-gull-cards  src  com.u.duk
+    %-  ~(spar com hul)  cro
   ::
   :: ++parse-component-element
   :: extract component data from a component element;
