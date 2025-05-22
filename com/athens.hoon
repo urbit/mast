@@ -572,10 +572,10 @@
       .author {
         margin-left: 0 !important;
       }
-      .message.reply {
-        border-left-width: 0 !important;
-        border-left-style: none !important;
-      }
+      :: .message.reply {
+      ::   border-left-width: 0 !important;
+      ::   border-left-style: none !important;
+      :: }
     }
     '''
   ==
