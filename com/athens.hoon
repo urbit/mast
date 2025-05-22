@@ -80,7 +80,7 @@
       ;head
         ;title: Athens
         ;meta(charset "UTF-8");
-        ;meta(name "viewport", content "width=device-width", initial-scale "1");
+        ;meta(name "viewport", content "width=device-width, initial-scale=1");
         ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
         ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
         ;script(type "module"): {(trip footnote-parser)}
@@ -103,74 +103,91 @@
           ==
         ;div
           =class  "bg-neutral-bg text-neutral-400 athens"
-          ;div.user
-            ;+  ?.  is-comet
-                  ;div(event "/mouseenter/show-settings /mouseleave/show-settings")
-                  =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
-                    ;div
-                    =class  "flex flex-row px-4 py-2 {?.(settings.loc "" "hidden")}"
-                      ;  {(cite:title yon.scud)}
-                    ==
-                    ;+  ?:  =(our.scud yon.scud)
+          ;div
+            =class  "relative h-[112px] w-full"
+            ;div
+              =class  "fixed top-0 left-0 w-full h-[18vh] bg-gradient-to-b from-black/100 to-transparent z-50 pointer-events-none md:hidden"
+              ;
+            ==
+            ;div
+              =class  "user fixed z-100"
+              ;+  ?.  is-comet
+                    ;div(event "/mouseenter/show-settings /mouseleave/show-settings")
+                      =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
                       ;div
-                      =class  "grid grid-cols-[auto_1fr] max-w-[227px] divide-y divide-[#A3A3A3] {?.(settings.loc "hidden" "")}"
-                        ;div.px-4.py-2: Urbit ID
-                        ;div.px-4.py-2
-                          ; {(cite:title yon.scud)}
-                        ==
-                        ;div.px-4.py-2
-                          ; Public Access
-                        ==
-                        ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
-                          ;div.relative.inline-block
-                            ;+  ?.  public.access
-                              ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
-                                ;*  toggle
+                      =class  "flex flex-row px-4 py-2 {?.(settings.loc "" "hidden")}"
+                        ;  {(cite:title yon.scud)}
+                      == 
+                      ;*  ?:  =(our.scud yon.scud)
+                        ;=
+                          ;div
+                          =class  "grid grid-cols-[auto_1fr] divide-y divide-[#A3A3A3] {?.(settings.loc "hidden" "")}"
+                          ::  max-w-[227px] 
+                          ::"hidden sm:grid")}"
+                            ;div.px-4.py-2: Urbit ID
+                            ;div.px-4.py-2
+                              ; {(cite:title yon.scud)}
+                            ==
+                            ;div.px-4.py-2
+                              ; Public Access
+                            ==
+                            ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
+                              ;div.relative.inline-block
+                                ;+  ?.  public.access
+                                  ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
+                                    ;*  toggle
+                                  ==
+                                ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
+                                  ;*  toggle
+                                ==
                               ==
-                            ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
-                              ;*  toggle
+                            ==
+                            ;*  ?.  public.access
+                              ;=
+                                ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Blocked
+                                ;+  ?:  show-ids.loc
+                                  ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  <
+                                ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  >
+                                ;+  (edit-access-form public.access)
+                                ;*  ?:  show-ids.loc
+                                  (id-list blacklist.access show-del.loc)
+                                ~
+                              ==
+                            ;=
+                              ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Members
+                              ;+  ?:  show-ids.loc
+                                ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  <
+                              ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  >
+                              ;+  (edit-access-form public.access)
+                              ;*  ?:  show-ids.loc
+                                (id-list members.access show-del.loc)
+                              ~
                             ==
                           ==
+                          ::;+  (mobile-view-user loc scud access)
                         ==
-                        ;*  ?:  public.access
-                          ;=
-                            ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Blocked
-                            ;+  ?:  show-ids.loc
-                              ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  <
-                            ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  >
-                            ;+  (edit-access-form public.access)
-                            ;*  ?:  show-ids.loc
-                              (id-list blacklist.access show-del.loc)
-                            ~
-                          ==
-                        ;=
-                          ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Members
-                          ;+  ?:  show-ids.loc
-                            ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  <
-                          ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  >
-                          ;+  (edit-access-form public.access)
-                          ;*  ?:  show-ids.loc
-                            (id-list members.access show-del.loc)
-                          ~
-                        ==
-                      ==
-                    ;div;
+                      ~
+                    ==
+                  ;form.flex
+                    =action  "/~/login"
+                    =method  "POST"
+                    ;label.p-2(for "login-input"): login:
+                    ;input(id "login-input", name "name", required "");
+                    ;input(type "hidden", name "redirect", value (spud ;:(weld /mast pax.scud /athens)));
+                    ;input(type "hidden", name "eauth", value "");
+                    ;button(type "submit")
+                      ;i(data-lucide "arrow-right");
+                    ==
                   ==
-                ;form.flex
-                  =action  "/~/login"
-                  =method  "POST"
-                  ;label.p-2(for "login-input"): login:
-                  ;input(id "login-input", name "name", required "");
-                  ;input(type "hidden", name "redirect", value (spud ;:(weld /mast pax.scud /athens)));
-                  ;input(type "hidden", name "eauth", value "");
-                  ;button(type "submit")
-                    ;i(data-lucide "arrow-right");
-                  ==
-                ==
+            ==
+            ;div
+              =class  "gradient fixed bottom-0 left-0 w-full h-[18vh] bg-gradient-to-t from-black/100 to-transparent z-50 pointer-events-none md:hidden"
+              ;
+            ==
           ==
           ;div;
           ;div
-            =class  "posts md:gap-4"
+            =class  "posts md:gap-[32px] gap-[4px]"
             ;+  style
             ;*  %+  turn  kid.scud
                 |=  p=path
@@ -178,9 +195,9 @@
             ;+  ?:  is-comet
                   ;div.post-form.login-block: Login to post
                 ;form(event "/submit/post")
-                  =class  "post-form fixed bottom-4 inset-x-4 z-50 p-2 rounded-md shadow md:w-full md:static md:inset-auto md:rounded-none md:shadow-none md:p-0"
+                  =class  "post-form fixed bottom-4 inset-x-4 z-50 rounded-md shadow md:w-full md:static md:inset-auto md:rounded-none md:shadow-none md:p-0"
                   =key  "athens-post-form"
-                  ;athens-textarea-litdev(class "w-full min-h-[26px] resize-none overflow-hidden box-border p-1", name "post-input");
+                  ;athens-textarea-litdev(class "w-full min-h-[28px] resize-none overflow-auto md:overflow-hidden box-border p-[11px]", textareaClass "overflow-auto md:overflow-hidden box-border", name "post-input");
                   ;button.mt-auto.p-2: ↵
                 ==
           ==
@@ -243,17 +260,19 @@
   ;style
     ;-  %-  trip
     '''
+    body{
+      overflow-x: hidden;
+    }
     .options {
       color: #A3A3A3;
     }
     .options > button {
-      visibility: hidden;
       color: #A3A3A3;
       margin-inline: 0.25em;
       font-family: Inter, sans-serif;
       font-size: 0.85rem;
     }
-    .post-container:hover > .options > button {
+    .post-container:hover > .options{
       visibility: visible;
     }
     .options > button:hover {
@@ -264,7 +283,6 @@
       color: #FAFAFA;
     }
     .user {
-      position: absolute;
       top: 15;
       right: 30;
       padding-block: 0.2em;
@@ -272,6 +290,10 @@
       color: #A3A3A3;
       font-weight: 500;
       font-size: 14px;
+    }
+    .user.open{
+      left: 15;
+      width: 100%;
     }
     .athens {
       height: 100%;
@@ -284,10 +306,6 @@
       margin: auto;
       width: 100%;
       max-width: 1000px;
-      display: flex;
-      flex-direction: column;
-    }
-    .post-node-container {
       display: flex;
       flex-direction: column;
     }
@@ -314,7 +332,6 @@
       letter-spacing: 0%;
       color: #A3A3A3;
       max-width: 645px;
-      width: 100%;
     }
     .message.hide {
       color: #737373;
@@ -329,7 +346,6 @@
       border-left-style: solid;
     }
     .replies-container {
-      margin-top: 6px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -439,7 +455,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: normal;
-      max-width: 400px;
+      :: max-width: 400px;
     }
     athens-textarea-litdev textarea{
       background: #0f0f0f;
@@ -505,11 +521,11 @@
       background-color: #f3f4f6; /* Tailwind's bg-gray-100 */
       padding: 0.125rem 0.25rem; /* px-1 py-0.5 */
       border-radius: 0.25rem; /* rounded */
-      font-size: 0.875em; /* text-sm */
+      font-size: 0.875em;
     }  
     .prose pre {
-      background-color: #111827; /* Tailwind's bg-gray-900 */
-      color: #f3f4f6; /* text-gray-100 */
+      /* background-color: #737373; */
+      color: #FAFAFA;
       padding: 1rem; /* p-4 */
       border-radius: 0.5rem; /* rounded-lg */
       overflow-x: auto;
@@ -522,6 +538,8 @@
       font-family: Inter, sans-serif;
       border: 1px solid #A3A3A3;
       border-radius: 0.5rem;
+      margin-top: 8px;
+      margin-bottom: 8px;
     }
     .prose th {
       text-align: left;
@@ -542,12 +560,22 @@
     }
     .prose sup.footnote {
       font-size: 0.75em;
-      color:#A3A3A3;
+      color: #A3A3A3;
+    }
+    .prose a {
+      text-decoration: underline;
+    }
+    .grid > div:nth-last-child(-n+3) {
+      margin-bottom: 0; /* Remove bottom margin for last item */
     }
     @media (min-width: 768px) {
       .author {
         margin-left: 0 !important;
       }
+      :: .message.reply {
+      ::   border-left-width: 0 !important;
+      ::   border-left-style: none !important;
+      :: }
     }
     '''
   ==

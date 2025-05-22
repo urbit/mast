@@ -1,7 +1,6 @@
 import {
   LitElement,
-  html,
-  css
+  html
 } from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js'
 
 class AthensTextareaLitdev extends LitElement {
@@ -12,7 +11,7 @@ class AthensTextareaLitdev extends LitElement {
     value: { type: String, reflect: true },
     activeTab: { type: String },
     previewOnly: { type: Boolean, attribute: 'preview-only' },
-    class: { type: String }
+    textareaClass: { type: String }
   }
 
   constructor() {
@@ -31,15 +30,14 @@ class AthensTextareaLitdev extends LitElement {
     const isPreview = this.previewOnly || this.activeTab === 'preview'
     const clamp = this.classList.contains('hide') ? 'clamp-one-line' : ''
 
-    console.log(this.class)
-
     return html`
       <div class="athens-editor">
         <textarea
           style=${isPreview ? 'display: none;' : ''}
           class="${this
-            .class} focus:border rounded-[3px] focus:outline-none focus:border-white focus:ring-0 mt-auto"
+            .textareaClass} focus:border rounded-[3px] focus:outline-none focus:border-white focus:ring-0 mt-auto"
           rows="1"
+          placeholder="Write something..."
           .value=${this.value}
           @input=${this._onInput}
           @keydown=${this._onKeydown}
@@ -66,21 +64,20 @@ class AthensTextareaLitdev extends LitElement {
       if (textarea) {
         this._resize(textarea)
       }
-      console.log('updating preview')
       this._updatePreview()
     }
   }
 
   _onInput(e) {
-    console.log('val before on-input', this.value)
     this.value = e.target.value
     this.internals.setFormValue(this.value)
     this._resize(e.target)
   }
 
   _onKeydown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      console.log(new FormData(this.closest('form')))
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+
+    if (!isMobile && e.key === 'Enter' && !e.shiftKey) {
       this.internals.setFormValue(this.value)
       e.preventDefault()
       this.closest('form')?.requestSubmit()
@@ -104,7 +101,7 @@ class AthensTextareaLitdev extends LitElement {
   _updatePreview() {
     const preview = this.querySelector('#preview')
     if (preview && window.marked) {
-      console.log(window.marked.parse(this.value))
+      window.marked.setOptions({ breaks: true })
       preview.innerHTML = window.marked.parse(this.value)
     }
   }
@@ -116,14 +113,11 @@ class AthensTextareaLitdev extends LitElement {
     if (textarea) textarea.disabled = disabled
   }
   formResetCallback() {
-    console.log('callback')
     this.value = ''
-    console.log('updated value set to:', this.value)
     this.internals.setFormValue('')
   }
   formStateRestoreCallback(state) {
     this.value = state
-    console.log('restore callback', this.value)
   }
 }
 
