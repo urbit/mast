@@ -93,9 +93,9 @@
   ^+  cor
   ?.  ?=(%mast-poke mark)  (poke mark vase)
   ?>  =(/gall/mast sap.bowl)
-  =/  tid  !<  tide:mast  vase
-  =.  src.bowl  src.tid
-  %-  poke  dat.tid
+  =/  gul  !<  gull:mast  vase
+  =.  src.bowl  src.gul
+  %-  poke  dat.gul
 ::
 ++  poke
   |=  [=mark =vase]
