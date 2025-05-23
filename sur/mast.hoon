@@ -95,7 +95,7 @@
 +$  diff                                         :: ++luff diff output
   %+  pair                                       ::
     $:  bos=(set buoy)                           ::
-        del=(set rode)                           ::
+        del=(set (pair rode hook))               ::
         add=deck                                 ::
     ==                                           ::
   %-  list  json                                 ::
