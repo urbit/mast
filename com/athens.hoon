@@ -122,7 +122,6 @@
                         ;=
                           ;div
                           =class  "grid grid-cols-[auto_1fr] divide-y divide-[#A3A3A3] {?.(settings.loc "hidden" "")}"
-                          ::  max-w-[227px] 
                           ::"hidden sm:grid")}"
                             ;div.px-4.py-2: Urbit ID
                             ;div.px-4.py-2
@@ -187,7 +186,7 @@
           ==
           ;div;
           ;div
-            =class  "posts md:gap-[32px] gap-[4px]"
+            =class  "posts md:gap-[32px] gap-[16px]"
             ;+  style
             ;*  %+  turn  kid.scud
                 |=  p=path
@@ -318,7 +317,6 @@
       letter-spacing: 0%;
       vertical-align: middle;
       color: #FAFAFA;
-      min-width: 120px;
     }
     .author.hide {
       color: #737373;
@@ -477,6 +475,14 @@
       display: inline;
       border: none;
     }
+    athens-textarea-litdev .clamp-one-line pre {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+      display: inline;
+      border: none;
+      color: #737373;
+    }
     athens-textarea-litdev .clamp-one-line tbody {
       display: none;
     }
@@ -491,23 +497,30 @@
     athens-textarea-litdev h1 {
       font-size: 48px;
       letter-spacing: 0.01em;
-      line-height: 1.2;
+      line-height: 1.1;
+      translate: 0 calc(2px* -3);
     }
     athens-textarea-litdev h2 {
       font-size: 30px;
       line-height: 1.2;
+      translate: 0 calc(2px* -2);
     }
     athens-textarea-litdev h3 {
       font-size: 24px;
+      line-height: 1.2;
+      translate: 0 calc(2px* -2);
     }
     athens-textarea-litdev h4 {
       font-size: 20px;
+      translate: 0 calc(2px* -2);
     }
     athens-textarea-litdev h5 {
       font-size: 18px;
+      translate: 0 calc(2px* -2);
     }
     athens-textarea-litdev h6 {
       font-size: 14px;
+      translate: 0 calc(2px* -2);
     }
     .prose ul {
       list-style-type: disc;

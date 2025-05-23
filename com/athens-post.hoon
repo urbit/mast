@@ -57,24 +57,24 @@
   ::=/  content-wall  (parse-content (trip content.dat))
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   ;div
-    =class  "post-node-container flex flex-col md:gap-[16px] gap-[4px]"
+    =class  "post-node-container flex flex-col gap-[16px]"
     ;div
-      =class  "post-container grid grid-cols-2 grid-rows-[min-content] gap-y-[12px] md:pb-[0px] w-full md:flex md:flex-row md:items-start md:justify-between md:w-full"
+      =class  "post-container grid grid-cols-2 grid-rows-[min-content] gap-y-[12px] md:gap-x-4 md:pb-[0px] w-full md:grid-cols-3 md:flex-row md:items-start md:w-full md:grid-cols-[min-content_auto_120px]"
       ;*  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
         ;=
-          ;div
-            =class  "pointer col-start-1 row-start-1 md:flex md:gap-4"
+          :: ;div
+          ::   =class  "pointer col-start-1 row-start-1 md:flex max-w-[16ch]"
             ;div(event "/click/toggle-hide")
-              =class  "author {?:(hidden.loc "hide" "")} w-[15ch] pr-4 ml-[{((d-co:co 1) depth)}em]"
+              =class  "author {?:(hidden.loc "hide" "")} pointer w-[15ch] max-w-[15ch] ml-[{((d-co:co 1) depth)}em] overflow-hidden whitespace-nowrap flex-none col-start-1 row-start-1"
               ;-  (cite:title author.dat)
             ==
-          ==
+          ::==
           ;div 
-            =class  "message {?:(hidden.loc "hide" "full")} {?:(=(0 depth) "" "reply")} col-span-2 row-start-2 flex flex-col gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}em] border-l-0"
+            =class  "message {?:(hidden.loc "hide md:w-[50%] w-[85%]" "full")} {?:(=(0 depth) "" "reply")} col-span-2 md:col-start-2 md:col-span-1 row-start-2 md:row-start-1 flex flex-col gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}em] border-l-0"
             ;+  ?:  &(edit.loc !hidden.loc)
                 ;form(event "/submit/edit")
-                =class  "post-reply-form w-full min-h-[26px] resize-none overflow-hidden box-border"
-                  ;athens-textarea-litdev(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border p-[11px] text-sm", textareaClass "md:overflow-hidden box-border text-sm", name "edit-input");
+                =class  "post-reply-form w-full min-h-[26px] resize-none overflow-hidden box-border" 
+                  ;athens-textarea-litdev(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border p-[11px] text-sm", textareaClass "md:overflow-hidden box-border text-sm {?:(hidden.loc "hide" "")}", name "edit-input"); 
                   ;button.mt-auto.p-2(event "/click/toggle-edit")
                     ;span: →
                   ==
@@ -90,11 +90,12 @@
                 ==
           ==
         ==
-      ;div.flex.flex-row
+      ;div
+        =class  "md:col-start-2 md:row-start-1 flex flex-row justify-end {?:(hidden.loc "" "hidden")}"
         ;+  ?:  =(0 (lent kid.scud))
             ;div.hidden;
           ;div
-            =class  "reply-num {?:(hidden.loc "hide" "full")} pr-2 text-[{txt-color}]"
+            =class  "reply-num {?:(hidden.loc "hide" "full")} pr-4 text-[{txt-color}]"
             ;p.inline.whitespace-nowrap.w-auto: {<(lent kid.scud)>} {?:(=(1 (lent kid.scud)) " reply" " replies")}
           ==
         ;div
@@ -105,7 +106,7 @@
       ;+  ?:  is-comet
             ;div.hidden;
           ;div
-            =class  "options col-start-2 row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464]"
+            =class  "options col-start-2 row-start-1 md:col-start-3 md:row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464] {?:(hidden.loc "hidden" "")}"
             ;*  ?:  =(author.dat yon.scud)
               ;=
                 ;button(event "/click/toggle-edit"): edit
