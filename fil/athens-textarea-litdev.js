@@ -105,6 +105,23 @@ class AthensTextareaLitdev extends LitElement {
       preview.innerHTML = window.marked.parse(this.value)
     }
   }
+  connectedCallback() {
+    super.connectedCallback?.()
+
+    this._classObserver = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.attributeName === 'class') {
+          this.requestUpdate() // Triggers re-render when class changes
+        }
+      }
+    })
+
+    this._classObserver.observe(this, { attributes: true })
+  }
+
+  disconnectedCallback() {
+    this._classObserver?.disconnect()
+  }
 
   // Form callbacks
   formAssociatedCallback() {}
