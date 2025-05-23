@@ -262,12 +262,18 @@
     ?~  duk
       ~&  >>  "%mast-unbind: {(trip not)} is already unbound"
       !!
-    =.  dock  (~(del by dock) not)                                  :: TODO: close resource subscriptions
+    =/  bos
+      ^-  (set buoy)
+      %-  ~(rep by q.u.duk)
+      |=  [[k=rope v=bitt] a=(set buoy)]
+      %-  ~(gas in a)  (make-component-buoys %del k bom.v res.v)
+    =.  dock  (~(del by dock) not)
     =.  cor
       ?:  (keep-desk-coms p.u.duk)  cor
       %-  del-lake  desk.p.u.duk
     ~&  >  "%mast-unbind: {(trip not)} unbound"
-    cor
+    %-  emil
+    %+  make-resource-subscription-cards  not  bos
     ::
       %handle-http-request
     =+  !<  [rid=@ta req=inbound-request:eyre]  vase
@@ -496,14 +502,14 @@
     =/  tub  .^(tube:clay %cc (bam des /[p.fil]/[mak]))
     :-  ~  [nam u.paf (tub q.fil)]
   ::
-  ++  add-component-buoys
-    |=  [rop=rope bom=boom tid=tide]
+  ++  make-component-buoys
+    |=  [act=?(%add %del) rop=rope bom=boom tid=tide]
     ^-  (list buoy)
     %+  murn  bom
     |=  [nam=@tas mak=@tas]
     =/  paf  (~(get by tid) nam)
     ?~  paf  ~
-    :^  ~  %add  rop  u.paf
+    :^  ~  act  rop  u.paf
   ::
   :: ++build-component-branch
   :: build out a full branch starting from some component,
@@ -537,7 +543,7 @@
     =-  ?>  ?=(^ p)
         :-  i.p
         ?.  new  q
-        :-  (~(gas in bos.q) (add-component-buoys [rod who] boom.com res.lin))
+        :-  (~(gas in bos.q) (make-component-buoys %add [rod who] boom.com res.lin))
             (~(put by dek.q) [rod who] bit)
     |-  ^-  (pair marl wake)
     %^  spin  mal  *wake
@@ -568,14 +574,16 @@
     ?:  &(!?=(%auth mod.bit) ?=(%auth mode.cod))
       :: if the parent is not auth and the child is,
       :: go through all of dek and do the delete process for any with equal rode
+      =^  boa=(set buoy)  dek
+        %-  ~(rep by dek)
+        |=  [[k=rope v=bitt] a=(pair (set buoy) deck)]
+        ?.  =(p.k p.i.del)  a(q (~(put by q.a) k v))
+        =.  pas.v  (~(del in pas.v) rop)
+        ?~  pas.v  a(p (~(gas in p.a) (make-component-buoys %del k bom.v res.v)))
+            a(q (~(put by q.a) k v))
       %=  $
         del  t.del
-        dek
-          %-  ~(rep by dek)
-          |=  [[k=rope v=bitt] a=deck]
-          ?.  =(p.k p.i.del)  (~(put by a) k v)
-          =.  pas.v  (~(del in pas.v) rop)
-          ?~  pas.v  a  (~(put by a) k v)
+        boz  (~(uni in boz) boa)
       ==
     :: else only delete one
     =/  nop
@@ -588,9 +596,15 @@
     =/  duk  (~(get by dek) nop)
     ?~  duk  $(del t.del)
     =.  pas.u.duk  (~(del in pas.u.duk) rop)
+    ?^  pas.u.duk
+      %=  $
+        del  t.del
+        dek  (~(put by dek) nop u.duk)
+      ==
     %=  $
       del  t.del
-      dek  ?~(pas.u.duk (~(del by dek) nop) (~(put by dek) nop u.duk))
+      dek  (~(del by dek) nop)
+      boz  (~(gas in boz) (make-component-buoys %del nop bom.u.duk res.u.duk))
     ==
   ::
   ++  handle-diff-branch-add
