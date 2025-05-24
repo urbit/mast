@@ -58,7 +58,8 @@
 ++  on-arvo
   |=  [=wire sign=sign-arvo]
   ^-  (quip card _this)
-  :-  ~  this
+  =^  cards  state  abet:(arvo:cor wire sign)
+  :-  cards  this
 ::
 ++  on-fail   |=([term tang] ^-((quip card _this) !!))
 --
@@ -156,6 +157,15 @@
     %del  [%pass (make-component-wire bas b) %agent [our.bowl age] %leave ~]
   ==
 ::
+++  make-component-buoys
+  |=  [act=?(%add %del) rop=rope bom=boom tid=tide]
+  ^-  (list buoy)
+  %+  murn  bom
+  |=  [nam=@tas mak=@tas]
+  =/  paf  (~(get by tid) nam)
+  ?~  paf  ~
+  :^  ~  act  rop  u.paf
+::
 ++  make-direct-http-cards
   |=  [rid=@ta hed=response-header.simple-payload:http dat=(unit octs)]
   ^-  (list card:agent:gall)
@@ -189,50 +199,54 @@
       %mast-poke  !>(`gull`[src hok dat])
   ==
 ::
-++  keep-desk-coms
-  |=  hok=hook
+++  make-com-subscription-card
+  |=  [act=?(%add %del) des=desk]
+  ^-  card
+  :*  %pass  /lake/[des]  %arvo  %c
+      %warp  our.bowl  des
+      ?-  act
+        %add  [~ %next %z da+now.bowl /com]
+        %del  ~
+      ==
+  ==
+::
+++  dock-has-desk
+  |=  des=desk
   ^-  ?
   %-  ~(any by dock)
   |=  [p=hook *]
-  .=  desk.p  desk.hok
+  .=  desk.p  des
 ::
-++  put-lake      :: TODO: %warp %mult to subscribe to desk /com
+++  put-lake
   |=  des=desk
-  ^+  cor
-  :: components go in /com
   =/  fis  .^((list path) %ct (bam des /com))
-  %_    cor
-      lake
-    |-  ^-  ^lake
-    ?~  fis  lake
-    =/  fil  .^(vase %ca (bam des i.fis))
-    =/  huk  `hook`[des (rear (snip i.fis))]
-    =/  mat  (mole |.(!<(mast fil)))
-    ?^  mat
-      %=  $
-        fis  t.fis
-        lake  (~(put by lake) huk [%mast u.mat])
-      ==
-    =/  mit  (mole |.(!<(mist fil)))
-    ?^  mit
-      %=  $
-        fis  t.fis
-        lake  (~(put by lake) huk [%mist u.mit])
-      ==
+  |-  ^-  ^lake
+  ?~  fis  lake
+  =/  fil  .^(vase %ca (bam des i.fis))
+  =/  huk  `hook`[des (rear (snip i.fis))]
+  =/  mat  (mole |.(!<(mast fil)))
+  ?^  mat
     %=  $
       fis  t.fis
+      lake  (~(put by lake) huk [%mast u.mat])
     ==
+  =/  mit  (mole |.(!<(mist fil)))
+  ?^  mit
+    %=  $
+      fis  t.fis
+      lake  (~(put by lake) huk [%mist u.mit])
+    ==
+  %=  $
+    fis  t.fis
   ==
 ::
-++  del-lake      :: TODO: cancel %warp to desk /com
+++  del-lake
   |=  des=desk
-  %_    cor
-      lake
-    %-  malt
-    %+  skip  ~(tap by lake)
-    |=  [k=hook *]
-    .=  des  desk.k
-  ==
+  ^-  ^lake
+  %-  malt
+  %+  skip  ~(tap by lake)
+  |=  [k=hook *]
+  .=  des  desk.k
 ::
 ++  poke
   |=  [=mark =vase]
@@ -245,13 +259,15 @@
       ~&  >>>  "%mast-bind failed: {(trip knot.bid)} already exists"
       !!
     =.  dock  (~(put by dock) knot.bid [[desk.bid name.bid] ~])
-    =.  cor  (put-lake desk.bid)
+    =?  cor  !(dock-has-desk desk.bid)
+      =.  lake  (put-lake desk.bid)
+      %-  emit  (make-com-subscription-card %add desk.bid)
     =/  rut  (~(get by lake) [desk.bid name.bid])
     ?~  rut
       ~&  >>>  "%mast-bind failed: {(trip name.bid)} not found"
       !!
     ?.  ?=(%mist -.u.rut)
-      ~&  >>>  "%mast-bind failed: {(trip name.bid)} is not a router"
+      ~&  >>>  "%mast-bind failed: {(trip name.bid)} is not a router gate"
       !!
     ~&  >  "%mast-bind: {(trip knot.bid)} --> {(trip desk.bid)} {(trip name.bid)}"
     cor
@@ -268,9 +284,9 @@
       |=  [[k=rope v=bitt] a=(set buoy)]
       %-  ~(gas in a)  (make-component-buoys %del k bom.v res.v)
     =.  dock  (~(del by dock) not)
-    =.  cor
-      ?:  (keep-desk-coms p.u.duk)  cor
-      %-  del-lake  desk.p.u.duk
+    =?  cor  !(dock-has-desk desk.p.u.duk)
+      =.  lake  (del-lake desk.p.u.duk)
+      %-  emit  (make-com-subscription-card %del desk.p.u.duk)
     ~&  >  "%mast-unbind: {(trip not)} unbound"
     %-  emil
     %+  make-resource-subscription-cards  not  bos
@@ -333,6 +349,20 @@
     %-  emil
     %+  weld  (make-diff-cards bas rop jon)
     %+  make-resource-subscription-cards  bas  bos
+    ::
+  ==
+::
+++  arvo
+  |=  [=wire sign=sign-arvo]
+  ^+  cor
+  ?+  sign  cor
+    ::
+      [%clay %writ *]
+    ?.  ?=([%lake @ta ~] wire)  cor
+    :: reload components on change to a desk's /com
+    =.  lake  (del-lake i.t.wire)
+    =.  lake  (put-lake i.t.wire)
+    %-  emit  (make-com-subscription-card %add i.t.wire)
     ::
   ==
 ::
@@ -501,15 +531,6 @@
       :-  ~  [nam u.paf q.fil]
     =/  tub  .^(tube:clay %cc (bam des /[p.fil]/[mak]))
     :-  ~  [nam u.paf (tub q.fil)]
-  ::
-  ++  make-component-buoys
-    |=  [act=?(%add %del) rop=rope bom=boom tid=tide]
-    ^-  (list buoy)
-    %+  murn  bom
-    |=  [nam=@tas mak=@tas]
-    =/  paf  (~(get by tid) nam)
-    ?~  paf  ~
-    :^  ~  act  rop  u.paf
   ::
   :: ++build-component-branch
   :: build out a full branch starting from some component,
