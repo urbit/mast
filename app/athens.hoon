@@ -55,7 +55,7 @@
       ?+  care  ~
         %r
           :^  ~  ~  %$  !>
-          [%athens-access !>(access.state)]
+          [%athens !>([access.state (get-session src.bowl)])]
         %t
           :^  ~  ~  %$  !>
           (get-post-key-paths posts)
@@ -117,6 +117,7 @@
       %-  del-post  at.act
       ::
         %access-public
+      ~&  >>  %access-public
       %-  access-public  public.act
       ::
         %edit-access-id
@@ -124,6 +125,9 @@
       ::
         %del-access-id
       %-  del-access-id  id.act
+      ::
+        %hide-post
+      %-  hide-post  post.act
     ==
     ::
   == 
@@ -145,7 +149,7 @@
       posts  rez
     ==
   %-  emit
-  %+  make-fact-card  (weld /r/posts post-at)  ~
+  %+  make-fact-card  (weld /r/posts post-at)  src.bowl
 ::
 ++  patch-post 
   |=  [patch-at=path dat=@t]
@@ -168,15 +172,15 @@
       posts  rez
     ==
   %-  emit
-  %+  make-fact-card  (weld /r/posts patch-at)  ~
+  %+  make-fact-card  (weld /r/posts patch-at)  src.bowl
 ::
 ++  del-post
   |=  at=path
   ^+  cor
+  ?~  at  !!
+  =/  id  (slav %da i.at)
   =.  posts
     |-  ^-  posts:athens
-    ?~  at  !!
-    =/  id  (slav %da i.at)
     =/  [poz=post:athens rez=posts:athens]  (~(got by posts) id)
     ?~  t.at
       ?>  ?|  =(author.poz src.bowl)
@@ -189,35 +193,51 @@
       at  t.at
       posts  rez
     ==
+  =/  user-session  (get-session src.bowl)
+  =/  upd-user-session=user-session:athens
+    :-  read-posts.user-session
+        (~(del in hidden-posts.user-session) id)
+  =.  user-sessions
+    %:  ~(put by user-sessions) 
+        src.bowl
+        upd-user-session
+    ==
   %-  emit
-  %+  make-fact-card  (weld /t/posts (snip at))  ~
+  %+  make-fact-card-updstate  (weld /t/posts (snip `path`at))  
+  :-  access.state
+      upd-user-session
 ::
 ++  access-public
   |=  public=?
   ^+  cor
-  ~&  access
+  ?.  =(src.bowl our.bowl)  cor
+  =/  user-session  (get-session our.bowl)
   ?:  =(public public.access)  cor
   =.  access  :*  public 
                   members.access
                   blacklist.access
               ==
   %-  emit
-  %+  make-fact-card  /t/posts  `access
+  %+  make-fact-card-updstate  /t/posts  access^user-session
 ::
 ++  edit-access-id
   |=  ids=(list @p)
   ^+  cor
+  ?.  =(src.bowl our.bowl)  cor
+  =/  user-session  (get-session our.bowl)
   ?.  public.access
     =.  members.access  (welp members.access ids)
     %-  emit
-    %+  make-fact-card  /t/posts  `access
+    %+  make-fact-card-updstate  /t/posts  access^user-session
   =.  blacklist.access  (welp blacklist.access ids)
   %-  emit
-  %+  make-fact-card  /t/posts  `access
+  %+  make-fact-card-updstate  /t/posts  access^user-session
 ::
 ++  del-access-id
   |=  id=@p
   ^+  cor
+  ?.  =(src.bowl our.bowl)  cor
+  =/  user-session  (get-session our.bowl)
   =/  index-id  %+  find  [id]~ 
                 ?.  public.access
                   members.access
@@ -226,10 +246,38 @@
   ?.  public.access
     =.  members.access  (oust [(need index-id) 1] members.access)
     %-  emit
-    %+  make-fact-card  /t/posts  `access
+    %+  make-fact-card-updstate  /t/posts  access^user-session
   =.  blacklist.access  (oust [(need index-id) 1] blacklist.access)
   %-  emit
-  %+  make-fact-card  /t/posts  `access
+  %+  make-fact-card-updstate  /t/posts  access^user-session
+::
+++  hide-post 
+  |=  post=post-id:athens
+  ^+  cor
+  =/  index-id  %+  find  [src.bowl]~ 
+                ?.  public.access
+                  members.access
+                blacklist.access
+  ?.  |(=(~ index-id) !=(our.bowl src.bowl))  cor
+  ::  TODO:  if post already hidden remove from set
+  =/  user-session  (~(get by user-sessions) src.bowl)
+  ?~  user-session
+    =/  us  [*(set post-id:athens) (silt ~[post])]
+    =.  user-sessions  (~(put by user-sessions) src.bowl us)
+    %-  emit  
+    %+  make-fact-card-updstate  /t/posts  access.state^us
+  =.  user-sessions  
+    %:  ~(put by user-sessions) 
+        src.bowl
+        :-  read-posts:(need user-session)
+        `(set post-id:athens)`(~(put in hidden-posts:(need user-session)) post)
+    ==
+  ~&  >  `(set post-id:athens)`(~(put in hidden-posts:(need user-session)) post)
+  %-  emit  
+  %+  make-fact-card-updstate  /t/posts  
+  :-  access.state
+  :-  read-posts:(need user-session)
+      `(set post-id:athens)`(~(put in hidden-posts:(need user-session)) post)
 ::
 ++  get-post-key-paths
   |=  poz=posts:athens
@@ -239,13 +287,26 @@
   /[(scot %da k)]
 ::
 ++  make-fact-card
-  |=  [=path uacc=(unit access:athens)]
+  |=  [=path src=@p]
   ^-  card
-  ?:  =(~ uacc)
-    :*  %give  %fact  ~[path]  %athens-access  !>(access.state)
+  =/  user-session  (~(get by user-sessions.state) src)
+  ?~  user-session
+    :*  %give  %fact  ~[path]  %athens  !>([access.state *user-session:athens])
     ==
-  :*  %give  %fact  ~[path]  %athens-access  !>((need uacc))
+  :*  %give  %fact  ~[path]  %athens  !>([access.state (need user-session)])
   ==
 ::
+++  make-fact-card-updstate
+  |=  [=path updstate=[access:athens user-session:athens]]
+  ^-  card
+  :*  %give  %fact  ~[path]  %athens  !>(updstate)
+  ==
+::
+++  get-session  
+|=  patp=@p
+^-  user-session:athens
+=/  u-user-session  (~(get by user-sessions) patp)
+?~  u-user-session  *user-session:athens
+  (need u-user-session)
 --
 
