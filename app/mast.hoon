@@ -132,12 +132,11 @@
   :-  eve  dat
 ::
 ++  make-diff-cards
-  |=  [bas=knot rop=rope jon=(list json)]
+  |=  [bas=knot rop=rope pax=(list path) jon=(list json)]
   ^-  (list card)
   ?.  .?  jon  ~
   :_  ~
-  :*  %give  %fact  [(make-component-path bas rop) ~]
-      %json  !>(`json`[%a jon])
+  :*  %give  %fact  pax  %json  !>(`json`[%a jon])
   ==
 ::
 :: ++make-resource-subscription-cards
@@ -344,10 +343,10 @@
     =/  doc  (~(get by dock) bas)
     ?~  doc  ~&(>>> %missing-binding-on-update !!)
     =/  ui-core  (ui-abed:ui bas u.doc)
-    =^  jon=(list json)  ui-core  (ui-furl:ui-core rop)
+    =^  [pax=(list path) jon=(list json)]  ui-core  (ui-furl:ui-core rop)
     =^  bos=(set buoy)  dock  ui-abet:ui-core
     %-  emil
-    %+  weld  (make-diff-cards bas rop jon)
+    %+  weld  (make-diff-cards bas rop pax jon)
     %+  make-resource-subscription-cards  bas  bos
     ::
   ==
@@ -384,12 +383,12 @@
       =>  (~(got by lake) rut)
       ?>  ?=(%mist -)  +
     =/  [rod=rode lin=line]  (parse-component-element com.doc)
-    =/  [sal=manx wak=wake]  (build-component-branch src [rod ~] rod lin)  :: fix pre key?
+    =/  [sal=manx wak=wake]  (build-component-branch src [`@uw`bas.kel ~] rod lin)
     :_  %_  ui-core
           bos  (~(uni in bos) bos.wak)
           dek  (~(uni by dek) dek.wak)
         ==
-    =-  -(a.g [[%our +:(scow %p our.bowl)] ~])
+    =-  -(a.g `mart`[[%our +:(scow %p our.bowl)] [%src +:(scow %p src.bowl)] ~])
     ^-  manx  doc(hed [script-node hed.doc], com sal)
   ::
   :: ++ui-sway
@@ -414,7 +413,7 @@
   :: handle a resource update for a component
   ++  ui-furl
     |=  rop=rope
-    ^-  [(list json) _ui-core]
+    ^-  [[(list path) (list json)] _ui-core]
     =/  duk  (~(get by dek) rop)
     ?~  duk  ~&(>>> %missing-component-on-update !!)
     =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
@@ -432,7 +431,36 @@
     =:  bos  (~(uni by bos) (~(uni by boz) bos.p.dif))
         dek  (~(uni by dek) add.p.dif)
       ==
-    :-  q.dif  ui-core
+    =;  pax
+      :-  [pax q.dif]  ui-core
+    :: build fact paths
+    =;  cos
+      :: match root component paths with existing subscriptions in sup
+      ^-  (list path)
+      %+  roll  ~(val by sup.bowl)
+      |=  [[who=ship paf=path] acc=(list path)]
+      ?~  paf  acc
+      ::  the first segment is the client's patp
+      ?.  (~(has in cos) t.paf)  acc
+      :-  paf  acc
+    :: get all paths for root components in which the update occurs
+    =|  acc=(set path)
+    |-  ^+  acc
+    =/  bit  (~(get by dek) rop)
+    ?~  bit  acc
+    =/  pas  ~(tap in pas.u.bit)
+    |-  ^+  acc
+    ?~  pas  acc
+    :: the base segment is in the parent set if it is a root
+    ?:  =(p.i.pas bas)
+      %=  $
+        pas  t.pas
+        acc  (~(put in acc) (make-component-path bas rop))
+      ==
+    %=  $
+      pas  t.pas
+      acc  ^$(rop i.pas)
+    ==
   ::
   :: ++parse-component-element
   :: extract component data from a component element;
@@ -462,10 +490,10 @@
     :: set prev-key using the hash portion of the component key of this sail
     =/  prev-key  p.rop
     =/  pos-key  *(list @)
-    :: add a mast:component attribute with this component's identifying path
+    :: add a mast attribute with this component's identifying path
     =.  a.g.sal
       :_  a.g.sal
-      :-  [%mast %component]  (spud (make-component-path bas rop))
+      :-  %mast  (spud (make-component-path bas rop))
     |-  ^-  [pool manx]
     :: temporary: if text node, add text node wrapper
     =?  sal  =(%$ n.g.sal)  ;t-  ;+  sal  ==
