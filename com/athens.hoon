@@ -2,7 +2,7 @@
 /*  athens-textarea-litdev  %js  /fil/athens-textarea-litdev/js
 /*  footnote-parser  %js  /fil/footnote-parser/js
 :-  ^-  boom:mast
-    :*  %athens-access
+    :*  %athens
         %z
         !>(|^|^~)
     ==
@@ -72,20 +72,23 @@
   ==
 ::
 ++  sail
-  ^-  manx
+  :-  %hoot
+  ^-  manx:hoot
   =/  loc  !<  [settings=? show-ids=? show-del=(unit @p)]  loc.sack
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
-  =/  access  !<  access:athens  fil.sack
+  =/  state  !<  [access=access:athens user-session=user-session:athens]  fil.sack
+  =,  state
     ;html
       ;head
         ;title: Athens
         ;meta(charset "UTF-8");
         ;meta(name "viewport", content "width=device-width, initial-scale=1");
         ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
-        ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
+        ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js"); 
         ;script(type "module"): {(trip footnote-parser)}
         ;script(type "module"): {(trip athens-textarea-litdev)} 
-        ;style(type "text/tailwindcss")
+        ;link(href "https://fonts.googleapis.com/css2?family=Fragment+Mono&display=swap", rel "stylesheet");
+        ;style(type "text/tailwindcss") 
           ;-  %-  trip
           '''
           @theme {
@@ -145,8 +148,8 @@
                               ;=
                                 ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Blocked
                                 ;+  ?:  show-ids.loc
-                                  ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  <
-                                ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  >
+                                  ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"): <
+                                ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"): >
                                 ;+  (edit-access-form public.access)
                                 ;*  ?:  show-ids.loc
                                   (id-list blacklist.access show-del.loc)
@@ -155,8 +158,8 @@
                             ;=
                               ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Members
                               ;+  ?:  show-ids.loc
-                                ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  <
-                              ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  >
+                                ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"): <
+                              ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"): >
                               ;+  (edit-access-form public.access)
                               ;*  ?:  show-ids.loc
                                 (id-list members.access show-del.loc)
@@ -188,16 +191,25 @@
           ;div
             =class  "posts md:gap-[32px] gap-[16px]"
             ;+  style
+                ::  TODO:
+                ::  if id in set for next post %hide post set @ to %hide
+                ::  if a is %hide, set post to %join
+                ::  if none of the above %join with own metadata
             ;*  %+  turn  kid.scud
                 |=  p=path
-                (make:mast %athens-post (weld pax.scud p) ~)
+                ~&  >>  hidden-posts.user-session
+                =/  props 
+                  ?:  (~(has in hidden-posts.user-session) `@da`(slav %da (rear p)))
+                    ~[[%hidden !>([%hide ~])]]
+                  ~[[%hidden !>([%show ~])]]
+                (make-hoot:mast %athens-post (weld pax.scud p) props)
             ;+  ?:  is-comet
                   ;div.post-form.login-block: Login to post
                 ;form(event "/submit/post")
                   =class  "post-form fixed bottom-4 inset-x-4 z-50 rounded-md shadow md:w-full md:static md:inset-auto md:rounded-none md:shadow-none md:p-0"
                   =key  "athens-post-form"
                   ;athens-textarea-litdev(class "w-full min-h-[28px] resize-none overflow-auto md:overflow-hidden box-border p-[11px]", textareaClass "overflow-auto md:overflow-hidden box-border", name "post-input");
-                  ;button.mt-auto.p-2: ↵
+                  ;button(class "mt-auto md:p-[11px] px-[15px] py-[11px]"): →
                 ==
           ==
       ==
@@ -251,7 +263,7 @@
           ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
           ;button: x
         ==
-      ;div;
+      ;div; 
   ==
 ::
 ++  style
@@ -309,7 +321,7 @@
       flex-direction: column;
     }
     .author {
-      font-family: 'Source Code Pro', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-weight: 500;
       font-size: 14px;
       leading-trim: Cap height;
@@ -346,7 +358,7 @@
     .replies-container {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 16px;
     }
     .replies {
       padding-left: 0px;
@@ -399,7 +411,7 @@
       font-family: Inter, sans-serif;
     }
     .post-form > button {
-      padding-inline: 0.2em;
+      :: padding-inline: 0.2em;
       color: #A3A3A3;
     }
     .post-form > button:hover {
@@ -420,6 +432,9 @@
       border-radius: 6px;
       border-color: #2C2C2C;
       background-color: #2C2C2C;
+    }
+    .arrow-btn{
+      font-family: var(--default-font-family);
     }
     athens-textarea-litdev .tab-controls {
       display: flex;
@@ -495,32 +510,27 @@
       color: #737373;
     }
     athens-textarea-litdev h1 {
-      font-size: 48px;
+      font-size: 24px;
       letter-spacing: 0.01em;
       line-height: 1.1;
-      translate: 0 calc(2px* -3);
+      translate: 0 calc(2px* -2);
     }
     athens-textarea-litdev h2 {
-      font-size: 30px;
-      line-height: 1.2;
-      translate: 0 calc(2px* -2);
+      font-size: 14px;
+      :: line-height: 1.2;
+      :: translate: 0 calc(2px* -2);
     }
     athens-textarea-litdev h3 {
-      font-size: 24px;
-      line-height: 1.2;
-      translate: 0 calc(2px* -2);
+      font-size: 14px;
     }
     athens-textarea-litdev h4 {
-      font-size: 20px;
-      translate: 0 calc(2px* -2);
+      font-size: 14px;
     }
     athens-textarea-litdev h5 {
-      font-size: 18px;
-      translate: 0 calc(2px* -2);
+      font-size: 14px;
     }
     athens-textarea-litdev h6 {
       font-size: 14px;
-      translate: 0 calc(2px* -2);
     }
     .prose ul {
       list-style-type: disc;
@@ -533,7 +543,7 @@
     .prose code {
       background-color: #f3f4f6; /* Tailwind's bg-gray-100 */
       padding: 0.125rem 0.25rem; /* px-1 py-0.5 */
-      border-radius: 0.25rem; /* rounded */
+      border-radius: 0.25rem;
       font-size: 0.875em;
     }  
     .prose pre {
@@ -546,6 +556,7 @@
     .prose pre code {
       background: transparent;
       padding: 0;
+      font-family: 'Fragment Mono', monospace;
     }
     .prose table {
       font-family: Inter, sans-serif;

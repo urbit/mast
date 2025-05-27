@@ -16,8 +16,10 @@
   ?+  pol  ~^~
     ::
       [%click %toggle-hide ~]
-    :-  ~
-    !>  loc(hidden !hidden.loc)
+    ~&  >>  :-  %hide  `@da`(slav %da (rear pax.scud))
+    :_  !>  loc(hidden !hidden.loc)
+        :~  [%athens %athens-action !>([%hide-post `@da`(slav %da (rear pax.scud))])]
+        ==
     ::
       [%click %toggle-reply ~]
     :-  ~
@@ -47,84 +49,110 @@
     :_  ~
     :~  [%athens %athens-action !>([%del-post t.t.pax.scud])]
     ==
-    ::
   ==
 ::
 ++  sail
   ^-  manx
+  =/  post-prop  !<  post-prop:athens  (~(got by pop.sack) %hidden)
   =/  loc  !<  [hidden=? reply=? edit=?]  loc.sack
   =/  dat  !<  post:athens  fil.sack
   ::=/  content-wall  (parse-content (trip content.dat))
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
-  ;div
-    =class  "post-node-container flex flex-col gap-[16px]"
+  ?-  -.post-prop
+      %hide
+    ^-  manx
+    ;div.hidden;
+      ::
+      %join
+    ^-  manx
     ;div
-      =class  "post-container grid grid-cols-2 grid-rows-[min-content] gap-y-[12px] md:gap-x-4 md:pb-[0px] w-full md:grid-cols-3 md:flex-row md:items-start md:w-full md:grid-cols-[min-content_auto_120px]"
-      ;*  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
-        ;=
-          :: ;div
-          ::   =class  "pointer col-start-1 row-start-1 md:flex max-w-[16ch]"
-            ;div(event "/click/toggle-hide")
-              =class  "author {?:(hidden.loc "hide" "")} pointer w-[15ch] max-w-[15ch] ml-[{((d-co:co 1) depth)}em] overflow-hidden whitespace-nowrap flex-none col-start-1 row-start-1"
-              ;-  (cite:title author.dat)
-            ==
-          ::==
-          ;div 
-            =class  "message {?:(hidden.loc "hide md:w-[50%] w-[85%]" "full")} {?:(=(0 depth) "" "reply")} col-span-2 md:col-start-2 md:col-span-1 row-start-2 md:row-start-1 flex flex-col gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}em] border-l-0"
-            ;+  ?:  &(edit.loc !hidden.loc)
-                ;form(event "/submit/edit")
-                =class  "post-reply-form w-full min-h-[26px] resize-none overflow-hidden box-border" 
-                  ;athens-textarea-litdev(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border p-[11px] text-sm", textareaClass "md:overflow-hidden box-border text-sm {?:(hidden.loc "hide" "")}", name "edit-input"); 
-                  ;button.mt-auto.p-2(event "/click/toggle-edit")
-                    ;span: →
-                  ==
-                == 
-              ;athens-textarea-litdev(class "w-full resize-none overflow-hidden box-border text-sm {?:(hidden.loc "hide" "")}", name "preview-only", value (trip content.dat), preview-only "true"); 
-              ;+  ?:  |(!reply.loc hidden.loc)
-                  ;div.hidden;
-                ;form.post-reply-form(event "/submit/reply")
-                  ;athens-textarea-litdev(class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border text-sm p-[11px]", textareaClass "md:overflow-hidden box-border text-sm", name "reply-input");
-                  ;button.mt-auto.p-2(type "submit")
-                    ;span: →
-                  ==
-                ==
-          ==
-        ==
+      =class  "post-node-container flex flex-col gap-[16px]"
       ;div
-        =class  "md:col-start-2 md:row-start-1 flex flex-row justify-end {?:(hidden.loc "" "hidden")}"
-        ;+  ?:  =(0 (lent kid.scud))
-            ;div.hidden;
+        =class  "post-container grid grid-cols-2 grid-rows-[min-content] gap-y-[12px] md:gap-x-4 md:pb-[0px] w-full md:grid-cols-3 md:flex-row md:items-start md:w-full md:grid-cols-[min-content_auto_120px]"
+        ;+  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
           ;div
-            =class  "reply-num {?:(hidden.loc "hide" "full")} pr-4 text-[{txt-color}]"
-            ;p.inline.whitespace-nowrap.w-auto: {<(lent kid.scud)>} {?:(=(1 (lent kid.scud)) " reply" " replies")}
+            =class  "md:col-start-2 md:row-start-1 flex flex-row justify-end"
+            {data.post-prop}
+          ==
+      ==
+    ==
+    ::
+      %show
+    ^-  manx
+    ;div
+      =class  "post-node-container flex flex-col gap-[16px]"
+      ;div
+        =class  "post-container grid grid-cols-2 grid-rows-[min-content] gap-y-[12px] md:gap-x-4 md:pb-[0px] w-full md:grid-cols-3 md:flex-row md:items-start md:w-full md:grid-cols-[min-content_auto_120px]"
+        ;*  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
+          ;=
+            :: ;div
+            ::   =class  "pointer col-start-1 row-start-1 md:flex max-w-[16ch]"
+              ;div(event "/click/toggle-hide")
+                =class  "author {?:(hidden.loc "hide" "")} pointer w-[15ch] max-w-[15ch] ml-[{((d-co:co 1) depth)}em] overflow-hidden whitespace-nowrap flex-none col-start-1 row-start-1"
+                ;-  (cite:title author.dat)
+              ==
+            ::==
+            ;div 
+              =class  "message {?:(hidden.loc "hide md:w-[50%] w-[85%]" "full")} {?:(=(0 depth) "" "reply")} col-span-2 md:col-start-2 md:col-span-1 row-start-2 md:row-start-1 flex flex-col gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}em] border-l-0"
+              ;+  ?:  &(edit.loc !hidden.loc)
+                  ;form(event "/submit/edit")
+                  =class  "post-reply-form w-full min-h-[26px] resize-none overflow-hidden box-border" 
+                    ;athens-textarea-litdev(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border p-[11px] text-sm", textareaClass "md:overflow-hidden box-border text-sm {?:(hidden.loc "hide" "")}", name "edit-input"); 
+                    ;button
+                      =class  "arrow-btn mt-auto md:p-[11px] px-[15px] py-[11px]"
+                      =event  "/click/toggle-edit"
+                      →
+                    ==
+                  == 
+                ;athens-textarea-litdev(class "w-full resize-none overflow-hidden box-border text-sm {?:(hidden.loc "hide" "")}", name "preview-only", value (trip content.dat), preview-only "true"); 
+                ;+  ?:  |(!reply.loc hidden.loc)
+                    ;div.hidden;
+                  ;form.post-reply-form(event "/submit/reply")
+                    ;athens-textarea-litdev(class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border text-sm p-[11px]", textareaClass "md:overflow-hidden box-border text-sm", name "reply-input");
+                    ;button
+                      =class  "arrow-btn mt-auto md:p-[11px] px-[15px] py-[11px]"
+                      =type  "submit"
+                      →
+                    ==
+                  ==
+            ==
           ==
         ;div
-          =class  "reply-date {?:(hidden.loc "hide" "full")} inline whitespace-nowrap w-auto text-[{txt-color}]"
-          {(date-to-tape (slav %da (rear pax.scud)) now.scud)}
-        ==
-      ==
-      ;+  ?:  is-comet
-            ;div.hidden;
+          =class  "md:col-start-2 md:row-start-1 flex flex-row justify-end {?:(hidden.loc "" "hidden")}"
+          ;+  ?:  =(0 (lent kid.scud))
+              ;div.hidden;
+            ;div
+              =class  "reply-num {?:(hidden.loc "hide" "full")} pr-4 text-[{txt-color}]"
+              ;p.inline.whitespace-nowrap.w-auto: {<(lent kid.scud)>} {?:(=(1 (lent kid.scud)) " reply" " replies")}
+            ==
           ;div
-            =class  "options col-start-2 row-start-1 md:col-start-3 md:row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464] {?:(hidden.loc "hidden" "")}"
-            ;*  ?:  =(author.dat yon.scud)
-              ;=
-                ;button(event "/click/toggle-edit"): edit
-                ;button(event "/click/delete"): delete
+            =class  "reply-date {?:(hidden.loc "hide" "full")} inline whitespace-nowrap w-auto text-[{txt-color}]"
+            {(date-to-tape (slav %da (rear pax.scud)) now.scud)}
+          ==
+        ==
+        ;+  ?:  is-comet
+              ;div.hidden;
+            ;div
+              =class  "options col-start-2 row-start-1 md:col-start-3 md:row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464] {?:(hidden.loc "hidden" "")}"
+              ;*  ?:  =(author.dat yon.scud)
+                ;=
+                  ;button(event "/click/toggle-edit"): edit
+                  ;button(event "/click/delete"): delete
+                ==
+              ~
+              ;button(event "/click/toggle-reply"): reply
+            ==
+      ==
+      ;+  ?:  ?|  hidden.loc
+                  ?=(~ kid.scud)
               ==
-            ~
-            ;button(event "/click/toggle-reply"): reply
+            ;div.hidden;
+          ;div.replies-container(event "/replyupdate/repies") 
+            ;*  %+  turn  kid.scud
+                |=  p=path
+                (make:mast %athens-post (weld pax.scud p) ~)
           ==
     ==
-    ;+  ?:  ?|  hidden.loc
-                ?=(~ kid.scud)
-            ==
-          ;div.hidden;
-        ;div.replies-container
-          ;*  %+  turn  kid.scud
-              |=  p=path
-              (make:mast %athens-post (weld pax.scud p) ~)
-        ==
   ==
 ::
 --

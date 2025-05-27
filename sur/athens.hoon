@@ -6,6 +6,7 @@
       [%access-public public=?]
       [%edit-access-id ids=(list @p)]
       [%del-access-id id=@p]
+      [%hide-post post=post-id]
   ==
 ::
 +$  post-id  @da
@@ -22,6 +23,7 @@
 +$  user-sessions  (map @p user-session)
 +$  user-session
   $:  read-posts=(set post-id)
+      hidden-posts=(set post-id)
   ==
 +$  access  
   $:  public=? 
@@ -34,5 +36,13 @@
       =user-sessions
       =access
   ==
+::
++$  post-prop
+  $%
+      [%hide ~]           :: not dispaly post component at all 
+      [%join data=tape]   :: display data about hidden posts
+      [%show ~]           :: display post-component
+  ==
+::
 --
 
