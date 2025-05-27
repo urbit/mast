@@ -59,13 +59,13 @@
   ;div
     =class  "post-node-container flex flex-col gap-[16px]"
     ;div
-      =class  "post-container grid grid-cols-2 grid-rows-[min-content] gap-y-[12px] md:gap-x-4 md:pb-[0px] w-full md:grid-cols-3 md:flex-row md:items-start md:w-full md:grid-cols-[min-content_auto_120px]"
+      =class  "post-container relative grid grid-cols-2 grid-rows-[min-content] gap-y-[12px] md:gap-x-4 md:pb-[0px] w-full md:grid-cols-3 md:flex-row md:items-start md:w-full md:grid-cols-[min-content_auto_120px]"
       ;*  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
         ;=
           :: ;div
           ::   =class  "pointer col-start-1 row-start-1 md:flex max-w-[16ch]"
             ;div(event "/click/toggle-hide")
-              =class  "author {?:(hidden.loc "hide" "")} pointer w-[15ch] max-w-[15ch] ml-[{((d-co:co 1) depth)}em] overflow-hidden whitespace-nowrap flex-none col-start-1 row-start-1"
+              =class  "author {?:(hidden.loc "hide" "")} md:sticky top-20 cursor-pointer w-[15ch] max-w-[15ch] ml-[{((d-co:co 1) depth)}em] overflow-hidden whitespace-nowrap flex-none col-start-1 row-start-1"
               ;-  (cite:title author.dat)
             ==
           ::==
@@ -106,7 +106,7 @@
       ;+  ?:  is-comet
             ;div.hidden;
           ;div
-            =class  "options col-start-2 row-start-1 md:col-start-3 md:row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464] {?:(hidden.loc "hidden" "")}"
+            =class  "options md:sticky top-20 col-start-2 row-start-1 md:col-start-3 md:row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464] {?:(hidden.loc "hidden" "")}"
             ;*  ?:  =(author.dat yon.scud)
               ;=
                 ;button(event "/click/toggle-edit"): edit
