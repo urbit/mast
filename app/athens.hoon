@@ -195,7 +195,6 @@
 ++  access-public
   |=  public=?
   ^+  cor
-  ~&  access
   ?:  =(public public.access)  cor
   =.  access  :*  public 
                   members.access
@@ -208,10 +207,10 @@
   |=  ids=(list @p)
   ^+  cor
   ?.  public.access
-    =.  members.access  (welp members.access ids)
+    =.  members.access  ~(tap in (silt (welp members.access ids)))
     %-  emit
     %+  make-fact-card  /t/posts  `access
-  =.  blacklist.access  (welp blacklist.access ids)
+  =.  blacklist.access  ~(tap in (silt (welp blacklist.access ids)))
   %-  emit
   %+  make-fact-card  /t/posts  `access
 ::
