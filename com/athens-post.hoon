@@ -55,6 +55,8 @@
   =/  loc  !<  [hidden=? reply=? edit=?]  loc.sack
   =/  dat  !<  post:athens  fil.sack
   ::=/  content-wall  (parse-content (trip content.dat))
+  =/  num-lines  (lent (to-wain:format content.dat))
+  =/  sticky  ?:((gth num-lines 8) "md:sticky" "")
   =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   ;div
     =class  "post-node-container flex flex-col gap-[16px]"
@@ -65,7 +67,7 @@
           :: ;div
           ::   =class  "pointer col-start-1 row-start-1 md:flex max-w-[16ch]"
             ;div(event "/click/toggle-hide")
-              =class  "author {?:(hidden.loc "hide" "")} md:sticky top-20 cursor-pointer w-[15ch] max-w-[15ch] ml-[{((d-co:co 1) depth)}em] overflow-hidden whitespace-nowrap flex-none col-start-1 row-start-1"
+              =class  "author {?:(hidden.loc "hide" "")} {sticky} top-20 cursor-pointer w-[15ch] max-w-[15ch] ml-[{((d-co:co 1) depth)}em] overflow-hidden whitespace-nowrap flex-none col-start-1 row-start-1"
               ;-  (cite:title author.dat)
             ==
           ::==
@@ -106,7 +108,7 @@
       ;+  ?:  is-comet
             ;div.hidden;
           ;div
-            =class  "options md:sticky top-20 col-start-2 row-start-1 md:col-start-3 md:row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464] {?:(hidden.loc "hidden" "")}"
+            =class  "options {sticky} top-20 col-start-2 row-start-1 md:col-start-3 md:row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464] {?:(hidden.loc "hidden" "")}"
             ;*  ?:  =(author.dat yon.scud)
               ;=
                 ;button(event "/click/toggle-edit"): edit
