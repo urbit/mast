@@ -549,7 +549,7 @@
       padding-left: 1.5rem;
     }
     .prose code {
-      background-color: #f3f4f6; /* Tailwind's bg-gray-100 */
+      background-color: #333333;
       padding: 0.125rem 0.25rem; /* px-1 py-0.5 */
       border-radius: 0.25rem; /* rounded */
       font-size: 0.875em;
