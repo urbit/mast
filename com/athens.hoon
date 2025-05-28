@@ -35,7 +35,7 @@
     :_   !>  loc(settings !settings.loc)
     ~
     ::
-      [%change %toggle-private ~]
+      [%change %toggle-public ~]
     =/  access  !<  access:athens  fil.sack
     :_  !>  loc
     :~  [%athens %athens-action !>([%access-public !public.access])]
@@ -81,6 +81,7 @@
         ;title: Athens
         ;meta(charset "UTF-8");
         ;meta(name "viewport", content "width=device-width, initial-scale=1");
+        ;link(rel "manifest", href "/athens/manifest");
         ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
         ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
         ;script(type "module"): {(trip footnote-parser)}
@@ -98,8 +99,35 @@
       ;body
         ;+  ?.  |(=(our.scud yon.scud) (has-access yon.scud access))
           ;div
-          =class  "bg-neutral-bg text-neutral-400 athens h-full"
-            ; No access 
+          =class  "bg-neutral-bg text-neutral-400 athens h-full w-full flex flex-column"
+            ;form.flex.flex-col.grow.items-center.justify-center
+              =method  "post"
+              =action  "/~/login"
+              ;input.hidden(name "eauth", value "");
+              ;input.hidden(name "redirect", value "/mast/athens/posts/athens");
+              ;div.flex.flex-col.gap-3.border.rounded-md.p-3.border-neutral-800
+                  ;div.text-red-400: access denied
+                  ;div.flex.gap-2
+                    ;div.font-mono: {(cite:title yon.scud)}
+                    ;a.opacity-50(href "/~/logout?redirect=/mast/athens/posts/athens")
+                      ; logout
+                    ==
+                  ==
+                  ;div.flex.gap-2
+                    ;input
+                      =name  "name"
+                      =class  "font-mono px-3 py-2 border rounded-sm border-neutral-800 w-60"
+                      =placeholder  "~sampel-palnet"
+                      =spellcheck  "false"
+                      =autocomplete  "off"
+                      ;
+                    ==
+                    ;button.bg-neutral-900.px-3.py-2.rounded-sm.border.border-neutral-800
+                      ;i(data-lucide "arrow-right");
+                    ==
+                  ==
+              ==
+            ==
           ==
         ;div
           =class  "bg-neutral-bg text-neutral-400 athens"
@@ -122,6 +150,7 @@
                         ;=
                           ;div
                           =class  "grid grid-cols-[auto_1fr] divide-y divide-[#A3A3A3] {?.(settings.loc "hidden" "")}"
+                          =style  "max-height: 400px; overflow-y: auto;"
                           ::"hidden sm:grid")}"
                             ;div.px-4.py-2: Urbit ID
                             ;div.px-4.py-2
@@ -132,16 +161,16 @@
                             ==
                             ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
                               ;div.relative.inline-block
-                                ;+  ?.  public.access
-                                  ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access", checked "")
+                                ;+  ?:  public.access
+                                  ;input.sr-only.peer(type "checkbox", event "/change/toggle-public", name "toggle-access", checked "")
                                     ;*  toggle
                                   ==
-                                ;input.sr-only.peer(type "checkbox", event "/change/toggle-private", name "toggle-access")
+                                ;input.sr-only.peer(type "checkbox", event "/change/toggle-public", name "toggle-access")
                                   ;*  toggle
                                 ==
                               ==
                             ==
-                            ;*  ?.  public.access
+                            ;*  ?:  public.access
                               ;=
                                 ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Blocked
                                 ;+  ?:  show-ids.loc
@@ -186,7 +215,7 @@
           ==
           ;div;
           ;div
-            =class  "posts md:gap-[32px] gap-[16px]"
+            =class  "posts md:gap-[16px] gap-[32px]"
             ;+  style
             ;*  %+  turn  kid.scud
                 |=  p=path
@@ -212,9 +241,9 @@
 ++  has-access
   |=  [=ship =access:athens]
   ^-  ?
-  ?.  public.access 
-    ?.  =(~ (find [ship]~ members.access))  |  &
-  ?.  =(~ (find [ship]~ blacklist.access))  &  |
+  ?:  public.access 
+    ?=(~ (find [ship]~ blacklist.access))
+  ?=(^ (find [ship]~ members.access))
 ::
 ++  toggle
   ^-  marl
@@ -242,16 +271,14 @@
   ;*  %+  turn  (flop ids)
   |=  =ship
   ^-  manx
-  ;div(event "/mouseleave/show-del /mouseenter/show-del/{(scow %p ship)}")
+  ;div
     =class  "col-span-2 flex"
     ;div.px-4.py-2: {(scow %p ship)}
-    ;+  ?:  =(show-del `ship)
-        ;form.px-4.py-2.ml-auto(event "/submit/remove-ship")
-        =id  (scow %p ship)
-          ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
-          ;button: x
-        ==
-      ;div;
+    ;form.px-4.py-2.ml-auto(event "/submit/remove-ship")
+    =id  (scow %p ship)
+      ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
+      ;button: x
+    ==
   ==
 ::
 ++  style
@@ -346,7 +373,7 @@
     .replies-container {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 16px;
     }
     .replies {
       padding-left: 0px;
@@ -494,33 +521,24 @@
       border: none;
       color: #737373;
     }
-    athens-textarea-litdev h1 {
-      font-size: 48px;
-      letter-spacing: 0.01em;
-      line-height: 1.1;
-      translate: 0 calc(2px* -3);
-    }
-    athens-textarea-litdev h2 {
-      font-size: 30px;
-      line-height: 1.2;
-      translate: 0 calc(2px* -2);
-    }
-    athens-textarea-litdev h3 {
-      font-size: 24px;
-      line-height: 1.2;
-      translate: 0 calc(2px* -2);
-    }
-    athens-textarea-litdev h4 {
-      font-size: 20px;
-      translate: 0 calc(2px* -2);
-    }
-    athens-textarea-litdev h5 {
-      font-size: 18px;
-      translate: 0 calc(2px* -2);
-    }
-    athens-textarea-litdev h6 {
+    .prose h1, h2, h3, h4, h5, h6 {
+      margin: 1rem 0;
       font-size: 14px;
-      translate: 0 calc(2px* -2);
+      font-weight: bold;
+    }
+    .prose h1 {
+      font-size: 16px
+    }
+    .prose h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child,
+    .prose h1:last-child, h2:last-child, h3:last-child, h4:last-child, h5:last-child, h6:last-child {
+      margin: 0;
+    }
+    .prose p {
+      margin: 1rem 0;
+    }
+    .prose p:last-child,
+    .prose p:first-child {
+      margin: 0;
     }
     .prose ul {
       list-style-type: disc;
@@ -531,7 +549,7 @@
       padding-left: 1.5rem;
     }
     .prose code {
-      background-color: #f3f4f6; /* Tailwind's bg-gray-100 */
+      background-color: #333333;
       padding: 0.125rem 0.25rem; /* px-1 py-0.5 */
       border-radius: 0.25rem; /* rounded */
       font-size: 0.875em;

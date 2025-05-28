@@ -28,7 +28,11 @@
   ^-  (quip card _this)
   =/  old  (mole |.(!<(state-n vase)))
   =?  state  ?=(^ old)  u.old
-  :-  ~  this
+  :_  this
+  :~
+    :*  %pass  /bind  %arvo  %e  %connect  [~ /athens]  %athens
+    ==
+  ==
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -102,6 +106,41 @@
   ^+  cor
   ?+  mark  ~|(bad-poke/mark !!) 
     ::
+      %handle-http-request
+    =+  !<  [rid=@ta req=inbound-request:eyre]  vase
+    =;  pl=simple-payload:http
+      %-  emil
+      :~  [%give %fact ~[/http-response/[rid]] [%http-response-header !>(-.pl)]]
+          [%give %fact ~[/http-response/[rid]] [%http-response-data !>(+.pl)]]
+          [%give %kick ~[/http-response/[rid]] ~]
+      ==
+    ?+    url.request.req
+        [[404 ~] ~]
+      %'/athens/manifest'
+        :-  :-  200
+            :~  ['Content-Type' 'application/json']
+            ==
+        :-  ~
+        %-  as-octs:mimes:html
+        '''
+        {
+          "short_name": "Athens",
+          "name": "Athens",
+          "icons": [
+            {
+              "src": "https://em-content.zobj.net/source/apple/419/classical-building_1f3db-fe0f.png",
+              "sizes": "160x160",
+              "type": "image/png"
+            }
+          ],
+          "start_url": "/mast/athens/post/athens",
+          "display": "standalone",
+          "theme_color": "#000000",
+          "background_color": "#000000"
+        }
+        '''
+    ==
+  ::
       %athens-action
     ?:  ?=(%pawn (clan:title src.bowl))  !!
     =/  act  !<  action:athens  vase
@@ -195,7 +234,6 @@
 ++  access-public
   |=  public=?
   ^+  cor
-  ~&  access
   ?:  =(public public.access)  cor
   =.  access  :*  public 
                   members.access
@@ -208,10 +246,10 @@
   |=  ids=(list @p)
   ^+  cor
   ?.  public.access
-    =.  members.access  (welp members.access ids)
+    =.  members.access  ~(tap in (silt (welp members.access ids)))
     %-  emit
     %+  make-fact-card  /t/posts  `access
-  =.  blacklist.access  (welp blacklist.access ids)
+  =.  blacklist.access  ~(tap in (silt (welp blacklist.access ids)))
   %-  emit
   %+  make-fact-card  /t/posts  `access
 ::
