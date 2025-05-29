@@ -72,29 +72,40 @@
             ==
           ::==
           ;div 
-            =class  "message {?:(hidden.loc "hide md:w-[50%] w-[85%]" "full")} {?:(=(0 depth) "" "reply")} col-span-2 md:col-start-2 md:col-span-1 row-start-2 md:row-start-1 flex flex-col gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}em] border-l-0"
+            =class  "message {?:(hidden.loc "hide md:w-[50%] w-[85%]" "full")} ".
+                    "{?:(=(0 depth) "" "reply")} col-span-2 md:col-start-2 ".
+                    "md:col-span-1 row-start-2 md:row-start-1 flex flex-col ".
+                    "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}em] ".
+                    "border-l-0"
             ;+  ?:  &(edit.loc !hidden.loc)
-                ;form(event "/submit/edit")
+                ;form.form-border.flex.items-stretch(event "/submit/edit")
                   =class  "post-reply-form w-full min-h-[26px] ".
                           "resize-none overflow-hidden box-border ".
-                          "flex items-stretch justify-between "
+                          "flex items-stretch justify-between gap-0"
                   ;athens-textarea-litdev.grow
                     =class  ?:(hidden.loc "hide" "")
-                    =name  "edit-input"  :: 
+                    =value  (trip content.dat)
+                    =name  "edit-input"
                     ;
                   ==
-                  ;button.mt-auto.p-1(event "/click/toggle-edit"): →
+                  ;button
+                    =class  "mt-auto p-1 text-[16px]"
+                    =event  "/click/toggle-edit"
+                    ; →
+                  == 
                 == 
               ;athens-textarea-litdev(class "w-full resize-none overflow-hidden box-border text-sm {?:(hidden.loc "hide" "")}", name "preview-only", value (trip content.dat), preview-only "true"); 
               ;+  ?:  |(!reply.loc hidden.loc)
                   ;div.hidden;
-                ;form.post-reply-form.flex.items-stretch(event "/submit/reply")
+                ;form.form-border.flex.items-stretch(event "/submit/reply")
                   ;athens-textarea-litdev.grow
-                  :: (class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border text-sm p-[11px]", textareaClass "md:overflow-hidden box-border text-sm", name "reply-input");
-                    =name  "reply-input"  :: 
+                    =name  "reply-input"
                     ;
                   ==
-                  ;button.mt-auto.p-1(type "submit"): →
+                  ;button
+                    =class  "mt-auto p-1 text-[16px]"
+                    ; →
+                  == 
                 ==
           ==
         ==

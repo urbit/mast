@@ -35,7 +35,7 @@ class AthensTextareaLitdev extends LitElement {
         <textarea
           style=${isPreview ? 'display: none;' : ''}
           class="${this
-            .textareaClass} flex items-center focus:border rounded-[8px] min-h-[30px] p-[5px] w-full focus:outline-none focus:border-white focus:ring-0 mt-auto"
+            .textareaClass} flex items-center rounded-[8px] min-h-[30px] p-[5px] w-full focus:outline-none"
           rows="1"
           placeholder="Write something..."
           .value=${this.value}

@@ -97,7 +97,6 @@
           '''
         ==
         ;script(src "https://unpkg.com/lucide@latest");
-        ;script: lucide.createIcons();
         ;style: {(trip style)}
       ==
       ;body
@@ -106,6 +105,8 @@
         ;+  ?:  |(=(our.scud yon.scud) (has-access yon.scud access))
               authenticated-page
             unauthenticated-page
+        ;script: lucide.createIcons();
+
       ==
     ==
   ++  authenticated-page
@@ -216,13 +217,15 @@
       ;+  ?:  is-comet
             ;div.post-form.login-block: Login to post
           ;form(event "/submit/post")
-            =class  "box-border post-form fixed bottom-4 inset-x-4 z-50 ".
+            =class  "post-form form-border fixed bottom-4 inset-x-4 z-50 ".
                     "rounded-md shadow md:w-full md:static ".
                     "md:inset-auto md:rounded-none md:shadow-none md:p-0 ".
                     "flex items-stretch justify-between "
             =key  "athens-post-form"
             ;athens-textarea-litdev.grow(name "post-input");
-            ;button.mt-auto.p-1.pr-3: →
+            ;button.mt-auto.p-1
+              ; →
+            ==
           ==
     ==
   ++  unauthenticated-page
@@ -312,6 +315,7 @@
   '''
   body{
     overflow-x: hidden;
+    font-family: Inter, sans-serif;
   }
   .options {
     color: #A3A3A3;
@@ -420,14 +424,12 @@
     color: #737373;
     font-size: 14px;
   }
-  .post-form {
-    background: #0f0f0f;
-    margin-top: 0.45em;
-    border: solid;
-    border-width: 1px;
+  .form-border {
+    border: 1px solid #575757;
     border-radius: 6px;
-    border-color: #575757;
-    display: flex;
+  }
+  .post-form {
+    margin-top: 0.45em;
   }
   .post-form.login-block {
     -webkit-user-select: none;
@@ -437,31 +439,12 @@
     font-family: Inter, sans-serif;
     font-size: 0.85rem;
   }
-  .post-form > textarea {
-    color: #FAFAFA;
-    height: 1.5em;
-    min-height: 1.5em;
-    padding-inline: 0.3em;
-    padding-top: 0.1em;
-    resize: block;
-    flex-grow: 1;
-    font-size: 0.85rem;
-    font-family: Inter, sans-serif;
-  }
   .post-form > button {
     padding-inline: 0.2em;
     color: #A3A3A3;
   }
   .post-form > button:hover {
     color: #FAFAFA;
-  }
-  .post-reply-form {
-    border: solid;
-    border-width: 1px;
-    border-radius: 6px;
-    border-color: #575757;
-    display: flex;
-    gap: 8px;
   }
   .reply-button:hover{
     padding: 0.15em;
