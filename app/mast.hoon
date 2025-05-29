@@ -403,7 +403,7 @@
     |=  [rop=rope cro=crow]
     ^-  [hook blow]
     ~&  >  %event
-    =/  duk  (test-get-by-deck rop dek)  :: (~(get by dek) rop)
+    =/  duk  (~(get by dek) rop)
     ?~  duk  ~&(>>> %missing-component-on-event !!)
     =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
     =/  hul
@@ -421,7 +421,7 @@
   ++  ui-furl
     |=  rop=rope
     ^-  [[(list path) (list json)] _ui-core]
-    =/  duk  (test-get-by-deck rop dek)  :: (~(get by dek) rop)
+    =/  duk  (~(get by dek) rop)
     ~&  >>  %update
     ?~  duk  ~&(>>> %missing-component-on-update !!)
     =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
@@ -438,7 +438,7 @@
     =:  bos  (~(uni by bos) (~(uni by boz) bos.p.dif))
         dek  (~(uni by dek) add.p.dif)
       ==
-    =.  dek  (~(put in dek) rop u.duk(aft sal))
+    =.  dek  (~(put by dek) rop u.duk(aft sal))
     =;  pax
       :-  [pax q.dif]  ui-core
     :: build fact paths
@@ -461,7 +461,7 @@
     :: get all paths for root components in which the update occurs
     =|  acc=(set path)
     |-  ^+  acc
-    =/  bit  (test-get-by-deck rop dek)  :: (~(get by dek) rop)
+    =/  bit  (~(get by dek) rop)
     ?~  bit  acc
     =/  pas  ~(tap in pas.u.bit)
     |-  ^+  acc
@@ -495,7 +495,7 @@
             [%gale @]  a(res (~(put by res.a) +.n (scan v stap)))
           ==
       ==
-    :-  (jam lin)  lin
+    :-  (mug lin)  lin  :: TEST: (jam lin)  lin
   ::
   :: ++process-sail
   :: process a component's rendered sail,
@@ -576,24 +576,6 @@
     =/  tub  .^(tube:clay %cc (bam des /[p.fil]/[mak]))
     :-  ~  [nam u.paf (tub q.fil)]
   ::
-  ++  test-get-by-deck  :: roll instead of get:by because it was failing to find the key: bug?
-    |=  [rop=rope dek=deck]
-    ^-  (unit bitt)
-    %+  roll  ~(tap by dek)
-    |=  [[k=rope v=bitt] a=(unit bitt)]
-    ?:  =(k rop)  [~ v]  a
-  ::
-  ++  test-put-by-deck
-    |=  [rop=rope bit=bitt dek=deck]
-    ^-  deck
-    =/  [des=(list [rope bitt]) has=?]
-      %^  spin  ~(tap by dek)  |
-      |=  [[k=rope v=bitt] a=?]
-      ?:  =(k rop)  [[k bit] &]  [[k v] a]
-    %-  malt
-    ?:  has  des
-    :-  [rop bit]  des
-  ::
   :: ++build-component-branch
   :: build out a full branch starting from some component,
   :: rendering any new component that does not yet exist in the deck
@@ -603,11 +585,7 @@
     =/  com  ^-  mast  =>((~(got by lake) com.lin) ?>(?=(%mast -) +))
     =/  who  ^-  navy  ?:(?=(%auth mode.com) src ~)
     =/  [new=? bit=bitt]
-      =/  but  (test-get-by-deck [rod who] dek)
-        :: ^-  (unit bitt)  :: roll instead of get:by because it was failing to find the key: bug?
-        :: %+  roll  ~(tap by dek)
-        :: |=  [[k=rope v=bitt] a=(unit bitt)]
-        :: ?:  =(k [rod who])  [~ v]  a
+      =/  but  (~(get by dek) [rod who])
       ?^  but  [| u.but]
       =/  [pol=pool sal=manx]
         %+  process-sail  [rod who]
@@ -631,7 +609,7 @@
         :-  i.p
         ?.  new  q
         :-  (~(gas in bos.q) (make-component-buoys %add [rod who] boom.com res.lin))
-            (test-put-by-deck [rod who] bit dek.q)  :: (~(put by dek.q) [rod who] bit)
+            (~(put by dek.q) [rod who] bit)
     |-  ^-  (pair marl wake)
     %^  spin  mal  *wake
     |=  [m=manx a=wake]
@@ -664,10 +642,10 @@
       =^  boa=(set buoy)  dek
         %-  ~(rep by dek)
         |=  [[k=rope v=bitt] a=(pair (set buoy) deck)]
-        ?.  =(p.k p.i.del)  a(q (test-put-by-deck k v q.a)) :: a(q (~(put by q.a) k v))
+        ?.  =(p.k p.i.del)  a(q (~(put by q.a) k v))
         =.  pas.v  (~(del in pas.v) rop)
         ?~  pas.v  a(p (~(gas in p.a) (make-component-buoys %del k bom.v res.v)))
-            a(q (test-put-by-deck k v q.a))  :: a(q (~(put by q.a) k v))
+            a(q (~(put by q.a) k v))
       %=  $
         del  t.del
         boz  (~(uni in boz) boa)
@@ -680,13 +658,13 @@
       :: else the parent is auth and the child in not auth,
       :: so get from dek using the rode and null
       ?:  =(mod.bit mode.cod)  [p.i.del src.bit]  [p.i.del ~]
-    =/  duk  (test-get-by-deck nop dek) :: (~(get by dek) nop)
+    =/  duk  (~(get by dek) nop)
     ?~  duk  $(del t.del)
     =.  pas.u.duk  (~(del in pas.u.duk) rop)
     ?^  pas.u.duk
       %=  $
         del  t.del
-        dek  (test-put-by-deck nop u.duk dek):: (~(put by dek) nop u.duk)
+        dek  (~(put by dek) nop u.duk)
       ==
     %=  $
       del  t.del
