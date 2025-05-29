@@ -1,23 +1,24 @@
 /-  mast, athens
-:-  ^-  boom:mast
-    :*  %$
-        %z
-        !>(~)
+^-  mast:mast
+:-  :*  %auth
+        :~  [%posts %athens-post-list]
+        ==
+        ~
     ==
 =<
-^-  mast:mast
-|_  [=scud:mast =sack:mast]
+|_  =hull:mast
+::
++*  post-paths  !<  (list path)  fil:(~(got by res.hull) %posts)
 ::
 ++  spar
   |=  =crow:mast
   ^-  blow:mast
   =/  pol  ^-  (pole @ta)  path.crow
-  ?+  pol  ~^~
+  ?+  pol  ~
     ::
       [%submit %post ~]
     =/  dat  (~(got by data.crow) 'post-input')
-    ?:  =('' dat)  ~^~
-    :_  ~
+    ?:  =('' dat)  ~
     :~  [%athens %athens-action !>([%put-post ~ dat])]
     ==
     ::
@@ -25,29 +26,32 @@
 ::
 ++  sail
   ^-  manx
-  =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
+  =/  is-comet=?  ?=(%pawn (clan:title (need src.hull)))
   ;div.athens
     ;div.user
       ;+  ?.  is-comet
-            ;/  (cite:title yon.scud)
+            ;/  (cite:title (need src.hull))
           ;form
             =action  "/~/login"
             =method  "POST"
             ;label(for "login-input"): login:
             ;input(id "login-input", name "name", required "");
-            ;input(type "hidden", name "redirect", value (spud ;:(weld /mast pax.scud /athens)));
+            ;input(type "hidden", name "redirect", value (spud /mast/athens));
             ;input(type "hidden", name "eauth", value "");
             ;button(type "submit"): 🠊
           ==
     ==
     ;div.posts
       ;+  style
-      ;*  %+  turn  kid.scud
+      ;*  %+  turn  post-paths
           |=  p=path
-          (make:mast %athens-post (weld pax.scud p) ~)
+          %^  make:mast  mast/%athens-post  ~
+          :~  [%post (weld /athens/posts p)]
+              [%hidden /athens/hidden/[(scot %p (need src.hull))]/[(rear p)]]
+          ==
       ;+  ?:  is-comet
             ;div.post-form.login-block: Login to post
-          ;form.post-form(event "/submit/post")
+          ;form.post-form(event "/submit/post")           :: TODO: key
             =key  "athens-post-form"
             ;textarea(name "post-input");
             ;button: 🠊

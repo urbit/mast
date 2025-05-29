@@ -89,14 +89,14 @@
 ++  make-component-path
   |=  [bas=knot rop=rope]
   ^-  path
-  /[bas]/[?~(q.rop %$ (scot %p u.q.rop))]/[(scot %uw p.rop)]
+  /[bas]/[?~(q.rop %$ (scot %p u.q.rop))]/[(scot %uv p.rop)]
 ::
 ++  parse-component-path
   |=  pax=path
   ^-  [knot rope]
   ?>  ?=([@ta @ta @ta ~] pax)
   :-  i.pax
-  :-  (slav %uw i.t.t.pax)
+  :-  (slav %uv i.t.t.pax)
   ?:  =(%$ i.t.pax)  ~
   :-  ~  (slav %p i.t.pax)
 ::
@@ -221,6 +221,7 @@
   =/  fis  .^((list path) %ct (bam des /com))
   |-  ^-  ^lake
   ?~  fis  lake
+  ~&  (bam des i.fis)
   =/  fil  .^(vase %ca (bam des i.fis))
   =/  huk  `hook`[des (rear (snip i.fis))]
   =/  mat  (mole |.(!<(mast fil)))
@@ -257,8 +258,8 @@
     ?:  (~(has by dock) knot.bid)
       ~&  >>>  "%mast-bind failed: {(trip knot.bid)} already exists"
       !!
-    =.  dock  (~(put by dock) knot.bid [[desk.bid name.bid] ~])
     =?  cor  !(dock-has-desk desk.bid)
+      =.  dock  (~(put by dock) knot.bid [[desk.bid name.bid] ~])
       =.  lake  (put-lake desk.bid)
       %-  emit  (make-com-subscription-card %add desk.bid)
     =/  rut  (~(get by lake) [desk.bid name.bid])
@@ -349,6 +350,11 @@
     %+  weld  (make-diff-cards bas rop pax jon)
     %+  make-resource-subscription-cards  bas  bos
     ::
+      %kick
+    =/  [bas=knot rop=rope res=path]  (parse-component-wire wire)
+    %-  emil
+    %+  make-resource-subscription-cards  bas  [[%add rop res] ~ ~]
+    ::
   ==
 ::
 ++  arvo
@@ -383,7 +389,7 @@
       =>  (~(got by lake) rut)
       ?>  ?=(%mist -)  +
     =/  [rod=rode lin=line]  (parse-component-element com.doc)
-    =/  [sal=manx wak=wake]  (build-component-branch src [`@uw`bas.kel ~] rod lin)
+    =/  [sal=manx wak=wake]  (build-component-branch src [`@uv`bas ~] rod lin)
     :_  %_  ui-core
           bos  (~(uni in bos) bos.wak)
           dek  (~(uni by dek) dek.wak)
@@ -396,7 +402,8 @@
   ++  ui-sway
     |=  [rop=rope cro=crow]
     ^-  [hook blow]
-    =/  duk  (~(get by dek) rop)
+    ~&  >  %event
+    =/  duk  (test-get-by-deck rop dek)  :: (~(get by dek) rop)
     ?~  duk  ~&(>>> %missing-component-on-event !!)
     =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
     =/  hul
@@ -414,7 +421,8 @@
   ++  ui-furl
     |=  rop=rope
     ^-  [[(list path) (list json)] _ui-core]
-    =/  duk  (~(get by dek) rop)
+    =/  duk  (test-get-by-deck rop dek)  :: (~(get by dek) rop)
+    ~&  >>  %update
     ?~  duk  ~&(>>> %missing-component-on-update !!)
     =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
     =/  [pol=pool sal=manx]
@@ -426,27 +434,34 @@
           (hydrate-component bom.u.duk res.u.duk)
       ==
     =/  dif  (luff src.u.duk rop [aft.u.duk ~] [sal ~])
-    =.  dek  (~(put in dek) rop u.duk(aft sal))
     =^  boz=(set buoy)  dek  (handle-component-dels rop u.duk ~(tap in del.p.dif))
     =:  bos  (~(uni by bos) (~(uni by boz) bos.p.dif))
         dek  (~(uni by dek) add.p.dif)
       ==
+    =.  dek  (~(put in dek) rop u.duk(aft sal))
     =;  pax
       :-  [pax q.dif]  ui-core
     :: build fact paths
     =;  cos
       :: match root component paths with existing subscriptions in sup
       ^-  (list path)
+      =<  q
       %+  roll  ~(val by sup.bowl)
-      |=  [[who=ship paf=path] acc=(list path)]
-      ?~  paf  acc
-      ::  the first segment is the client's patp
-      ?.  (~(has in cos) t.paf)  acc
-      :-  paf  acc
+      |=  [[who=ship paf=path] acc=[p=(set ship) q=(list path)]]
+      ::  the first segment is the client's patp; check only the component path
+      ?.  ?&  ?=(^ paf)
+              (~(has in cos) t.paf)
+              !(~(has in p.acc) who)
+          ==
+        acc
+      %_  acc
+        p  (~(put in p.acc) who)
+        q  [paf q.acc]
+      ==
     :: get all paths for root components in which the update occurs
     =|  acc=(set path)
     |-  ^+  acc
-    =/  bit  (~(get by dek) rop)
+    =/  bit  (test-get-by-deck rop dek)  :: (~(get by dek) rop)
     ?~  bit  acc
     =/  pas  ~(tap in pas.u.bit)
     |-  ^+  acc
@@ -501,7 +516,8 @@
     ?:  ?=([%mast @] n.g.sal)
       =/  [key=rode lin=line]  (parse-component-element sal)
       :-  [[key lin] ~ ~]
-      :~  [n.g.sal [[%key ((w-co:co 1) key)] ~]]
+      %_  sal
+        a.g  [[%key ((w-co:co 1) key)] a.g.sal]
       ==
     :: else, if not a component element,
     :: build the current element's key:
@@ -560,6 +576,24 @@
     =/  tub  .^(tube:clay %cc (bam des /[p.fil]/[mak]))
     :-  ~  [nam u.paf (tub q.fil)]
   ::
+  ++  test-get-by-deck  :: roll instead of get:by because it was failing to find the key: bug?
+    |=  [rop=rope dek=deck]
+    ^-  (unit bitt)
+    %+  roll  ~(tap by dek)
+    |=  [[k=rope v=bitt] a=(unit bitt)]
+    ?:  =(k rop)  [~ v]  a
+  ::
+  ++  test-put-by-deck
+    |=  [rop=rope bit=bitt dek=deck]
+    ^-  deck
+    =/  [des=(list [rope bitt]) has=?]
+      %^  spin  ~(tap by dek)  |
+      |=  [[k=rope v=bitt] a=?]
+      ?:  =(k rop)  [[k bit] &]  [[k v] a]
+    %-  malt
+    ?:  has  des
+    :-  [rop bit]  des
+  ::
   :: ++build-component-branch
   :: build out a full branch starting from some component,
   :: rendering any new component that does not yet exist in the deck
@@ -569,7 +603,11 @@
     =/  com  ^-  mast  =>((~(got by lake) com.lin) ?>(?=(%mast -) +))
     =/  who  ^-  navy  ?:(?=(%auth mode.com) src ~)
     =/  [new=? bit=bitt]
-      =/  but  (~(get by dek) [rod who])
+      =/  but  (test-get-by-deck [rod who] dek)
+        :: ^-  (unit bitt)  :: roll instead of get:by because it was failing to find the key: bug?
+        :: %+  roll  ~(tap by dek)
+        :: |=  [[k=rope v=bitt] a=(unit bitt)]
+        :: ?:  =(k [rod who])  [~ v]  a
       ?^  but  [| u.but]
       =/  [pol=pool sal=manx]
         %+  process-sail  [rod who]
@@ -593,7 +631,7 @@
         :-  i.p
         ?.  new  q
         :-  (~(gas in bos.q) (make-component-buoys %add [rod who] boom.com res.lin))
-            (~(put by dek.q) [rod who] bit)
+            (test-put-by-deck [rod who] bit dek.q)  :: (~(put by dek.q) [rod who] bit)
     |-  ^-  (pair marl wake)
     %^  spin  mal  *wake
     |=  [m=manx a=wake]
@@ -626,10 +664,10 @@
       =^  boa=(set buoy)  dek
         %-  ~(rep by dek)
         |=  [[k=rope v=bitt] a=(pair (set buoy) deck)]
-        ?.  =(p.k p.i.del)  a(q (~(put by q.a) k v))
+        ?.  =(p.k p.i.del)  a(q (test-put-by-deck k v q.a)) :: a(q (~(put by q.a) k v))
         =.  pas.v  (~(del in pas.v) rop)
         ?~  pas.v  a(p (~(gas in p.a) (make-component-buoys %del k bom.v res.v)))
-            a(q (~(put by q.a) k v))
+            a(q (test-put-by-deck k v q.a))  :: a(q (~(put by q.a) k v))
       %=  $
         del  t.del
         boz  (~(uni in boz) boa)
@@ -642,13 +680,13 @@
       :: else the parent is auth and the child in not auth,
       :: so get from dek using the rode and null
       ?:  =(mod.bit mode.cod)  [p.i.del src.bit]  [p.i.del ~]
-    =/  duk  (~(get by dek) nop)
+    =/  duk  (test-get-by-deck nop dek) :: (~(get by dek) nop)
     ?~  duk  $(del t.del)
     =.  pas.u.duk  (~(del in pas.u.duk) rop)
     ?^  pas.u.duk
       %=  $
         del  t.del
-        dek  (~(put by dek) nop u.duk)
+        dek  (test-put-by-deck nop u.duk dek):: (~(put by dek) nop u.duk)
       ==
     %=  $
       del  t.del
@@ -700,7 +738,7 @@
           |-  ^-  (set [rode hook])
           %+  roll  old
           |=  [m=manx a=(set [rode hook])]
-          ?:  ?=([%mast @] n.g.m)
+          ?.  ?=([%mast @] n.g.m)
             %-  ~(uni in a)  ^$(old c.m)
           =/  [rod=rode lin=line]  (parse-component-element m)
           %-  ~(put in a)  [rod com.lin]

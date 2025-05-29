@@ -10,7 +10,7 @@
   $:  url=path                                   ::
       wut=(map @t @t)                            ::
   ==                                             ::
-+$  keel                                         :: root component sample
++$  keel                                         :: root component sample     :: TODO: add the desk of the router gate?
   $:  our=ship                                   ::   our
       bas=knot                                   ::   base path segment bound to
       quay                                       ::   request url + query params
@@ -71,7 +71,7 @@
 +$  dock  (map knot (pair hook deck))            :: base path to component state
 +$  deck  (map rope bitt)                        :: component state map
 +$  rope  (pair rode navy)                       :: component key
-+$  rode  @uw                                    :: component essential state hash
++$  rode  @                                      ::
 +$  line                                         :: component essential state
   $:  com=hook                                   ::
       par=gust                                   ::

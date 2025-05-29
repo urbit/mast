@@ -26,8 +26,6 @@
 ++  on-load
   |=  =vase
   ^-  (quip card _this)
-  =/  old  (mole |.(!<(state-n vase)))
-  =?  state  ?=(^ old)  u.old
   :-  ~  this
 ::
 ++  on-poke
@@ -52,28 +50,30 @@
   ?+  pole  ~
     ::
     [%posts ~]
-      ?+  care  ~
-        %r
-          :^  ~  ~  %$  !>
-          [%noun !>(~)]
-        %t
-          :^  ~  ~  %$  !>
-          (get-post-key-paths posts)
-      ==
+      :^  ~  ~  %$  !>
+      [%athens-post-list !>((get-post-key-paths posts))]
     ::
     [%posts rest=^]
       |-  ^-  (unit (unit cage))
       =/  =post-id:athens  (slav %da -.rest.pole)
       =/  =post-node:athens  (~(got by posts) post-id)
-      ?^  +.rest.pole  $(posts replies.post-node, rest.pole +.rest.pole)
-      ?+  care  ~
-        %r
-          :^  ~  ~  %$  !>
-          [%athens-post !>(post.post-node)]
-        %t
-          :^  ~  ~  %$  !>
-          (get-post-key-paths replies.post-node)
-      ==
+      ?^  +.rest.pole
+        %=  $
+          posts  replies.post-node
+          rest.pole  +.rest.pole
+        ==
+      :^  ~  ~  %$  !>
+      [%athens-post !>([post.post-node (get-post-key-paths replies.post-node)])]
+    ::
+    [%hidden who=@ta id=@ta ~]
+      =/  usr  (~(get by user-sessions) (slav %p who.pole))
+      =/  hid
+        ^-  ?
+        ?~  usr  |
+        %-  ~(has in hidden-posts.u.usr)  (slav %da id.pole)
+      :^  ~  ~  %$  !>
+      ~&  >>>  hid
+      [%noun !>(hid)]
     ::
   ==
 ::
@@ -113,6 +113,12 @@
         %del-post
       %-  del-post  at.act
       ::
+        %hide-post
+      %-  hide-post  id.act
+      ::
+        %unhide-post
+      %-  unhide-post  id.act
+      ::
     ==
     ::
   == 
@@ -134,7 +140,7 @@
       posts  rez
     ==
   %-  emit
-  %-  make-fact-card  (weld /t/posts post-at)
+  %-  make-fact-card  (weld /r/posts post-at)
 ::
 ++  del-post
   |=  at=path
@@ -156,7 +162,34 @@
       posts  rez
     ==
   %-  emit
-  %-  make-fact-card  (weld /t/posts (snip at))
+  %-  make-fact-card  (weld /r/posts (snip at))
+::
+++  hide-post
+  |=  id=post-id:athens
+  ^+  cor
+  =/  usr  (~(get by user-sessions) src.bowl)
+  ~&  >>  user-sessions
+  =.  user-sessions
+    ?~  usr
+      =|  new=user-session:athens
+      =.  hidden-posts.new  (~(put in hidden-posts.new) id)
+      %+  ~(put by user-sessions)  src.bowl  new
+    =.  hidden-posts.u.usr  (~(put in hidden-posts.u.usr) id)
+    %+  ~(put by user-sessions)  src.bowl  u.usr
+  ~&  >  user-sessions
+  %-  emit
+  %-  make-fact-card  /r/hidden/[(scot %p src.bowl)]/[(scot %da id)]
+::
+++  unhide-post
+  |=  id=post-id:athens
+  ^+  cor
+  =/  usr  (~(got by user-sessions) src.bowl)
+  =.  hidden-posts.usr  (~(del in hidden-posts.usr) id)
+  ~&  >>  user-sessions
+  =.  user-sessions  (~(put by user-sessions) src.bowl usr)
+  ~&  >  user-sessions
+  %-  emit
+  %-  make-fact-card  /r/hidden/[(scot %p src.bowl)]/[(scot %da id)]
 ::
 ++  get-post-key-paths
   |=  poz=posts:athens
