@@ -199,9 +199,7 @@
             ==
       ==
     ==
-    ;script(src "https://unpkg.com/lucide@latest");
-    ;script:  lucide.createIcons();
-  ==
+  --
 ::
 --
 |%
@@ -213,6 +211,7 @@
     ?=(~ (find [ship]~ blacklist.access))
   ?=(^ (find [ship]~ members.access))
 ::
+  
 ++  toggle
   ^-  marl
   ;=
