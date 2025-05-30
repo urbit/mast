@@ -256,7 +256,7 @@
       %mast-bind
     =/  bid  !<  bind  vase
     ?:  (~(has by dock) knot.bid)
-      ~&  >>>  "%mast-bind failed: {(trip knot.bid)} already exists"
+      ~&  >>>  "%mast-bind failed: /{(trip knot.bid)} already exists"
       !!
     =?  cor  !(dock-has-desk desk.bid)
       =.  dock  (~(put by dock) knot.bid [[desk.bid name.bid] ~])
@@ -269,14 +269,14 @@
     ?.  ?=(%mist -.u.rut)
       ~&  >>>  "%mast-bind failed: {(trip name.bid)} is not a router gate"
       !!
-    ~&  >  "%mast-bind: {(trip knot.bid)} --> {(trip desk.bid)} {(trip name.bid)}"
+    ~&  >  "%mast-bind: /{(trip knot.bid)} --> {(trip desk.bid)} {(trip name.bid)}"
     cor
     ::
       %mast-unbind
     =/  not  !<  knot  vase
     =/  duk  (~(get by dock) not)
     ?~  duk
-      ~&  >>  "%mast-unbind: {(trip not)} is already unbound"
+      ~&  >>  "%mast-unbind: /{(trip not)} is already unbound"
       !!
     =/  bos
       ^-  (set buoy)
@@ -287,7 +287,7 @@
     =?  cor  !(dock-has-desk desk.p.u.duk)
       =.  lake  (del-lake desk.p.u.duk)
       %-  emit  (make-com-subscription-card %del desk.p.u.duk)
-    ~&  >  "%mast-unbind: {(trip not)} unbound"
+    ~&  >  "%mast-unbind: /{(trip not)} unbound"
     %-  emil
     %+  make-resource-subscription-cards  not  bos
     ::
@@ -402,7 +402,6 @@
   ++  ui-sway
     |=  [rop=rope cro=crow]
     ^-  [hook blow]
-    ~&  >  %event
     =/  duk  (~(get by dek) rop)
     ?~  duk  ~&(>>> %missing-component-on-event !!)
     =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
@@ -422,7 +421,6 @@
     |=  rop=rope
     ^-  [[(list path) (list json)] _ui-core]
     =/  duk  (~(get by dek) rop)
-    ~&  >>  %update
     ?~  duk  ~&(>>> %missing-component-on-update !!)
     =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
     =/  [pol=pool sal=manx]
@@ -502,7 +500,8 @@
   :: adds keys and gathers any component element data
   ++  process-sail
     |=  [rop=rope sal=manx]
-    :: set prev-key using the hash portion of the component key of this sail
+    =/  n  0
+    :: set prev-key using the atom portion of the component key of this sail
     =/  prev-key  p.rop
     =/  pos-key  *(list @)
     :: add a mast attribute with this component's identifying path
@@ -526,7 +525,10 @@
       %+  roll  a.g.sal
       |=  [[n=mane v=tape] a=tape]
       ?:  =(%key n)  v  a
-    =/  this-key  `rode`(mug [prev-key pos-key found-key])
+    =/  this-key
+      ^-  rode
+      ?:  =(0 n)  p.rop
+      %-  mug  [prev-key pos-key found-key]
     =.  a.g.sal
       :-  [%key ((w-co:co 1) this-key)]
       ?~  found-key  a.g.sal
@@ -548,7 +550,7 @@
       =<  [+.q p]
       %^  spin  c.sal  *[@ pool]
       |=  [m=manx i=@ a=pool]
-      =^  b  m  ^$(sal m, pos-key [i pos-key])
+      =^  b  m  ^$(n +(n), sal m, pos-key [i pos-key])
       :-  m
       :-  +(i)
       %-  ~(uni by a)  b

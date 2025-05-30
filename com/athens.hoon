@@ -26,7 +26,7 @@
 ::
 ++  sail
   ^-  manx
-  =/  is-comet=?  ?=(%pawn (clan:title (need src.hull)))
+  =/  is-comet=?  |  :: ?=(%pawn (clan:title (need src.hull)))
   ;div.athens
     ;div.user
       ;+  ?.  is-comet
@@ -51,7 +51,7 @@
           ==
       ;+  ?:  is-comet
             ;div.post-form.login-block: Login to post
-          ;form.post-form(event "/submit/post")           :: TODO: key
+          ;form.post-form(event "/submit/post")
             =key  "athens-post-form"
             ;textarea(name "post-input");
             ;button: 🠊

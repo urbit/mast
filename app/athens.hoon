@@ -72,7 +72,6 @@
         ?~  usr  |
         %-  ~(has in hidden-posts.u.usr)  (slav %da id.pole)
       :^  ~  ~  %$  !>
-      ~&  >>>  hid
       [%noun !>(hid)]
     ::
   ==
@@ -103,7 +102,7 @@
   ?+  mark  ~|(bad-poke/mark !!) 
     ::
       %athens-action
-    ?:  ?=(%pawn (clan:title src.bowl))  !!
+    :: ?:  ?=(%pawn (clan:title src.bowl))  !!
     =/  act  !<  action:athens  vase
     ?-  -.act
       ::
@@ -168,7 +167,6 @@
   |=  id=post-id:athens
   ^+  cor
   =/  usr  (~(get by user-sessions) src.bowl)
-  ~&  >>  user-sessions
   =.  user-sessions
     ?~  usr
       =|  new=user-session:athens
@@ -176,7 +174,6 @@
       %+  ~(put by user-sessions)  src.bowl  new
     =.  hidden-posts.u.usr  (~(put in hidden-posts.u.usr) id)
     %+  ~(put by user-sessions)  src.bowl  u.usr
-  ~&  >  user-sessions
   %-  emit
   %-  make-fact-card  /r/hidden/[(scot %p src.bowl)]/[(scot %da id)]
 ::
@@ -185,9 +182,7 @@
   ^+  cor
   =/  usr  (~(got by user-sessions) src.bowl)
   =.  hidden-posts.usr  (~(del in hidden-posts.usr) id)
-  ~&  >>  user-sessions
   =.  user-sessions  (~(put by user-sessions) src.bowl usr)
-  ~&  >  user-sessions
   %-  emit
   %-  make-fact-card  /r/hidden/[(scot %p src.bowl)]/[(scot %da id)]
 ::

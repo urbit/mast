@@ -26,6 +26,14 @@
     :~  [%athens %athens-action !>([%hide-post id])]
     ==
     ::
+      [%submit %reply ~]
+    =/  paf  src:post
+    ?>  ?=([%athens %posts *] paf)
+    =/  dat  (~(got by data.crow) 'reply-input')
+    ?:  =('' dat)  ~
+    :~  [%athens %athens-action !>([%put-post t.t.paf dat])]
+    ==
+    ::
   ==
   :: =/  loc  !<  [hidden=? reply=?]  loc.sack
   :: =/  pol  ^-  (pole @ta)  path.crow
@@ -60,7 +68,7 @@
   =/  reply  |
   =/  hid  is-hidden
   =/  [paf=path dat=post-view:athens]  =+(post [src !<(post-view:athens fil)])
-  =/  is-comet=?  ?=(%pawn (clan:title (need src.hull)))
+  =/  is-comet=?  |  :: ?=(%pawn (clan:title (need src.hull)))
   ;div.post-node-container
     ;div.post-container
       ;div.post.pointer
@@ -74,8 +82,8 @@
             =class  "message {?:(hid "hide" "full")} {?:(=(0 depth) "" "reply")}"
             =style  "margin-left: {((d-co:co 1) depth)}em"
             ;+  ;/  (trip content.dat)
-            ;+  ?:  |(!reply hid)
-                  ;div;
+            :: ;+  ?:  |(!reply hid)
+            ::       ;div;
                 ;form.post-form(event "/submit/reply")
                   ;textarea(name "reply-input", placeholder "Write something...");
                   ;button: 🠊
