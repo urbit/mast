@@ -29,7 +29,6 @@
       fil=vase                                   ::
   ==                                             ::
 +$  mode  ?(~ %auth)                             :: component mode
-+$  clew  (list (pair cord cord))                :: client state object init
 +$  boom                                         :: resource spec
   %-  list                                       ::
   $:  name=@tas                                  ::
@@ -38,7 +37,6 @@
 +$  mast                                         :: component core
   $:  $:  =mode                                  ::
           =boom                                  ::
-          =clew                                  ::
       ==                                         ::
       $_  ^|                                     ::
       |_  hull                                   ::
@@ -128,6 +126,18 @@
       %+  turn  resources
       |=  [k=@tas v=path]
       :-  [%gale k]  (spud v)
+  ==
+::
+:: ++make-client-state
+:: produce an element that adds values
+:: to the client state object on render
+++  make-client-state
+  |=  kv-list=(list (pair term tape))
+  ^-  manx
+  :_  ~
+  :*  :-  %client  %state
+      :-  %style  "display:none"
+      kv-list
   ==
 ::
 --

@@ -1,8 +1,6 @@
 /-  mast
 ^-  mast:mast
-:-  :*  %auth
-        ~
-        ~
+:-  :~  %auth
     ==
 |_  =hull:mast
 ++  spar

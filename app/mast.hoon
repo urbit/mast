@@ -518,6 +518,13 @@
       %_  sal
         a.g  [[%key ((w-co:co 1) key)] a.g.sal]
       ==
+    :: also handle client-state elements separately
+    ?:  ?=([%client %state] n.g.sal)
+      =/  key  `@uw`(mug a.g.sal)
+      :-  ~
+      %_  sal
+        a.g  [[%key ((w-co:co 1) key)] a.g.sal]
+      ==
     :: else, if not a component element,
     :: build the current element's key:
     =/  found-key

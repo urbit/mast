@@ -1,9 +1,7 @@
 /-  mast, athens
 ^-  mast:mast
-:-  :*  %auth
-        :~  [%posts %athens-post-list]
-        ==
-        ~
+:-  :~  %auth
+        posts+%athens-post-list
     ==
 =<
 |_  =hull:mast
@@ -28,6 +26,7 @@
   ^-  manx
   =/  is-comet=?  |  :: ?=(%pawn (clan:title (need src.hull)))
   ;div.athens
+    ;+  (make-client-state:mast [reply+"" ~])
     ;div.user
       ;+  ?.  is-comet
             ;/  (cite:title (need src.hull))

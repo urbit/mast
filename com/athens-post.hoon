@@ -1,10 +1,8 @@
 /-  mast, athens
 ^-  mast:mast
-:-  :*  %auth
-        :~  post+%athens-post
-            hidden+%noun
-        ==
-        ~
+:-  :~  %auth
+        post+%athens-post
+        hidden+%noun
     ==
 =<
 |_  =hull:mast
@@ -69,6 +67,7 @@
   =/  hid  is-hidden
   =/  [paf=path dat=post-view:athens]  =+(post [src !<(post-view:athens fil)])
   =/  is-comet=?  |  :: ?=(%pawn (clan:title (need src.hull)))
+  =/  idt  (trip (rear paf))
   ;div.post-node-container
     ;div.post-container
       ;div.post.pointer
@@ -82,19 +81,20 @@
             =class  "message {?:(hid "hide" "full")} {?:(=(0 depth) "" "reply")}"
             =style  "margin-left: {((d-co:co 1) depth)}em"
             ;+  ;/  (trip content.dat)
-            :: ;+  ?:  |(!reply hid)
-            ::       ;div;
-                ;form.post-form(event "/submit/reply")
-                  ;textarea(name "reply-input", placeholder "Write something...");
-                  ;button: 🠊
-                ==
+            ;form.post-form
+              =event  "/submit/reply"
+              =client-display  "reply {idt}"
+              ;textarea(name "reply-input", placeholder "Write something...");
+              ;button: 🠊
+            ==
           ==
       ;+  ?:  ?|  hid
                   is-comet
               ==
             ;div;
           ;div.options
-            ;button(event "/click/toggle-reply"): reply
+            ;button(client-display "reply !{idt}", client-event "click reply {(trip (rear paf))}"): reply
+            ;button(client-display "reply {idt}", client-event "click reply ~"): reply
             ;button: edit
             ;button(event "/click/delete"): delete
           ==
