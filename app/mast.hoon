@@ -388,14 +388,24 @@
       ^-  mist
       =>  (~(got by lake) rut)
       ?>  ?=(%mist -)  +
-    =/  [rod=rode lin=line]  (parse-component-element com.doc)
+    :: temporary: assert the structure of the document
+    :: produced from the router
+    ?.  ?&  ?=([* * ~] c.doc)
+            ?=(%html n.g.doc)
+            ?=(%head n.g.i.c.doc)
+            ?=(%body n.g.i.t.c.doc)
+            ?=([[[[%mast @] *] *] ~] c.i.t.c.doc)
+        ==
+      ~&  >>>  [%malformed-document-from-router rut]
+      !!
+    =/  [rod=rode lin=line]  (parse-component-element i.c.i.t.c.doc)
     =/  [sal=manx wak=wake]  (build-component-branch src [`@uv`bas ~] rod lin)
     :_  %_  ui-core
           bos  (~(uni in bos) bos.wak)
           dek  (~(uni by dek) dek.wak)
         ==
     =-  -(a.g `mart`[[%our +:(scow %p our.bowl)] [%src +:(scow %p src.bowl)] ~])
-    ^-  manx  doc(hed [script-node hed.doc], com sal)
+    ^-  manx  doc(c.i.c [script-node c.i.c.doc], i.c.i.t.c sal)
   ::
   :: ++ui-sway
   :: handle an event from the client
@@ -421,7 +431,7 @@
     |=  rop=rope
     ^-  [[(list path) (list json)] _ui-core]
     =/  duk  (~(get by dek) rop)
-    ?~  duk  ~&(>>> %missing-component-on-update !!)
+    ?~  duk  !!  :: ~&(>>> %missing-component-on-update !!)
     =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
     =/  [pol=pool sal=manx]
       %+  process-sail  rop

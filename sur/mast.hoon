@@ -34,6 +34,7 @@
   $:  name=@tas                                  ::
       mark=@tas                                  ::
   ==                                             ::
++$  mist  $-(keel manx)                          :: router gate
 +$  mast                                         :: component core
   $:  $:  =mode                                  ::
           =boom                                  ::
@@ -43,18 +44,6 @@
       ++  spar  *$-(crow blow)                   ::
       ++  sail  *manx                            ::
       --                                         ::
-  ==                                             ::
-+$  mist                                         :: router gate
-  $-  keel                                       ::   the root of an interface,
-  $_                                             ::   bound to a base url segment,
-  ;html                                          ::   the router gate defines a
-    ;+  :*  [%head ~]                            ::   function of route+params
-            hed=*marl                            ::   to a document which nests
-        ==                                       ::   an initial mast component
-    ;+  :~  [%body *mart]                        ::
-            ^=  com                              ::
-            [[[%mast *@tas] *mart] *marl]        ::
-        ==                                       ::
   ==                                             ::
 +$  hook  [=desk name=@tas]                      :: component file
 +$  bind  [=knot hook]                           :: bind base path name to root component
