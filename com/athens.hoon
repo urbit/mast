@@ -81,8 +81,9 @@
       ;head
         ;title: Athens
         ;meta(charset "UTF-8");
-        ;meta(name "viewport", content "width=device-width, initial-scale=1");
+        ;meta(name "viewport", content "width=device-width, initial-scale=1, maximum-scale=1");
         ;link(rel "manifest", href "/athens/manifest");
+        ;link(rel "stylesheet", href "https://fonts.googleapis.com/css2?family=Fragment+Mono&display=swap");
         ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
         ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
         ;script(type "module"): {(trip footnote-parser)}
@@ -220,10 +221,15 @@
             =class  "post-form form-border fixed bottom-4 inset-x-4 z-50 ".
                     "rounded-md shadow md:w-full md:static ".
                     "md:inset-auto md:rounded-none md:shadow-none md:p-0 ".
-                    "flex items-stretch justify-between "
+                    "overflow-hidden box-border ".
+                    "flex items-stretch [&.is-focused]:!border-white" 
             =key  "athens-post-form"
-            ;athens-textarea-litdev.grow(name "post-input");
-            ;button.mt-auto.p-1
+            ;athens-textarea-litdev.grow
+              =name  "post-input"
+              ;
+            ==
+            ;button
+            =class  "mt-auto p-2 text-[14px]"
               ; →
             ==
           ==
@@ -364,7 +370,7 @@
     flex-direction: column;
   }
   .author {
-    font-family: 'Source Code Pro', monospace;
+    font-family: 'Fragment Mono', monospace;
     font-weight: 500;
     font-size: 14px;
     leading-trim: Cap height;
@@ -384,7 +390,6 @@
     line-height: 130%;
     letter-spacing: 0%;
     color: #A3A3A3;
-    max-width: 645px;
   }
   .message.hide {
     color: #737373;
@@ -393,7 +398,7 @@
     text-overflow: ellipsis;
   }
   .message.reply {
-    padding-left: 0.3em;
+    padding-left: 8px;
     border-left-width: 1px;
     border-left-color: #575757;
     border-left-style: solid;
@@ -428,8 +433,12 @@
     border: 1px solid #575757;
     border-radius: 6px;
   }
+  .post-reply-form {
+    line-height: normal;
+  }
   .post-form {
     margin-top: 0.45em;
+    line-height: normal;
   }
   .post-form.login-block {
     -webkit-user-select: none;
@@ -438,10 +447,6 @@
     justify-content: center;
     font-family: Inter, sans-serif;
     font-size: 0.85rem;
-  }
-  .post-form > button {
-    padding-inline: 0.2em;
-    color: #A3A3A3;
   }
   .post-form > button:hover {
     color: #FAFAFA;
@@ -471,7 +476,6 @@
   athens-textarea-litdev textarea {
     width: 100%;
     resize: none;
-    font-size: 14px;
     border: none;
     box-sizing: border-box;
     font-family: inherit;
@@ -486,10 +490,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
-    :: max-width: 400px;
   }
   athens-textarea-litdev textarea{
     background: #0f0f0f;
+    border-radius: 10px;
   }
   athens-textarea-litdev .clamp-one-line h1,
   athens-textarea-litdev .clamp-one-line h2,
@@ -554,22 +558,13 @@
     list-style-type: decimal;
     padding-left: 1.5rem;
   }
+  .prose pre,
   .prose code {
-    background-color: #333333;
-    padding: 0.125rem 0.25rem; /* px-1 py-0.5 */
-    border-radius: 0.25rem; /* rounded */
-    font-size: 0.875em;
-  }  
-  .prose pre {
-    /* background-color: #737373; */
+    background: transparent;
     color: #FAFAFA;
     padding: 1rem; /* p-4 */
     border-radius: 0.5rem; /* rounded-lg */
     overflow-x: auto;
-  }
-  .prose pre code {
-    background: transparent;
-    padding: 0;
   }
   .prose table {
     font-family: Inter, sans-serif;
@@ -609,10 +604,6 @@
     .author {
       margin-left: 0 !important;
     }
-    :: .message.reply {
-    ::   border-left-width: 0 !important;
-    ::   border-left-style: none !important;
-    :: }
   }
   '''
 --
