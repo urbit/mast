@@ -13,6 +13,7 @@
 ++  spar
   |=  =crow:mast
   ^-  blow:mast
+  =/  access  get-access
   =/  pol  ^-  (pole @ta)  path.crow
   ?+  pol  ~
     ::
@@ -22,75 +23,31 @@
     :~  [%athens %athens-action !>([%put-post ~ dat])]
     ==
     ::
+      [%submit %remove-ship ~]
+    =/  dat  (~(got by data.crow) 'ship-input')
+    ?:  =('' dat)  ~
+    :~  [%athens %athens-action !>([%del-access-id (slav %p dat)])]
+    ==
+    ::
+      [%submit %add-ship ~]
+    =/  dat  (~(got by data.crow) 'ship-input')
+    ?:  =('' dat)  ~
+    :~  [%athens %athens-action !>([%edit-access-id [`@p`(slav %p dat)]~])]
+    ==
+    ::
+      [%change %toggle-public ~]
+    :~  [%athens %athens-action !>([%access-public !public.access])]
+    ==
+    ::
   ==
-  :: =/  pol  ^-  (pole @ta)  path.crow
-  :: =/  loc  !<  [settings=? show-ids=? show-del=(unit @p)]  loc.sack
-  :: ?+  pol  ~^~
-  ::   ::
-  ::     [%submit %post ~]
-  ::   =/  dat  (~(got by data.crow) 'post-input')
-  ::   ?:  =('' dat)  ~^~
-  ::   :_  !>  loc
-  ::   :~  [%athens %athens-action !>([%put-post ~ dat])]
-  ::   ==
-  ::   ::
-  ::     [%mouseenter %show-settings ~]
-  ::   ?:  settings.loc  ~^~
-  ::   ?.  =(our.scud yon.scud)  ~^~
-  ::   :_   !>  loc(settings !settings.loc)
-  ::   ~
-  ::   ::
-  ::     [%mouseleave %show-settings ~]
-  ::   ?.  settings.loc  ~^~
-  ::   :_   !>  loc(settings !settings.loc)
-  ::   ~
-  ::   ::
-  ::     [%change %toggle-public ~]
-  ::   =/  access  !<  access:athens  fil.sack
-  ::   :_  !>  loc
-  ::   :~  [%athens %athens-action !>([%access-public !public.access])]
-  ::   ==
-  ::   ::
-  ::     [%click %toggle-show-ids ~]
-  ::   =/  access  !<  access:athens  fil.sack
-  ::   :_  !>  loc(show-ids !show-ids.loc)
-  ::   ~
-  ::   ::
-  ::     [%submit %remove-ship ~]
-  ::   =/  dat  (~(got by data.crow) 'ship-input')
-  ::   ?:  =('' dat)  ~^~
-  ::   :_  !>  loc
-  ::   :~  [%athens %athens-action !>([%del-access-id (slav %p dat)])]
-  ::   ==
-  ::   ::
-  ::     [%submit %add-ship ~]
-  ::   =/  dat  (~(got by data.crow) 'ship-input')
-  ::   ?:  =('' dat)  ~^~
-  ::   :_  !>  loc
-  ::   :~  [%athens %athens-action !>([%edit-access-id [`@p`(slav %p dat)]~])]
-  ::   ==
-  ::   ::
-  ::     [%mouseenter %show-del * ~]
-  ::   =/  u-ship=(unit ship)  (slaw %p -.+.+.pol)
-  ::   :_  !>  loc(show-del u-ship)
-  ::   ~
-  ::   ::
-  ::     [%mouseleave %show-del ~]
-  ::   :_  !>  loc(show-del ~)
-  ::   ~
-  ::   ::
-  :: ==
 ::
 ++  sail
   ^-  manx
-  :: =/  loc  !<  [settings=? show-ids=? show-del=(unit @p)]  loc.sack
-  =|  loc=[settings=? show-ids=? show-del=(unit @p)]
-  :: =/  access  !<  access:athens  fil.sack
   =/  src  (need src.hull)
   =/  access  get-access
   =/  is-comet=?  ?=(%pawn (clan:title src))
   ;div.root
-    ;+  (make-client-state:mast [reply+"" ~])
+    ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"true" ~])
     ;+  ?.  |(=(our.hull src) (has-access src access))
       ;div
       =class  "bg-neutral-bg text-neutral-400 athens h-full w-full flex flex-column"
@@ -134,61 +91,77 @@
         ;div
           =class  "user fixed z-100"
           ;+  ?.  is-comet
-                ;div(event "/mouseenter/show-settings /mouseleave/show-settings")
+                ;div
                   =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
+                  =client-event  "mouseenter show-settings true"
                   ;div
-                  =class  "flex flex-row px-4 py-2 {?.(settings.loc "" "hidden")}"
-                    ;  {(cite:title src)}
-                  == 
-                  ;*  ?:  =(our.hull src)
-                    ;=
-                      ;div
-                      =class  "grid grid-cols-[auto_1fr] divide-y divide-[#A3A3A3] {?.(settings.loc "hidden" "")}"
-                      =style  "max-height: 400px; overflow-y: auto;"
-                      ::"hidden sm:grid")}"
-                        ;div.px-4.py-2: Urbit ID
-                        ;div.px-4.py-2
-                          ; {(cite:title src)}
-                        ==
-                        ;div.px-4.py-2
-                          ; Public Access
-                        ==
-                        ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
-                          ;div.relative.inline-block
-                            ;+  ?:  public.access
-                              ;input.sr-only.peer(type "checkbox", event "/change/toggle-public", name "toggle-access", checked "")
+                    =client-event  "mouseleave show-settings false"
+                    ;div.flex.flex-row.px-4.py-2
+                      =client-display  "show-settings !true"
+                      ;  {(cite:title src)}
+                    == 
+                    ;*  ?.  =(our.hull src)  ~
+                      ;=
+                        ;div
+                          =client-display  "show-settings true"
+                          =class  "grid grid-cols-[auto_1fr] divide-y divide-[#A3A3A3]"
+                          =style  "max-height: 400px; overflow-y: auto;"
+                          ::"hidden sm:grid")}"
+                          ;div.px-4.py-2: Urbit ID
+                          ;div.px-4.py-2
+                            ; {(cite:title src)}
+                          ==
+                          ;div.px-4.py-2
+                            ; Public Access
+                          ==
+                          ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
+                            ;div.relative.inline-block
+                              ;+  ?:  public.access
+                                ;input.sr-only.peer(type "checkbox", event "/change/toggle-public", name "toggle-access", checked "")
+                                  ;*  toggle
+                                ==
+                              ;input.sr-only.peer(type "checkbox", event "/change/toggle-public", name "toggle-access")
                                 ;*  toggle
                               ==
-                            ;input.sr-only.peer(type "checkbox", event "/change/toggle-public", name "toggle-access")
-                              ;*  toggle
                             ==
                           ==
-                        ==
-                        ;*  ?:  public.access
+                          ;*  ?:  public.access
+                            ;=
+                              ;div.px-4.py-2.w-full.flex.justify-between.cursor-pointer
+                                =client-display  "show-ids !true"
+                                =client-event  "click show-ids true"
+                                ;span: Blocked
+                                ;span: >
+                              ==
+                              ;div.px-4.py-2.flex.justify-between.cursor-pointer
+                                =client-display  "show-ids true"
+                                =client-event  "click show-ids false"
+                                ;span: Blocked
+                                ;span: <
+                              ==
+                              ;+  (edit-access-form public.access)
+                              ;*  (id-list blacklist.access)
+                            ==
                           ;=
-                            ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Blocked
-                            ;+  ?:  show-ids.loc
-                              ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  <
-                            ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  >
+                            ;div.px-4.py-2.w-full.flex.justify-between.cursor-pointer
+                              =client-display  "show-ids !true"
+                              =client-event  "click show-ids true"
+                              ;span: Members
+                              ;span: >
+                            ==
+                            ;div.px-4.py-2.flex.justify-between.cursor-pointer
+                              =client-display  "show-ids true"
+                              =client-event  "click show-ids false"
+                              ;span: Members
+                              ;span: <
+                            ==
                             ;+  (edit-access-form public.access)
-                            ;*  ?:  show-ids.loc
-                              (id-list blacklist.access show-del.loc)
-                            ~
+                            ;*  (id-list members.access)
                           ==
-                        ;=
-                          ;div.px-4.py-2.cursor-pointer(event "/click/toggle-show-ids"): Members
-                          ;+  ?:  show-ids.loc
-                            ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  <
-                          ;div.px-4.py-2.w-full.flex.justify-end.relative.cursor-pointer(event "/click/toggle-show-ids"):  >
-                          ;+  (edit-access-form public.access)
-                          ;*  ?:  show-ids.loc
-                            (id-list members.access show-del.loc)
-                          ~
                         ==
+                        ::;+  (mobile-view-user loc scud access)
                       ==
-                      ::;+  (mobile-view-user loc scud access)
-                    ==
-                  ~
+                  ==
                 ==
               ;form.flex
                 =action  "/~/login"
@@ -259,12 +232,13 @@
   ==
 ::
 ++  id-list
-  |=  [ids=(list @p) show-del=(unit @p)]
+  |=  ids=(list @p)
   ^-  marl
   ;*  %+  turn  (flop ids)
   |=  =ship
   ^-  manx
   ;div
+    =client-display  "show-ids true"
     =class  "col-span-2 flex"
     ;div.px-4.py-2: {(scow %p ship)}
     ;form.px-4.py-2.ml-auto(event "/submit/remove-ship")

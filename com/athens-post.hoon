@@ -14,6 +14,8 @@
   |=  =crow:mast
   ^-  blow:mast
   =/  hid  is-hidden
+  =/  paf  src:post
+  ?>  ?=([%athens %posts *] paf)
   ?+  path.crow  ~
     ::
       [%click %toggle-hide ~]
@@ -25,58 +27,27 @@
     ==
     ::
       [%submit %reply ~]
-    =/  paf  src:post
-    ?>  ?=([%athens %posts *] paf)
     =/  dat  (~(got by data.crow) 'reply-input')
     ?:  =('' dat)  ~
     :~  [%athens %athens-action !>([%put-post t.t.paf dat])]
     ==
     ::
+      [%submit %edit ~]
+    =/  dat  (~(got by data.crow) 'edit-input')
+    ?:  =('' dat)  ~
+    :~  [%athens %athens-action !>([%patch-post t.t.paf dat])]
+    ==
+    ::
+      [%click %delete ~]
+    :~  [%athens %athens-action !>([%del-post t.t.paf])]
+    ==
+    ::
   ==
-  :: =/  loc  !<  [hidden=? reply=? edit=?]  loc.sack
-  :: =/  pol  ^-  (pole @ta)  path.crow
-  :: ?+  pol  ~^~
-  ::   ::
-  ::     [%click %toggle-hide ~]
-  ::   :-  ~
-  ::   !>  loc(hidden !hidden.loc)
-  ::   ::
-  ::     [%click %toggle-reply ~]
-  ::   :-  ~
-  ::   !>  loc(reply !reply.loc)
-  ::   ::
-  ::     [%click %toggle-edit ~]
-  ::   :-  ~
-  ::   !>  loc(edit !edit.loc)
-  ::   ::
-  ::     [%submit %reply ~]
-  ::   ?>  ?=([%athens %posts *] pax.scud)
-  ::   =/  dat  (~(got by data.crow) 'reply-input')
-  ::   ?:  =('' dat)  ~^~
-  ::   :_  !>(loc(reply !reply.loc))
-  ::   :~  [%athens %athens-action !>([%put-post t.t.pax.scud dat])]
-  ::   ==
-  ::     [%submit %edit ~]
-  ::   ?>  ?=([%athens %posts *] pax.scud)
-  ::   =/  dat  (~(got by data.crow) 'edit-input')
-  ::   ?:  =('' dat)  ~^~
-  ::   :_  !>  loc(edit |)
-  ::   :~  [%athens %athens-action !>([%patch-post t.t.pax.scud dat])]
-  ::   ==
-  ::   ::
-  ::     [%click %delete ~]
-  ::   ?>  ?=([%athens %posts *] pax.scud)
-  ::   :_  ~
-  ::   :~  [%athens %athens-action !>([%del-post t.t.pax.scud])]
-  ::   ==
-  ::   ::
-  :: ==
 ::
 ++  sail
   ^-  manx
   =/  src  (need src.hull)
   =/  hid  is-hidden
-  =/  edit   |
   =/  [paf=path dat=post-view:athens]  =+(post [src !<(post-view:athens fil)])
   =/  idt  (trip (rear paf))
   ::=/  content-wall  (parse-content (trip content.dat))
@@ -96,26 +67,34 @@
               ;-  (cite:title author.dat)
             ==
           ::==
-          ;div 
+          ;div
             =class  "message {?:(hid "hide md:w-[50%] w-[85%]" "full")} {?:(=(0 depth) "" "reply")} col-span-2 md:col-start-2 md:col-span-1 row-start-2 md:row-start-1 flex flex-col gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}em] border-l-0"
-            ;+  ?:  &(edit !hid)
-                ;form(event "/submit/edit")
-                =class  "post-reply-form w-full min-h-[26px] resize-none overflow-hidden box-border" 
-                  ;athens-textarea-litdev(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border p-[11px] text-sm", textareaClass "md:overflow-hidden box-border text-sm {?:(hid "hide" "")}", name "edit-input"); 
-                  ;button.mt-auto.p-2(event "/click/toggle-edit")
-                    ;span: →
-                  ==
-                == 
-              ;athens-textarea-litdev(class "w-full resize-none overflow-hidden box-border text-sm {?:(hid "hide" "")}", name "preview-only", value (trip content.dat), preview-only "true"); 
-              ;+  ?:  hid
-                  ;div.hidden;
-                ;form.post-reply-form(event "/submit/reply")
-                  =client-display  "reply {idt}"
-                  ;athens-textarea-litdev(class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border text-sm p-[11px]", textareaClass "md:overflow-hidden box-border text-sm", name "reply-input");
-                  ;button.mt-auto.p-2(type "submit")
-                    ;span: →
-                  ==
+            ;form
+              =event  "/submit/edit"
+              =client-event  "submit edit ~"
+              =client-display  "edit {idt}"
+              =class  "post-reply-form w-full resize-none overflow-hidden box-border hidden"
+              ;athens-textarea-litdev(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border p-[11px] text-sm", textareaClass "md:overflow-hidden box-border text-sm {?:(hid "hide" "")}", name "edit-input");
+              ;button.mt-auto.p-2(event "/click/toggle-edit")
+                ;span: →
+              ==
+            ==
+            ;athens-textarea-litdev(name "preview-only", value (trip content.dat), preview-only "true")
+              =client-display  "edit !{idt}"
+              =class  "w-full resize-none overflow-hidden box-border text-sm {?:(hid "hide" "")}"
+              ;*  ~
+            ==
+            ;+  ?:  hid
+                ;div.hidden;
+              ;form.post-reply-form.hidden
+                =event  "/submit/reply"
+                =client-event  "submit reply ~"
+                =client-display  "reply {idt}"
+                ;athens-textarea-litdev(class "w-full resize-none overflow-auto md:overflow-hidden box-border text-sm p-[11px] min-h-[26px]", textareaClass "md:overflow-hidden box-border text-sm", name "reply-input");
+                ;button.mt-auto.p-2(type "submit")
+                  ;span: →
                 ==
+              ==
           ==
         ==
       ;div
@@ -137,11 +116,12 @@
             =class  "options {sticky} top-20 col-start-2 row-start-1 md:col-start-3 md:row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464] {?:(hid "hidden" "")}"
             ;*  ?:  =(author.dat src)
               ;=
-                ;button(event "/click/toggle-edit"): edit
+                ;button(client-display "edit !{idt}", client-event "click edit {idt}"): edit
+                ;button(client-display "edit {idt}", client-event "click edit ~"): edit
                 ;button(event "/click/delete"): delete
               ==
             ~
-            ;button(client-display "reply !{idt}", client-event "click reply {(trip (rear paf))}"): reply
+            ;button(client-display "reply !{idt}", client-event "click reply {idt}"): reply
             ;button(client-display "reply {idt}", client-event "click reply ~"): reply
           ==
     ==
