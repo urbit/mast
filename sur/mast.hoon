@@ -18,6 +18,7 @@
 +$  hull                                         :: component sample
   $:  our=ship                                   ::   our
       src=navy                                   ::   src, null unless mode is %auth
+      now=time                                   ::   now
       par=gust                                   ::   params
       res=gale                                   ::   resources
   ==                                             ::

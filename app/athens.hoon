@@ -26,7 +26,13 @@
 ++  on-load
   |=  =vase
   ^-  (quip card _this)
-  :-  ~  this
+  =/  old  (mole |.(!<(state-n vase)))
+  =?  state  ?=(^ old)  u.old
+  :_  this
+  :~
+    :*  %pass  /bind  %arvo  %e  %connect  [~ /athens]  %athens
+    ==
+  ==
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -74,6 +80,10 @@
       :^  ~  ~  %$  !>
       [%noun !>(hid)]
     ::
+    [%access ~]
+      :^  ~  ~  %$  !>
+      [%athens-access !>(access)]
+    ::
   ==
 ::
 ++  on-agent  |=([wire sign:agent:gall] ^-((quip card _this) !!))
@@ -101,13 +111,20 @@
   ^+  cor
   ?+  mark  ~|(bad-poke/mark !!) 
     ::
+      %handle-http-request
+    %-  handle-manifest
+    !<  [rid=@ta req=inbound-request:eyre]  vase
+    ::
       %athens-action
-    :: ?:  ?=(%pawn (clan:title src.bowl))  !!
+    ?:  ?=(%pawn (clan:title src.bowl))  !!
     =/  act  !<  action:athens  vase
     ?-  -.act
       ::
         %put-post
       %+  put-post  post-at.act  content.act
+      ::
+        %patch-post
+      %+  patch-post  post-at.act  content.act
       ::
         %del-post
       %-  del-post  at.act
@@ -117,6 +134,15 @@
       ::
         %unhide-post
       %-  unhide-post  id.act
+      ::
+        %access-public
+      %-  access-public  public.act
+      ::
+        %edit-access-id
+      %-  edit-access-id  ids.act
+      ::
+        %del-access-id
+      %-  del-access-id  id.act
       ::
     ==
     ::
@@ -140,6 +166,29 @@
     ==
   %-  emit
   %-  make-fact-card  (weld /r/posts post-at)
+::
+++  patch-post
+  |=  [patch-at=path dat=@t]
+  ^+  cor 
+  =.  posts
+    |-  ^-  posts:athens
+    ?~  patch-at  !!
+    =/  id  (slav %da i.patch-at)
+    =/  [poz=post:athens rez=posts:athens]  (~(got by posts) id)
+    ?~  t.patch-at
+      ?>  =(author.poz src.bowl)
+      %+  ~(put by posts)  id
+      :_  rez
+      :-  author.poz
+          dat
+    %+  ~(put by posts)  id
+    :-  poz
+    %=  $
+      patch-at  t.patch-at
+      posts  rez
+    ==
+  %-  emit
+  %-  make-fact-card  (weld /r/posts patch-at)
 ::
 ++  del-post
   |=  at=path
@@ -186,6 +235,44 @@
   %-  emit
   %-  make-fact-card  /r/hidden/[(scot %p src.bowl)]/[(scot %da id)]
 ::
+++  access-public
+  |=  public=?
+  ^+  cor
+  ?:  =(public public.access)  cor
+  =.  access  :*  public 
+                  members.access
+                  blacklist.access
+              ==
+  %-  emit
+  %-  make-fact-card  /r/access
+::
+++  edit-access-id
+  |=  ids=(list @p)
+  ^+  cor
+  ?.  public.access
+    =.  members.access  ~(tap in (silt (welp members.access ids)))
+    %-  emit
+    %-  make-fact-card  /r/access
+  =.  blacklist.access  ~(tap in (silt (welp blacklist.access ids)))
+  %-  emit
+  %-  make-fact-card  /r/access
+::
+++  del-access-id
+  |=  id=@p
+  ^+  cor
+  =/  index-id  %+  find  [id]~ 
+                ?.  public.access
+                  members.access
+                blacklist.access
+  ?~  index-id  cor
+  ?.  public.access
+    =.  members.access  (oust [(need index-id) 1] members.access)
+    %-  emit
+    %-  make-fact-card  /r/access
+  =.  blacklist.access  (oust [(need index-id) 1] blacklist.access)
+  %-  emit
+  %-  make-fact-card  /r/access
+::
 ++  get-post-key-paths
   |=  poz=posts:athens
   ^-  (list path)
@@ -197,6 +284,42 @@
   |=  =path
   ^-  card
   :*  %give  %fact  ~[path]  %noun  !>(~)
+  ==
+::
+++  handle-manifest
+  |=  [rid=@ta req=inbound-request:eyre]
+  ^+  cor
+  =;  pl=simple-payload:http
+    %-  emil
+    :~  [%give %fact ~[/http-response/[rid]] [%http-response-header !>(-.pl)]]
+        [%give %fact ~[/http-response/[rid]] [%http-response-data !>(+.pl)]]
+        [%give %kick ~[/http-response/[rid]] ~]
+    ==
+  ?+    url.request.req
+      [[404 ~] ~]
+    %'/athens/manifest'
+      :-  :-  200
+          :~  ['Content-Type' 'application/json']
+          ==
+      :-  ~
+      %-  as-octs:mimes:html
+      '''
+      {
+        "short_name": "Athens",
+        "name": "Athens",
+        "icons": [
+          {
+            "src": "https://em-content.zobj.net/source/apple/419/classical-building_1f3db-fe0f.png",
+            "sizes": "160x160",
+            "type": "image/png"
+          }
+        ],
+        "start_url": "/mast/athens/post/athens",
+        "display": "standalone",
+        "theme_color": "#000000",
+        "background_color": "#000000"
+      }
+      '''
   ==
 ::
 --

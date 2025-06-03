@@ -16,7 +16,7 @@
 +$  card  card:agent:gall
 --
 ::
-=|  state-n
+=|  $>  %state-0  state-n
 =*  state  -
 =<
 ^-  agent:gall
@@ -32,12 +32,13 @@
 ::
 ++  on-save
   ^-  vase
-  !>  ~
+  =<  save  cor
 ::
 ++  on-load
   |=  =vase
   ^-  (quip card _this)
-  :-  ~  this
+  =^  cards  state  abet:(load:cor vase)
+  :-  cards  this
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -248,6 +249,65 @@
   |=  [k=hook *]
   .=  des  desk.k
 ::
+++  del-bound-component-state
+  |=  bas=knot
+  ^+  cor
+  =/  duk  (~(get by dock) bas)
+  ?~  duk  cor
+  =/  bos
+    ^-  (set buoy)
+    %-  ~(rep by q.u.duk)
+    |=  [[k=rope v=bitt] a=(set buoy)]
+    %-  ~(gas in a)  (make-component-buoys %del k bom.v res.v)
+  =.  dock  (~(del by dock) bas)
+  %-  emil
+  %+  make-resource-subscription-cards  bas  bos
+::
+++  del-all-component-state
+  ^+  cor
+  =^  caz  dock
+    %+  ~(rib by dock)  *(list card)
+    |=  [[k=knot v=(pair hook deck)] a=(list card)]
+    :_  [k p.v ~]
+    %+  weld  a
+    %+  make-resource-subscription-cards  k
+    %-  ~(rep by q.v)
+    |=  [[k=rope v=bitt] b=(set buoy)]
+    %-  ~(gas in b)  (make-component-buoys %del k bom.v res.v)
+  %-  emil  caz
+::
+++  save
+  ^-  vase
+  !>  state(lake ~)
+::
+++  load
+  |=  =vase
+  ^+  cor
+  =/  lod  !<  state-n  vase
+  ?-  -.lod
+    ::
+      %state-0
+    =.  state  lod
+    :: cleanup previous component state
+    =.  cor  del-all-component-state
+    :: get component cores
+    =/  des
+      ^-  (list desk)
+      %~  tap  in
+      ^-  (set desk)
+      %-  ~(rep by dock)
+      |=  [[k=knot v=(pair hook deck)] a=(set desk)]
+      %-  ~(put in a)  desk.p.v
+    |-  ^+  cor
+    ?~  des  cor
+    =.  lake  (put-lake i.des)
+    =.  cor  (emit (make-com-subscription-card %add i.des))
+    %=  $
+      des  t.des
+    ==
+    ::
+  ==
+::
 ++  poke
   |=  [=mark =vase]
   ^+  cor
@@ -259,17 +319,17 @@
       ~&  >>>  "%mast-bind failed: /{(trip knot.bid)} already exists"
       !!
     =?  cor  !(dock-has-desk desk.bid)
-      =.  dock  (~(put by dock) knot.bid [[desk.bid name.bid] ~])
       =.  lake  (put-lake desk.bid)
       %-  emit  (make-com-subscription-card %add desk.bid)
+    =.  dock  (~(put by dock) knot.bid [[desk.bid name.bid] ~])
     =/  rut  (~(get by lake) [desk.bid name.bid])
     ?~  rut
-      ~&  >>>  "%mast-bind failed: {(trip name.bid)} not found"
+      ~&  >>>  "%mast-bind failed: {<name.bid>} not found"
       !!
     ?.  ?=(%mist -.u.rut)
-      ~&  >>>  "%mast-bind failed: {(trip name.bid)} is not a router gate"
+      ~&  >>>  "%mast-bind failed: {<name.bid>} is not a router gate"
       !!
-    ~&  >  "%mast-bind: /{(trip knot.bid)} --> {(trip desk.bid)} {(trip name.bid)}"
+    ~&  >  "%mast-bind: /{(trip knot.bid)} --> {<desk.bid>} /com {<name.bid>}"
     cor
     ::
       %mast-unbind
@@ -278,18 +338,12 @@
     ?~  duk
       ~&  >>  "%mast-unbind: /{(trip not)} is already unbound"
       !!
-    =/  bos
-      ^-  (set buoy)
-      %-  ~(rep by q.u.duk)
-      |=  [[k=rope v=bitt] a=(set buoy)]
-      %-  ~(gas in a)  (make-component-buoys %del k bom.v res.v)
-    =.  dock  (~(del by dock) not)
+    =.  cor  (del-bound-component-state not)
     =?  cor  !(dock-has-desk desk.p.u.duk)
       =.  lake  (del-lake desk.p.u.duk)
       %-  emit  (make-com-subscription-card %del desk.p.u.duk)
     ~&  >  "%mast-unbind: /{(trip not)} unbound"
-    %-  emil
-    %+  make-resource-subscription-cards  not  bos
+    cor
     ::
       %handle-http-request
     =+  !<  [rid=@ta req=inbound-request:eyre]  vase
@@ -364,7 +418,10 @@
     ::
       [%clay %writ *]
     ?.  ?=([%lake @ta ~] wire)  cor
-    :: reload components on change to a desk's /com
+    :: on change to a desk's /com
+    :: delete all component state   TODO: only delete affected component state
+    =.  cor  del-all-component-state
+    :: and reload components
     =.  lake  (del-lake i.t.wire)
     =.  lake  (put-lake i.t.wire)
     %-  emit  (make-com-subscription-card %add i.t.wire)
@@ -419,6 +476,7 @@
       ^-  hull
       :*  our.bowl
           src.u.duk
+          now.bowl
           par.u.duk
           (hydrate-component bom.u.duk res.u.duk)
       ==
@@ -431,13 +489,14 @@
     |=  rop=rope
     ^-  [[(list path) (list json)] _ui-core]
     =/  duk  (~(get by dek) rop)
-    ?~  duk  !!  :: ~&(>>> %missing-component-on-update !!)
+    ?~  duk  ~&(>>> %missing-component-on-update !!)
     =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
     =/  [pol=pool sal=manx]
       %+  process-sail  rop
       %~  sail  com
       :*  our.bowl
           src.u.duk
+          now.bowl
           par.u.duk
           (hydrate-component bom.u.duk res.u.duk)
       ==
@@ -611,6 +670,7 @@
         %~  sail  com
         :*  our.bowl
             who
+            now.bowl
             par.lin
             (hydrate-component boom.com res.lin)
         ==
