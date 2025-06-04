@@ -34,11 +34,6 @@
       members=(list @p)
       blacklist=(list @p)
   ==
-+$  access  
-  $:  public=? 
-      members=(list @p)
-      blacklist=(list @p)
-  ==
 ::
 +$  state
   $:  =posts

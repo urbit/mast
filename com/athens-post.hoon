@@ -26,10 +26,6 @@
     :~  [%athens %athens-action !>([%hide-post id])]
     ==
     ::
-      [%click %toggle-edit ~]
-    :-  ~
-    !>  loc(edit !edit.loc)
-    ::
       [%submit %reply ~]
     =/  dat  (~(got by data.crow) 'reply-input')
     ?:  =('' dat)  ~
@@ -40,13 +36,6 @@
     =/  dat  (~(got by data.crow) 'edit-input')
     ?:  =('' dat)  ~
     :~  [%athens %athens-action !>([%patch-post t.t.paf dat])]
-    ==
-      [%submit %edit ~]
-    ?>  ?=([%athens %posts *] pax.scud)
-    =/  dat  (~(got by data.crow) 'edit-input')
-    ?:  =('' dat)  ~^~
-    :_  !>  loc(edit |)
-    :~  [%athens %athens-action !>([%patch-post t.t.pax.scud dat])]
     ==
     ::
       [%click %delete ~]
@@ -218,69 +207,5 @@
     "{<(div d 7)>} {?:(=(1 (div d 7)) "week" "weeks")} ago" 
   "{<d>} {?:(=(1 d) "day" "days")} ago" 
 ::
-++  txt-color  "#737373"
-::
-++  parse-content
-  |=  tap=tape
-  =/  index  0  
-  =/  result  *(list tape)  
-  |-  ^-  (list tape)  
-  =/  sca  `tape`(scag index tap)
-  ?:  =(index (lent tap))  
-    (weld result ~[sca])
-  ?:  =((snag index tap) ' ') 
-    $(index 0, tap `tape`(slag +(index) tap), result (weld result ~[sca]))
-  ?.  =(+(index) (lent tap))   
-    $(index +(index))
-  $(index +(index))
-::
-++  new-line-url
-  |=  wal=(list tape)
-  ^-  (list tape)
-  %-  zing
-  %+  turn  wal
-  |=  =tape
-  =/  new-line  (find "\0a" tape)
-  =/  urli  (find "://" tape)
-  ?.  &(=(~ new-line) =(~ urli))
-    ?.  (gth +:new-line +:urli)
-    =/  txt  (oust [+(+:new-line) (sub (lent tape) +:new-line)] tape)
-    =/  url  (oust [0 +(+:new-line)] tape)
-    [txt url ~]
-    =/  url  (oust [+:new-line (sub (lent tape) +:new-line)] tape)
-    =/  txt  (oust [0 +:new-line] tape)
-    [url txt ~]
-  [tape ~]
-::
-++  date-to-tape 
-  |=  [old=@da now=@da]
-  ^-  tape
-  =/  tarp-now=tarp  (yell now)
-  =/  tarp-old=tarp  (yell old)
-  =/  d  (sub d:tarp-now d:tarp-old)  
-  ?~  d
-    =/  h  (sub h:tarp-now h:tarp-old)
-    ?~  h
-      =/  m  (sub m:tarp-now m:tarp-old)
-      ?~  m
-        ?~  (sub s:tarp-now s:tarp-old)
-          "now"
-        "{<(sub s:tarp-now s:tarp-old)>} {?:(=(1 (sub s:tarp-now s:tarp-old)) "second" "seconds")} ago"
-      "{<m>} {?:(=(1 m) "minute" "minutes")} ago"
-    "{<h>} {?:(=(1 h) "hour" "hours")} ago"
-  =/  date-now  (yall d:tarp-now)
-  =/  date-old  (yall d:tarp-old)
-  ?:  &(!=(y:date-now y:date-old) (gte m:date-now m:date-old))
-    =/  y  (sub y:date-now y:date-old)
-    "{<y>} {?:(=(1 y) "year" "years")} ago" 
-  ?:  &((gth m:date-now m:date-old) (gte d:date-now d:date-old))
-    ?:  =(y:date-now y:date-old)
-      =/  month  (sub m:date-now m:date-old)
-      "{<month>} {?:(=(1 month) "month" "months")} ago" 
-    =/  month  (sub (add m:date-now 12) m:date-old)
-    "{<month>} {?:(=(1 month) "month" "months")} ago" 
-  ?:  (gte d 7)
-    "{<(div d 7)>} {?:(=(1 (div d 7)) "week" "weeks")} ago" 
-  "{<d>} {?:(=(1 d) "day" "days")} ago" 
-::
 --
+

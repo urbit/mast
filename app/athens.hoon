@@ -281,12 +281,9 @@
   /[(scot %da k)]
 ::
 ++  make-fact-card
-  |=  [=path uacc=(unit access:athens)]
+  |=  =path
   ^-  card
-  ?:  =(~ uacc)
-    :*  %give  %fact  ~[path]  %athens-access  !>(access.state)
-    ==
-  :*  %give  %fact  ~[path]  %athens-access  !>((need uacc))
+  :*  %give  %fact  ~[path]  %noun  !>(~)
   ==
 ::
 ++  handle-manifest
