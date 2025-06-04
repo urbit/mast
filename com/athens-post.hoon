@@ -1,45 +1,38 @@
 /-  mast, athens
-^-  mast:mast
-:-  :~  %auth
-        post+%athens-post
-        hidden+%noun
+:-  ^-  boom:mast
+    :*  %athens-post
+        %z
+        !>(|^|^|)
     ==
 =<
-|_  =hull:mast
-::
-+*  post  (~(got by res.hull) %post)
-    is-hidden  %-  ?  !<  *  fil:(~(got by res.hull) %hidden)
+^-  mast:mast
+|_  [=scud:mast =sack:mast]
 ::
 ++  spar
   |=  =crow:mast
   ^-  blow:mast
-  =/  hid  is-hidden
-  =/  paf  src:post
-  ?>  ?=([%athens %posts *] paf)
-  ?+  path.crow  ~
+  =/  loc  !<  [hidden=? reply=? edit=?]  loc.sack
+  =/  pol  ^-  (pole @ta)  path.crow
+  ?+  pol  ~^~
     ::
       [%click %toggle-hide ~]
-    =/  id  (slav %da (rear src:post))
-    ?:  hid
-      :~  [%athens %athens-action !>([%unhide-post id])]
-      ==
-    :~  [%athens %athens-action !>([%hide-post id])]
-    ==
+    :-  ~
+    !>  loc(hidden !hidden.loc)
+    ::
+      [%click %toggle-reply ~]
+    :-  ~
+    !>  loc(reply !reply.loc)
     ::
       [%click %toggle-edit ~]
     :-  ~
     !>  loc(edit !edit.loc)
     ::
       [%submit %reply ~]
+    ?>  ?=([%athens %posts *] pax.scud)
     =/  dat  (~(got by data.crow) 'reply-input')
-    ?:  =('' dat)  ~
-    :~  [%athens %athens-action !>([%put-post t.t.paf dat])]
-    ==
-    ::
-      [%submit %edit ~]
-    =/  dat  (~(got by data.crow) 'edit-input')
-    ?:  =('' dat)  ~
-    :~  [%athens %athens-action !>([%patch-post t.t.paf dat])]
+    ?:  =('' dat)  ~^~
+    :_  !>(loc(reply !reply.loc))
+    :~  [%athens %athens-action !>([%put-post t.t.pax.scud dat])]
     ==
       [%submit %edit ~]
     ?>  ?=([%athens %posts *] pax.scud)
@@ -50,173 +43,96 @@
     ==
     ::
       [%click %delete ~]
-    :~  [%athens %athens-action !>([%del-post t.t.paf])]
+    ?>  ?=([%athens %posts *] pax.scud)
+    :_  ~
+    :~  [%athens %athens-action !>([%del-post t.t.pax.scud])]
     ==
     ::
   ==
 ::
 ++  sail
   ^-  manx
-  =/  src  (need src.hull)
-  =/  hid  is-hidden
-  =/  [paf=path dat=post-view:athens]  =+(post [src !<(post-view:athens fil)])
-  =/  idt  (trip (rear paf))
+  =/  loc  !<  [hidden=? reply=? edit=?]  loc.sack
+  =/  dat  !<  post:athens  fil.sack
   ::=/  content-wall  (parse-content (trip content.dat))
   =/  num-lines  (lent (to-wain:format content.dat))
   =/  sticky  ?:((gth num-lines 8) "md:sticky" "")
-  =/  is-comet=?  ?=(%pawn (clan:title src))
+  =/  is-comet=?  ?=(%pawn (clan:title yon.scud))
   ;div
     =class  "post-node-container flex flex-col gap-[16px]"
     ;div
       =class  "post-container relative grid grid-cols-2 grid-rows-[min-content] gap-y-[12px] md:gap-x-4 md:pb-[0px] w-full md:grid-cols-3 md:flex-row md:items-start md:w-full md:grid-cols-[min-content_auto_120px]"
-      ;*  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] paf)  (lent t.t.paf)
+      ;*  =/  depth=@  =-  (dec -)  ?>  ?=([%athens %posts *] pax.scud)  (lent t.t.pax.scud)
         ;=
           :: ;div
           ::   =class  "pointer col-start-1 row-start-1 md:flex max-w-[16ch]"
             ;div(event "/click/toggle-hide")
-              =class  "author {?:(hid "hide" "")} {sticky} top-20 cursor-pointer w-[15ch] max-w-[15ch] ml-[{((d-co:co 1) depth)}em] overflow-hidden whitespace-nowrap flex-none col-start-1 row-start-1"
+              =class  "author {?:(hidden.loc "hide" "")} {sticky} top-20 cursor-pointer w-[15ch] max-w-[15ch] ml-[{((d-co:co 1) depth)}em] overflow-hidden whitespace-nowrap flex-none col-start-1 row-start-1"
               ;-  (cite:title author.dat)
             ==
           ::==
-          ;div
-            =class  "message {?:(hid "hide md:w-[50%] w-[85%]" "full")} {?:(=(0 depth) "" "reply")} col-span-2 md:col-start-2 md:col-span-1 row-start-2 md:row-start-1 flex flex-col gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}em] border-l-0"
-            ;form
-              =event  "/submit/edit"
-              =client-event  "submit edit ~"
-              =client-display  "edit {idt}"
-              =class  "post-reply-form w-full resize-none overflow-hidden box-border hidden"
-              ;athens-textarea-litdev(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border p-[11px] text-sm", textareaClass "md:overflow-hidden box-border text-sm {?:(hid "hide" "")}", name "edit-input");
-              ;button.mt-auto.p-2(event "/click/toggle-edit")
-                ;span: →
-              ==
-            ==
-            ;athens-textarea-litdev(name "preview-only", value (trip content.dat), preview-only "true")
-              =client-display  "edit !{idt}"
-              =class  "w-full resize-none overflow-hidden box-border text-sm {?:(hid "hide" "")}"
-              ;*  ~
-            ==
-            ;+  ?:  hid
-                ;div.hidden;
-              ;form.post-reply-form.hidden
-                =event  "/submit/reply"
-                =client-event  "submit reply ~"
-                =client-display  "reply {idt}"
-                ;athens-textarea-litdev(class "w-full resize-none overflow-auto md:overflow-hidden box-border text-sm p-[11px] min-h-[26px]", textareaClass "md:overflow-hidden box-border text-sm", name "reply-input");
-                ;button.mt-auto.p-2(type "submit")
-                  ;span: →
+          ;div 
+            =class  "message {?:(hidden.loc "hide md:w-[50%] w-[85%]" "full")} {?:(=(0 depth) "" "reply")} col-span-2 md:col-start-2 md:col-span-1 row-start-2 md:row-start-1 flex flex-col gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}em] border-l-0"
+            ;+  ?:  &(edit.loc !hidden.loc)
+                ;form(event "/submit/edit")
+                =class  "post-reply-form w-full min-h-[26px] resize-none overflow-hidden box-border" 
+                  ;athens-textarea-litdev(value (trip content.dat), class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border p-[11px] text-sm", textareaClass "md:overflow-hidden box-border text-sm {?:(hidden.loc "hide" "")}", name "edit-input"); 
+                  ;button.mt-auto.p-2(event "/click/toggle-edit")
+                    ;span: →
+                  ==
+                == 
+              ;athens-textarea-litdev(class "w-full resize-none overflow-hidden box-border text-sm {?:(hidden.loc "hide" "")}", name "preview-only", value (trip content.dat), preview-only "true"); 
+              ;+  ?:  |(!reply.loc hidden.loc)
+                  ;div.hidden;
+                ;form.post-reply-form(event "/submit/reply")
+                  ;athens-textarea-litdev(class "w-full min-h-[26px] resize-none overflow-auto md:overflow-hidden box-border text-sm p-[11px]", textareaClass "md:overflow-hidden box-border text-sm", name "reply-input");
+                  ;button.mt-auto.p-2(type "submit")
+                    ;span: →
+                  ==
                 ==
-              ==
           ==
         ==
       ;div
-        =class  "md:col-start-2 md:row-start-1 flex flex-row justify-end {?:(hid "" "hidden")}"
-        ;+  ?:  =(0 (lent replies.dat))
+        =class  "md:col-start-2 md:row-start-1 flex flex-row justify-end {?:(hidden.loc "" "hidden")}"
+        ;+  ?:  =(0 (lent kid.scud))
             ;div.hidden;
           ;div
-            =class  "reply-num {?:(hid "hide" "full")} pr-4 text-[{txt-color}]"
-            ;p.inline.whitespace-nowrap.w-auto: {<(lent replies.dat)>} {?:(=(1 (lent replies.dat)) " reply" " replies")}
+            =class  "reply-num {?:(hidden.loc "hide" "full")} pr-4 text-[{txt-color}]"
+            ;p.inline.whitespace-nowrap.w-auto: {<(lent kid.scud)>} {?:(=(1 (lent kid.scud)) " reply" " replies")}
           ==
         ;div
-          =class  "reply-date {?:(hid "hide" "full")} inline whitespace-nowrap w-auto text-[{txt-color}]"
-          {(date-to-tape (slav %da (rear paf)) now.hull)}
+          =class  "reply-date {?:(hidden.loc "hide" "full")} inline whitespace-nowrap w-auto text-[{txt-color}]"
+          {(date-to-tape (slav %da (rear pax.scud)) now.scud)}
         ==
       ==
       ;+  ?:  is-comet
             ;div.hidden;
           ;div
-            =class  "options {sticky} top-20 col-start-2 row-start-1 md:col-start-3 md:row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464] {?:(hid "hidden" "")}"
-            ;*  ?:  =(author.dat src)
+            =class  "options {sticky} top-20 col-start-2 row-start-1 md:col-start-3 md:row-start-1 flex gap-2 justify-end md:invisible visible color-[#646464] {?:(hidden.loc "hidden" "")}"
+            ;*  ?:  =(author.dat yon.scud)
               ;=
-                ;button(client-display "edit !{idt}", client-event "click edit {idt}"): edit
-                ;button(client-display "edit {idt}", client-event "click edit ~"): edit
+                ;button(event "/click/toggle-edit"): edit
                 ;button(event "/click/delete"): delete
               ==
             ~
-            ;button(client-display "reply !{idt}", client-event "click reply {idt}"): reply
-            ;button(client-display "reply {idt}", client-event "click reply ~"): reply
+            ;button(event "/click/toggle-reply"): reply
           ==
     ==
-    ;+  ?:  ?|  hid
-                ?=(~ replies.dat)
+    ;+  ?:  ?|  hidden.loc
+                ?=(~ kid.scud)
             ==
           ;div.hidden;
         ;div.replies-container
-          ;*  %+  turn  replies.dat
+          ;*  %+  turn  kid.scud
               |=  p=path
-              %^  make:mast  mast/%athens-post  ~
-              :~  [%post (weld paf p)]
-                  [%hidden /athens/hidden/[(scot %p src)]/[(rear p)]]
-              ==
+              (make:mast %athens-post (weld pax.scud p) ~)
         ==
   ==
 ::
 --
 |%
 ::
-++  txt-color  "#737373"
-::
-++  parse-content
-  |=  tap=tape
-  =/  index  0  
-  =/  result  *(list tape)  
-  |-  ^-  (list tape)  
-  =/  sca  `tape`(scag index tap)
-  ?:  =(index (lent tap))  
-    (weld result ~[sca])
-  ?:  =((snag index tap) ' ') 
-    $(index 0, tap `tape`(slag +(index) tap), result (weld result ~[sca]))
-  ?.  =(+(index) (lent tap))   
-    $(index +(index))
-  $(index +(index))
-::
-++  new-line-url
-  |=  wal=(list tape)
-  ^-  (list tape)
-  %-  zing
-  %+  turn  wal
-  |=  =tape
-  =/  new-line  (find "\0a" tape)
-  =/  urli  (find "://" tape)
-  ?.  &(=(~ new-line) =(~ urli))
-    ?.  (gth +:new-line +:urli)
-    =/  txt  (oust [+(+:new-line) (sub (lent tape) +:new-line)] tape)
-    =/  url  (oust [0 +(+:new-line)] tape)
-    [txt url ~]
-    =/  url  (oust [+:new-line (sub (lent tape) +:new-line)] tape)
-    =/  txt  (oust [0 +:new-line] tape)
-    [url txt ~]
-  [tape ~]
-::
-++  date-to-tape 
-  |=  [old=@da now=@da]
-  ^-  tape
-  =/  tarp-now=tarp  (yell now)
-  =/  tarp-old=tarp  (yell old)
-  =/  d  (sub d:tarp-now d:tarp-old)  
-  ?~  d
-    =/  h  (sub h:tarp-now h:tarp-old)
-    ?~  h
-      =/  m  (sub m:tarp-now m:tarp-old)
-      ?~  m
-        ?~  (sub s:tarp-now s:tarp-old)
-          "now"
-        "{<(sub s:tarp-now s:tarp-old)>} {?:(=(1 (sub s:tarp-now s:tarp-old)) "second" "seconds")} ago"
-      "{<m>} {?:(=(1 m) "minute" "minutes")} ago"
-    "{<h>} {?:(=(1 h) "hour" "hours")} ago"
-  =/  date-now  (yall d:tarp-now)
-  =/  date-old  (yall d:tarp-old)
-  ?:  &(!=(y:date-now y:date-old) (gte m:date-now m:date-old))
-    =/  y  (sub y:date-now y:date-old)
-    "{<y>} {?:(=(1 y) "year" "years")} ago" 
-  ?:  &((gth m:date-now m:date-old) (gte d:date-now d:date-old))
-    ?:  =(y:date-now y:date-old)
-      =/  month  (sub m:date-now m:date-old)
-      "{<month>} {?:(=(1 month) "month" "months")} ago" 
-    =/  month  (sub (add m:date-now 12) m:date-old)
-    "{<month>} {?:(=(1 month) "month" "months")} ago" 
-  ?:  (gte d 7)
-    "{<(div d 7)>} {?:(=(1 (div d 7)) "week" "weeks")} ago" 
-  "{<d>} {?:(=(1 d) "day" "days")} ago" 
+++  mysterious-arm  ~
 ::
 ++  txt-color  "#737373"
 ::
