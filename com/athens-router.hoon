@@ -138,14 +138,14 @@
   }
   .message.reply {
     padding-left: 8px;
-    border-left-width: 1px;
-    border-left-color: #575757;
-    border-left-style: solid;
   }
   .replies-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
+  }
+  .border-left{
+    left: calc(var(--depth, 0px));
   }
   .replies {
     padding-left: 0px;
@@ -342,6 +342,9 @@
   @media (min-width: 768px) {
     .author {
       margin-left: 0 !important;
+    }
+    .border-left{
+    left: calc(14ch + 16px + var(--depth, 0px));
     }
   }
   '''
