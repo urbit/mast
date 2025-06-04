@@ -35,7 +35,7 @@ class AthensTextareaLitdev extends LitElement {
         <textarea
           style=${isPreview ? 'display: none;' : ''}
           class="${this
-            .textareaClass} focus:border rounded-[3px] focus:outline-none focus:border-white focus:ring-0 mt-auto"
+            .textareaClass} flex items-center min-h-[16px] w-full focus:text-white focus:outline-none leading-[16px] text-[16px] md:text-[14px] p-2 border-0 box-border text-sm shadow-none"
           rows="1"
           placeholder="Write something..."
           .value=${this.value}
@@ -44,7 +44,7 @@ class AthensTextareaLitdev extends LitElement {
         ></textarea>
         <div
           style=${!isPreview ? 'display: none;' : ''}
-          class="markdown-preview ${clamp} prose"
+          class="markdown-preview ${clamp} prose prose-p:mb-0 prose-p:mt-0"
           id="preview"
         ></div>
       </div>
@@ -72,6 +72,11 @@ class AthensTextareaLitdev extends LitElement {
     this.value = e.target.value
     this.internals.setFormValue(this.value)
     this._resize(e.target)
+    const scrollY = window.scrollY
+
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollY)
+    })
   }
 
   _onKeydown(e) {
@@ -94,15 +99,28 @@ class AthensTextareaLitdev extends LitElement {
   }
 
   _resize(textarea) {
-    textarea.style.height = 'auto'
-    textarea.style.height = textarea.scrollHeight + 'px'
+    if (!textarea || textarea.offsetParent === null) return // don't resize if hidden
+
+    requestAnimationFrame(() => {
+      textarea.style.height = 'auto'
+      textarea.style.height = textarea.scrollHeight + 'px'
+    })
   }
 
   _updatePreview() {
     const preview = this.querySelector('#preview')
+
     if (preview && window.marked) {
       window.marked.setOptions({ breaks: true })
-      preview.innerHTML = window.marked.parse(this.value)
+      const trimValue = this.value.trimEnd()
+      console.log(JSON.stringify(this.value))
+      preview.innerHTML = window.marked.parse(trimValue)
+
+      const last = preview.lastElementChild
+
+      if (last?.tagName === 'P' && !last.textContent.trim()) {
+        last.remove()
+      }
     }
   }
   connectedCallback() {
@@ -117,6 +135,15 @@ class AthensTextareaLitdev extends LitElement {
     })
 
     this._classObserver.observe(this, { attributes: true })
+
+    const form = this.closest('form')
+
+    this.addEventListener('focusin', () => {
+      form?.classList.add('is-focused')
+    })
+    this.addEventListener('focusout', () => {
+      form?.classList.remove('is-focused')
+    })
   }
 
   disconnectedCallback() {

@@ -1,4 +1,5 @@
 /-  mast, athens
+/+  lucide
 ^-  mast:mast
 :-  :~  %auth
         posts+%athens-post-list
@@ -46,160 +47,196 @@
   =/  src  (need src.hull)
   =/  access  get-access
   =/  is-comet=?  ?=(%pawn (clan:title src))
-  ;div.root
-    ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"true" ~])
-    ;+  ?.  |(=(our.hull src) (has-access src access))
+  |^
+    ;div.root
+      ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"true" ~])
+      ;+
+          ?:  |(=(our.hull src) (has-access src access))
+            authenticated-page
+          unauthenticated-page
+    ==
+  ++  authenticated-page
+    ;div
+      =class  "relative h-[112px] w-full"
       ;div
-      =class  "bg-neutral-bg text-neutral-400 athens h-full w-full flex flex-column"
-        ;form.flex.flex-col.grow.items-center.justify-center
-          =method  "post"
-          =action  "/~/login"
-          ;input.hidden(name "eauth", value "");
-          ;input.hidden(name "redirect", value "/mast/athens/posts/athens");
-          ;div.flex.flex-col.gap-3.border.rounded-md.p-3.border-neutral-800
-              ;div.text-red-400: access denied
-              ;div.flex.gap-2
-                ;div.font-mono: {(cite:title src)}
-                ;a.opacity-50(href "/~/logout?redirect=/mast/athens/posts/athens")
-                  ; logout
-                ==
-              ==
-              ;div.flex.gap-2
-                ;input
-                  =name  "name"
-                  =class  "font-mono px-3 py-2 border rounded-sm border-neutral-800 w-60"
-                  =placeholder  "~sampel-palnet"
-                  =spellcheck  "false"
-                  =autocomplete  "off"
-                  ;
-                ==
-                ;button.bg-neutral-900.px-3.py-2.rounded-sm.border.border-neutral-800
-                  ;i(data-lucide "arrow-right");
-                ==
-              ==
+        =class  "fixed top-0 left-0 w-full h-[18vh] ".
+                "bg-gradient-to-b from-black/100 to-transparent ".
+                "z-50 pointer-events-none md:hidden"
+        ;
+      ==
+      ;div
+        =class  "user fixed z-100"
+        ;+  ?:  is-comet  
+              public-login-form
+            header-menu
+      ==
+      ;div
+        =class  "gradient fixed bottom-0 left-0 w-full h-[18vh] ".
+                "bg-gradient-to-t from-black/100 to-transparent z-50 ".
+                "pointer-events-none md:hidden"
+        ;
+      ==
+      ;+  list-posts
+    ==
+  ++  header-menu
+    ;div
+      =client-event  "mouseenter show-settings true"
+      =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
+      ;div
+      =client-event  "mouseleave show-settings false"
+        ;div
+          =class  "flex items-center justify-center ".
+                  "p-[8px] h-[28px]"
+          =client-display  "show-settings !true"
+          ;  {(cite:title src)}
+        == 
+        ;+  ?.  =(our.hull src)  
+              ;/  ""
+            admin-menu
+      ==
+    ==
+  ++  admin-menu
+    ;div
+      =class  "grid grid-cols-[auto_1fr] divide-y ".
+              "divide-[#A3A3A3]"
+      =style  "max-height: 400px; overflow-y: auto;"
+      =client-display  "show-settings true"
+      ;div.px-4.py-2: Urbit ID
+        ;div.px-4.py-2
+          ; {(cite:title src)}
+        ==
+        ;div.px-4.py-2
+          ; Public Access
+        ==
+        ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
+          ;div.relative.inline-block
+          ;+
+          ?:  public.access
+            ;input.sr-only.peer
+              =type  "checkbox"
+              =event  "/change/toggle-public"
+              =name  "toggle-access"
+              =checked  ""
+              ;*  toggle
+            ==
+          ;input.sr-only.peer
+            =type  "checkbox"
+            =event  "/change/toggle-public"
+            =name  "toggle-access"
+            ;*  toggle
           ==
         ==
       ==
-    ;div
-      =class  "bg-neutral-bg text-neutral-400 athens"
-      ;div
-        =class  "relative h-[112px] w-full"
-        ;div
-          =class  "fixed top-0 left-0 w-full h-[18vh] bg-gradient-to-b from-black/100 to-transparent z-50 pointer-events-none md:hidden"
-          ;
+      ;*
+      ?:  public.access
+        ;=
+          ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+            =client-display  "show-ids !true"
+            =client-event  "click show-ids true"
+            ;span: Blocked
+            ;span: >
+          ==
+          ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+            =client-display  "show-ids true"
+            =client-event  "click show-ids false"
+            ;span: Blocked
+            ;span: <
+          ==
+          ;+  (edit-access-form public.access)
+          ;*  (id-list blacklist.access)
         ==
-        ;div
-          =class  "user fixed z-100"
-          ;+  ?.  is-comet
-                ;div
-                  =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
-                  =client-event  "mouseenter show-settings true"
-                  ;div
-                    =client-event  "mouseleave show-settings false"
-                    ;div.flex.flex-row.px-4.py-2
-                      =client-display  "show-settings !true"
-                      ;  {(cite:title src)}
-                    == 
-                    ;*  ?.  =(our.hull src)  ~
-                      ;=
-                        ;div
-                          =client-display  "show-settings true"
-                          =class  "grid grid-cols-[auto_1fr] divide-y divide-[#A3A3A3]"
-                          =style  "max-height: 400px; overflow-y: auto;"
-                          ::"hidden sm:grid")}"
-                          ;div.px-4.py-2: Urbit ID
-                          ;div.px-4.py-2
-                            ; {(cite:title src)}
-                          ==
-                          ;div.px-4.py-2
-                            ; Public Access
-                          ==
-                          ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
-                            ;div.relative.inline-block
-                              ;+  ?:  public.access
-                                ;input.sr-only.peer(type "checkbox", event "/change/toggle-public", name "toggle-access", checked "")
-                                  ;*  toggle
-                                ==
-                              ;input.sr-only.peer(type "checkbox", event "/change/toggle-public", name "toggle-access")
-                                ;*  toggle
-                              ==
-                            ==
-                          ==
-                          ;*  ?:  public.access
-                            ;=
-                              ;div.px-4.py-2.w-full.flex.justify-between.cursor-pointer
-                                =client-display  "show-ids !true"
-                                =client-event  "click show-ids true"
-                                ;span: Blocked
-                                ;span: >
-                              ==
-                              ;div.px-4.py-2.flex.justify-between.cursor-pointer
-                                =client-display  "show-ids true"
-                                =client-event  "click show-ids false"
-                                ;span: Blocked
-                                ;span: <
-                              ==
-                              ;+  (edit-access-form public.access)
-                              ;*  (id-list blacklist.access)
-                            ==
-                          ;=
-                            ;div.px-4.py-2.w-full.flex.justify-between.cursor-pointer
-                              =client-display  "show-ids !true"
-                              =client-event  "click show-ids true"
-                              ;span: Members
-                              ;span: >
-                            ==
-                            ;div.px-4.py-2.flex.justify-between.cursor-pointer
-                              =client-display  "show-ids true"
-                              =client-event  "click show-ids false"
-                              ;span: Members
-                              ;span: <
-                            ==
-                            ;+  (edit-access-form public.access)
-                            ;*  (id-list members.access)
-                          ==
-                        ==
-                        ::;+  (mobile-view-user loc scud access)
-                      ==
-                  ==
-                ==
-              ;form.flex
-                =action  "/~/login"
-                =method  "POST"
-                ;label.p-2(for "login-input"): login:
-                ;input(id "login-input", name "name", required "");
-                ;input(type "hidden", name "redirect", value (spud /mast/athens));
-                ;input(type "hidden", name "eauth", value "");
-                ;button(type "submit")
-                  ;i(data-lucide "arrow-right");
-                ==
-              ==
+      ;=
+        ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+          =client-display  "show-ids !true"
+          =client-event  "click show-ids true"
+          ;span: Members
+          ;span: >
         ==
-        ;div
-          =class  "gradient fixed bottom-0 left-0 w-full h-[18vh] bg-gradient-to-t from-black/100 to-transparent z-50 pointer-events-none md:hidden"
-          ;
+        ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+          =client-display  "show-ids true"
+          =client-event  "click show-ids false"
+          ;span: Members
+          ;span: <
         ==
-      ==
-      ;div;
-      ;div
-        =class  "posts md:gap-[16px] gap-[32px]"
-        ;*  %+  turn  get-post-paths
-            |=  p=path
-            %^  make:mast  mast/%athens-post  ~
-            :~  [%post (weld /athens/posts p)]
-                [%hidden /athens/hidden/[(scot %p src)]/[(rear p)]]
-            ==
-        ;+  ?:  is-comet
-              ;div.post-form.login-block: Login to post
-            ;form(event "/submit/post")
-              =class  "post-form fixed bottom-4 inset-x-4 z-50 rounded-md shadow md:w-full md:static md:inset-auto md:rounded-none md:shadow-none md:p-0"
-              =key  "athens-post-form"
-              ;athens-textarea-litdev(class "w-full min-h-[28px] resize-none overflow-auto md:overflow-hidden box-border p-[11px]", textareaClass "overflow-auto md:overflow-hidden box-border", name "post-input");
-              ;button.mt-auto.p-2: ↵
-            ==
+        ;+  (edit-access-form public.access)
+        ;*  (id-list members.access)
       ==
     ==
-  ==
+  ++  public-login-form
+    ;form.flex
+      =action  "/~/login"
+      =method  "POST"
+      ;label.p-2(for "login-input"): login:
+      ;input(id "login-input", name "name", required "");
+      ;input(type "hidden", name "redirect", value "/mast/athens");
+      ;input(type "hidden", name "eauth", value "");
+      ;button(type "submit")
+        ;+  arrow-right:lucide
+      ==
+    ==
+  ++  list-posts
+    ;div
+      =class  "posts md:gap-[16px] gap-[32px]"
+      ;*  %+  turn  get-post-paths
+          |=  p=path
+          %^  make:mast  mast/%athens-post  ~
+              :~  [%post (weld /athens/posts p)]
+                  [%hidden /athens/hidden/[(scot %p src)]/[(rear p)]]
+              ==
+      ;+  ?:  is-comet
+            ;div.post-form.login-block: Login to post
+          ;form(event "/submit/post")
+            =class  "post-form form-border fixed bottom-4 inset-x-4 z-50 ".
+                    "rounded-md shadow md:w-full md:static ".
+                    "md:inset-auto md:rounded-none md:shadow-none md:p-0 ".
+                    "overflow-hidden box-border ".
+                    "flex items-stretch [&.is-focused]:!border-white" 
+            =key  "athens-post-form"
+            ;athens-textarea-litdev.grow
+              =name  "post-input"
+              ;
+            ==
+            ;button
+            =class  "mt-auto p-2 text-[14px]"
+              ; →
+            ==
+          ==
+    ==
+  ++  unauthenticated-page
+    ;form
+      =class  "h-full w-full ".
+              "flex flex-column ".
+              "items-center justify-center "
+      =method  "post"
+      =action  "/~/login"
+      ;input.hidden(name "eauth", value "");
+      ;input.hidden(name "redirect", value "/mast/athens");
+      ;div.flex.flex-col.gap-3.border.rounded-md.p-3.border-neutral-800
+        ;div.text-red-400: access denied
+        ;+
+        ?:  is-comet  ;/("")
+        ;div.flex.gap-2
+          ;div.font-mono: {(cite:title src)}
+          ;a.opacity-50(href "/~/logout?redirect=/mast/athens")
+            ; logout
+          ==
+        ==
+        ;div.flex.gap-2
+          ;input
+            =name  "name"
+            =class  "font-mono px-3 py-2 border rounded-sm border-neutral-800 w-60"
+            =placeholder  "~sampel-palnet"
+            =spellcheck  "false"
+            =autocomplete  "off"
+            ;
+          ==
+          ;button.bg-neutral-900.px-3.py-2.rounded-sm.border.border-neutral-800
+            ;+  arrow-right:lucide
+          ==
+        ==
+      ==
+    ==
+  --
 ::
 --
 |%
