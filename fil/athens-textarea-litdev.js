@@ -16,14 +16,21 @@ class AthensTextareaLitdev extends LitElement {
 
   constructor() {
     super()
+    this._hasUpdatedOnce = false
     this.internals = this.attachInternals()
     this.value = ''
     this.previewOnly = false
-    this.activeTab = 'write'
+    this.activeTab = this.previewOnly ? 'preview' : 'write'
   }
 
   createRenderRoot() {
     return this
+  }
+
+  willUpdate(changedProps) {
+    if (changedProps.has('previewOnly') && this.previewOnly) {
+      this.activeTab = 'preview'
+    }
   }
 
   render() {
@@ -31,22 +38,22 @@ class AthensTextareaLitdev extends LitElement {
     const clamp = this.classList.contains('hide') ? 'clamp-one-line' : ''
 
     return html`
-      <div class="athens-editor">
-        <textarea
-          style=${isPreview ? 'display: none;' : ''}
-          class="${this
-            .textareaClass} flex items-center min-h-[16px] w-full focus:text-white focus:outline-none leading-[16px] text-[16px] md:text-[14px] p-2 border-0 box-border text-sm shadow-none"
-          rows="1"
-          placeholder="Write something..."
-          .value=${this.value}
-          @input=${this._onInput}
-          @keydown=${this._onKeydown}
-        ></textarea>
-        <div
-          style=${!isPreview ? 'display: none;' : ''}
-          class="markdown-preview ${clamp} prose prose-p:mb-0 prose-p:mt-0"
-          id="preview"
-        ></div>
+      <div class="athens-editor flex items-start">
+        ${isPreview
+          ? html`<div
+              class="markdown-preview ${clamp} prose prose-p:mb-0 prose-p:mt-0 inline-block translate-y-[-4px] align-top min-h-[16px]"
+              id="preview"
+            ></div>`
+          : html`<textarea
+              style=${isPreview ? 'display: none;' : ''}
+              class="${this
+                .textareaClass} flex items-center min-h-[16px] w-full focus:text-white focus:outline-none leading-[16px] text-[16px] md:text-[14px] p-2 border-0 box-border text-sm shadow-none"
+              rows="1"
+              placeholder="Write something..."
+              .value=${this.value}
+              @input=${this._onInput}
+              @keydown=${this._onKeydown}
+            ></textarea>`}
       </div>
     `
   }
@@ -91,7 +98,6 @@ class AthensTextareaLitdev extends LitElement {
 
   _setTab(tab) {
     this.activeTab = tab
-
     const textarea = this.querySelector('textarea')
     if (textarea) {
       requestAnimationFrame(() => this._resize(textarea))
@@ -113,7 +119,6 @@ class AthensTextareaLitdev extends LitElement {
     if (preview && window.marked) {
       window.marked.setOptions({ breaks: true })
       const trimValue = this.value.trimEnd()
-      console.log(JSON.stringify(this.value))
       preview.innerHTML = window.marked.parse(trimValue)
 
       const last = preview.lastElementChild
@@ -121,10 +126,20 @@ class AthensTextareaLitdev extends LitElement {
       if (last?.tagName === 'P' && !last.textContent.trim()) {
         last.remove()
       }
+      requestAnimationFrame(() => {
+        if (preview) {
+          const initialHeight = preview.offsetHeight
+          preview.style.height = `${initialHeight - 4}px`
+        }
+      })
     }
   }
   connectedCallback() {
-    super.connectedCallback?.()
+    super.connectedCallback()
+
+    if (this.previewOnly) {
+      this.activeTab = 'preview'
+    }
 
     this._classObserver = new MutationObserver((mutations) => {
       for (const m of mutations) {
