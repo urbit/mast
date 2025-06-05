@@ -97,6 +97,7 @@
                   "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}px] ".
                   "border-l-0" 
           ;form
+            =name   "edit-form"
             =event  "/submit/edit"
             =client-event  "submit edit ~"
             =client-display  "edit {idt}"
@@ -105,7 +106,7 @@
                     "form-border flex items-stretch justify-between gap-0 ".
                     "[&.is-focused]:!border-white [&.is-focused]:!text-white"
             ;athens-textarea-litdev(value (trip content.dat), class "grow {?:(hid "hide" "")}", name "edit-input");
-            ;button
+            ;button 
               =event  "/click/toggle-edit"
               =class  "mt-auto p-2 text-[14px]"
               ;span: →
@@ -119,6 +120,7 @@
           ;+  ?:  hid
               ;div.hidden;
             ;form
+              =name   "reply-form"
               =event  "/submit/reply"
               =client-event  "submit reply ~"
               =client-display  "reply {idt}"
@@ -138,10 +140,10 @@
             ;div.hidden;
           ;div
             =class  "reply-num {?:(hid "hide" "full")} pr-4 text-[{txt-color}]"
-            ;p.inline.whitespace-nowrap.w-auto: {<(lent replies.dat)>} {?:(=(1 (lent replies.dat)) " reply" " replies")}
+            ;p.inline.whitespace-nowrap.w-auto.inline-block.leading-none.align-top: {<(lent replies.dat)>} {?:(=(1 (lent replies.dat)) " reply" " replies")}
           ==
         ;div
-          =class  "reply-date {?:(hid "hide" "full")} inline whitespace-nowrap w-auto text-[{txt-color}]"
+          =class  "reply-date {?:(hid "hide" "full")} inline whitespace-nowrap w-auto text-[{txt-color}] inline-block leading-none align-top"
           {(date-to-tape (slav %da (rear paf)) now.hull)}
         ==
       ==
@@ -177,7 +179,7 @@
           ;*  %+  turn  replies.dat
               |=  p=path
               %^  make:mast  mast/%athens-post  ~
-              :~  [%post (weld paf p)]
+              :~  [%post (weld paf p)] 
                   [%hidden /athens/hidden/[(scot %p src)]/[(rear p)]]
               ==
         ==

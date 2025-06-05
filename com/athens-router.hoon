@@ -32,6 +32,8 @@
       ;meta(charset "UTF-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
       ;link(rel "manifest", href "/athens/manifest");
+      ;link(rel "preconnect", href "https://rsms.me/");
+      ;link(rel "stylesheet", href "https://rsms.me/inter/inter.css");
       ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
       ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
       ;script(type "module"): {(trip footnote-parser)}
@@ -97,11 +99,10 @@
   .athens {
     height: 100%;
     width: 100%;
-    /* background: #0f0f0f; */
     overflow-y: scroll;
   }
   .posts {
-    padding: 150px 16px 400px 16px;
+    padding: 110px 16px 110px 16px;
     margin: auto;
     width: 100%;
     max-width: 1000px;
@@ -138,13 +139,25 @@
   }
   .message.reply {
     padding-left: 8px;
+    :: border-left-width: 1px;
+    :: border-left-color: #575757;
+    :: border-left-style: solid;
   }
   .replies-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
+  .border-left,
+  .form-post-wrapper{
+    font-weight: 500;
+    font-size: 14px;
+  }
   .border-left{
+    font-family: 'Fragment Mono', monospace;
+    leading-trim: Cap height;
+    line-height: 140%;
+    letter-spacing: 0%;
     left: calc(var(--depth, 0px));
   }
   .replies {
@@ -176,7 +189,6 @@
     line-height: normal;
   }
   .post-form {
-    margin-top: 0.45em;
     line-height: normal;
   }
   .post-form.login-block {
@@ -223,12 +235,9 @@
     font-size: 14px;
   }
   athens-textarea-litdev .clamp-one-line {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal;
   }
   athens-textarea-litdev textarea{
     background: #0f0f0f;
@@ -243,6 +252,12 @@
     font-size: 14px;
     font-weight: 400;
     line-height: 1.5;
+  }
+  athens-textarea-litdev .clamp-one-line p {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    overflow: hidden;
   }
   athens-textarea-litdev .clamp-one-line table {
     font-size: 14px;
@@ -343,8 +358,11 @@
     .author {
       margin-left: 0 !important;
     }
-    .border-left{
-    left: calc(14ch + 16px + var(--depth, 0px));
+    .border-left {
+      left: calc(15ch + 16px + var(--depth, 0px));
+    }
+    .spacing-left {
+      left: calc(15ch + 32px);
     }
   }
   '''

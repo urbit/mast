@@ -16,21 +16,13 @@ class AthensTextareaLitdev extends LitElement {
 
   constructor() {
     super()
-    this._hasUpdatedOnce = false
     this.internals = this.attachInternals()
     this.value = ''
     this.previewOnly = false
-    this.activeTab = this.previewOnly ? 'preview' : 'write'
   }
 
   createRenderRoot() {
     return this
-  }
-
-  willUpdate(changedProps) {
-    if (changedProps.has('previewOnly') && this.previewOnly) {
-      this.activeTab = 'preview'
-    }
   }
 
   render() {
@@ -45,6 +37,7 @@ class AthensTextareaLitdev extends LitElement {
               id="preview"
             ></div>`
           : html`<textarea
+              name=${this.textareaClass}
               style=${isPreview ? 'display: none;' : ''}
               class="${this
                 .textareaClass} flex items-center min-h-[16px] w-full focus:text-white focus:outline-none leading-[16px] text-[16px] md:text-[14px] p-2 border-0 box-border text-sm shadow-none"
@@ -115,25 +108,29 @@ class AthensTextareaLitdev extends LitElement {
 
   _updatePreview() {
     const preview = this.querySelector('#preview')
+    if (!preview || !window.marked) return
 
-    if (preview && window.marked) {
-      window.marked.setOptions({ breaks: true })
-      const trimValue = this.value.trimEnd()
-      preview.innerHTML = window.marked.parse(trimValue)
+    window.marked.setOptions({ breaks: true })
+    const trimValue = this.value.trimEnd()
+    preview.innerHTML = window.marked.parse(trimValue)
 
-      const last = preview.lastElementChild
+    // Remove empty trailing paragraph if it exists
+    const last = preview.lastElementChild
+    if (last?.tagName === 'P' && !last.textContent.trim()) {
+      last.remove()
+    }
 
-      if (last?.tagName === 'P' && !last.textContent.trim()) {
-        last.remove()
-      }
+    if (this.classList.contains('hide')) {
+      preview.style.height = '18px'
+    } else {
+      preview.style.height = 'auto'
       requestAnimationFrame(() => {
-        if (preview) {
-          const initialHeight = preview.offsetHeight
-          preview.style.height = `${initialHeight - 4}px`
-        }
+        const initialHeight = preview.offsetHeight
+        preview.style.height = `${initialHeight - 4}px`
       })
     }
   }
+
   connectedCallback() {
     super.connectedCallback()
 
@@ -144,7 +141,8 @@ class AthensTextareaLitdev extends LitElement {
     this._classObserver = new MutationObserver((mutations) => {
       for (const m of mutations) {
         if (m.attributeName === 'class') {
-          this.requestUpdate() // Triggers re-render when class changes
+          this._updatePreview()
+          this.requestUpdate()
         }
       }
     })
