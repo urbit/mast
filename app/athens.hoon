@@ -112,7 +112,7 @@
   ?+  mark  ~|(bad-poke/mark !!) 
     ::
       %handle-http-request
-    %-  handle-manifest
+    %-  handle-http-request
     !<  [rid=@ta req=inbound-request:eyre]  vase
     ::
       %athens-action
@@ -286,41 +286,129 @@
   :*  %give  %fact  ~[path]  %noun  !>(~)
   ==
 ::
-++  handle-manifest
-  |=  [rid=@ta req=inbound-request:eyre]
-  ^+  cor
-  =;  pl=simple-payload:http
-    %-  emil
+++  handle-http-request
+  |_  [rid=@ta req=inbound-request:eyre]
+  ++  $
+    ^+  cor
+    ?+    [method.request.req url.request.req]
+        %-  emil
+        %-  payload-cards
+        [[404 ~] ~]
+      [%'GET' %'/athens/manifest']
+        ::
+        %-  emil
+        %-  payload-cards
+        :-  :-  200
+            :~  ['Content-Type' 'application/json']
+            ==
+        :-  ~
+        %-  as-octs:mimes:html
+        '''
+        {
+          "short_name": "Athens",
+          "name": "Athens",
+          "icons": [
+            {
+              "src": "https://em-content.zobj.net/source/apple/419/classical-building_1f3db-fe0f.png",
+              "sizes": "160x160",
+              "type": "image/png"
+            }
+          ],
+          "start_url": "/mast/athens",
+          "display": "standalone",
+          "theme_color": "#000000",
+          "background_color": "#000000"
+        }
+        '''
+      [%'POST' %'/athens/import']
+        ::
+        ::  curl -X POST http://localhost/athens/import --data-binary @file-to-import.txt
+        ::
+        ::  format of import text file
+        ::
+        ::  ~sampel-palnet some message is here
+        ::
+        =/  body=@t
+          ~|  'body of POST must be text'
+          +:(need body.request.req)
+        =.  posts
+          %-  ~(uni by posts)
+          (txt-to-posts body)
+        %-  emil
+        %-  payload-cards
+        :-  :-  200  ~
+        ~
+    ==
+  ++  payload-cards
+    ::
+    |=  pl=simple-payload:http
     :~  [%give %fact ~[/http-response/[rid]] [%http-response-header !>(-.pl)]]
         [%give %fact ~[/http-response/[rid]] [%http-response-data !>(+.pl)]]
         [%give %kick ~[/http-response/[rid]] ~]
     ==
-  ?+    url.request.req
-      [[404 ~] ~]
-    %'/athens/manifest'
-      :-  :-  200
-          :~  ['Content-Type' 'application/json']
+  ++  txt-to-posts
+    ::
+    |_  txt=cord
+    ++  $
+      =/  lines=(list [depth=@ud author=@p content=@t])
+        %+  turn  (to-wain:format txt)
+        parse-line
+      =|  pot=posts:athens
+      =/  when  now.bowl
+      =/  dep=@ud  0
+      ^+  pot
+      |-
+      ?~  lines  pot
+      =,  i.lines
+      =.  pot  (add-post pot when depth [author content])
+      %=  $
+        lines  t.lines
+        when  (add ~s1 when)
+        dep  +(dep)
+      ==
+    ++  parse-line
+      |=  txt=cord
+      ^-  [depth=@ud author=@p content=@t]
+      %-  fall  :_  [0 ~zod 'parse failed']
+      %+  rush  txt
+      ;~  plug
+        %+  cook
+          |=  =(list)
+          (div (lent list) 2)
+        (star ace)
+        ::
+        %+  cook
+          |=  [@t [@tas =@]]
+          ^-  @p  atom
+        ;~(plug sig crub:so)
+        ::
+        (cook crip ;~(pfix ace (star prn)))
+      ==
+    ++  get-last
+      |=  =posts:athens
+      ^-  (pair post-id:athens post-node:athens)
+      %+  snag  0
+      %+  sort  ~(tap by posts)
+      |=  [a=[=@da *] b=[=@da *]]
+      (gth da.a da.b)
+    ++  add-post
+      |=  [=posts:athens when=@da dep=@ud new=post:athens]
+      ^-  posts:athens
+      ?:  =(0 dep)
+        %+  ~(put by posts)  when
+        %*  .  *post-node:athens
+          post  new
+        ==
+      =/  last  (get-last posts)
+      %+  ~(put by posts)  p.last
+      %=  q.last
+        replies
+          %=  $
+            dep  (dec dep)
+            posts  replies.q.last
           ==
-      :-  ~
-      %-  as-octs:mimes:html
-      '''
-      {
-        "short_name": "Athens",
-        "name": "Athens",
-        "icons": [
-          {
-            "src": "https://em-content.zobj.net/source/apple/419/classical-building_1f3db-fe0f.png",
-            "sizes": "160x160",
-            "type": "image/png"
-          }
-        ],
-        "start_url": "/mast/athens/post/athens",
-        "display": "standalone",
-        "theme_color": "#000000",
-        "background_color": "#000000"
-      }
-      '''
-  ==
+      ==
+    --
+  --
 ::
 --
-
