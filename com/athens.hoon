@@ -91,8 +91,23 @@
           ;  {(cite:title src)}
         == 
         ;+  ?.  =(our.hull src)  
-              ;/  ""
-            admin-menu
+            user-menu
+          admin-menu
+      ==
+    ==
+  ++  user-menu
+    ;div
+      =class  "grid grid-cols-[auto_1fr] divide-y ".
+              "divide-[#A3A3A3]"
+      =style  "max-height: 400px; overflow-y: auto;"
+      =client-display  "show-settings true"
+      ;div.px-4.py-2: Urbit ID
+      ;div.px-4.py-2
+        ; {(cite:title src)}
+      ==
+      ;a.px-4.py-2.cursor-pointer.col-span-2.flex.justify-center
+        =href  "/~/logout?redirect=/mast/athens"
+        ; Sign out
       ==
     ==
   ++  admin-menu
@@ -101,15 +116,17 @@
               "divide-[#A3A3A3]"
       =style  "max-height: 400px; overflow-y: auto;"
       =client-display  "show-settings true"
-      ;div.px-4.py-2: Urbit ID
-        ;div.px-4.py-2
-          ; {(cite:title src)}
-        ==
-        ;div.px-4.py-2
-          ; Public Access
-        ==
-        ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
-          ;div.relative.inline-block
+      ;div.px-4.py-2
+        ; Urbit ID
+      ==
+      ;div.px-4.py-2
+        ; {(cite:title src)}
+      ==
+      ;div.px-4.py-2
+        ; Public Access
+      ==
+      ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
+        ;div.relative.inline-block
           ;+
           ?:  public.access
             ;input.sr-only.peer
@@ -176,36 +193,41 @@
     ==
   ++  list-posts
     ;div
-      =class  "posts md:gap-[16px] gap-[32px]"
+      =class  "posts md:gap-[16px] gap-[16px]"
       ;*  %+  turn  get-post-paths
           |=  p=path
           %^  make:mast  mast/%athens-post  ~
               :~  [%post (weld /athens/posts p)]
                   [%hidden /athens/hidden/[(scot %p src)]/[(rear p)]]
               ==
-      ;+  ?:  is-comet
-            ;div.post-form.login-block: Login to post
-          ;form(event "/submit/post")
-            =class  "post-form form-border fixed bottom-4 inset-x-4 z-50 ".
-                    "rounded-md shadow md:w-full md:static ".
-                    "md:inset-auto md:rounded-none md:shadow-none md:p-0 ".
-                    "overflow-hidden box-border ".
-                    "flex items-stretch [&.is-focused]:!border-white" 
-            =key  "athens-post-form"
-            ;athens-textarea-litdev.grow
-              =name  "post-input"
-              ;
+      ;div
+        =class  "md:grid md:grid-rows-[min-content] md:gap-x-4 ".
+                "md:grid-cols-3 md:items-start md:w-full ".
+                "md:grid-cols-[14ch_auto_120px]"
+        ;+  ?:  is-comet
+              ;div.post-form.login-block: Login to post
+            ;form(event "/submit/post")
+              =class  "col-span-2 md:col-2 post-form form-border ".
+                      "fixed bottom-4 inset-x-4 z-50 rounded-md ".
+                      "shadow md:w-full md:static md:inset-auto ".
+                      "md:rounded-none md:shadow-none md:p-0 ".
+                      "overflow-hidden box-border flex ".
+                      "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white" 
+              =key  "athens-post-form"
+              ;athens-textarea-litdev.grow
+                =name  "post-input"
+                ;
+              ==
+              ;button
+              =class  "mt-auto p-2 text-[14px]"
+                ; →
+              ==
             ==
-            ;button
-            =class  "mt-auto p-2 text-[14px]"
-              ; →
-            ==
-          ==
+      ==
     ==
   ++  unauthenticated-page
     ;form
-      =class  "h-full w-full ".
-              "flex flex-column ".
+      =class  "h-full w-full flex flex-column ".
               "items-center justify-center "
       =method  "post"
       =action  "/~/login"
