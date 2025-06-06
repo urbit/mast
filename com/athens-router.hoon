@@ -1,5 +1,6 @@
 /-  mast
 /*  athens-textarea-litdev  %js  /fil/athens-textarea-litdev/js
+/*  athens-preview  %js  /fil/athens-preview/js
 /*  footnote-parser  %js  /fil/footnote-parser/js
 ^-  mist:mast
 =<
@@ -32,10 +33,13 @@
       ;meta(charset "UTF-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
       ;link(rel "manifest", href "/athens/manifest");
+      ;link(rel "preconnect", href "https://rsms.me/");
+      ;link(rel "stylesheet", href "https://rsms.me/inter/inter.css");
       ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
       ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
       ;script(type "module"): {(trip footnote-parser)}
       ;script(type "module"): {(trip athens-textarea-litdev)} 
+      ;script(type "module"): {(trip athens-preview)} 
       ;script(src "https://unpkg.com/lucide@latest");
       ;script:  lucide.createIcons();
       ;style(type "text/tailwindcss")
@@ -97,11 +101,10 @@
   .athens {
     height: 100%;
     width: 100%;
-    /* background: #0f0f0f; */
     overflow-y: scroll;
   }
   .posts {
-    padding: 150px 16px 400px 16px;
+    padding: 110px 16px 110px 16px;
     margin: auto;
     width: 100%;
     max-width: 1000px;
@@ -144,7 +147,16 @@
     flex-direction: column;
     gap: 16px;
   }
+  .border-left,
+  .form-post-wrapper{
+    font-weight: 500;
+    font-size: 14px;
+  }
   .border-left{
+    font-family: 'Fragment Mono', monospace;
+    leading-trim: Cap height;
+    line-height: 140%;
+    letter-spacing: 0%;
     left: calc(var(--depth, 0px));
   }
   .replies {
@@ -176,7 +188,6 @@
     line-height: normal;
   }
   .post-form {
-    margin-top: 0.45em;
     line-height: normal;
   }
   .post-form.login-block {
@@ -222,27 +233,27 @@
   athens-textarea-litdev .markdown-preview {
     font-size: 14px;
   }
-  athens-textarea-litdev .clamp-one-line {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+  athens-textarea-litdev .clamp-one-line,
+  athens-textarea-litdev .clamp-one-line * {
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal;
   }
   athens-textarea-litdev textarea{
     background: #0f0f0f;
     border-radius: 10px;
   }
-  athens-textarea-litdev .clamp-one-line h1,
-  athens-textarea-litdev .clamp-one-line h2,
-  athens-textarea-litdev .clamp-one-line h3,
-  athens-textarea-litdev .clamp-one-line h4,
-  athens-textarea-litdev .clamp-one-line h5,
-  athens-textarea-litdev .clamp-one-line h6 {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.5;
+  athens-textarea-litdev .clamp-one-line * {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: #737373 !important;
+  }
+  athens-textarea-litdev .clamp-one-line p {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    overflow: hidden;
   }
   athens-textarea-litdev .clamp-one-line table {
     font-size: 14px;
@@ -344,7 +355,10 @@
       margin-left: 0 !important;
     }
     .border-left{
-    left: calc(14ch + 16px + var(--depth, 0px));
+      left: calc(15ch + 16px + var(--depth, 0px));
+    }
+    .spacing-left{
+      left: calc(15ch + 32px);
     }
   }
   '''

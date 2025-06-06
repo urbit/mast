@@ -61,7 +61,7 @@
       ;div
         =class  "fixed top-0 left-0 w-full h-[18vh] ".
                 "bg-gradient-to-b from-black/100 to-transparent ".
-                "z-50 pointer-events-none md:hidden"
+                "z-50 pointer-events-none"
         ;
       ==
       ;div
@@ -73,7 +73,7 @@
       ;div
         =class  "gradient fixed bottom-0 left-0 w-full h-[18vh] ".
                 "bg-gradient-to-t from-black/100 to-transparent z-50 ".
-                "pointer-events-none md:hidden"
+                "pointer-events-none"
         ;
       ==
       ;+  list-posts
@@ -193,36 +193,38 @@
     ==
   ++  list-posts
     ;div
-      =class  "posts md:gap-[16px] gap-[16px]"
+      =class  "posts md:gap-[16px] gap-[16px] relative"
       ;*  %+  turn  get-post-paths
           |=  p=path
           %^  make:mast  mast/%athens-post  ~
               :~  [%post (weld /athens/posts p)]
                   [%hidden /athens/hidden/[(scot %p src)]/[(rear p)]]
               ==
-      ;div
-        =class  "md:grid md:grid-rows-[min-content] md:gap-x-4 ".
-                "md:grid-cols-3 md:items-start md:w-full ".
-                "md:grid-cols-[14ch_auto_120px]"
-        ;+  ?:  is-comet
-              ;div.post-form.login-block: Login to post
-            ;form(event "/submit/post")
-              =class  "col-span-2 md:col-2 post-form form-border ".
-                      "fixed bottom-4 inset-x-4 z-50 rounded-md ".
-                      "shadow md:w-full md:static md:inset-auto ".
-                      "md:rounded-none md:shadow-none md:p-0 ".
-                      "overflow-hidden box-border flex ".
-                      "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white" 
-              =key  "athens-post-form"
-              ;athens-textarea-litdev.grow
-                =name  "post-input"
-                ;
-              ==
-              ;button
-              =class  "mt-auto p-2 text-[14px]"
-                ; →
-              ==
-            ==
+      ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full") 
+        ;div(class "mx-auto max-w-[1000px]")
+          ;div
+            =class  "md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
+                    "md:items-start md:grid-cols-[14ch_auto_120px] mx-4 ".
+                    "z-50 md:gap-x-4 form-post-wrapper "
+            ;+  ?:  is-comet
+                  ;div.post-form.login-block: Login to post
+                ;form(event "/submit/post")
+                  =class  "post-form form-border rounded-md shadow-md ".
+                          "overflow-hidden box-border flex ".
+                          "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
+                          "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white" 
+                  =key  "athens-post-form"
+                  ;athens-textarea-litdev.grow
+                    =name  "post-input"
+                    ;
+                  ==
+                  ;button
+                  =class  "mt-auto p-2 text-[14px]"
+                    ; →
+                  ==
+                ==
+          ==
+        ==
       ==
     ==
   ++  unauthenticated-page
