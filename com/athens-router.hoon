@@ -1,5 +1,6 @@
 /-  mast
 /*  athens-textarea-litdev  %js  /fil/athens-textarea-litdev/js
+/*  athens-preview  %js  /fil/athens-preview/js
 /*  footnote-parser  %js  /fil/footnote-parser/js
 ^-  mist:mast
 =<
@@ -38,6 +39,7 @@
       ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
       ;script(type "module"): {(trip footnote-parser)}
       ;script(type "module"): {(trip athens-textarea-litdev)} 
+      ;script(type "module"): {(trip athens-preview)} 
       ;script(src "https://unpkg.com/lucide@latest");
       ;script:  lucide.createIcons();
       ;style(type "text/tailwindcss")
@@ -352,10 +354,10 @@
     .author {
       margin-left: 0 !important;
     }
-    .border-left {
+    .border-left{
       left: calc(15ch + 16px + var(--depth, 0px));
     }
-    .spacing-left {
+    .spacing-left{
       left: calc(15ch + 32px);
     }
   }

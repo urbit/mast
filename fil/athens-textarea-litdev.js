@@ -10,7 +10,6 @@ class AthensTextareaLitdev extends LitElement {
   static properties = {
     value: { type: String, reflect: true },
     activeTab: { type: String },
-    previewOnly: { type: Boolean, attribute: 'preview-only' },
     textareaClass: { type: String }
   }
 
@@ -18,7 +17,6 @@ class AthensTextareaLitdev extends LitElement {
     super()
     this.internals = this.attachInternals()
     this.value = ''
-    this.previewOnly = false
   }
 
   createRenderRoot() {
@@ -26,26 +24,18 @@ class AthensTextareaLitdev extends LitElement {
   }
 
   render() {
-    const isPreview = this.previewOnly || this.activeTab === 'preview'
-    const clamp = this.classList.contains('hide') ? 'clamp-one-line' : ''
-
     return html`
       <div class="athens-editor flex items-start">
-        ${isPreview
-          ? html`<div
-              class="markdown-preview ${clamp} prose prose-p:mb-0 prose-p:mt-0 inline-block translate-y-[-4px] align-top min-h-[16px]"
-              id="preview"
-            ></div>`
-          : html`<textarea
-              name=${this.textareaClass}
-              class="${this
-                .textareaClass} flex items-center min-h-[16px] h-[0px] w-full focus:text-white focus:outline-none leading-[16px] text-[16px] md:text-[14px] p-2 border-0 box-border shadow-none"
-              rows="1"
-              placeholder="Write something..."
-              .value=${this.value}
-              @input=${this._onInput}
-              @keydown=${this._onKeydown}
-            ></textarea>`}
+        <textarea
+          name=${this.textareaClass}
+          class="${this
+            .textareaClass} flex items-center min-h-[16px] h-[0px] w-full focus:text-white focus:outline-none leading-[16px] text-[16px] md:text-[14px] p-2 border-0 box-border shadow-none"
+          rows="1"
+          placeholder="Write something..."
+          .value=${this.value}
+          @input=${this._onInput}
+          @keydown=${this._onKeydown}
+        ></textarea>
       </div>
     `
   }
@@ -63,7 +53,6 @@ class AthensTextareaLitdev extends LitElement {
       if (textarea) {
         this._resize(textarea)
       }
-      this._updatePreview()
     }
   }
 
@@ -97,67 +86,40 @@ class AthensTextareaLitdev extends LitElement {
   }
 
   _resize(textarea) {
-    if (!textarea || textarea.offsetParent === null) return // don't resize if hidden
+    if (!textarea) return
 
-    textarea.style.height = '0px'
-
-    requestAnimationFrame(() => {
-      textarea.style.height = 'auto'
-      textarea.style.height = textarea.scrollHeight + 'px'
-    })
-  }
-
-  _updatePreview() {
-    const preview = this.querySelector('#preview')
-    if (!preview || !window.marked) return
-
-    const renderer = new window.marked.Renderer()
-
-    renderer.image = () => ''
-
-    renderer.html = (html) => {
-      if (/<audio[\s\S]*?>[\s\S]*?<\/audio>/gi.test(html)) {
-        return ''
+    // Function to attempt resize until the textarea is ready
+    const tryResize = () => {
+      if (textarea.offsetParent === null || textarea.scrollHeight === 0) {
+        requestAnimationFrame(tryResize)
+        return
       }
-      return html
-    }
 
-    window.marked.setOptions({
-      breaks: true,
-      renderer
-    })
-
-    const trimValue = this.value.trimEnd()
-    preview.innerHTML = window.marked.parse(trimValue)
-
-    // Remove empty trailing paragraph if it exists
-    const last = preview.lastElementChild
-    if (last?.tagName === 'P' && !last.textContent.trim()) {
-      last.remove()
-    }
-
-    if (this.classList.contains('hide')) {
-      preview.style.height = '18px'
-    } else {
-      preview.style.height = 'auto'
+      textarea.style.height = '0px'
       requestAnimationFrame(() => {
-        const initialHeight = preview.offsetHeight
-        preview.style.height = `${initialHeight - 4}px`
+        textarea.style.height = 'auto'
+        textarea.style.height = textarea.scrollHeight + 'px'
       })
     }
+
+    tryResize()
   }
 
   connectedCallback() {
     super.connectedCallback()
 
-    if (this.previewOnly) {
-      this.activeTab = 'preview'
-    }
+    // Watch for layout/visibility changes
+    this._resizeObserver = new ResizeObserver(() => {
+      const textarea = this.querySelector('textarea')
+      if (textarea) this._resize(textarea)
+    })
 
+    this._resizeObserver.observe(this)
+
+    // Also watch for class changes
     this._classObserver = new MutationObserver((mutations) => {
       for (const m of mutations) {
         if (m.attributeName === 'class') {
-          this._updatePreview()
           this.requestUpdate()
         }
       }
@@ -166,17 +128,15 @@ class AthensTextareaLitdev extends LitElement {
     this._classObserver.observe(this, { attributes: true })
 
     const form = this.closest('form')
-
-    this.addEventListener('focusin', () => {
-      form?.classList.add('is-focused')
-    })
-    this.addEventListener('focusout', () => {
+    this.addEventListener('focusin', () => form?.classList.add('is-focused'))
+    this.addEventListener('focusout', () =>
       form?.classList.remove('is-focused')
-    })
+    )
   }
 
   disconnectedCallback() {
     this._classObserver?.disconnect()
+    this._resizeObserver?.disconnect()
   }
 
   // Form callbacks
