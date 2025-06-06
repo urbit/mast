@@ -38,9 +38,8 @@ class AthensTextareaLitdev extends LitElement {
             ></div>`
           : html`<textarea
               name=${this.textareaClass}
-              style=${isPreview ? 'display: none;' : ''}
               class="${this
-                .textareaClass} flex items-center min-h-[16px] w-full focus:text-white focus:outline-none leading-[16px] text-[16px] md:text-[14px] p-2 border-0 box-border text-sm shadow-none"
+                .textareaClass} flex items-center min-h-[16px] h-[0px] w-full focus:text-white focus:outline-none leading-[16px] text-[16px] md:text-[14px] p-2 border-0 box-border shadow-none"
               rows="1"
               placeholder="Write something..."
               .value=${this.value}
@@ -100,6 +99,8 @@ class AthensTextareaLitdev extends LitElement {
   _resize(textarea) {
     if (!textarea || textarea.offsetParent === null) return // don't resize if hidden
 
+    textarea.style.height = '0px'
+
     requestAnimationFrame(() => {
       textarea.style.height = 'auto'
       textarea.style.height = textarea.scrollHeight + 'px'
@@ -110,7 +111,22 @@ class AthensTextareaLitdev extends LitElement {
     const preview = this.querySelector('#preview')
     if (!preview || !window.marked) return
 
-    window.marked.setOptions({ breaks: true })
+    const renderer = new window.marked.Renderer()
+
+    renderer.image = () => ''
+
+    renderer.html = (html) => {
+      if (/<audio[\s\S]*?>[\s\S]*?<\/audio>/gi.test(html)) {
+        return ''
+      }
+      return html
+    }
+
+    window.marked.setOptions({
+      breaks: true,
+      renderer
+    })
+
     const trimValue = this.value.trimEnd()
     preview.innerHTML = window.marked.parse(trimValue)
 
@@ -165,14 +181,21 @@ class AthensTextareaLitdev extends LitElement {
 
   // Form callbacks
   formAssociatedCallback() {}
+
   formDisabledCallback(disabled) {
     const textarea = this.querySelector('textarea')
     if (textarea) textarea.disabled = disabled
   }
+
   formResetCallback() {
     this.value = ''
     this.internals.setFormValue('')
+    const textarea = this.querySelector('textarea')
+    if (textarea) {
+      textarea.style.height = 'auto'
+    }
   }
+
   formStateRestoreCallback(state) {
     this.value = state
   }

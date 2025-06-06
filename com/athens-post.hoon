@@ -106,7 +106,7 @@
                     "form-border flex items-stretch justify-between gap-0 ".
                     "[&.is-focused]:!border-white [&.is-focused]:!text-white"
             ;athens-textarea-litdev(value (trip content.dat), class "grow {?:(hid "hide" "")}", name "edit-input");
-            ;button 
+            ;button
               =event  "/click/toggle-edit"
               =class  "mt-auto p-2 text-[14px]"
               ;span: →
@@ -127,7 +127,7 @@
               =class  "post-reply-form form-border flex ".
                       "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white"
               ;athens-textarea-litdev(class "grow", name "reply-input"); 
-              ;button
+              ;button 
                 =type  "submit"
                 =class  "mt-auto p-2 text-[14px]"
                 ;span: →

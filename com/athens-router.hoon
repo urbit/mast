@@ -139,9 +139,6 @@
   }
   .message.reply {
     padding-left: 8px;
-    :: border-left-width: 1px;
-    :: border-left-color: #575757;
-    :: border-left-style: solid;
   }
   .replies-container {
     display: flex;
@@ -234,7 +231,8 @@
   athens-textarea-litdev .markdown-preview {
     font-size: 14px;
   }
-  athens-textarea-litdev .clamp-one-line {
+  athens-textarea-litdev .clamp-one-line,
+  athens-textarea-litdev .clamp-one-line * {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -243,15 +241,11 @@
     background: #0f0f0f;
     border-radius: 10px;
   }
-  athens-textarea-litdev .clamp-one-line h1,
-  athens-textarea-litdev .clamp-one-line h2,
-  athens-textarea-litdev .clamp-one-line h3,
-  athens-textarea-litdev .clamp-one-line h4,
-  athens-textarea-litdev .clamp-one-line h5,
-  athens-textarea-litdev .clamp-one-line h6 {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.5;
+  athens-textarea-litdev .clamp-one-line * {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: #737373 !important;
   }
   athens-textarea-litdev .clamp-one-line p {
     white-space: nowrap;
