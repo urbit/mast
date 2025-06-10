@@ -56,7 +56,7 @@
             [[[%mast *@tas] *mart] *marl]        ::
         ==                                       ::
   ==                                             ::
-+$  hook  [=desk name=@tas]                      :: component file
++$  hook  [=desk name=@tas]                      :: component desk and file name
 +$  bind  [=knot hook]                           :: bind base path name to root component
 ::
   ::
@@ -66,30 +66,46 @@
   $%  [%mast p=mast]                             ::
       [%mist p=mist]                             ::
   ==                                             ::
-+$  dock  (map knot (pair hook deck))            :: base path to component state
-+$  deck  (map rope bitt)                        :: component state map
-+$  rope  (pair rode navy)                       :: component key
-+$  rode  @                                      ::
++$  dock  (map knot hook)                        :: base path to router bindings
+:: +$  dock  (map knot (pair hook deck))            :: base path to component state
+:: +$  deck  (map rope bitt)                        :: component state map
+:: +$  rope  (pair rode navy)                       :: component key
+:: +$  rode  @                                      ::
 +$  line                                         :: component essential state
   $:  com=hook                                   ::
       par=gust                                   ::
       res=tide                                   ::
   ==                                             ::
-+$  bitt                                         :: component state
-  $:  mod=mode                                   ::   mode
-      bom=boom                                   ::   boom
-      src=navy                                   ::   src, null unless auth
-      pas=(set rope)                             ::   all current parents
-      aft=manx                                   ::   most recent render
-      line                                       ::
-  ==                                             ::
-+$  tide  (map @tas path)                        :: resources for a component
-+$  pool  (map rode line)                        :: nested component element data
-+$  buoy  [?(%add %del) p=rope q=path]           :: subscription effect
-+$  wake                                         :: component creation effects
-  $:  bos=(set buoy)                             ::
-      dek=deck                                   ::
-  ==                                             ::
+:: +$  bitt                                         :: component state
+::   $:  mod=mode                                   ::   mode
+::       bom=boom                                   ::   boom
+::       src=navy                                   ::   src, null unless auth
+::       pas=(set rope)                             ::   all current parents
+::       aft=manx                                   ::   most recent render
+::       line                                       ::
+::   ==                                             ::
+:: +$  tide  (map @tas path)                        :: resources for a component
+:: +$  pool  (map rode line)                        :: nested component element data
+:: +$  buoy  [?(%add %del) p=rope q=path]           :: subscription effect
+:: +$  wake                                         :: component creation effects
+::   $:  bos=(set buoy)                             ::
+::       dek=deck                                   ::
+::   ==                                             ::
+::
+  ::
+::
++$  scud
+  $~  ~
+  %-  list
+  $@  ?(%skip)
+  $:  tag=@t
+      key=@t
+      hax=@t
+      kid=scud
+  ==
+::
+  ::
+::
 +$  diff                                         :: ++luff diff output
   %+  pair                                       ::
     $:  bos=(set buoy)                           ::
