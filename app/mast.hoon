@@ -437,32 +437,22 @@
   ::
   :: ++ui-moor
   :: slam the router gate, producing the full manx for that route
-  ++  ui-moor
-    |=  [src=navy kel=keel]
-    ^-  [manx _ui-core]
-    =/  doc
-      %.  kel
-      ^-  mist
-      =>  (~(got by lake) rut)
-      ?>  ?=(%mist -)  +
-    :: temporary: assert the structure of the document
-    :: produced from the router
-    ?.  ?&  ?=([* * ~] c.doc)
-            ?=(%html n.g.doc)
-            ?=(%head n.g.i.c.doc)
-            ?=(%body n.g.i.t.c.doc)
-            ?=([[[[%mast @] *] *] ~] c.i.t.c.doc)
-        ==
-      ~&  >>>  [%malformed-document-from-router rut]
-      !!
-    =/  [rod=rode lin=line]  (parse-component-element i.c.i.t.c.doc)
-    =/  [sal=manx wak=wake]  (build-component-branch src [`@uv`bas ~] rod lin)
-    :_  %_  ui-core
-          bos  (~(uni in bos) bos.wak)
-          dek  (~(uni by dek) dek.wak)
-        ==
-    =-  -(a.g `mart`[[%our +:(scow %p our.bowl)] [%src +:(scow %p src.bowl)] ~])
-    ^-  manx  doc(c.i.c [script-node c.i.c.doc], i.c.i.t.c sal)
+  :: ++  ui-moor
+  ::   |=  [src=navy kel=keel]
+  ::   ^-  [manx _ui-core]
+  ::   =/  doc
+  ::     %.  kel
+  ::     ^-  mist
+  ::     =>  (~(got by lake) rut)
+  ::     ?>  ?=(%mist -)  +
+  ::   =/  [rod=rode lin=line]  (parse-component-element com.doc)
+  ::   =/  [sal=manx wak=wake]  (build-component-branch src [`@uv`bas ~] rod lin)
+  ::   :_  %_  ui-core
+  ::         bos  (~(uni in bos) bos.wak)
+  ::         dek  (~(uni by dek) dek.wak)
+  ::       ==
+  ::   =-  -(a.g `mart`[[%our +:(scow %p our.bowl)] [%src +:(scow %p src.bowl)] ~])
+  ::   ^-  manx  doc(hed [script-node hed.doc], com sal)
   ::
   :: ++ui-sway
   :: handle an event from the client
@@ -482,67 +472,81 @@
       ==
     :-  com.u.duk
     %-  ~(spar com hul)  cro
+  :: ++  ui-sway
+  ::   |=  [rop=rope cro=crow]
+  ::   ^-  [hook blow]
+  ::   =/  duk  (~(get by dek) rop)
+  ::   ?~  duk  ~&(>>> %missing-component-on-event !!)
+  ::   =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
+  ::   =/  hul
+  ::     ^-  hull
+  ::     :*  our.bowl
+  ::         src.u.duk
+  ::         par.u.duk
+  ::         (hydrate-component bom.u.duk res.u.duk)
+  ::     ==
+  ::   :-  com.u.duk
+  ::   %-  ~(spar com hul)  cro
   ::
   :: ++ui-furl
   :: handle a resource update for a component
-  ++  ui-furl
-    |=  rop=rope
-    ^-  [[(list path) (list json)] _ui-core]
-    =/  duk  (~(get by dek) rop)
-    ?~  duk  ~&(>>> %missing-component-on-update !!)
-    =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
-    =/  [pol=pool sal=manx]
-      %+  process-sail  rop
-      %~  sail  com
-      :*  our.bowl
-          src.u.duk
-          now.bowl
-          par.u.duk
-          (hydrate-component bom.u.duk res.u.duk)
-      ==
-    =/  dif  (luff src.u.duk rop [aft.u.duk ~] [sal ~])
-    =^  boz=(set buoy)  dek  (handle-component-dels rop u.duk ~(tap in del.p.dif))
-    =:  bos  (~(uni by bos) (~(uni by boz) bos.p.dif))
-        dek  (~(uni by dek) add.p.dif)
-      ==
-    =.  dek  (~(put by dek) rop u.duk(aft sal))
-    =;  pax
-      :-  [pax q.dif]  ui-core
-    :: build fact paths
-    =;  cos
-      :: match root component paths with existing subscriptions in sup
-      ^-  (list path)
-      =<  q
-      %+  roll  ~(val by sup.bowl)
-      |=  [[who=ship paf=path] acc=[p=(set ship) q=(list path)]]
-      ::  the first segment is the client's patp; check only the component path
-      ?.  ?&  ?=(^ paf)
-              (~(has in cos) t.paf)
-              !(~(has in p.acc) who)
-          ==
-        acc
-      %_  acc
-        p  (~(put in p.acc) who)
-        q  [paf q.acc]
-      ==
-    :: get all paths for root components in which the update occurs
-    =|  acc=(set path)
-    |-  ^+  acc
-    =/  bit  (~(get by dek) rop)
-    ?~  bit  acc
-    =/  pas  ~(tap in pas.u.bit)
-    |-  ^+  acc
-    ?~  pas  acc
-    :: the base segment is in the parent set if it is a root
-    ?:  =(p.i.pas bas)
-      %=  $
-        pas  t.pas
-        acc  (~(put in acc) (make-component-path bas rop))
-      ==
-    %=  $
-      pas  t.pas
-      acc  ^$(rop i.pas)
-    ==
+  :: ++  ui-furl
+  ::   |=  rop=rope
+  ::   ^-  [[(list path) (list json)] _ui-core]
+  ::   =/  duk  (~(get by dek) rop)
+  ::   ?~  duk  ~&(>>> %missing-component-on-update !!)
+  ::   =/  com  ^-  mast  =>((~(got by lake) com.u.duk) ?>(?=(%mast -) +))
+  ::   =/  [pol=pool sal=manx]
+  ::     %+  process-sail  rop
+  ::     %~  sail  com
+  ::     :*  our.bowl
+  ::         src.u.duk
+  ::         par.u.duk
+  ::         (hydrate-component bom.u.duk res.u.duk)
+  ::     ==
+  ::   =/  dif  (luff src.u.duk rop [aft.u.duk ~] [sal ~])
+  ::   =^  boz=(set buoy)  dek  (handle-component-dels rop u.duk ~(tap in del.p.dif))
+  ::   =:  bos  (~(uni by bos) (~(uni by boz) bos.p.dif))
+  ::       dek  (~(uni by dek) add.p.dif)
+  ::     ==
+  ::   =.  dek  (~(put by dek) rop u.duk(aft sal))
+  ::   =;  pax
+  ::     :-  [pax q.dif]  ui-core
+  ::   :: build fact paths
+  ::   =;  cos
+  ::     :: match root component paths with existing subscriptions in sup
+  ::     ^-  (list path)
+  ::     =<  q
+  ::     %+  roll  ~(val by sup.bowl)
+  ::     |=  [[who=ship paf=path] acc=[p=(set ship) q=(list path)]]
+  ::     ::  the first segment is the client's patp; check only the component path
+  ::     ?.  ?&  ?=(^ paf)
+  ::             (~(has in cos) t.paf)
+  ::             !(~(has in p.acc) who)
+  ::         ==
+  ::       acc
+  ::     %_  acc
+  ::       p  (~(put in p.acc) who)
+  ::       q  [paf q.acc]
+  ::     ==
+  ::   :: get all paths for root components in which the update occurs
+  ::   =|  acc=(set path)
+  ::   |-  ^+  acc
+  ::   =/  bit  (~(get by dek) rop)
+  ::   ?~  bit  acc
+  ::   =/  pas  ~(tap in pas.u.bit)
+  ::   |-  ^+  acc
+  ::   ?~  pas  acc
+  ::   :: the base segment is in the parent set if it is a root
+  ::   ?:  =(p.i.pas bas)
+  ::     %=  $
+  ::       pas  t.pas
+  ::       acc  (~(put in acc) (make-component-path bas rop))
+  ::     ==
+  ::   %=  $
+  ::     pas  t.pas
+  ::     acc  ^$(rop i.pas)
+  ::   ==
   ::
   :: ++parse-component-element
   :: extract component data from a component element;
@@ -550,49 +554,49 @@
   :: the ++make arm in /sur/mast/hoon
   ++  parse-component-element
     |=  sal=manx
-    ^-  [rode line]
+    ^-  line
     ?>  ?=([%mast @] n.g.sal)
     =|  lin=line
-    =:  -.lin  `hook`=>(=>((stab +.n.g.sal) ?>(?=([@ @ ~] .) [- +<])) ?<(?=(~ .) .))
-        +.lin
-          %+  roll  a.g.sal
-          |=  [[n=mane v=tape] a=[par=gust res=tide]]
-          ?+  n  a
-            [%gust @]  a(par (~(put by par.a) +.n (crip v)))
-            [%gale @]  a(res (~(put by res.a) +.n (scan v stap)))
-          ==
-      ==
-    :-  (mug lin)  lin  :: TEST: (jam lin)  lin
+    %_  lin
+      -  `hook`=>(=>((stab +.n.g.sal) ?>(?=([@ @ ~] .) [- +<])) ?<(?=(~ .) .))
+      +
+        %+  roll  a.g.sal
+        |=  [[n=mane v=tape] a=[par=gust res=tide]]
+        ?+  n  a
+          [%gust @]  a(par (~(put by par.a) +.n (crip v)))
+          [%gale @]  a(res (~(put by res.a) +.n (scan v stap)))
+        ==
+    ==
   ::
   :: ++process-sail
   :: process a component's rendered sail,
   :: adds keys and gathers any component element data
   ++  process-sail
-    |=  [rop=rope sal=manx]
+    |=  [lin=line sal=manx]
     =/  n  0
-    :: set prev-key using the atom portion of the component key of this sail
-    =/  prev-key  p.rop
+    =/  com-key  (mug lin)
+    =/  prev-key  com-key
     =/  pos-key  *(list @)
-    :: add a mast attribute with this component's identifying path
     =.  a.g.sal
-      :_  a.g.sal
-      :-  %mast  (spud (make-component-path bas rop))
+      :*  [%mast ((v-co:co 1) (jam lin))]
+          a.g.sal
+      ==
     |-  ^-  [pool manx]
     :: temporary: if text node, add text node wrapper
     =?  sal  =(%$ n.g.sal)  ;t-  ;+  sal  ==
     :: handle component elements separately
     ?:  ?=([%mast @] n.g.sal)
-      =/  [key=rode lin=line]  (parse-component-element sal)
+      =/  lyn  (parse-component-element sal)
+      =/  key  (mug lyn)
       :-  [[key lin] ~ ~]
-      %_  sal
-        a.g  [[%key ((w-co:co 1) key)] a.g.sal]
+      :~  [n.g.sal [[%key ((v-co:co 1) key)] ~]]
       ==
     :: also handle client-state elements separately
     ?:  ?=([%client %state] n.g.sal)
       =/  key  `@uw`(mug a.g.sal)
       :-  ~
       %_  sal
-        a.g  [[%key ((w-co:co 1) key)] a.g.sal]
+        a.g  [[%key ((v-co:co 1) key)] a.g.sal]
       ==
     :: else, if not a component element,
     :: build the current element's key:
@@ -602,11 +606,12 @@
       |=  [[n=mane v=tape] a=tape]
       ?:  =(%key n)  v  a
     =/  this-key
-      ^-  rode
-      ?:  =(0 n)  p.rop
+      :: for the root element of this component, use this key:
+      ?:  =(0 n)  com-key
+      :: else this is the key:
       %-  mug  [prev-key pos-key found-key]
     =.  a.g.sal
-      :-  [%key ((w-co:co 1) this-key)]
+      :-  [%key ((v-co:co 1) this-key)]
       ?~  found-key  a.g.sal
       %+  skip  a.g.sal
       |=  [n=mane v=tape]  =(%key n)
@@ -657,121 +662,120 @@
   :: ++build-component-branch
   :: build out a full branch starting from some component,
   :: rendering any new component that does not yet exist in the deck
-  ++  build-component-branch
-    |=  [src=navy pre=rope rod=rode lin=line]
-    ^-  [manx wake]
-    =/  com  ^-  mast  =>((~(got by lake) com.lin) ?>(?=(%mast -) +))
-    =/  who  ^-  navy  ?:(?=(%auth mode.com) src ~)
-    =/  [new=? bit=bitt]
-      =/  but  (~(get by dek) [rod who])
-      ?^  but  [| u.but]
-      =/  [pol=pool sal=manx]
-        %+  process-sail  [rod who]
-        %~  sail  com
-        :*  our.bowl
-            who
-            now.bowl
-            par.lin
-            (hydrate-component boom.com res.lin)
-        ==
-      :-  &
-      ^-  bitt
-      :*  mode.com
-          boom.com
-          who
-          [pre ~ ~]
-          sal
-          lin
-      ==
-    =/  mal  `marl`[aft.bit ~]
-    =-  ?>  ?=(^ p)
-        :-  i.p
-        ?.  new  q
-        :-  (~(gas in bos.q) (make-component-buoys %add [rod who] boom.com res.lin))
-            (~(put by dek.q) [rod who] bit)
-    |-  ^-  (pair marl wake)
-    %^  spin  mal  *wake
-    |=  [m=manx a=wake]
-    =^  b=wake  m
-      ?.  ?=([%mast @] n.g.m)
-        =+  ^$(mal c.m)
-        :-  q
-            m(c p)
-      =/  [r=rode l=line]  (parse-component-element m)
-      =<  [q p]
-      ^-  (pair manx wake)
-      %=  ^^$
-        pre  [rod who]
-        rod  r
-        lin  l
-      ==
-    :-  m
-    :-  (~(uni in bos.a) bos.b)
-        (~(uni by dek.a) dek.b)
+  :: ++  build-component-branch
+  ::   |=  [src=navy pre=rope rod=rode lin=line]
+  ::   ^-  [manx wake]
+  ::   =/  com  ^-  mast  =>((~(got by lake) com.lin) ?>(?=(%mast -) +))
+  ::   =/  who  ^-  navy  ?:(?=(%auth mode.com) src ~)
+  ::   =/  [new=? bit=bitt]
+  ::     =/  but  (~(get by dek) [rod who])
+  ::     ?^  but  [| u.but]
+  ::     =/  [pol=pool sal=manx]
+  ::       %+  process-sail  [rod who]
+  ::       %~  sail  com
+  ::       :*  our.bowl
+  ::           who
+  ::           par.lin
+  ::           (hydrate-component boom.com res.lin)
+  ::       ==
+  ::     :-  &
+  ::     ^-  bitt
+  ::     :*  mode.com
+  ::         boom.com
+  ::         who
+  ::         [pre ~ ~]
+  ::         sal
+  ::         lin
+  ::     ==
+  ::   =/  mal  `marl`[aft.bit ~]
+  ::   =-  ?>  ?=(^ p)
+  ::       :-  i.p
+  ::       ?.  new  q
+  ::       :-  (~(gas in bos.q) (make-component-buoys %add [rod who] boom.com res.lin))
+  ::           (~(put by dek.q) [rod who] bit)
+  ::   |-  ^-  (pair marl wake)
+  ::   %^  spin  mal  *wake
+  ::   |=  [m=manx a=wake]
+  ::   =^  b=wake  m
+  ::     ?.  ?=([%mast @] n.g.m)
+  ::       =+  ^$(mal c.m)
+  ::       :-  q
+  ::           m(c p)
+  ::     =/  [r=rode l=line]  (parse-component-element m)
+  ::     =<  [q p]
+  ::     ^-  (pair manx wake)
+  ::     %=  ^^$
+  ::       pre  [rod who]
+  ::       rod  r
+  ::       lin  l
+  ::     ==
+  ::   :-  m
+  ::   :-  (~(uni in bos.a) bos.b)
+  ::       (~(uni by dek.a) dek.b)
   ::
-  ++  handle-component-dels
-    |=  [rop=rope bit=bitt del=(list (pair rode hook))]
-    =|  boz=(set buoy)
-    |-  ^-  [_boz deck]
-    ?~  del  [boz dek]
-    =/  cod  ^-  mast  =>((~(got by lake) q.i.del) ?>(?=(%mast -) +))
-    ?:  &(!?=(%auth mod.bit) ?=(%auth mode.cod))
-      :: if the parent is not auth and the child is,
-      :: go through all of dek and do the delete process for any with equal rode
-      =^  boa=(set buoy)  dek
-        %-  ~(rep by dek)
-        |=  [[k=rope v=bitt] a=(pair (set buoy) deck)]
-        ?.  =(p.k p.i.del)  a(q (~(put by q.a) k v))
-        =.  pas.v  (~(del in pas.v) rop)
-        ?~  pas.v  a(p (~(gas in p.a) (make-component-buoys %del k bom.v res.v)))
-            a(q (~(put by q.a) k v))
-      %=  $
-        del  t.del
-        boz  (~(uni in boz) boa)
-      ==
-    :: else only delete one
-    =/  nop
-      ^-  rope
-      :: if the child component is the same mode as the parent,
-      :: get using the rode and the parent src,
-      :: else the parent is auth and the child in not auth,
-      :: so get from dek using the rode and null
-      ?:  =(mod.bit mode.cod)  [p.i.del src.bit]  [p.i.del ~]
-    =/  duk  (~(get by dek) nop)
-    ?~  duk  $(del t.del)
-    =.  pas.u.duk  (~(del in pas.u.duk) rop)
-    ?^  pas.u.duk
-      %=  $
-        del  t.del
-        dek  (~(put by dek) nop u.duk)
-      ==
-    %=  $
-      del  t.del
-      dek  (~(del by dek) nop)
-      boz  (~(gas in boz) (make-component-buoys %del nop bom.u.duk res.u.duk))
-    ==
+  :: ++  handle-component-dels
+  ::   |=  [rop=rope bit=bitt del=(list (pair rode hook))]
+  ::   =|  boz=(set buoy)
+  ::   |-  ^-  [_boz deck]
+  ::   ?~  del  [boz dek]
+  ::   =/  cod  ^-  mast  =>((~(got by lake) q.i.del) ?>(?=(%mast -) +))
+  ::   ?:  &(!?=(%auth mod.bit) ?=(%auth mode.cod))
+  ::     :: if the parent is not auth and the child is,
+  ::     :: go through all of dek and do the delete process for any with equal rode
+  ::     =^  boa=(set buoy)  dek
+  ::       %-  ~(rep by dek)
+  ::       |=  [[k=rope v=bitt] a=(pair (set buoy) deck)]
+  ::       ?.  =(p.k p.i.del)  a(q (~(put by q.a) k v))
+  ::       =.  pas.v  (~(del in pas.v) rop)
+  ::       ?~  pas.v  a(p (~(gas in p.a) (make-component-buoys %del k bom.v res.v)))
+  ::           a(q (~(put by q.a) k v))
+  ::     %=  $
+  ::       del  t.del
+  ::       boz  (~(uni in boz) boa)
+  ::     ==
+  ::   :: else only delete one
+  ::   =/  nop
+  ::     ^-  rope
+  ::     :: if the child component is the same mode as the parent,
+  ::     :: get using the rode and the parent src,
+  ::     :: else the parent is auth and the child in not auth,
+  ::     :: so get from dek using the rode and null
+  ::     ?:  =(mod.bit mode.cod)  [p.i.del src.bit]  [p.i.del ~]
+  ::   =/  duk  (~(get by dek) nop)
+  ::   ?~  duk  $(del t.del)
+  ::   =.  pas.u.duk  (~(del in pas.u.duk) rop)
+  ::   ?^  pas.u.duk
+  ::     %=  $
+  ::       del  t.del
+  ::       dek  (~(put by dek) nop u.duk)
+  ::     ==
+  ::   %=  $
+  ::     del  t.del
+  ::     dek  (~(del by dek) nop)
+  ::     boz  (~(gas in boz) (make-component-buoys %del nop bom.u.duk res.u.duk))
+  ::   ==
   ::
-  ++  handle-diff-branch-add
-    |=  [src=navy pre=rope sal=manx]
-    ^-  [wake manx]
-    =/  mal  `marl`[sal ~]
-    =-  ?>  ?=(^ p)  [q i.p]
-    |-  ^-  (pair marl wake)
-    %^  spin  mal  *wake
-    |=  [m=manx a=wake]
-    =^  b=wake  m
-      ?.  ?=([%mast @] n.g.m)
-        =+  ^$(mal c.m)
-        :-  q
-            m(c p)
-      =/  [r=rode l=line]  (parse-component-element m)
-      =<  [q p]
-      ^-  (pair manx wake)
-      %:  build-component-branch  src  pre  r  l
-      ==
-    :-  m
-    :-  (~(uni in bos.a) bos.b)
-        (~(uni by dek.a) dek.b)
+  :: ++  handle-diff-branch-add
+  ::   |=  [src=navy pre=rope sal=manx]
+  ::   ^-  [wake manx]
+  ::   =/  mal  `marl`[sal ~]
+  ::   =-  ?>  ?=(^ p)  [q i.p]
+  ::   |-  ^-  (pair marl wake)
+  ::   %^  spin  mal  *wake
+  ::   |=  [m=manx a=wake]
+  ::   =^  b=wake  m
+  ::     ?.  ?=([%mast @] n.g.m)
+  ::       =+  ^$(mal c.m)
+  ::       :-  q
+  ::           m(c p)
+  ::     =/  [r=rode l=line]  (parse-component-element m)
+  ::     =<  [q p]
+  ::     ^-  (pair manx wake)
+  ::     %:  build-component-branch  src  pre  r  l
+  ::     ==
+  ::   :-  m
+  ::   :-  (~(uni in bos.a) bos.b)
+  ::       (~(uni by dek.a) dek.b)
   ::
   :: ++luff
   :: diffs manx into a format that gets sent and applied to sync the client.
@@ -982,71 +986,71 @@
   :: ++jibe
   :: diff an attribute list.
   :: used in ++luff.
-  ++  jibe
-    |=  [nn=mane om=mart nm=mart]
-    =|  $=  acc
-        $:  [%a del=(list [%s @t])]
-            [%a new=(list [%a [%s @t] [%s @t] ~])]
-        ==
-    ?:  ?=([%mast @] nn)  acc
-    |-  ^+  acc
-    ?~  nm
-      ?~  om
-        acc
-      %_    acc
-          del
-        %+  turn  om
-        |=  [n=mane *]
-        [%s `@t`?>(?=(@ n) n)]
-      ==
-    =|  i=@ud
-    =/  com=mart  om
-    |-  ^+  acc
-    ?~  nm
-      !!
-    ?~  com
-      %=  ^$
-        nm  t.nm
-        new.acc
-          :_  new.acc
-          :-  %a
-          :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
-              [%s (crip v.i.nm)]
-          ==
-      ==
-    ?~  om
-      !!
-    ?:  =(n.i.com n.i.nm)
-      ?:  =(v.i.com v.i.nm)
-        %=  ^$
-          om  (oust [i 1] (mart om))
-          nm  t.nm
-        ==
-      %=  ^$
-        om   (oust [i 1] (mart om))
-        nm   t.nm
-        new.acc
-          :_  new.acc
-          :-  %a
-          :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
-              [%s (crip v.i.nm)]
-          ==
-      ==
-    %=  $
-      com  t.com
-      i    +(i)
-    ==
+  :: ++  jibe
+  ::   |=  [nn=mane om=mart nm=mart]
+  ::   =|  $=  acc
+  ::       $:  [%a del=(list [%s @t])]
+  ::           [%a new=(list [%a [%s @t] [%s @t] ~])]
+  ::       ==
+  ::   ?:  ?=([%mast @] nn)  acc
+  ::   |-  ^+  acc
+  ::   ?~  nm
+  ::     ?~  om
+  ::       acc
+  ::     %_    acc
+  ::         del
+  ::       %+  turn  om
+  ::       |=  [n=mane *]
+  ::       [%s `@t`?>(?=(@ n) n)]
+  ::     ==
+  ::   =|  i=@ud
+  ::   =/  com=mart  om
+  ::   |-  ^+  acc
+  ::   ?~  nm
+  ::     !!
+  ::   ?~  com
+  ::     %=  ^$
+  ::       nm  t.nm
+  ::       new.acc
+  ::         :_  new.acc
+  ::         :-  %a
+  ::         :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
+  ::             [%s (crip v.i.nm)]
+  ::         ==
+  ::     ==
+  ::   ?~  om
+  ::     !!
+  ::   ?:  =(n.i.com n.i.nm)
+  ::     ?:  =(v.i.com v.i.nm)
+  ::       %=  ^$
+  ::         om  (oust [i 1] (mart om))
+  ::         nm  t.nm
+  ::       ==
+  ::     %=  ^$
+  ::       om   (oust [i 1] (mart om))
+  ::       nm   t.nm
+  ::       new.acc
+  ::         :_  new.acc
+  ::         :-  %a
+  ::         :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
+  ::             [%s (crip v.i.nm)]
+  ::         ==
+  ::     ==
+  ::   %=  $
+  ::     com  t.com
+  ::     i    +(i)
+  ::   ==
   ::
-  ++  newm
-    |=  [ml=marl i=@ud mx=manx]
-    =|  j=@ud
-    |-  ^-  marl
-    ?~  ml
-      ~
-    :-  ?:  =(i j)
-          mx
-        i.ml
-    $(ml t.ml, j +(j))
+  :: ++  newm                       :: TODO: replace with snap
+  ::   |=  [ml=marl i=@ud mx=manx]
+  ::   =|  j=@ud
+  ::   |-  ^-  marl
+  ::   ?~  ml
+  ::     ~
+  ::   :-  ?:  =(i j)
+  ::         mx
+  ::       i.ml
+  ::   $(ml t.ml, j +(j))
   ::
   :: ++getv
   :: gets a value from mart by key.
