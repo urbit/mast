@@ -106,18 +106,13 @@
 ::
   ::
 ::
-+$  diff                                         :: ++luff diff output
-  %+  pair                                       ::
-    $:  bos=(set buoy)                           ::
-        del=(set (pair rode hook))               ::
-        add=deck                                 ::
-    ==                                           ::
-  %-  list  json                                 ::
++$  diff  (list json)                            :: ++luff diff output
 +$  jiff
   $%  [%new parent-key=_s+'' index=_n+'' data=_s+'']
       [%delete keys=[%a (list _s+'')]]
       [%move key=_s+'' index=_n+'']
-      [%change-attr key=_s+'' del=[%a (list k=_s+'')] new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
+      :: [%change-attr key=_s+'' del=[%a (list k=_s+'')] new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
+      [%attr key=_s+'' new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
       [%text container-key=_s+'' data=_s+'']
   ==
 ::
