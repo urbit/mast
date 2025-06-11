@@ -15,10 +15,7 @@
 ::
 ++  main-thread
   %-  document
-  %^  make:mast  mast/%athens  ~
-  :~  [%posts /athens/posts]
-      [%access /athens/access]
-  ==
+  %^  make:mast  mast/%athens-wrapper  ~  ~
 ::
 ++  not-found
   %-  document

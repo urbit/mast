@@ -4,5 +4,5 @@
     website+'https://github.com/urbit/mast'
     version+[0 0 1]
     license+'MIT'
-    site+/mast/athens/posts/athens
+    site+/mast/athens
 ==

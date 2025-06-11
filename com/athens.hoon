@@ -8,7 +8,7 @@
 =<
 |_  =hull:mast
 ::
-+*  get-post-paths  !<  (list path)  fil:(~(got by res.hull) %posts)
++*  get-post-paths  !<  posts-view:athens  fil:(~(got by res.hull) %posts)
     get-access      !<  access:athens  fil:(~(got by res.hull) %access)
 ::
 ++  spar
@@ -194,12 +194,45 @@
   ++  list-posts
     ;div
       =class  "posts md:gap-[16px] gap-[16px] relative"
-      ;*  %+  turn  get-post-paths
-          |=  p=path
-          %^  make:mast  mast/%athens-post  ~
-              :~  [%post (weld /athens/posts p)]
-                  [%hidden /athens/hidden/[(scot %p src)]/[(rear p)]]
+      ;*  
+        =/  data=[new=@ post-num=@ud]  [~ 0]
+        =/  post-paths  get-post-paths
+        =/  make-posts  *marl
+        |-  ^-  marl
+          ?~  post-paths  make-posts
+          =/  last=[path view:athens]  -.post-paths
+          =/  next-view
+            ?.  (gth (lent post-paths) 1)  [%old ~]
+            +:(snag 1 `posts-view:athens`post-paths)
+          ?:  =(%hidden -.+.last)
+            ~&  [%hidden -.next-view]
+            ?:  =(%hidden -.next-view)
+              ~&  >  %hidden-next-view-case
+              %=  $
+                data  [(add -.data +.+.last) +(+.data)]
+                post-paths  +.post-paths
               ==
+            ::  if posts been hidden but next post is not add new manx 
+            %=  $
+              make-posts  %+  snoc  make-posts
+                          %^  make:mast  mast/%athens-post
+                            :~  [%hidden `@t`(scot %ud (add -.data +.+.last))]
+                                [%posts `@t`(scot %ud +(+.data))]
+                            ==
+                          :~  [%post (weld /athens/posts/[(scot %p src)] -.last)]
+                          ==
+              data  [~ 0]
+              post-paths  +.post-paths
+            ==
+          %=  $
+            make-posts  %+  snoc  make-posts
+                  %^  make:mast  mast/%athens-post
+                  :~  [-.+.last `@t`(scot %ud +.+.last)]
+                  ==
+                  :~  [%post (weld /athens/posts/[(scot %p src)] -.last)]
+                  ==
+            post-paths  +.post-paths
+          ==
       ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full") 
         ;div(class "mx-auto max-w-[1000px]")
           ;div

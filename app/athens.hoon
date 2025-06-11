@@ -55,12 +55,14 @@
   =/  pole  ^-  (pole @ta)  t.pax
   ?+  pole  ~
     ::
-    [%posts ~]
+    [%posts-all who=@ta ~]
+      =/  usr  (~(get by user-sessions) (slav %p who.pole))
       :^  ~  ~  %$  !>
-      [%athens-post-list !>((get-post-key-paths posts))]
+      [%athens-post-list !>((get-post-key-paths posts usr))]
     ::
-    [%posts rest=^]
+    [%posts who=@ta rest=^]
       |-  ^-  (unit (unit cage))
+      =/  usr  (~(get by user-sessions) (slav %p who.pole))
       =/  =post-id:athens  (slav %da -.rest.pole)
       =/  =post-node:athens  (~(got by posts) post-id)
       ?^  +.rest.pole
@@ -69,16 +71,7 @@
           rest.pole  +.rest.pole
         ==
       :^  ~  ~  %$  !>
-      [%athens-post !>([post.post-node (get-post-key-paths replies.post-node)])]
-    ::
-    [%hidden who=@ta id=@ta ~]
-      =/  usr  (~(get by user-sessions) (slav %p who.pole))
-      =/  hid
-        ^-  ?
-        ?~  usr  |
-        %-  ~(has in hidden-posts.u.usr)  (slav %da id.pole)
-      :^  ~  ~  %$  !>
-      [%noun !>(hid)]
+      [%athens-post !>([post.post-node (get-post-key-paths replies.post-node usr)])]
     ::
     [%access ~]
       :^  ~  ~  %$  !>
@@ -130,10 +123,10 @@
       %-  del-post  at.act
       ::
         %hide-post
-      %-  hide-post  id.act
+      %-  hide-post  at.act
       ::
         %unhide-post
-      %-  unhide-post  id.act
+      %-  unhide-post  at.act
       ::
         %access-public
       %-  access-public  public.act
@@ -153,6 +146,9 @@
   ^+  cor
   =/  new-post=post:athens  [src.bowl dat]
   =/  new-id=post-id:athens  now.bowl
+  =.  user-sessions
+    ?~  post-at  user-sessions
+    `user-sessions:athens`(~(run by user-sessions) ~(to-new add-post [new-id post-at]))
   =.  posts
     |-  ^-  posts:athens
     ?~  post-at  (~(put by posts) new-id [new-post ~])
@@ -164,8 +160,14 @@
       post-at  t.post-at
       posts  rez
     ==
-  %-  emit
-  %-  make-fact-card  (weld /r/posts post-at)
+  %-  emil
+  ?~  post-at 
+      :~  %-  make-fact-card  /r/posts-all/[(scot %p src.bowl)]
+      ==
+  :~
+    ::%-  make-fact-card  /r/posts-all/[(scot %p src.bowl)]
+    %-  make-fact-card  (weld /r/posts/[(scot %p src.bowl)] post-at)
+  ==
 ::
 ++  patch-post
   |=  [patch-at=path dat=@t]
@@ -188,7 +190,7 @@
       posts  rez
     ==
   %-  emit
-  %-  make-fact-card  (weld /r/posts patch-at)
+  %-  make-fact-card  (weld /r/posts/[(scot %p src.bowl)] patch-at)
 ::
 ++  del-post
   |=  at=path
@@ -210,12 +212,13 @@
       posts  rez
     ==
   %-  emit
-  %-  make-fact-card  (weld /r/posts (snip at))
+  %-  make-fact-card  (weld /r/posts/[(scot %p src.bowl)] (snip at))
 ::
 ++  hide-post
-  |=  id=post-id:athens
+  |=  at=path
   ^+  cor
   =/  usr  (~(get by user-sessions) src.bowl)
+  =/  id  (slav %da (rear at))
   =.  user-sessions
     ?~  usr
       =|  new=user-session:athens
@@ -224,16 +227,48 @@
     =.  hidden-posts.u.usr  (~(put in hidden-posts.u.usr) id)
     %+  ~(put by user-sessions)  src.bowl  u.usr
   %-  emit
-  %-  make-fact-card  /r/hidden/[(scot %p src.bowl)]/[(scot %da id)]
+  ?:  =(1 (lent at))
+    %-  make-fact-card  /r/posts-all/[(scot %p src.bowl)]
+  %-  make-fact-card  (weld /r/posts/[(scot %p src.bowl)] (snip at))
 ::
 ++  unhide-post
-  |=  id=post-id:athens
+  |=  at=path
+  |^
   ^+  cor
   =/  usr  (~(got by user-sessions) src.bowl)
-  =.  hidden-posts.usr  (~(del in hidden-posts.usr) id)
+  =/  id  (slav %da (rear at))
+  =/  new-posts=(list path)
+    %-  homo
+    %+  skip  ~(tap in new-posts.usr)
+    |=  =path 
+    =(~ (find at path))
+  ?~  new-posts
+    ~&  >>>  'no new posts'
+    =.  hidden-posts.usr  (~(del in hidden-posts.usr) id)
+    =.  user-sessions  (~(put by user-sessions) src.bowl usr)
+    %-  emit
+    fact-card
+  =/  new-posts-id  
+    %-  silt
+    %+  turn  new-posts
+    |=  =path
+    ^-  @da
+    (slav %da (rear path))
+  =.  hidden-posts.usr
+    %-  %~  dif  in 
+        hidden-posts.usr
+      (~(put in new-posts-id) id)
+  =.  new-posts.usr
+    (~(dif in new-posts.usr) (silt new-posts)) 
   =.  user-sessions  (~(put by user-sessions) src.bowl usr)
   %-  emit
-  %-  make-fact-card  /r/hidden/[(scot %p src.bowl)]/[(scot %da id)]
+  fact-card
+  ::
+  ++  fact-card
+  ?:  =(1 (lent at))
+    %-  make-fact-card  /r/posts-all/[(scot %p src.bowl)]
+  %-  make-fact-card  (weld /r/posts/[(scot %p src.bowl)] (snip at))
+  --
 ::
 ++  access-public
   |=  public=?
@@ -274,17 +309,51 @@
   %-  make-fact-card  /r/access
 ::
 ++  get-post-key-paths
-  |=  poz=posts:athens
-  ^-  (list path)
+  |=  [poz=posts:athens usr=(unit user-session:athens)]
+  ^-  posts-view:athens
+  ?~  usr
+    %+  turn  (sort ~(tap in ~(key by poz)) lte)
+    |=  id=post-id:athens
+    [/[(scot %da id)] [%old ~]]
   %+  turn  (sort ~(tap in ~(key by poz)) lte)
-  |=  k=post-id:athens
-  /[(scot %da k)]
+  |=  id=post-id:athens
+  =/  =view:athens
+    ?.  (~(has in hidden-posts.u.usr) id)
+      ~&  >  [%is-new id (is-new id new-posts.u.usr)]
+      ?~  (is-new id new-posts.u.usr)  [%old ~]
+      [%new ~]
+    :-  %hidden
+      %-  lent  %-  homo
+      %+  skip  ~(tap in new-posts.u.usr)
+      |=  =path 
+      =(~ (find ~[(scot %da id)] path))
+  [/[(scot %da id)] view]
+::  
+++  is-new 
+  |=  [id=post-id:athens new=(set path)]
+  %+  skim  ~(tap in new)
+  |=  =path
+  =/  i  (find ~[(scot %da id)] path)
+  ?~  i  |
+  =(u.i (dec (lent path)))
 ::
 ++  make-fact-card
   |=  =path
   ^-  card
   :*  %give  %fact  ~[path]  %noun  !>(~)
   ==
+::
+++  add-post
+  |_  [=post-id:athens post-at=path]
+  ++  to-new
+  |=  session=user-session:athens
+  ^-  user-session:athens
+  ::  TODO:  ADD POST PRODUCTION
+  :: ?.  (~(has in hidden-posts.session) (slav %da t.post-at))
+  ::   session
+  :-  hidden-posts.session
+      (~(put in new-posts.session) (welp post-at /[(scot %da post-id)]))
+  --
 ::
 ++  handle-manifest
   |=  [rid=@ta req=inbound-request:eyre]

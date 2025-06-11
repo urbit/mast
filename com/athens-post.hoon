@@ -2,44 +2,44 @@
 ^-  mast:mast
 :-  :~  %auth
         post+%athens-post
-        hidden+%noun
     ==
 =<
 |_  =hull:mast
 ::
 +*  post  (~(got by res.hull) %post)
-    is-hidden  %-  ?  !<  *  fil:(~(got by res.hull) %hidden)
+    hid        !=(~ (~(get by par.hull) %hidden))
+    new        !=(~ (~(get by par.hull) %new))
+    collapsed  !=(~ (~(get by par.hull) %posts)) 
 ::
 ++  spar
   |=  =crow:mast
   ^-  blow:mast
-  =/  hid  is-hidden
   =/  paf  src:post
-  ?>  ?=([%athens %posts *] paf)
+  ?>  ?=([%athens %posts @ta *] paf)
   ?+  path.crow  ~
     ::
       [%click %toggle-hide ~]
     =/  id  (slav %da (rear src:post))
     ?:  hid
-      :~  [%athens %athens-action !>([%unhide-post id])]
+      :~  [%athens %athens-action !>([%unhide-post t.t.t.paf])]
       ==
-    :~  [%athens %athens-action !>([%hide-post id])]
+    :~  [%athens %athens-action !>([%hide-post t.t.t.paf])]
     ==
     ::
       [%submit %reply ~]
     =/  dat  (~(got by data.crow) 'reply-input')
     ?:  =('' dat)  ~
-    :~  [%athens %athens-action !>([%put-post t.t.paf dat])]
+    :~  [%athens %athens-action !>([%put-post t.t.t.paf dat])]
     ==
     ::
       [%submit %edit ~]
     =/  dat  (~(got by data.crow) 'edit-input')
     ?:  =('' dat)  ~
-    :~  [%athens %athens-action !>([%patch-post t.t.paf dat])]
+    :~  [%athens %athens-action !>([%patch-post t.t.t.paf dat])]
     ==
     ::
       [%click %delete ~]
-    :~  [%athens %athens-action !>([%del-post t.t.paf])]
+    :~  [%athens %athens-action !>([%del-post t.t.t.paf])]
     ==
     ::
   ==
@@ -47,15 +47,13 @@
 ++  sail
   ^-  manx
   =/  src  (need src.hull)
-  =/  hid  is-hidden
   =/  [paf=path dat=post-view:athens]  =+(post [src !<(post-view:athens fil)])
   =/  idt  (trip (rear paf))
-  ::=/  content-wall  (parse-content (trip content.dat))
   =/  num-lines  (lent (to-wain:format content.dat))
   =/  sticky  ?:((gth num-lines 8) "md:sticky" "")
   =/  is-comet=?  ?=(%pawn (clan:title src))
   =/  reply=?
-    ?>  ?=([%athens %posts *] paf) 
+    ?>  ?=([%athens %posts *] paf)
     (gth (lent t.t.paf) 1) 
   =/  depth=@
     =-  (mul (dec -) 8)
@@ -67,6 +65,30 @@
     =class  "post-node-container flex flex-col md:gap-[16px] gap-[16px]"
     :: ;+  ?.  reply  ;div;
       :: ;div(class "border-left absolute w-px bg-[#737373] z-0 top-0 bottom-[5px]", style "--depth: {((d-co:co 1) depth)}px;");
+    ;+  ?:  &(collapsed (gth (slav %ud (~(got by par.hull) %posts)) 1))
+      =/  posts-num  (slav %ud (~(got by par.hull) %posts))
+      ;div(event "/click/toggle-hide")
+        =class  "post-container relative grid grid-cols-2 ".
+                "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
+                "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
+                "md:items-start md:w-full md:grid-cols-[14ch_auto_120px] z-10 form-post-wrapper" 
+        ;div
+          =class  "message full reply col-span-2 md:col-start-2 md:col-span-1 row-start-2 md:row-start-1 flex gap-[8px] md:gap-[16px] flex-row justify-between md:flex-grow ml-[0px] border-l-0"
+            ;span: {<(slav %ud (~(got by par.hull) %posts))>} posts
+            ;+  ?:  hid
+              =/  new-num  (slav %ud (~(got by par.hull) %hidden))
+              ?:  (gth new-num 0)
+                ?:  (gth new-num 1)
+                    ;span: {<new-num>} new posts
+                  ;span: {<new-num>} new post
+              ;div.hidden;
+            ;div.hidden;
+            ;div
+              =class  "reply-date {?:(hid "hide" "full")} inline whitespace-nowrap w-auto text-[{txt-color}] inline-block leading-none align-top"
+              {(date-to-tape (slav %da (rear paf)) now.hull)}
+            ==
+        ==
+      ==
     ;div
       =class  "post-container relative grid grid-cols-2 ".
               "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
@@ -94,8 +116,6 @@
                   "md:col-span-1 row-start-2 md:row-start-1 flex flex-col ".
                   "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}px] ".
                   "border-l-0" 
-          :: ;+  ?:  hid
-          ::     ;div.hidden;
             ;form
               =name   "edit-form" 
               =event  "/submit/edit"
@@ -142,6 +162,15 @@
             =class  "reply-num {?:(hid "hide" "full")} pr-4 text-[{txt-color}]"
             ;p.inline.whitespace-nowrap.w-auto.inline-block.leading-none.align-top: {<(lent replies.dat)>} {?:(=(1 (lent replies.dat)) " reply" " replies")}
           ==
+        ;+  ?:  hid
+              =/  num  (slav %ud (~(got by par.hull) %hidden))
+              ?:  (gth num 0)
+                ;div
+                  =class  "!text-green-400"
+                  ;  {<num>} new
+                ==
+              ;div.hidden;
+            ;div.hidden;
         ;div
           =class  "reply-date {?:(hid "hide" "full")} inline whitespace-nowrap w-auto text-[{txt-color}] inline-block leading-none align-top"
           {(date-to-tape (slav %da (rear paf)) now.hull)}
@@ -176,11 +205,13 @@
             (lent t.t.paf)  
         ;div.replies-container.z-10.relative
           ;div(class "border-left absolute w-px bg-[#737373] z-0 top-0 bottom-[5px]", style "--depth: {((d-co:co 1) depth)}px;");
-          ;*  %+  turn  replies.dat
-              |=  p=path
-              %^  make:mast  mast/%athens-post  ~
-              :~  [%post (weld paf p)] 
-                  [%hidden /athens/hidden/[(scot %p src)]/[(rear p)]]
+          ;*  ?>  ?=([%athens %posts *] paf)
+              %+  turn  replies.dat
+              |=  [p=path =view:athens]
+              %^  make:mast  mast/%athens-post
+              :~  [-.view `@t`(scot %ud +.view)]
+              ==
+              :~  [%post (welp paf p)] 
               ==
         ==
   ==
