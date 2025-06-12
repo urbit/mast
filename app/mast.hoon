@@ -429,7 +429,8 @@
   ==
 ::
 :: ++parse-diff-scry-path
-:: parse a peek path into information used to render a component,
+:: parse a peek path into two parts:
+:: information used to render a component,
 :: and a representation of the state of that component on the client.
 :: the path has the following syntax:
 :: /jam-of-line/node-tag/node-key/node-hash/nested-node-tag...//nested-sibling...////~
@@ -442,18 +443,8 @@
   |-  ^-  scud
   ?~  poe  ~
   ?:  =([~.~ ~] poe)  ~
-  ?:  ?=([%$ nex=*] poe)
-    %=  $
-      poe  nex.poe
-    ==
+  ?:  ?=([%$ *] poe)  ~
   ?>  ?=([tag=@ta key=@ta hax=@ta nex=*] poe)
-  ?:  ?=([%$ %$ *] nex.poe)
-    :_  ~
-    :*  tag.poe
-        key.poe
-        hax.poe
-        ~
-    ==
   ?:  ?=([%$ nux=*] nex.poe)
     :_  $(poe nux.poe)
     :*  tag.poe
@@ -461,12 +452,29 @@
         hax.poe
         ~
     ==
+  =;  nux
+    :_  $(poe nux)
+    :*  tag.poe
+        key.poe
+        hax.poe
+        $(poe nex.poe)
+    ==
+  =|  dep=@
+  |-  ^+  poe
+  ?:  ?=([%$ nux=*] nex.poe)
+    ?:  =(0 dep)  nux.poe
+    %=  $
+      dep  (dec dep)
+      poe  nux.poe
+    ==
+  ?:  ?=([@ta @ta @ta %$ nux=*] nex.poe)
+    %=  $
+      poe  nux.poe
+    ==
   ?>  ?=([@ta @ta @ta nux=*] nex.poe)
-  :_  $(poe nux.poe)
-  :*  tag.poe
-      key.poe
-      hax.poe
-      $(poe nex.poe)
+  %=  $
+    dep  +(dep)
+    poe  nex.poe
   ==
 ::
 ++  ui
