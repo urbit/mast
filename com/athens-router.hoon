@@ -2,6 +2,7 @@
 /*  athens-textarea-litdev  %js  /fil/athens-textarea-litdev/js
 /*  athens-preview  %js  /fil/athens-preview/js
 /*  footnote-parser  %js  /fil/footnote-parser/js
+/*  scroll  %js  /fil/scroll/js
 ^-  mist:mast
 =<
 |=  =keel:mast
@@ -37,6 +38,7 @@
       ;script(type "module"): {(trip footnote-parser)}
       ;script(type "module"): {(trip athens-textarea-litdev)} 
       ;script(type "module"): {(trip athens-preview)} 
+      ;script(defer ""): {(trip scroll)}
       ;script(src "https://unpkg.com/lucide@latest");
       ;script:  lucide.createIcons();
       ;style(type "text/tailwindcss")
@@ -59,6 +61,9 @@
 ::
 ++  style
   '''
+  html {
+    scroll-behavior: smooth;
+  }
   body{
     overflow-x: hidden;
     font-family: Inter, sans-serif;
@@ -83,13 +88,17 @@
     color: #FAFAFA;
   }
   .user {
-    top: 15;
-    right: 30;
+    font-family: 'Fragment Mono', monospace;
+    font-weight: 500;
+    font-size: 14px;
+    leading-trim: Cap height;
+    line-height: 140%;
+    letter-spacing: 0%;
+    top: 24px;
+    right: 24px;
     padding-block: 0.2em;
     padding-inline: 0.3em;
     color: #A3A3A3;
-    font-weight: 500;
-    font-size: 14px;
   }
   .user.open{
     left: 15;
@@ -162,6 +171,7 @@
   .reply-num{
     color: #737373;
     font-size: 14px;
+    width: 7ch;
   }
   .reply-num.full{
     display: none;
@@ -206,10 +216,12 @@
     border-color: #2C2C2C;
     background-color: #2C2C2C;
   }
-  athens-textarea-litdev .tab-controls {
+  athens-textarea-litdev .tab-controls,
+  athens-preview .tab-controls {
     display: flex;
   }
-  athens-textarea-litdev .tab {
+  athens-textarea-litdev .tab,
+  athens-preview .tab {
     padding: 8px 16px;
     font-size: 14px;
     border: none;
@@ -217,7 +229,8 @@
     cursor: pointer;
     outline: none;
   }
-  athens-textarea-litdev .tab.active {
+  athens-textarea-litdev .tab.active,
+  athens-preview .tab.active {
     background: #262626;
   }
   athens-textarea-litdev textarea {
@@ -227,11 +240,11 @@
     box-sizing: border-box;
     font-family: inherit;
   }
-  athens-textarea-litdev .markdown-preview {
+  athens-preview .markdown-preview {
     font-size: 14px;
   }
-  athens-textarea-litdev .clamp-one-line,
-  athens-textarea-litdev .clamp-one-line * {
+  athens-preview .clamp-one-line,
+  athens-preview .clamp-one-line * {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -240,19 +253,19 @@
     background: #0f0f0f;
     border-radius: 10px;
   }
-  athens-textarea-litdev .clamp-one-line * {
+  athens-preview .clamp-one-line * {
     font-size: 14px !important;
     font-weight: 400 !important;
     line-height: 1.5 !important;
     color: #737373 !important;
   }
-  athens-textarea-litdev .clamp-one-line p {
+  athens-preview .clamp-one-line p {
     white-space: nowrap;
     text-overflow: ellipsis;
     display: block;
     overflow: hidden;
   }
-  athens-textarea-litdev .clamp-one-line table {
+  athens-preview .clamp-one-line table {
     font-size: 14px;
     font-weight: 400;
     line-height: 1.5;
@@ -267,11 +280,11 @@
     border: none;
     color: #737373;
   }
-  athens-textarea-litdev .clamp-one-line tbody {
+  athens-preview .clamp-one-line tbody {
     display: none;
   }
   .prose.clamp-one-line td, 
-  athens-textarea-litdev .prose.clamp-one-line th {
+  athens-preview .prose.clamp-one-line th {
     display: inline;
     padding: 0;
     background: none;
@@ -347,6 +360,17 @@
   .grid > div:nth-last-child(-n+3) {
     margin-bottom: 0; /* Remove bottom margin for last item */
   }
+  @keyframes textFade {
+      0%, 100% {
+        color: #ffffff;
+      }
+      100% {
+        color: #A3A3A3;
+      }
+    }
+    .text-fade {
+      animation: textFade 1s ease-in-out forwards;
+    }
   @media (min-width: 768px) {
     .author {
       margin-left: 0 !important;

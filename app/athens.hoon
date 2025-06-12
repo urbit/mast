@@ -73,6 +73,15 @@
       :^  ~  ~  %$  !>
       [%athens-post !>([post.post-node (get-post-key-paths replies.post-node usr)])]
     ::
+    [%new who=@ta rest=^]
+      =/  usr  (~(get by user-sessions) (slav %p who.pole))
+      ?~  usr  :^  ~  ~  %$  !>  [%noun !>(~)]
+      =/  new-posts=(list path)
+      %-  homo
+      %+  skip  ~(tap in new-posts.u.usr)
+      |=(=path =(~ (find rest.pole path)))
+      :^  ~  ~  %$  !>  [%noun !>(new-posts)]
+    ::
     [%access ~]
       :^  ~  ~  %$  !>
       [%athens-access !>(access)]
@@ -224,7 +233,14 @@
       =|  new=user-session:athens
       =.  hidden-posts.new  (~(put in hidden-posts.new) id)
       %+  ~(put by user-sessions)  src.bowl  new
+    =/  new-posts=(list path)
+      %-  homo
+      %+  skip  ~(tap in new-posts.u.usr)
+      |=(=path =(~ (find at path)))
+    ~&  [%hide-new new-posts]
     =.  hidden-posts.u.usr  (~(put in hidden-posts.u.usr) id)
+    :: =.  new-posts.u.usr
+    ::   (~(dif in new-posts.u.usr) (silt new-posts)) 
     %+  ~(put by user-sessions)  src.bowl  u.usr
   %-  emit
   ?:  =(1 (lent at))
@@ -240,8 +256,7 @@
   =/  new-posts=(list path)
     %-  homo
     %+  skip  ~(tap in new-posts.usr)
-    |=  =path 
-    =(~ (find at path))
+    |=(=path =(~ (find at path)))
   ?~  new-posts
     ~&  >>>  'no new posts'
     =.  hidden-posts.usr  (~(del in hidden-posts.usr) id)
@@ -250,16 +265,15 @@
     fact-card
   =/  new-posts-id  
     %-  silt
+    ;;  (list @da)
+    %-  zing
     %+  turn  new-posts
     |=  =path
-    ^-  @da
-    (slav %da (rear path))
+    %+  turn  path  |=(id=@ta (slav %da id))
   =.  hidden-posts.usr
     %-  %~  dif  in 
         hidden-posts.usr
       (~(put in new-posts-id) id)
-  =.  new-posts.usr
-    (~(dif in new-posts.usr) (silt new-posts)) 
   =.  user-sessions  (~(put by user-sessions) src.bowl usr)
   %-  emit
   fact-card
@@ -319,7 +333,6 @@
   |=  id=post-id:athens
   =/  =view:athens
     ?.  (~(has in hidden-posts.u.usr) id)
-      ~&  >  [%is-new id (is-new id new-posts.u.usr)]
       ?~  (is-new id new-posts.u.usr)  [%old ~]
       [%new ~]
     :-  %hidden
@@ -328,7 +341,31 @@
       |=  =path 
       =(~ (find ~[(scot %da id)] path))
   [/[(scot %da id)] view]
-::  
+::
+::  ++  collapsing 
+  :: |=  =posts-view:athens
+  :: =/  data=[posts=(list path) post-num=@ud]  [*(list path) 0]
+  :: =/  collapsed-posts  *posts-view:athens
+  :: |-  ^-  posts-view:athens  
+  :: ?~  posts-view  collapsed-posts
+  :: =/  last=[path view:athens]  -.posts-view
+  :: =/  next-view=view:athens
+  ::   ?.  (gth (lent post-paths) 1)  [%old ~]
+  ::   +:(snag 1 `posts-view:athens`post-paths)
+  :: ?:  =(%hidden -.+.last)
+  ::   ?:  =(%hidden -.next-view)
+  ::   %=  $
+  ::     data  [(add -.data +.+.last) (snoc posts.data -.last)]
+  ::     post-paths  +.post-paths
+  ::   ==
+  :: %=  $
+  ::   collapsed-posts
+  ::     %+  snoc  collapsed-posts  
+  ::     [%hidden  ]
+  ::   data  [*(list path) 0]
+  ::   post-paths  +.post-paths
+  :: ==
+::
 ++  is-new 
   |=  [id=post-id:athens new=(set path)]
   %+  skim  ~(tap in new)
