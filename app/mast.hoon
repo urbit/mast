@@ -8,7 +8,7 @@
 |%
 +$  state-0
   $:  =dock
-      =lake
+      =deck
   ==
 +$  state-n
   $%  [%state-0 state-0]
@@ -86,6 +86,14 @@
   ^-  card:agent:gall
   :*  %pass  /bind  %arvo  %e  %connect  [~ url]  app
   ==
+::
+++  parse-url
+  |=  cod=cord
+  ^-  [path quay]
+  :: TODO: better url parsing
+  =/  url  (stab cod)
+  =.  url  ?>  ?=([%mast *] url)  t.url  :: temporary: assumes /mast prefix
+  :-  url  ~
 ::
 ++  make-component-path
   |=  [bas=knot rop=rope]
@@ -202,7 +210,7 @@
 ++  make-com-subscription-card
   |=  [act=?(%add %del) des=desk]
   ^-  card
-  :*  %pass  /lake/[des]  %arvo  %c
+  :*  %pass  /deck/[des]  %arvo  %c
       %warp  our.bowl  des
       ?-  act
         %add  [~ %next %z da+now.bowl /com]
@@ -217,11 +225,11 @@
   |=  p=hook
   .=  desk.p  des
 ::
-++  put-lake
+++  put-deck
   |=  des=desk
   =/  fis  .^((list path) %ct (bam des /com))
-  |-  ^-  ^lake
-  ?~  fis  lake
+  |-  ^-  ^deck
+  ?~  fis  deck
   ~&  (bam des i.fis)
   =/  fil  .^(vase %ca (bam des i.fis))
   =/  huk  `hook`[des (rear (snip i.fis))]
@@ -229,23 +237,17 @@
   ?^  mat
     %=  $
       fis  t.fis
-      lake  (~(put by lake) huk [%mast u.mat])
-    ==
-  =/  mit  (mole |.(!<(mist fil)))
-  ?^  mit
-    %=  $
-      fis  t.fis
-      lake  (~(put by lake) huk [%mist u.mit])
+      deck  (~(put by deck) huk u.mat)
     ==
   %=  $
     fis  t.fis
   ==
 ::
-++  del-lake
+++  del-deck
   |=  des=desk
-  ^-  ^lake
+  ^-  ^deck
   %-  malt
-  %+  skip  ~(tap by lake)
+  %+  skip  ~(tap by deck)
   |=  [k=hook *]
   .=  des  desk.k
 ::
@@ -315,22 +317,14 @@
     ::
       %mast-bind
     =/  bid  !<  bind  vase
-    ?:  (~(has by dock) knot.bid)
-      ~&  >>>  "%mast-bind failed: /{(trip knot.bid)} already exists"
+    ?:  (~(has by dock) p.bid)
+      ~&  >>>  "%mast-bind failed: /{(trip p.bid)} already exists"
       !!
-    =?  cor  !(dock-has-desk desk.bid)
-      =.  dock  (~(put by dock) knot.bid [desk.bid name.bid])
-      =.  lake  (put-lake desk.bid)
-      %-  emit  (make-com-subscription-card %add desk.bid)
-    =.  dock  (~(put by dock) knot.bid [[desk.bid name.bid] ~])
-    =/  rut  (~(get by lake) [desk.bid name.bid])
-    ?~  rut
-      ~&  >>>  "%mast-bind failed: {<name.bid>} not found"
-      !!
-    ?.  ?=(%mist -.u.rut)
-      ~&  >>>  "%mast-bind failed: {<name.bid>} is not a router gate"
-      !!
-    ~&  >  "%mast-bind: /{(trip knot.bid)} --> {<desk.bid>} {(trip name.bid)}"
+    =?  cor  !(dock-has-desk desk.com.q.bid)
+      =.  dock  (~(put by dock) bid)
+      =.  deck  (put-deck desk.com.q.bid)
+      %-  emit  (make-com-subscription-card %add desk.com.q.bid)
+    ~&  >  "%mast-bind: /{(trip p.bid)} --> {<desk.com.q.bid>} {(trip name.com.q.bid)}"
     cor
     ::
       %mast-unbind
@@ -346,7 +340,7 @@
     ::   %-  ~(gas in a)  (make-component-buoys %del k bom.v res.v)
     =.  dock  (~(del by dock) not)
     =?  cor  !(dock-has-desk desk.p.u.duk)
-      =.  lake  (del-lake desk.p.u.duk)
+      =.  deck  (del-deck desk.p.u.duk)
       %-  emit  (make-com-subscription-card %del desk.p.u.duk)
     ~&  >  "%mast-unbind: /{(trip not)} unbound"
     :: %-  emil
@@ -358,27 +352,19 @@
     ?+  method.request.req  ~|(bad-method/method.request.req !!)
       ::
         %'GET'
-      =/  url  (stab url.request.req)                               :: TODO: better url parsing
-      =.  url  ?>  ?=([%mast *] url)  t.url  :: temporary: assumes /mast prefix
+      =/  [url=path que=quay]  (parse-url (slav %uv i.paf))
       ?~  url
         %-  emil
         %-  make-404-res  rid
-      =/  kel  `keel`[our.bowl i.url t.url ~]  :: TODO: query params instead of null
-      =/  doc  (~(get by dock) bas.kel)
-      ?~  doc
-        %-  emil
-        %-  make-404-res  rid
-      
-      :: =/  ui-core  (ui-abed:ui bas.kel u.doc)
-      :: =^  sal=manx  ui-core  (ui-moor:ui-core [~ src.bowl] kel)
-      :: =^  bos=(set buoy)  dock  ui-abet:ui-core
-      
+      =/  lun  (~(get by dock) i.url)
       %-  emil
-      %+  weld  (make-resource-subscription-cards bas.kel bos)
+      ?~  lun
+        %-  make-404-res  rid
       %^  make-direct-http-cards  rid  [200 ['Content-Type' 'text/html'] ~]
       :-  ~
       %-  as-octt:mimes:html
-      %-  en-xml:html  sal
+      %-  en-xml:html
+      %^  render-full  url  que  u.lun
       ::
     ==
     ::
@@ -430,13 +416,10 @@
   ?+  sign  cor
     ::
       [%clay %writ *]
-    ?.  ?=([%lake @ta ~] wire)  cor
-    :: on change to a desk's /com
-    :: delete all component state   TODO: only delete affected component state
-    =.  cor  del-all-component-state
-    :: and reload components
-    =.  lake  (del-lake i.t.wire)
-    =.  lake  (put-lake i.t.wire)
+    ?.  ?=([%deck @ta ~] wire)  cor
+    :: reload components on change to a desk's /com
+    =.  deck  (del-deck i.t.wire)
+    =.  deck  (put-deck i.t.wire)
     %-  emit  (make-com-subscription-card %add i.t.wire)
     ::
   ==
@@ -446,13 +429,16 @@
 :: information used to render a component,
 :: and a representation of the state of that component on the client.
 :: the path has the following syntax:
-:: /jam-of-line/node-tag/node-key/node-hash/nested-node-tag...//nested-sibling...////~
+:: /url/jam-of-line/node-tag/node-key/node-hash/nested-node-tag...//nested-sibling...////~
 ++  parse-diff-scry-path
   |=  paf=path
-  ^-  [line scud]
-  ?>  ?=(^ paf)
-  :-  (line (cue (slav %uv i.paf)))
-  =/  poe  `(pole @ta)`t.paf
+  ^-  [path quay line scud]
+  ?>  ?=([^ ^] paf)
+  =/  [url=path que=quay]  (parse-url (slav %uv i.paf))
+  :^  url
+      que
+      (line (cue (slav %uv i.t.paf)))
+  =/  poe  `(pole @ta)`t.t.paf
   |-  ^-  scud
   ?~  poe  ~
   ?:  =([~.~ ~] poe)  ~
@@ -503,7 +489,7 @@
     -  `hook`=>(=>((stab +.n.g.sal) ?>(?=([@ @ ~] .) [- +<])) ?<(?=(~ .) .))
     +
       %+  roll  a.g.sal
-      |=  [[n=mane v=tape] a=[par=gust res=tide]]
+      |=  [[n=mane v=tape] a=[par=gust res=rode]]
       ?+  n  a
         [%gust @]  a(par (~(put by par.a) +.n (crip v)))
         [%gale @]  a(res (~(put by res.a) +.n (scan v stap)))
@@ -523,20 +509,17 @@
     :*  [%mast (scot %uv (jam lin))]
         a.g.sal
     ==
-  |-  ^-  [pool manx]
+  |-  ^-  manx
   :: temporary: if text node, add text node wrapper
   =?  sal  =(%$ n.g.sal)  ;t-  ;+  sal  ==
   :: handle component elements separately
   ?:  ?=([%mast @] n.g.sal)
-    =/  lyn  (parse-component-element sal)
-    =/  key  (mug lyn)
-    :-  [[key lin] ~ ~]
+    =/  key  (mug (parse-component-element sal))
     :~  [n.g.sal [[%key ((v-co:co 1) key)] ~]]
     ==
   :: also handle client-state elements separately
   ?:  ?=([%client %state] n.g.sal)
     =/  key  `@uw`(mug a.g.sal)
-    :-  ~
     %_  sal
       a.g  [[%key ((v-co:co 1) key)] a.g.sal]
     ==
@@ -562,7 +545,8 @@
         [[%ma %st] ((v-co:co 1) attr-hash)]
     ?~  found-key  a.g.sal
     %+  skip  a.g.sal
-    |=  [n=mane v=tape]  =(%key n)
+    |=  [n=mane v=tape]
+    .=  %key  n
   :: don't recurse for these elements:
   ?:  ?|  =(%t- n.g.sal)
           =(%input n.g.sal)   =(%textarea n.g.sal)
@@ -570,29 +554,29 @@
           =(%link n.g.sal)    =(%hr n.g.sal)
           =(%meta n.g.sal)    =(%base n.g.sal)
       ==
-    :-  ~  sal
+    sal
   :: process child elements, giving them the next key state
-  =^  pol  c.sal
-    =:  prev-key  ?^  found-key  this-key  prev-key
-        pos-key  ?^  found-key  ~  pos-key
-      ==
-    =<  [+.q p]
-    %^  spin  c.sal  *[@ pool]
-    |=  [m=manx i=@ a=pool]
-    =^  b  m  ^$(n +(n), sal m, pos-key [i pos-key])
-    :-  m
-    :-  +(i)
-    %-  ~(uni by a)  b
-  :-  pol  sal
+  :-  g.sal
+  =:  prev-key  ?^  found-key  this-key  prev-key
+      pos-key  ?^  found-key  ~  pos-key
+    ==
+  %+  spun  c.sal
+  |=  [m=manx i=@]
+  :_  +(i)
+  %=  ^$
+    n  +(n)
+    sal  m
+    pos-key  [i pos-key]
+  ==
 ::
 ++  hydrate-component
-  |=  [bom=boom tid=tide]
+  |=  [bom=boom res=rode]
   ^-  gale
   %-  malt
   %+  murn  bom
   |=  [nam=@tas mak=@tas]
   ^-  (unit [term path vase])
-  =/  paf  (~(get by tid) nam)
+  =/  paf  (~(get by res) nam)
   ?~  paf  ~
   ?~  u.paf  ~&(>>> %null-path ~)
   ?:  =(%$ mak)
@@ -606,6 +590,62 @@
     :-  ~  [nam u.paf q.fil]
   =/  tub  .^(tube:clay %cc (bam des /[p.fil]/[mak]))
   :-  ~  [nam u.paf (tub q.fil)]
+::
+++  make-hull
+ |=  [url=path que=quay bom=boom lin=line]
+ ^-  hull
+ :*  our.bowl
+     src.bowl
+     now.bowl
+     eny.bowl
+     url
+     que
+     par.lin
+     (hydrate-component bom res.lin)
+ ==
+::
+++  render-full
+  |=  [url=path que=quay lin=line]
+  ^-  manx
+  =/  com  (~(got by deck) com.lin)
+  =/  doc  ~(sail +.com (make-hull url que bom.com lin))
+  :: assert that the product of the sail arm
+  :: is a complete document of the following structure:
+  ?.  ?&  ?=([* * ~] c.doc)
+          ?=(%html n.g.doc)
+          ?=(%head n.g.i.c.doc)
+          ?=(%body n.g.i.t.c.doc)
+      ==
+    ~&  >>>  [%malformed-root-component com.lin]
+    !!
+  %_  doc
+    a.g  [[%our +:(scow %p our.bowl)] [%src +:(scow %p src.bowl)] ~]
+    c.i.c  [script-node c.i.c.doc]
+    i.t.c
+      %-  handle-component-elements
+      %+  process-sail  lin  i.t.c.doc
+  ==
+::
+++  handle-component-elements
+  |=  sal=manx
+  ^-  manx
+  =<  ?>  ?=(^ .)
+      i
+  =/  mal  `marl`[sal ~]
+  |-  ^-  marl
+  %+  turn  mal
+  |=  i=manx
+  ?.  ?=([%mast @] n.g.i)
+    %_  i
+      c  ^$(mal c.i)
+    ==
+  =/  lin  (parse-component-element i)
+  =/  com  (~(got by deck) com.lin)
+  =/  sal  ~(sail +.com (make-hull url que bom.com lin))
+  =.  sal  (process-sail lin sal)
+  %_  sal
+    c  ^$(mal c.sal)
+  ==
 ::
 :: ++luff
 :: diffs manx into a format that gets sent and applied to the client.
@@ -655,13 +695,12 @@
       i    +(i)
       new  t.new
       acc
-        :: TODO: handle add case  =/  sal  (handle-diff-branch-add src rop i.new)
         %+  snoc  acc
         %-  swig
         :*  %new
             [%s pkey]
             [%n (scot %ud i)]
-            [%s (crip (en-xml:html i.new))]
+            [%s (crip (en-xml:html (handle-component-elements i.new)))]
         ==
     ==
   ?:  ?=(%skip i.jold)
