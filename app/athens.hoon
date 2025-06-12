@@ -239,8 +239,8 @@
       |=(=path =(~ (find at path)))
     ~&  [%hide-new new-posts]
     =.  hidden-posts.u.usr  (~(put in hidden-posts.u.usr) id)
-    :: =.  new-posts.u.usr
-    ::   (~(dif in new-posts.u.usr) (silt new-posts)) 
+    =.  new-posts.u.usr
+      (~(dif in new-posts.u.usr) (silt new-posts)) 
     %+  ~(put by user-sessions)  src.bowl  u.usr
   %-  emit
   ?:  =(1 (lent at))
@@ -342,30 +342,6 @@
       =(~ (find ~[(scot %da id)] path))
   [/[(scot %da id)] view]
 ::
-::  ++  collapsing 
-  :: |=  =posts-view:athens
-  :: =/  data=[posts=(list path) post-num=@ud]  [*(list path) 0]
-  :: =/  collapsed-posts  *posts-view:athens
-  :: |-  ^-  posts-view:athens  
-  :: ?~  posts-view  collapsed-posts
-  :: =/  last=[path view:athens]  -.posts-view
-  :: =/  next-view=view:athens
-  ::   ?.  (gth (lent post-paths) 1)  [%old ~]
-  ::   +:(snag 1 `posts-view:athens`post-paths)
-  :: ?:  =(%hidden -.+.last)
-  ::   ?:  =(%hidden -.next-view)
-  ::   %=  $
-  ::     data  [(add -.data +.+.last) (snoc posts.data -.last)]
-  ::     post-paths  +.post-paths
-  ::   ==
-  :: %=  $
-  ::   collapsed-posts
-  ::     %+  snoc  collapsed-posts  
-  ::     [%hidden  ]
-  ::   data  [*(list path) 0]
-  ::   post-paths  +.post-paths
-  :: ==
-::
 ++  is-new 
   |=  [id=post-id:athens new=(set path)]
   %+  skim  ~(tap in new)
@@ -386,8 +362,8 @@
   |=  session=user-session:athens
   ^-  user-session:athens
   ::  TODO:  ADD POST PRODUCTION
-  :: ?.  (~(has in hidden-posts.session) (slav %da t.post-at))
-  ::   session
+  ?.  (~(has in hidden-posts.session) (slav %da t.post-at))
+    session
   :-  hidden-posts.session
       (~(put in new-posts.session) (welp post-at /[(scot %da post-id)]))
   --
