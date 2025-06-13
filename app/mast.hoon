@@ -16,7 +16,7 @@
 +$  card  card:agent:gall
 --
 ::
-=|  state-n
+=|  $>  %state-0  state-n
 =*  state  -
 =<
 ^-  agent:gall
@@ -32,12 +32,13 @@
 ::
 ++  on-save
   ^-  vase
-  !>  ~
+  =<  save  cor
 ::
 ++  on-load
   |=  =vase
   ^-  (quip card _this)
-  :-  ~  this
+  =^  cards  state  abet:(load:cor vase)
+  :-  cards  this
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -47,7 +48,11 @@
 ::
 ++  on-watch  |=(path ^-((quip card _this) `this))
 ++  on-leave  |=(path ^-((quip card _this) !!))
-++  on-peek   |=(path ^-((unit (unit cage)) !!))
+::
+++  on-peek
+  |=  =path
+  ^-  (unit (unit cage))
+  %-  peek:cor  path
 ::
 ++  on-agent
   |=  [=wire =sign:agent:gall]
@@ -250,6 +255,74 @@
   |=  [k=hook *]
   .=  des  desk.k
 ::
+++  save
+  ^-  vase
+  !>  state(deck ~)
+::
+++  load
+  |=  =vase
+  ^+  cor
+  =/  lod  !<  state-n  vase
+  ?-  -.lod
+    ::
+      %state-0
+    =.  state  lod
+    :: get component cores
+    =/  des
+      ^-  (list desk)
+      %~  tap  in
+      ^-  (set desk)
+      %-  ~(rep by dock)
+      |=  [[k=knot v=(pair hook deck)] a=(set desk)]
+      %-  ~(put in a)  desk.p.v
+    |-  ^+  cor
+    ?~  des  cor
+    =.  deck  (put-deck i.des)
+    =.  cor  (emit (make-com-subscription-card %add i.des))
+    %=  $
+      des  t.des
+    ==
+    ::
+  ==
+::
+++  arvo
+  |=  [=wire sign=sign-arvo]
+  ^+  cor
+  ?+  sign  cor
+    ::
+      [%clay %writ *]
+    ?.  ?=([%deck @ta ~] wire)  cor
+    :: reload components on change to a desk's /com
+    =.  deck  (del-deck i.t.wire)
+    =.  deck  (put-deck i.t.wire)
+    %-  emit  (make-com-subscription-card %add i.t.wire)
+    ::
+  ==
+::
+++  agent
+  |=  [=wire =sign:agent:gall]
+  ^+  cor
+  cor
+  :: ?+  -.sign  cor
+  ::   ::
+  ::     %fact
+  ::   =/  [bas=knot rop=rope res=path]  (parse-component-wire wire)
+  ::   =/  doc  (~(get by dock) bas)
+  ::   ?~  doc  ~&(>>> %missing-binding-on-update !!)
+  ::   =/  ui-core  (ui-abed:ui bas u.doc)
+  ::   =^  [pax=(list path) jon=(list json)]  ui-core  (ui-furl:ui-core rop)
+  ::   =^  bos=(set buoy)  dock  ui-abet:ui-core
+  ::   %-  emil
+  ::   %+  weld  (make-diff-cards bas rop pax jon)
+  ::   %+  make-resource-subscription-cards  bas  bos
+  ::   ::
+  ::     %kick
+  ::   =/  [bas=knot rop=rope res=path]  (parse-component-wire wire)
+  ::   %-  emil
+  ::   %+  make-resource-subscription-cards  bas  [[%add rop res] ~ ~]
+  ::   ::
+  :: ==
+::
 ++  poke
   |=  [=mark =vase]
   ^+  cor
@@ -261,9 +334,9 @@
       ~&  >>>  "%mast-bind failed: /{(trip p.bid)} already exists"
       !!
     =?  cor  !(dock-has-desk desk.com.q.bid)
-      =.  dock  (~(put by dock) bid)
       =.  deck  (put-deck desk.com.q.bid)
       %-  emit  (make-com-subscription-card %add desk.com.q.bid)
+    =.  dock  (~(put by dock) bid)
     ~&  >  "%mast-bind: /{(trip p.bid)} --> {<desk.com.q.bid>} {(trip name.com.q.bid)}"
     cor
     ::
@@ -326,41 +399,18 @@
     ::
   ==
 ::
-++  agent
-  |=  [=wire =sign:agent:gall]
-  ^+  cor
-  cor
-  :: ?+  -.sign  cor
-  ::   ::
-  ::     %fact
-  ::   =/  [bas=knot rop=rope res=path]  (parse-component-wire wire)
-  ::   =/  doc  (~(get by dock) bas)
-  ::   ?~  doc  ~&(>>> %missing-binding-on-update !!)
-  ::   =/  ui-core  (ui-abed:ui bas u.doc)
-  ::   =^  [pax=(list path) jon=(list json)]  ui-core  (ui-furl:ui-core rop)
-  ::   =^  bos=(set buoy)  dock  ui-abet:ui-core
-  ::   %-  emil
-  ::   %+  weld  (make-diff-cards bas rop pax jon)
-  ::   %+  make-resource-subscription-cards  bas  bos
-  ::   ::
-  ::     %kick
-  ::   =/  [bas=knot rop=rope res=path]  (parse-component-wire wire)
-  ::   %-  emil
-  ::   %+  make-resource-subscription-cards  bas  [[%add rop res] ~ ~]
-  ::   ::
-  :: ==
-::
-++  arvo
-  |=  [=wire sign=sign-arvo]
-  ^+  cor
-  ?+  sign  cor
+++  peek
+  |=  poe=(pole @ta)
+  ^-  (unit (unit cage))
+  ?+  poe  ~
     ::
-      [%clay %writ *]
-    ?.  ?=([%deck @ta ~] wire)  cor
-    :: reload components on change to a desk's /com
-    =.  deck  (del-deck i.t.wire)
-    =.  deck  (put-deck i.t.wire)
-    %-  emit  (make-com-subscription-card %add i.t.wire)
+      [%x %diff rest=*]
+    =/  iel  (parse-diff-scry-path rest)
+    =/  com  (~(got by deck) com.lin.iel)
+    =/  sal  ~(sail +.com (make-hull url.iel que.iel bom.com lin.iel))
+    :+  ~  ~
+    :-  %json
+    !>  `json`[%a (luff lin.iel sud.iel [(process-sail lin.iel sal) ~])]
     ::
   ==
 ::
@@ -372,7 +422,7 @@
 :: /url/jam-of-line/node-tag/node-key/node-hash/nested-node-tag...//nested-sibling...////~
 ++  parse-diff-scry-path
   |=  paf=path
-  ^-  [path quay line scud]
+  ^-  isle
   ?>  ?=([^ ^] paf)
   =/  [url=path que=quay]  (parse-url (slav %uv i.paf))
   :^  url

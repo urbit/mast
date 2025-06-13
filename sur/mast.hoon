@@ -30,7 +30,6 @@
   %-  list                                       ::
   $:  name=@tas                                  ::   map key
       mark=@tas                                  ::   mark, possibly converted to
-      reac=?                                     ::   reactively render on update
   ==                                             ::
 +$  mast                                         :: component
   $:  $:  =boom                                  ::
@@ -64,6 +63,12 @@
       key=@t
       hax=@t
       kid=scud
+  ==
++$  isle
+  $:  url=path
+      que=quay
+      lin=line
+      sud=scud
   ==
 ::
   ::
