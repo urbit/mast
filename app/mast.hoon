@@ -131,26 +131,20 @@
 ::
 ++  parse-channel-data
   |=  jon=json
-  ^-  [knot rope crow]
+  ^-  [path quay line crow]
   =,  dejs:format
-  =+  ^-  [com=path eve=path dat=(map @t @t)]
+  =+  ^-  [rut=cord com=cord eve=path dat=(map @t @t)]
       %.  jon
       %-  ot
-      :~  com+pa
+      :~  url+so
+          com+so
           path+pa
           data+(om so)
       ==
-  =/  [bas=knot rop=rope]  (parse-component-path com)
-  :+  bas  rop
+  =/  [url=path que=quay]  (parse-url rut)
+  :+  url  que
+  :-  (line (cue (slav %uv com)))
   :-  eve  dat
-::
-++  make-diff-cards
-  |=  [bas=knot rop=rope pax=(list path) jon=(list json)]
-  ^-  (list card)
-  ?.  .?  jon  ~
-  :_  ~
-  :*  %give  %fact  pax  %json  !>(`json`[%a jon])
-  ==
 ::
 :: ++make-resource-subscription-cards
 :: the %mast agent subscribes to an on-watch path
@@ -267,7 +261,6 @@
     ::
       %state-0
     =.  state  lod
-    :: get component cores
     =/  des
       ^-  (list desk)
       %~  tap  in
@@ -389,13 +382,11 @@
             =([%s 'mast'] i.p.jon)
         ==
       cor
-    =/  [bas=knot rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
-    =/  doc  (~(get by dock) bas)
-    ?~  doc  ~&(>>> %missing-binding-on-event !!)
-    
-    :: =/  [com=hook blo=blow]  (ui-sway:(ui-abed:ui bas u.doc) rop cro)
-    
-    %-  emil  (make-gull-cards src.bowl com blo)
+    =/  [url=path que=quay lin=line cro=crow]  (parse-channel-data i.t.p.jon)
+    %-  emil
+    %^  make-gull-cards  src.bowl  com.lin
+    %:  apply-event  url  que  lin  cro
+    ==
     ::
   ==
 ::
@@ -582,17 +573,24 @@
   :-  ~  [nam u.paf (tub q.fil)]
 ::
 ++  make-hull
- |=  [url=path que=quay bom=boom lin=line]
- ^-  hull
- :*  our.bowl
-     src.bowl
-     now.bowl
-     eny.bowl
-     url
-     que
-     par.lin
-     (hydrate-component bom res.lin)
- ==
+  |=  [url=path que=quay bom=boom lin=line]
+  ^-  hull
+  :*  our.bowl
+      src.bowl
+      now.bowl
+      eny.bowl
+      url
+      que
+      par.lin
+      (hydrate-component bom res.lin)
+  ==
+::
+++  apply-event
+  |=  [url=path que=quay lin=line cro=crow]
+  ^-  blow
+  =/  com  (~(got by deck) com.lin)
+  %.  cro
+  %~  spar  +.com  (make-hull url que bom.com lin)
 ::
 ++  render-full
   |=  [url=path que=quay lin=line]
