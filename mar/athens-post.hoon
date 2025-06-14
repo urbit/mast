@@ -1,5 +1,5 @@
 /-  *athens
-|_  poz=post-view
+|_  poz=[post (list path)]
 ++  grad  %noun
 ++  grow
   |%
@@ -7,7 +7,7 @@
   --
 ++  grab
   |%
-  ++  noun  post-view
+  ++  noun  [post (list path)]
   --
 --
 

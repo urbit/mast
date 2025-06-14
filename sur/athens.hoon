@@ -33,7 +33,7 @@
 +$  view
   $%  [%old ~]
       [%new ~]
-      [%hidden new-post-total=@ud]
+      [%hidden [replies=@ud new-post-total=@ud]]
   ==
 +$  user-sessions  (map @p user-session)
 +$  user-session

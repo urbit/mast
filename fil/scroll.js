@@ -117,6 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.addEventListener('keydown', (e) => {
+    const tag = document.activeElement?.tagName?.toLowerCase()
+    if (
+      ['input', 'textarea'].includes(tag) ||
+      document.activeElement?.isContentEditable
+    ) {
+      return
+    }
+
     const elements = Array.from(document.querySelectorAll('.post-container'))
     if (!elements.length) return
 
@@ -125,29 +133,26 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollToIndex(currentIndex + 1)
       }
     } else if (e.key === 'k') {
-      // Move to previous element
       if (currentIndex > 0) {
         scrollToIndex(currentIndex - 1)
       }
     }
   })
 
-  window.scrollToElementCenter = function (id) {
+  window.scrollToElementTop = function (id) {
     const el = document.getElementById(id)
     const parent = el?.parentElement?.parentElement
+    console.log('scroll to parent', parent, el)
 
     if (!parent) return
 
     const rect = parent.getBoundingClientRect()
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-    const targetY =
-      scrollTop +
-      rect.top -
-      50 /
-        window.scrollTo({
-          top: targetY,
-          behavior: 'smooth'
-        })
+    const targetY = scrollTop + rect.top - 50
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth'
+    })
 
     const elements = Array.from(
       Array.from(document.querySelectorAll('.post-container'))
@@ -156,9 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (index !== -1) currentIndex = index
   }
 
-  window.delayedScrollToCenter = function (id, delay = 200) {
+  window.delayedScrollToTop = function (id, delay = 200) {
     setTimeout(() => {
-      window.scrollToElementCenter(id)
+      window.scrollToElementTop(id)
     }, delay)
   }
 })

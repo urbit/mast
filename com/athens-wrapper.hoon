@@ -14,7 +14,7 @@
   ;div 
     ;+
     %^  make:mast  mast/%athens  ~
-    :~  [%posts /athens/posts-all/[(scot %p src)]]
+    :~  [%posts /athens/posts-all]
         [%access /athens/access]
     ==
   ==

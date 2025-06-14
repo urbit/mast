@@ -8,7 +8,7 @@
 =<
 |_  =hull:mast
 ::
-+*  get-post-paths  !<  posts-view:athens  fil:(~(got by res.hull) %posts)
++*  get-post-paths  !<  (list path)  fil:(~(got by res.hull) %posts)
     get-access      !<  access:athens  fil:(~(got by res.hull) %access)
 ::
 ++  spar
@@ -196,11 +196,11 @@
       =class  "posts md:gap-[16px] gap-[16px] relative"
       ;*  
         %+  turn  get-post-paths
-        |=  [=path =view:athens]
-        %^  make:mast  mast/%athens-post
-        :~  [-.view `@t`(scot %ud +.view)]
-        ==
-        :~  [%post (weld /athens/posts/[(scot %p src)] path)]
+        |=  =path
+        ~&  >  path
+        %^  make:mast  mast/%athens-post  ~
+        :~  [%post (weld /athens/posts path)]
+            [%view (welp /athens/view/[(scot %p src)] path)]
             [%new (weld /athens/new/[(scot %p src)] path)] 
         ==
       ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full") 
