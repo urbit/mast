@@ -142,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.scrollToElementTop = function (id) {
     const el = document.getElementById(id)
     const parent = el?.parentElement?.parentElement
-    console.log('scroll to parent', parent, el)
 
     if (!parent) return
 
@@ -161,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (index !== -1) currentIndex = index
   }
 
-  window.delayedScrollToTop = function (id, delay = 200) {
+  window.delayedScrollToTop = function (id, delay = 1000) {
     setTimeout(() => {
       window.scrollToElementTop(id)
     }, delay)

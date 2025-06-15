@@ -54,7 +54,6 @@
     ==
     ::
       [%click %delete ~]
-    ~&  t.t.paf
     :~  [%athens %athens-action !>([%del-post t.t.paf])]
     ==
     ::
@@ -77,11 +76,11 @@
     ?:  (gth (lent t.t.paf) 2) 
       (dec (lent t.t.paf))  
     1
-  =/  scroll  
+  =/  scroll
     ?:  ?&  !=(new-posts ~)
             hid
         ==
-      "delayedScrollToTop('{(trip (rear (rear new-posts)))}')"
+      "delayedScrollToTop('{(trip (rear (head new-posts)))}')"
     ""
   ;div
     =event  "{?~(hid "/click/unhide" "")}"
@@ -173,7 +172,7 @@
             =/  num  +.viw
             ;div 
               =class  "reply-num {?:(hid "hide" "full")} pr-4 text-[{txt-color}] inline whitespace-nowrap w-auto text-[{txt-color}] inline-block leading-none align-top"
-              {(scow %ud -.+.viw)}
+              {(lent rep.dat)}
               ;span.text-white: {?:((gth `@ud`+.+.viw 0) "+{(scow %ud +.+.viw)}" "")}
             ==
           ;div 
