@@ -94,7 +94,8 @@
       ==
   ^-  manx
   :_  ~
-  :*  :-  %mast  (spat [desk.component name.component ~])
+  :*  %mast
+      :-  [%hook desk.component]  (trip name.component)
       %+  weld
       ^-  mart
       %+  turn  params
@@ -113,8 +114,8 @@
   |=  kv-list=(list (pair term tape))
   ^-  manx
   :_  ~
-  :*  :-  %client  %state
-      :-  %style  "display:none"
+  :*  %client-state
+      [%style "display:none"]
       kv-list
   ==
 ::
