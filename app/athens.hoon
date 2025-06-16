@@ -115,7 +115,7 @@
   ?+  mark  ~|(bad-poke/mark !!) 
     ::
       %handle-http-request
-    %-  handle-manifest
+    %-  handle-http-request
     !<  [rid=@ta req=inbound-request:eyre]  vase
     ::
       %athens-action
@@ -384,41 +384,113 @@ post-node
       (~(put in new-posts.session) (welp post-at /[(scot %da post-id)]))
   --
 ::
-++  handle-manifest
-  |=  [rid=@ta req=inbound-request:eyre]
-  ^+  cor
-  =;  pl=simple-payload:http
-    %-  emil
+++  handle-http-request
+  |_  [rid=@ta req=inbound-request:eyre]
+  ++  $
+    ^+  cor
+    ?+    [method.request.req url.request.req]
+        %-  emil
+        %-  payload-cards
+        [[404 ~] ~]
+      [%'GET' %'/athens/manifest']
+        ::
+        %-  emil
+        %-  payload-cards
+        :-  :-  200
+            :~  ['Content-Type' 'application/json']
+            ==
+        :-  ~
+        %-  as-octs:mimes:html
+        '''
+        {
+          "short_name": "Athens",
+          "name": "Athens",
+          "icons": [
+            {
+              "src": "https://em-content.zobj.net/source/apple/419/classical-building_1f3db-fe0f.png",
+              "sizes": "160x160",
+              "type": "image/png"
+            }
+          ],
+          "start_url": "/mast/athens",
+          "display": "standalone",
+          "theme_color": "#000000",
+          "background_color": "#000000"
+        }
+        '''
+      [%'POST' %'/athens/import']
+        ::
+        ::  curl -X POST http://localhost/athens/import --data-binary @file-to-import.txt
+        ::
+        ::    (list [[author content] $])
+        ::
+        ::  :~
+        ::    :-  :-  ~nec
+        ::        '''
+        ::        first post
+        ::        '''
+        ::      :~
+        ::        :-  :-  ~nec
+        ::            '''
+        ::            replying to my own post
+        ::            '''
+        ::          :~
+        ::            :-  :-  ~bus
+        ::                'hello nec'
+        ::              ~
+        ::          ==
+        ::      ==
+        ::    :-  :-  ~bus  'another post'
+        ::      ~
+        ::  ==
+        ::
+        =/  body=@t
+          ~|  'body of POST must be text'
+          +:(need body.request.req)
+        =.  posts
+          %-  ~(uni by posts)
+          (txt-to-posts body)
+        %-  emil
+        %-  payload-cards
+        :-  :-  200  ~
+        ~
+    ==
+  ++  payload-cards
+    ::
+    |=  pl=simple-payload:http
     :~  [%give %fact ~[/http-response/[rid]] [%http-response-header !>(-.pl)]]
         [%give %fact ~[/http-response/[rid]] [%http-response-data !>(+.pl)]]
         [%give %kick ~[/http-response/[rid]] ~]
     ==
-  ?+    url.request.req
-      [[404 ~] ~]
-    %'/athens/manifest'
-      :-  :-  200
-          :~  ['Content-Type' 'application/json']
-          ==
-      :-  ~
-      %-  as-octs:mimes:html
-      '''
-      {
-        "short_name": "Athens",
-        "name": "Athens",
-        "icons": [
-          {
-            "src": "https://em-content.zobj.net/source/apple/419/classical-building_1f3db-fe0f.png",
-            "sizes": "160x160",
-            "type": "image/png"
-          }
-        ],
-        "start_url": "/mast/athens/post/athens",
-        "display": "standalone",
-        "theme_color": "#000000",
-        "background_color": "#000000"
-      }
-      '''
-  ==
-::
+  ++  txt-to-posts
+    ::
+    |_  txt=cord
+    ++  $
+      =/  vas  (slap !>(..onan) (ream txt))
+      =/  lis  !<(imports vas)
+      =|  out=posts:athens
+      =/  wen  (sub now.bowl ~d1)
+      |-
+      ^+  out
+      ?~  lis  out
+      ~&  importing-post/[author.post.i.lis]
+      =.  out
+        %+  ~(put by out)  wen
+        :-  post.i.lis
+        %=  $
+          out  ~
+          lis  replies.i.lis
+          wen  (add ~s1 wen)
+        ==
+      %=  $
+        lis  t.lis
+        wen  +(wen)
+      ==
+      ::
+    +$  imports  (list import-node)
+    +$  import-node
+      $~  [*post:athens ~]
+      [=post:athens replies=imports]
+    --
+  --
 --
-
