@@ -55,30 +55,33 @@
   =/  pole  ^-  (pole @ta)  t.pax
   ?+  pole  ~
     ::
-    [%posts ~]
+    [%posts-all ~]
       :^  ~  ~  %$  !>
       [%athens-post-list !>((get-post-key-paths posts))]
     ::
     [%posts rest=^]
-      |-  ^-  (unit (unit cage))
-      =/  =post-id:athens  (slav %da -.rest.pole)
-      =/  =post-node:athens  (~(got by posts) post-id)
-      ?^  +.rest.pole
-        %=  $
-          posts  replies.post-node
-          rest.pole  +.rest.pole
-        ==
+      =/  =post-node:athens  (get-post-node rest.pole posts)
       :^  ~  ~  %$  !>
       [%athens-post !>([post.post-node (get-post-key-paths replies.post-node)])]
     ::
-    [%hidden who=@ta id=@ta ~]
+    [%view who=@ta rest=^]
+      ^-  (unit (unit cage))
       =/  usr  (~(get by user-sessions) (slav %p who.pole))
-      =/  hid
-        ^-  ?
-        ?~  usr  |
-        %-  ~(has in hidden-posts.u.usr)  (slav %da id.pole)
       :^  ~  ~  %$  !>
-      [%noun !>(hid)]
+      [%noun !>((get-view rest.pole usr posts))]
+    ::
+    [%new who=@ta rest=^]
+      =/  usr  (~(get by user-sessions) (slav %p who.pole))
+      ?~  usr  :^  ~  ~  %$  !>  [%noun !>(~)]
+      =/  new-posts=(list path)
+      %-  homo
+      %+  sort  
+        ;;  (list path)
+        %+  skip  ~(tap in new-posts.u.usr)
+        |=(=path =(~ (find rest.pole path)))
+      |=  [a=path b=path]
+      (lte (slav %da `@t`(rear `(list @ta)`a)) (slav %da `@t`(rear `(list @ta)`b)))
+      :^  ~  ~  %$  !>  [%noun !>(new-posts)]
     ::
     [%access ~]
       :^  ~  ~  %$  !>
@@ -130,10 +133,10 @@
       %-  del-post  at.act
       ::
         %hide-post
-      %-  hide-post  id.act
+      %-  hide-post  at.act
       ::
         %unhide-post
-      %-  unhide-post  id.act
+      %-  unhide-post  at.act
       ::
         %access-public
       %-  access-public  public.act
@@ -153,6 +156,9 @@
   ^+  cor
   =/  new-post=post:athens  [src.bowl dat]
   =/  new-id=post-id:athens  now.bowl
+  =.  user-sessions
+    ?~  post-at  user-sessions
+    `user-sessions:athens`(~(run by user-sessions) ~(to-new add-post [new-id post-at]))
   =.  posts
     |-  ^-  posts:athens
     ?~  post-at  (~(put by posts) new-id [new-post ~])
@@ -164,8 +170,20 @@
       post-at  t.post-at
       posts  rez
     ==
-  %-  emit
-  %-  make-fact-card  (weld /r/posts post-at)
+  %-  emil
+  ?~  post-at 
+      :~  %-  make-fact-card  /r/posts-all
+      ==
+  =/  cards  *(list card)
+  =/  at=path  post-at
+  |-  ^-  (list card)
+  ?:  =(~ at)
+    cards
+  =/  c  (snoc `(list card)`cards (make-fact-card (weld /r/posts `(list @ta)`at)))
+  %=  $
+    at   (snip `path`at)
+    cards  c
+  ==
 ::
 ++  patch-post
   |=  [patch-at=path dat=@t]
@@ -210,30 +228,71 @@
       posts  rez
     ==
   %-  emit
+  ?:  =(1 (lent at))
+    %-  make-fact-card  /r/posts-all
   %-  make-fact-card  (weld /r/posts (snip at))
 ::
 ++  hide-post
-  |=  id=post-id:athens
+  |=  at=path
   ^+  cor
   =/  usr  (~(get by user-sessions) src.bowl)
+  =/  id  (slav %da (rear at))
   =.  user-sessions
     ?~  usr
       =|  new=user-session:athens
       =.  hidden-posts.new  (~(put in hidden-posts.new) id)
       %+  ~(put by user-sessions)  src.bowl  new
+    =/  new-rep=(list path)
+      %-  homo
+      %+  skip  ~(tap in new-posts.u.usr)
+      |=(=path =(~ (find at path)))
     =.  hidden-posts.u.usr  (~(put in hidden-posts.u.usr) id)
+    =.  new-posts.u.usr
+      (~(dif in new-posts.u.usr) (silt new-rep)) 
     %+  ~(put by user-sessions)  src.bowl  u.usr
   %-  emit
-  %-  make-fact-card  /r/hidden/[(scot %p src.bowl)]/[(scot %da id)]
+  %-  make-fact-card  (weld /r/view/[(scot %p src.bowl)] at)
 ::
 ++  unhide-post
-  |=  id=post-id:athens
+  |=  at=path
   ^+  cor
   =/  usr  (~(got by user-sessions) src.bowl)
-  =.  hidden-posts.usr  (~(del in hidden-posts.usr) id)
+  =/  id  (slav %da (rear at))
+  =/  new-posts=(list path)
+    %-  homo
+    %+  sort
+      %+  skip  ~(tap in new-posts.usr)
+      |=(=path =(~ (find at path)))
+    |=  [a=path b=path]
+      (lte (slav %da `@t`(rear `(list @ta)`a)) (slav %da `@t`(rear `(list @ta)`b)))
+  ?~  new-posts
+    =.  hidden-posts.usr  (~(del in hidden-posts.usr) id)
+    =.  user-sessions  (~(put by user-sessions) src.bowl usr)
+    %-  emit
+    %-  make-fact-card  (weld /r/view/[(scot %p src.bowl)] at)
+  =/  new-posts-id  
+    %-  silt
+    ;;  (list @da)
+    %-  zing
+    %+  turn  new-posts
+    |=  p=path
+    %+  turn  p  |=(id=@ta (slav %da id))
+  =.  hidden-posts.usr
+    %-  %~  dif  in 
+        hidden-posts.usr
+      (~(put in new-posts-id) id)
   =.  user-sessions  (~(put by user-sessions) src.bowl usr)
-  %-  emit
-  %-  make-fact-card  /r/hidden/[(scot %p src.bowl)]/[(scot %da id)]
+  %-  emil
+  =/  cards  *(list card)
+  =/  at=path  (rear new-posts)
+  |-  ^-  (list card)
+  ?:  =(~ at)
+    (flop cards)
+  =/  c  (snoc `(list card)`cards (make-fact-card (weld /r/posts `(list @ta)`at)))
+  %=  $
+    at   (snip `path`at)
+    cards  c
+  ==
 ::
 ++  access-public
   |=  public=?
@@ -280,11 +339,50 @@
   |=  k=post-id:athens
   /[(scot %da k)]
 ::
+++  get-view
+  |=  [post-path=path usr=(unit user-session:athens) =posts:athens]
+  ^-  view:athens
+  ?~  usr  [%old ~]
+  =/  id=post-id:athens  (slav %da (rear post-path))
+  ?.  (~(has in hidden-posts.u.usr) id)
+    ?.  (~(has in new-posts.u.usr) post-path)  [%old ~]
+    [%new ~]
+  :-  %hidden
+    ::  TODO: count all nested replies
+    :-  0
+    %-  lent  %-  homo
+    %+  skip  ~(tap in new-posts.u.usr)
+    |=  p=path
+    =(~ (find ~[(rear post-path)] p))
+::
+++  get-post-node 
+|=  [=path =posts:athens]
+|-  ^-  post-node:athens
+=/  =post-id:athens  (slav %da -.path)
+=/  =post-node:athens  (~(got by posts) post-id)
+?^  +.path
+  %=  $
+    posts  replies.post-node
+    path  +.path
+  ==
+post-node
+::
 ++  make-fact-card
   |=  =path
   ^-  card
   :*  %give  %fact  ~[path]  %noun  !>(~)
   ==
+::
+++  add-post
+  |_  [=post-id:athens post-at=path]
+  ++  to-new
+  |=  session=user-session:athens
+  ^-  user-session:athens
+  :: ?.  (~(has in hidden-posts.session) (slav %da (rear post-at)))
+  ::   session
+  :-  hidden-posts.session
+      (~(put in new-posts.session) (welp post-at /[(scot %da post-id)]))
+  --
 ::
 ++  handle-http-request
   |_  [rid=@ta req=inbound-request:eyre]

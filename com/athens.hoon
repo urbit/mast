@@ -59,7 +59,7 @@
     ;div
       =class  "relative h-[112px] w-full"
       ;div
-        =class  "fixed top-0 left-0 w-full h-[18vh] ".
+        =class  "fixed top-0 left-0 w-full h-[18vh] md:h-[9vh] ".
                 "bg-gradient-to-b from-black/100 to-transparent ".
                 "z-50 pointer-events-none"
         ;
@@ -71,7 +71,7 @@
             header-menu
       ==
       ;div
-        =class  "gradient fixed bottom-0 left-0 w-full h-[18vh] ".
+        =class  "gradient fixed bottom-0 left-0 w-full h-[18vh] md:h-[9vh] ".
                 "bg-gradient-to-t from-black/100 to-transparent z-50 ".
                 "pointer-events-none"
         ;
@@ -87,7 +87,7 @@
         ;div
           =class  "flex items-center justify-center ".
                   "p-[8px] h-[28px]"
-          =client-display  "show-settings !true"
+          =client-display  "show-settings !true !font-mono"
           ;  {(cite:title src)}
         == 
         ;+  ?.  =(our.hull src)  
@@ -194,13 +194,16 @@
   ++  list-posts
     ;div
       =class  "posts md:gap-[16px] gap-[16px] relative"
-      ;*  %+  turn  get-post-paths
-          |=  p=path
-          %^  make:mast  mast/%athens-post  ~
-              :~  [%post (weld /athens/posts p)]
-                  [%hidden /athens/hidden/[(scot %p src)]/[(rear p)]]
-              ==
+      ;*  
+        %+  turn  get-post-paths
+        |=  =path
+        %^  make:mast  mast/%athens-post  ~
+        :~  [%post (weld /athens/posts path)]
+            [%view (welp /athens/view/[(scot %p src)] path)]
+            [%new (weld /athens/new/[(scot %p src)] path)] 
+        ==
       ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full") 
+        =key  "athens-post-form"
         ;div(class "mx-auto max-w-[1000px]")
           ;div
             =class  "md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
@@ -209,11 +212,10 @@
             ;+  ?:  is-comet
                   ;div.post-form.login-block: Login to post
                 ;form(event "/submit/post")
-                  =class  "post-form form-border rounded-md shadow-md ".
+                  =class  "post-form form-border rounded-md shadow-md bg-[#0F0F0F] ".
                           "overflow-hidden box-border flex ".
                           "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
                           "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white" 
-                  =key  "athens-post-form"
                   ;athens-textarea-litdev.grow
                     =name  "post-input"
                     ;

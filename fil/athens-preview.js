@@ -10,13 +10,15 @@ class AthensPreview extends LitElement {
   static properties = {
     value: { type: String, reflect: true },
     activeTab: { type: String },
-    textareaClass: { type: String }
+    textareaClass: { type: String },
+    clampClass: { type: String }
   }
 
   constructor() {
     super()
     this.internals = this.attachInternals()
     this.value = ''
+    this.clampClass = this.classList.contains('hide') ? 'clamp-one-line' : ''
   }
 
   createRenderRoot() {
@@ -24,12 +26,11 @@ class AthensPreview extends LitElement {
   }
 
   render() {
-    const clamp = this.classList.contains('hide') ? 'clamp-one-line' : ''
-
     return html`
       <div class="athens-editor flex items-start">
         <div
-          class="markdown-preview ${clamp} prose prose-p:mb-0 prose-p:mt-0 inline-block translate-y-[-4px] align-top min-h-[16px]"
+          class="markdown-preview ${this
+            .clampClass} prose prose-p:mb-0 prose-p:mt-0 inline-block translate-y-[-4px] align-top min-h-[16px]"
           id="preview"
         ></div>
       </div>
@@ -85,20 +86,29 @@ class AthensPreview extends LitElement {
   connectedCallback() {
     super.connectedCallback()
 
-    this._classObserver = new MutationObserver((mutations) => {
-      for (const m of mutations) {
-        if (m.attributeName === 'class') {
-          this._updatePreview()
-          this.requestUpdate()
-        }
-      }
+    // Attach observer
+    this._classObserver = new MutationObserver(() => {
+      this._syncClampClass()
     })
 
-    this._classObserver.observe(this, { attributes: true })
+    this._classObserver.observe(this, {
+      attributes: true,
+      attributeFilter: ['class']
+    })
+
+    // Initialize clampClass immediately (in case class was already set)
+    this._syncClampClass()
   }
 
   disconnectedCallback() {
     this._classObserver?.disconnect()
+  }
+
+  _syncClampClass() {
+    const newClamp = this.classList.contains('hide') ? 'clamp-one-line' : ''
+    this.clampClass = newClamp
+    this.requestUpdate('clampClass')
+    this._updatePreview()
   }
 }
 
