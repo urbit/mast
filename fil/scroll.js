@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       elem.dispatchEvent(submitEvent)
     } catch (err) {
-      console.warn('Submit event failed:', err)
+      //console.warn('Submit event failed:', err)
     }
   }
 

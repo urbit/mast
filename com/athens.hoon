@@ -16,13 +16,11 @@
   ^-  blow:mast
   =/  access  get-access
   =/  pol  ^-  (pole @ta)  path.crow
-  ~&  >  pol
   ?+  pol  ~
     ::
       [%submit %post ~]
     =/  dat  (~(got by data.crow) 'post-input')
     ?:  =('' dat)  ~
-    ~&  dat
     :~  [%athens %athens-action !>([%put-post ~ dat])]
     ==
     ::
@@ -199,16 +197,15 @@
       ;*  
         %+  turn  get-post-paths
         |=  =path
-        ~&  >  path
         %^  make:mast  mast/%athens-post  ~
         :~  [%post (weld /athens/posts path)]
             [%view (welp /athens/view/[(scot %p src)] path)]
             [%new (weld /athens/new/[(scot %p src)] path)] 
         ==
       ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full") 
+        =key  "athens-post-form"
         ;div(class "mx-auto max-w-[1000px]")
           ;div
-            =key  "athens-post-form"
             =class  "md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
                     "md:items-start md:grid-cols-[14ch_auto_120px] mx-4 ".
                     "z-50 md:gap-x-4 form-post-wrapper "
@@ -219,7 +216,6 @@
                           "overflow-hidden box-border flex ".
                           "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
                           "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white" 
-                  ::=key  "athens-post-form"
                   ;athens-textarea-litdev.grow
                     =name  "post-input"
                     ;
