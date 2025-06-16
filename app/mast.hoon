@@ -7,7 +7,8 @@
 ::
 |%
 +$  state-0
-  $:  =dock
+  $:  =navy
+      =dock
       =deck
   ==
 +$  state-n
@@ -49,8 +50,17 @@
   =^  cards  state  abet:(poke:cor mark vase)
   :-  cards  this
 ::
-++  on-watch  |=(path ^-((quip card _this) `this))
-++  on-leave  |=(path ^-((quip card _this) !!))
+++  on-watch
+  |=  =path
+  ^-  (quip card _this)
+  =^  cards  state  abet:(watch:cor path)
+  :-  cards  this
+::
+++  on-leave
+  |=  =path
+  ^-  (quip card _this)
+  =^  cards  state  abet:(leave:cor path)
+  :-  cards  this
 ::
 ++  on-peek
   |=  =path
@@ -318,6 +328,32 @@
   ::   %+  make-resource-subscription-cards  bas  [[%add rop res] ~ ~]
   ::   ::
   :: ==
+::
+++  watch
+  |=  poe=(pole @ta)
+  ^+  cor
+  ?+  poe  ~|(bad-watch/poe !!) 
+    ::
+      [%com src=@ta com=@ta ~]
+    ?>  =(src.bowl (slav %p src.poe))
+    =/  lin  (line (cue (slav %uv com.poe)))
+    :: TODO:
+    cor
+    ::
+  ==
+::
+++  leave
+  |=  poe=(pole @ta)
+  ^+  cor
+  ?+  poe  !!
+    ::
+      [%com src=@ta com=@ta ~]
+    ?>  =(src.bowl (slav %p src.poe))
+    =/  lin  (line (cue (slav %uv com.poe)))
+    :: TODO:
+    cor
+    ::
+  ==
 ::
 ++  poke
   |=  [=mark =vase]
