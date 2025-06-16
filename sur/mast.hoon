@@ -55,6 +55,7 @@
 ::   $:  bos=(set buoy)                             ::
 ::       dek=deck                                   ::
 ::   ==                                             ::
++$  navy  (map path (pair ship line))            :: resource paths to subscribed components
 +$  scud
   $~  ~
   %-  list
