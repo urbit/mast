@@ -418,7 +418,7 @@
   |=  paf=path
   ^-  isle
   ?>  ?=([^ ^] paf)
-  =/  [url=path que=quay]  (parse-url (slav %uv i.paf))
+  =+  (,[url=path que=quay] (cue (slav %uv i.paf)))
   :^  url
       que
       (line (cue (slav %uv i.t.paf)))
@@ -427,7 +427,7 @@
   ?~  poe  ~
   ?:  =([~.~ ~] poe)  ~
   ?:  ?=([%$ *] poe)  ~
-  ?>  ?=([tag=@ta key=@ta hax=@ta nex=*] poe)
+  ?>  ?=([tag=@ta key=@ta hax=@ta nex=*] poe)  :: TODO: remove tag. path parsing will crash on cell mane
   ?:  ?=([%$ nux=*] nex.poe)
     :_  $(poe nux.poe)
     :*  tag.poe
@@ -467,17 +467,13 @@
 ++  parse-component-element
   |=  sal=manx
   ^-  line
-  ?>  ?=([%mast @] n.g.sal)
-  =|  lin=line
-  %_  lin
-    -  `hook`=>(=>((stab +.n.g.sal) ?>(?=([@ @ ~] .) [- +<])) ?<(?=(~ .) .))
-    +
-      %+  roll  a.g.sal
-      |=  [[n=mane v=tape] a=[par=gust res=rode]]
-      ?+  n  a
-        [%gust @]  a(par (~(put by par.a) +.n (crip v)))
-        [%gale @]  a(res (~(put by res.a) +.n (scan v stap)))
-      ==
+  ?>  ?=(%mast n.g.sal)
+  %+  roll  a.g.sal
+  |=  [[n=mane v=tape] a=line]
+  ?+  n  a
+    [%hook @]  a(com [+.n (crip v)])
+    [%gust @]  a(par (~(put by par.a) +.n (crip v)))
+    [%gale @]  a(res (~(put by res.a) +.n (scan v stap)))
   ==
 ::
 :: ++process-sail
@@ -497,12 +493,13 @@
   :: temporary: if text node, add text node wrapper
   =?  sal  =(%$ n.g.sal)  ;t-  ;+  sal  ==
   :: handle component elements separately
-  ?:  ?=([%mast @] n.g.sal)
+  ?:  ?=(%mast n.g.sal)
+    :: this key must correspond to the key of the component's root element
     =/  key  (mug (parse-component-element sal))
-    :~  [n.g.sal [[%key ((v-co:co 1) key)] ~]]
+    :~  [n.g.sal [[%key ((v-co:co 1) key)] [[%ma %st] "0"] ~]]
     ==
   :: also handle client-state elements separately
-  ?:  ?=([%client %state] n.g.sal)
+  ?:  ?=([%client-state] n.g.sal)
     =/  key  `@uw`(mug a.g.sal)
     %_  sal
       a.g  [[%key ((v-co:co 1) key)] a.g.sal]
@@ -610,7 +607,11 @@
     ~&  >>>  [%malformed-root-component com.lin]
     !!
   %_  doc
-    a.g  [[%our +:(scow %p our.bowl)] [%src +:(scow %p src.bowl)] ~]
+    a.g
+      :~  [%our +:(scow %p our.bowl)]
+          [%src +:(scow %p src.bowl)]
+          [%uvurl (scow %uv (jam [url que]))]  :: TODO: find a less stupid solution
+      ==
     c.i.c  [script-node c.i.c.doc]
     i.t.c
       %-  handle-component-elements
@@ -626,7 +627,7 @@
   |-  ^-  marl
   %+  turn  mal
   |=  i=manx
-  ?.  ?=([%mast @] n.g.i)
+  ?.  ?=(%mast n.g.i)
     %_  i
       c  ^$(mal c.i)
     ==
