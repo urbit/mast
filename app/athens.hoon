@@ -324,9 +324,27 @@
         ::
         ::  curl -X POST http://localhost/athens/import --data-binary @file-to-import.txt
         ::
-        ::  format of import text file
+        ::    (list [[author content] $])
         ::
-        ::  ~sampel-palnet some message is here
+        ::  :~
+        ::    :-  :-  ~nec
+        ::        '''
+        ::        first post
+        ::        '''
+        ::      :~
+        ::        :-  :-  ~nec
+        ::            '''
+        ::            replying to my own post
+        ::            '''
+        ::          :~
+        ::            :-  :-  ~bus
+        ::                'hello nec'
+        ::              ~
+        ::          ==
+        ::      ==
+        ::    :-  :-  ~bus  'another post'
+        ::      ~
+        ::  ==
         ::
         =/  body=@t
           ~|  'body of POST must be text'
@@ -350,65 +368,31 @@
     ::
     |_  txt=cord
     ++  $
-      =/  lines=(list [depth=@ud author=@p content=@t])
-        %+  turn  (to-wain:format txt)
-        parse-line
-      =|  pot=posts:athens
-      =/  when  now.bowl
-      =/  dep=@ud  0
-      ^+  pot
+      =/  vas  (slap !>(..onan) (ream txt))
+      =/  lis  !<(imports vas)
+      =|  out=posts:athens
+      =/  wen  (sub now.bowl ~d1)
       |-
-      ?~  lines  pot
-      =,  i.lines
-      =.  pot  (add-post pot when depth [author content])
-      %=  $
-        lines  t.lines
-        when  (add ~s1 when)
-        dep  +(dep)
-      ==
-    ++  parse-line
-      |=  txt=cord
-      ^-  [depth=@ud author=@p content=@t]
-      %-  fall  :_  [0 ~zod 'parse failed']
-      %+  rush  txt
-      ;~  plug
-        %+  cook
-          |=  =(list)
-          (div (lent list) 2)
-        (star ace)
-        ::
-        %+  cook
-          |=  [@t [@tas =@]]
-          ^-  @p  atom
-        ;~(plug sig crub:so)
-        ::
-        (cook crip ;~(pfix ace (star prn)))
-      ==
-    ++  get-last
-      |=  =posts:athens
-      ^-  (pair post-id:athens post-node:athens)
-      %+  snag  0
-      %+  sort  ~(tap by posts)
-      |=  [a=[=@da *] b=[=@da *]]
-      (gth da.a da.b)
-    ++  add-post
-      |=  [=posts:athens when=@da dep=@ud new=post:athens]
-      ^-  posts:athens
-      ?:  =(0 dep)
-        %+  ~(put by posts)  when
-        %*  .  *post-node:athens
-          post  new
+      ^+  out
+      ?~  lis  out
+      ~&  importing-post/[author.post.i.lis]
+      =.  out
+        %+  ~(put by out)  wen
+        :-  post.i.lis
+        %=  $
+          out  ~
+          lis  replies.i.lis
+          wen  (add ~s1 wen)
         ==
-      =/  last  (get-last posts)
-      %+  ~(put by posts)  p.last
-      %=  q.last
-        replies
-          %=  $
-            dep  (dec dep)
-            posts  replies.q.last
-          ==
+      %=  $
+        lis  t.lis
+        wen  +(wen)
       ==
+      ::
+    +$  imports  (list import-node)
+    +$  import-node
+      $~  [*post:athens ~]
+      [=post:athens replies=imports]
     --
   --
-::
 --
