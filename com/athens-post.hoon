@@ -172,7 +172,7 @@
             =/  num  +.viw
             ;div 
               =class  "reply-num {?:(hid "hide" "full")} pr-4 text-[{txt-color}] inline whitespace-nowrap w-auto text-[{txt-color}] inline-block leading-none align-top"
-              {(lent rep.dat)}
+              {<(lent rep.dat)>}
               ;span.text-white: {?:((gth `@ud`+.+.viw 0) "+{(scow %ud +.+.viw)}" "")}
             ==
           ;div 
