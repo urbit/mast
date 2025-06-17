@@ -905,11 +905,10 @@
           ['q' key.jif]
           ['r' index.jif]
       ==
-    %change-attr
+    %attr
       :~  ['p' [%s 'c']]
           ['q' key.jif]
-          ['r' del.jif]
-          ['s' new.jif]
+          ['r' new.jif]
       ==
     %text
       :~  ['p' [%s 't']]
