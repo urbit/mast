@@ -112,36 +112,6 @@
   =.  url  ?>  ?=([%mast *] url)  t.url  :: temporary: assumes /mast prefix
   :-  url  ~
 ::
-++  make-component-path
-  |=  [bas=knot rop=rope]
-  ^-  path
-  /[bas]/[?~(q.rop %$ (scot %p u.q.rop))]/[(scot %uv p.rop)]
-::
-++  parse-component-path
-  |=  pax=path
-  ^-  [knot rope]
-  ?>  ?=([@ta @ta @ta ~] pax)
-  :-  i.pax
-  :-  (slav %uv i.t.t.pax)
-  ?:  =(%$ i.t.pax)  ~
-  :-  ~  (slav %p i.t.pax)
-::
-++  make-component-wire
-  |=  [bas=knot boy=buoy]
-  ^-  wire
-  %+  weld
-      (make-component-path bas p.boy)
-      q.boy
-::
-++  parse-component-wire
-  |=  wyr=wire
-  ^-  [knot rope path]
-  ?>  ?=([@ @ @ *] wyr)
-  =/  (pair knot rope)  (parse-component-path wyr(t.t.t ~))
-  :+  p
-      q
-      t.t.t.wyr
-::
 ++  parse-channel-data
   |=  jon=json
   ^-  [path quay line crow]
@@ -158,32 +128,6 @@
   :+  url  que
   :-  (line (cue (slav %uv com)))
   :-  eve  dat
-::
-:: ++make-resource-subscription-cards
-:: the %mast agent subscribes to an on-watch path
-:: in the agent specified in the first path segment.
-:: ++  make-resource-subscription-cards
-::   |=  [bas=knot bos=(set buoy)]
-::   ^-  (list card)
-::   %+  roll  ~(tap in bos)
-::   |=  [b=buoy a=(list card)]
-::   ?<  ?=(~ q.b)
-::   =/  age  i.q.b
-::   =/  for  t.q.b
-::   :_  a
-::   ?-  -.b
-::     %add  [%pass (make-component-wire bas b) %agent [our.bowl age] %watch [%r for]]
-::     %del  [%pass (make-component-wire bas b) %agent [our.bowl age] %leave ~]
-::   ==
-::
-:: ++  make-component-buoys
-::   |=  [act=?(%add %del) rop=rope bom=boom tid=tide]
-::   ^-  (list buoy)
-::   %+  murn  bom
-::   |=  [nam=@tas mak=@tas]
-::   =/  paf  (~(get by tid) nam)
-::   ?~  paf  ~
-::   :^  ~  act  rop  u.paf
 ::
 ++  make-direct-http-cards
   |=  [rid=@ta hed=response-header.simple-payload:http dat=(unit octs)]
@@ -227,6 +171,57 @@
         %add  [~ %next %z da+now.bowl /com]
         %del  ~
       ==
+  ==
+::
+++  make-resource-subscription-card
+  |=  boy=buoy
+  ^-  card
+  ?<  ?=(~ p.boy)
+  :: the %mast agent subscribes to an on-watch path
+  :: in the agent specified in the first path segment.
+  =/  age  i.p.boy
+  =/  for  t.p.boy
+  =/  wir  [%res p.boy]
+  ?-  -.boy
+    %add  [%pass wir %agent [our.bowl age] %watch [%r for]]
+    %del  [%pass wir %agent [our.bowl age] %leave ~]
+  ==
+::
+++  handle-com-resource-adds
+  |=  [com=@t res=(list path)]
+  ^+  cor
+  ?~  res  cor
+  =/  sus  (~(get by navy) i.res)
+  ?^  sus
+    %=  $
+      res  t.res
+      navy  (~(put by navy) i.res (~(put in u.sus) [src.bowl com]))
+    ==
+  =.  cor  (emit (make-resource-subscription-card [%add i.res]))
+  %=  $
+    res  t.res
+    navy  (~(put by navy) i.res (silt [[src.bowl com] ~]))
+  ==
+::
+++  handle-com-resource-dels
+  |=  [com=@t res=(list path)]
+  ^+  cor
+  ?~  res  cor
+  =/  sus  (~(get by navy) i.res)
+  ?~  sus
+    %=  $
+      res  t.res
+    ==
+  =.  u.sus  (~(del in u.sus) [src.bowl com])
+  ?^  u.sus
+    %=  $
+      res  t.res
+      navy  (~(put by navy) i.res u.sus)
+    ==
+  =.  cor  (emit (make-resource-subscription-card [%del i.res]))
+  %=  $
+    res  t.res
+    navy  (~(del by navy) i.res)
   ==
 ::
 ++  dock-has-desk
@@ -308,26 +303,29 @@
 ++  agent
   |=  [=wire =sign:agent:gall]
   ^+  cor
-  cor
-  :: ?+  -.sign  cor
-  ::   ::
-  ::     %fact
-  ::   =/  [bas=knot rop=rope res=path]  (parse-component-wire wire)
-  ::   =/  doc  (~(get by dock) bas)
-  ::   ?~  doc  ~&(>>> %missing-binding-on-update !!)
-  ::   =/  ui-core  (ui-abed:ui bas u.doc)
-  ::   =^  [pax=(list path) jon=(list json)]  ui-core  (ui-furl:ui-core rop)
-  ::   =^  bos=(set buoy)  dock  ui-abet:ui-core
-  ::   %-  emil
-  ::   %+  weld  (make-diff-cards bas rop pax jon)
-  ::   %+  make-resource-subscription-cards  bas  bos
-  ::   ::
-  ::     %kick
-  ::   =/  [bas=knot rop=rope res=path]  (parse-component-wire wire)
-  ::   %-  emil
-  ::   %+  make-resource-subscription-cards  bas  [[%add rop res] ~ ~]
-  ::   ::
-  :: ==
+  ?+  wire  cor
+    ::
+      [%res *]
+    ?>  ?=(^ +.wir)
+    ?+  -.sign  cor
+      ::
+        %fact
+      =/  sus  (~(get by navy) +.wir)
+      ?~  sus  ~&(>>> %missing-navy !!)
+      %-  emil
+      %-  ~(rep in u.sus)
+      |=  [[src=ship com=cord] caz=(list card)]
+      :_  caz
+      :*  %give  %fact  [/com/[(scot %p src)]/[com] ~]  [%json !>([%s com])]
+      ==
+      ::
+        %kick
+      %-  emit
+      %-  make-resource-subscription-card  [%add +.wir]
+      ::
+    ==
+    ::
+  ==
 ::
 ++  watch
   |=  poe=(pole @ta)
@@ -337,8 +335,7 @@
       [%com src=@ta com=@ta ~]
     ?>  =(src.bowl (slav %p src.poe))
     =/  lin  (line (cue (slav %uv com.poe)))
-    :: TODO:
-    cor
+    %+  handle-com-resource-adds  com.poe  ~(val by res.lin)
     ::
   ==
 ::
@@ -350,8 +347,7 @@
       [%com src=@ta com=@ta ~]
     ?>  =(src.bowl (slav %p src.poe))
     =/  lin  (line (cue (slav %uv com.poe)))
-    :: TODO:
-    cor
+    %+  handle-com-resource-dels  com.poe  ~(val by res.lin)
     ::
   ==
 ::
@@ -382,7 +378,7 @@
     ::   ^-  (set buoy)
     ::   %-  ~(rep by q.u.duk)
     ::   |=  [[k=rope v=bitt] a=(set buoy)]
-    ::   %-  ~(gas in a)  (make-component-buoys %del k bom.v res.v)
+    ::   %-  ~(gas in a)  (make-component-buoys %del k bom.v res.v) :: TODO: end affected resource subscriptions
     =.  dock  (~(del by dock) not)
     =?  cor  !(dock-has-desk desk.p.u.duk)
       =.  deck  (del-deck desk.p.u.duk)
@@ -645,7 +641,7 @@
   %_  doc
     a.g
       :~  [%our +:(scow %p our.bowl)]
-          [%src +:(scow %p src.bowl)]
+          [%src (scow %p src.bowl)]
           [%uvurl (scow %uv (jam [url que]))]  :: TODO: find a less stupid solution
       ==
     c.i.c  [script-node c.i.c.doc]

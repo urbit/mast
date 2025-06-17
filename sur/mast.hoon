@@ -50,12 +50,8 @@
       res=rode                                   ::
   ==                                             ::
 +$  rode  (map @tas path)                        :: resources for a component
-:: +$  buoy  [?(%add %del) p=rope q=path]           :: subscription effect
-:: +$  wake                                         :: component creation effects
-::   $:  bos=(set buoy)                             ::
-::       dek=deck                                   ::
-::   ==                                             ::
-+$  navy  (map path (pair ship line))            :: resource paths to subscribed components
++$  buoy  [?(%add %del) p=path]                  :: resource subscription effect
++$  navy  (map path (set (pair ship cord)))      :: resource paths to subscribed components
 +$  scud
   $~  ~
   %-  list
