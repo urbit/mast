@@ -160,9 +160,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (index !== -1) currentIndex = index
   }
 
-  window.delayedScrollToTop = function (id, delay = 1000) {
-    setTimeout(() => {
-      window.scrollToElementTop(id)
-    }, delay)
+  window.delayedScrollToTop = function (id, timeout = 5000, interval = 100) {
+    const startTime = Date.now()
+
+    const check = () => {
+      const el = document.getElementById(id)
+      console.log(el)
+
+      if (el && el.parentElement?.parentElement) {
+        window.scrollToElementTop(id)
+      } else if (Date.now() - startTime < timeout) {
+        setTimeout(check, interval)
+      } else {
+        console.warn(`Element with id "${id}" not found within timeout.`)
+      }
+    }
+
+    check()
   }
 })

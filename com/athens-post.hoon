@@ -13,6 +13,7 @@
     new-posts  !<  (list path)  fil:(~(got by res.hull) %new)
     hid   =(-.viw %hidden)
     new   =(-.viw %new)
+    show  =(-.viw %display-none)
 ::
 ++  spar
   |=  =crow:mast
@@ -82,6 +83,35 @@
         ==
       "delayedScrollToTop('{(trip (rear (head new-posts)))}')"
     ""
+  ?:  show  ;div.hidden;
+  ?:  &(hid !=(-.+.viw 0))
+    =/  new-rep  +.+.viw
+    ;div(event "/click/unhide")
+      =onclick  scroll
+      =class  "post-container relative grid grid-cols-2 ".
+              "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
+              "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
+              "md:items-start md:w-full md:grid-cols-[14ch_auto_120px] z-10 form-post-wrapper" 
+      ;div
+        =class  "message full col-span-2 md:col-start-2 md:col-span-1 ".
+                "row-start-1 md:row-start-1 flex ".
+                "flex-row md:flex-grow ml-[0px] border-l-0"
+          ;span: {<replies.-.+.viw>} 
+          ;span.text-white
+            {?:((gth `@ud`new-rep 0) "+{(scow %ud new-rep)} " " ")}
+          ==
+          ;span: {" posts"}
+      ==
+      ;div
+        =class  "col-start-2 md:col-start-3 row-start-1 md:row-start-1 ".
+                "reply-date inline whitespace-nowrap leading-none ".
+                "w-auto text-[{txt-color}] inline-block align-top ".
+                "{?:((gth +.+.viw 0) "!text-white" "")} ".
+                "justify-self-end md:justify-self-start md:pl-[7ch]"
+        =style  "font-weight: 400"
+        {(date-to-tape (slav %da (rear paf)) now.hull)}
+      ==
+    ==
   ;div
     =event  "{?~(hid "/click/unhide" "")}"
     =onclick  scroll
@@ -94,7 +124,8 @@
               "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
               "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
               "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] z-10" 
-      ;div(event "/click/toggle-hide")
+      ;div
+        =event  "{?~(hid "" "/click/toggle-hide")}"
         =class  "author {?:(hid "hide" "")} {sticky} ".
                 "top-20 cursor-pointer w-[15ch] max-w-[15ch] ".
                 "ml-[{((d-co:co 1) depth)}px] overflow-hidden ".
@@ -106,7 +137,7 @@
       ;+  
         =/  depth=@
           =-  (mul (dec -) 8)
-          ?>  ?=([%athens %posts *] paf)
+          ?>  ?=([%athens %posts *] paf) 
           ?:  (gth (lent t.t.paf) 2) 
             (dec (lent t.t.paf))  
           1
@@ -156,9 +187,6 @@
         ==
       ;+  ?:  ?&  ?|  =((lent paf) 4)
                       !=(~ rep.dat)
-                      :: %+  levy  rep.dat
-                      :: |=  [p=path =view:athens]
-                      :: =(-.view %hidden)
                   ==
               !hid
               ==
@@ -166,34 +194,25 @@
       ;div.hidden;
       ;div
         =class  "md:col-start-3 md:row-start-1 flex flex-row justify-end md:justify-start {?:(hid "" "hidden")}"
-        ;+  ?:  =(0 (lent rep.dat))
-            ;div.hidden;
-          ?:  hid
-            =/  num  +.viw
+        ;*
+          =/  rep      (lent rep.dat)
+          =/  new-rep  ?:  hid  +.+.viw  0
+          ?:  &(=(0 rep) =(new-rep 0))  ~
+          ;=
             ;div 
               =class  "reply-num {?:(hid "hide" "full")} pr-4 text-[{txt-color}] inline whitespace-nowrap w-auto text-[{txt-color}] inline-block leading-none align-top"
-              {<(lent rep.dat)>}
-              ;span.text-white: {?:((gth `@ud`+.+.viw 0) "+{(scow %ud +.+.viw)}" "")}
+              {?:((gth `@ud`rep 0) <rep> "")}
+              ;span.text-white
+              {?:(&((gth `@ud`rep 0) (gth `@ud`new-rep 0)) "+" "")}{?:((gth `@ud`new-rep 0) "{(scow %ud +.+.viw)}" "")}
+              ==
             ==
-          ;div 
-            =class  "reply-num {?:(hid "hide" "full")} pr-4 text-[{txt-color}] inline whitespace-nowrap w-auto text-[{txt-color}] inline-block leading-none align-top"
-            {<(lent rep.dat)>} 
-          ==
-        ;+
-          ?:  hid
-            =/  num  +.+.viw
-            ^-  manx
             ;div
               =class  "reply-date {?:(hid "hide" "full")} inline ".
                       "whitespace-nowrap w-auto text-[{txt-color}] inline-block ".
-                      "leading-none align-top {?:((gth num 0) "!text-white" "")}"
+                      "leading-none align-top {?:((gth new-rep 0) "!text-white" "")} ".
+                      "{?:(&(=(0 rep) =(new-rep 0)) "md:pl-[7ch]" "")}"
               {(date-to-tape (slav %da (rear paf)) now.hull)}
             ==
-          ;div
-            =class  "reply-date {?:(hid "hide" "full")} inline ".
-                    "whitespace-nowrap w-auto text-[{txt-color}] inline-block ".
-                    "leading-none align-top"
-            {(date-to-tape (slav %da (rear paf)) now.hull)}
           ==
       ==
       ;+  ?:  is-comet
