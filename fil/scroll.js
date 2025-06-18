@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const child = grandparentToChildMap.get(grandparent)
         if (!child) return
 
-        const isOutOfView = !entry.isIntersecting // grandparent out of view
+        const isOutOfView =
+          entry.boundingClientRect.top < 0 && !entry.isIntersecting
         const wasOutOfView = lastStates.get(child) || false
 
         if (!wasOutOfView && isOutOfView && document.body.contains(child)) {
@@ -63,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       elem.dispatchEvent(submitEvent)
     } catch (err) {
-      //console.warn('Submit event failed:', err)
+      console.warn('Submit event failed:', err)
     }
   }
 
@@ -77,6 +78,28 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   observeNewElements()
+
+  function setupFocusTracking() {
+    const inputs = document.querySelectorAll(
+      'input.track-focus, textarea.track-focus'
+    )
+
+    inputs.forEach((input) => {
+      input.addEventListener('focus', () => {
+        const postForm = document.getElementById('post-form')
+        if (postForm) {
+          postForm.classList.add('hidden')
+        }
+      })
+
+      input.addEventListener('blur', () => {
+        const postForm = document.getElementById('post-form')
+        if (postForm) {
+          postForm.classList.remove('hidden')
+        }
+      })
+    })
+  }
 
   function getElementClosestToViewportCenter() {
     const elements = Array.from(getTrackedElements())
@@ -139,15 +162,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-  window.scrollToElementTop = function (id) {
+  //  Handles scroll to the top for new replies and reply form
+
+  window.scrollToElementTop = function (id, getParent) {
     const el = document.getElementById(id)
-    const parent = el?.parentElement?.parentElement
 
-    if (!parent) return
+    const elem = getParent ? el?.parentElement?.parentElement : el
 
-    const rect = parent.getBoundingClientRect()
+    if (!elem) return
+
+    const rect = elem.getBoundingClientRect()
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-    const targetY = scrollTop + rect.top - 50
+    const targetY = scrollTop + rect.top - 80
     window.scrollTo({
       top: targetY,
       behavior: 'smooth'
@@ -156,21 +182,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const elements = Array.from(
       Array.from(document.querySelectorAll('.post-container'))
     )
-    const index = elements.indexOf(parent.querySelector('.post-container'))
+    const index = elements.indexOf(elem.querySelector('.post-container'))
     if (index !== -1) currentIndex = index
   }
 
-  window.delayedScrollToTop = function (id, timeout = 5000, interval = 100) {
+  window.delayedScrollToTop = function (
+    id,
+    getParent = true,
+    timeout = 5000,
+    interval = 100
+  ) {
     const startTime = Date.now()
 
     const check = () => {
       const el = document.getElementById(id)
-      console.log(el)
 
-      if (el && el.parentElement?.parentElement) {
-        window.scrollToElementTop(id)
+      if (el && getParent && el.parentElement?.parentElement) {
+        window.scrollToElementTop(id, getParent)
+      } else if (el && !getParent) {
+        window.scrollToElementTop(id, getParent)
       } else if (Date.now() - startTime < timeout) {
-        setTimeout(check, interval)
+        setTimeout(check, interval) // check again
       } else {
         console.warn(`Element with id "${id}" not found within timeout.`)
       }
@@ -178,4 +210,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     check()
   }
+
+  //  Handles removing main form on reply or edit input focus
+
+  // Track focus on inputs with .track-focus
+  function setupGlobalFocusTracking() {
+    const postForm = document.getElementById('post-form')
+    if (!postForm) return
+
+    let isInputFocused = false
+
+    document.addEventListener('focusin', (e) => {
+      if (e.target.matches('textarea.track-focus')) {
+        isInputFocused = true
+        postForm.classList.add('hidden')
+      }
+    })
+
+    document.addEventListener('focusout', (e) => {
+      setTimeout(() => {
+        const focused = document.activeElement
+        if (!focused || !focused.matches('textarea.track-focus')) {
+          isInputFocused = false
+          postForm.classList.remove('hidden')
+          //   const closestReplyForm = e.target.closest('form[name="reply-form"]')
+          //   if (closestReplyForm) {
+          //     closestReplyForm.style.display = 'none'
+          //   }
+        }
+      }, 0)
+    })
+  }
+
+  setupGlobalFocusTracking()
+
+  const focusMutationObserver = new MutationObserver(() => {
+    setupFocusTracking()
+  })
+
+  focusMutationObserver.observe(document.body, {
+    childList: true,
+    subtree: true
+  })
 })
