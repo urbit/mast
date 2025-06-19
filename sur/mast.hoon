@@ -13,8 +13,9 @@
       now=time                                   ::
       eny=@uvJ                                   ::
     ::                                           ::
-      url=path                                   ::
-      que=quay                                   ::
+      bas=knot                                   ::   base url segment bound to
+      rut=path                                   ::   rest of the url path
+      que=quay                                   ::   query params
     ::                                           ::
       par=gust                                   ::
       res=gale                                   ::
@@ -52,20 +53,19 @@
 +$  rode  (map @tas path)                        :: resources for a component
 +$  buoy  [?(%add %del) p=path]                  :: resource subscription effect
 +$  navy  (map path (set (pair ship cord)))      :: resource paths to subscribed components
-+$  scud
-  $~  ~
-  %-  list
++$  loot  (list gold)
++$  gold
   $@  ?(%skip)
   $:  tag=@t
       key=@t
       hax=@t
-      kid=scud
+      kid=loot
   ==
 +$  isle
   $:  url=path
       que=quay
       lin=line
-      sud=scud
+      lot=loot
   ==
 ::
   ::

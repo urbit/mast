@@ -1,7 +1,6 @@
 /-  mast, athens
 ^-  mast:mast
-:-  :~  %auth
-        posts+%athens-post-list
+:-  :~  posts+%athens-post-list
     ==
 =<
 |_  =hull:mast
@@ -24,12 +23,12 @@
 ::
 ++  sail
   ^-  manx
-  =/  is-comet=?  |  :: ?=(%pawn (clan:title (need src.hull)))
+  =/  is-comet=?  |  :: ?=(%pawn (clan:title src.hull))
   ;div.athens
     ;+  (make-client-state:mast [reply+"" ~])
     ;div.user
       ;+  ?.  is-comet
-            ;/  (cite:title (need src.hull))
+            ;/  (cite:title src.hull)
           ;form
             =action  "/~/login"
             =method  "POST"
@@ -46,7 +45,7 @@
           |=  p=path
           %^  make:mast  mast/%athens-post  ~
           :~  [%post (weld /athens/posts p)]
-              [%hidden /athens/hidden/[(scot %p (need src.hull))]/[(rear p)]]
+              [%hidden /athens/hidden/[(scot %p src.hull)]/[(rear p)]]
           ==
       ;+  ?:  is-comet
             ;div.post-form.login-block: Login to post

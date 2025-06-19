@@ -225,8 +225,8 @@
   |=  des=desk
   ^-  ?
   %-  ~(any by dock)
-  |=  p=hook
-  .=  desk.p  des
+  |=  lin=line
+  .=  desk.com.lin  des
 ::
 ++  put-deck
   |=  des=desk
@@ -271,8 +271,8 @@
       %~  tap  in
       ^-  (set desk)
       %-  ~(rep by dock)
-      |=  [[k=knot v=(pair hook deck)] a=(set desk)]
-      %-  ~(put in a)  desk.p.v
+      |=  [[k=knot v=line] a=(set desk)]
+      %-  ~(put in a)  desk.com.v
     |-  ^+  cor
     ?~  des  cor
     =.  deck  (put-deck i.des)
@@ -303,11 +303,11 @@
   ?+  wire  cor
     ::
       [%res *]
-    ?>  ?=(^ +.wir)
+    ?>  ?=(^ +.wire)
     ?+  -.sign  cor
       ::
         %fact
-      =/  sus  (~(get by navy) +.wir)
+      =/  sus  (~(get by navy) +.wire)
       ?~  sus  ~&(>>> %missing-navy !!)
       %-  emil
       %-  ~(rep in u.sus)
@@ -318,7 +318,7 @@
       ::
         %kick
       %-  emit
-      %-  make-resource-subscription-card  [%add +.wir]
+      %-  make-resource-subscription-card  [%add +.wire]
       ::
     ==
     ::
@@ -327,7 +327,7 @@
 ++  watch
   |=  poe=(pole @ta)
   ^+  cor
-  ?+  poe  ~|(bad-watch/poe !!) 
+  ?+  poe  cor
     ::
       [%com src=@ta com=@ta ~]
     ?>  =(src.bowl (slav %p src.poe))
@@ -377,9 +377,9 @@
     ::   |=  [[k=rope v=bitt] a=(set buoy)]
     ::   %-  ~(gas in a)  (make-component-buoys %del k bom.v res.v) :: TODO: end affected resource subscriptions
     =.  dock  (~(del by dock) not)
-    =?  cor  !(dock-has-desk desk.p.u.duk)
-      =.  deck  (del-deck desk.p.u.duk)
-      %-  emit  (make-com-subscription-card %del desk.p.u.duk)
+    =?  cor  !(dock-has-desk desk.com.u.duk)
+      =.  deck  (del-deck desk.com.u.duk)
+      %-  emit  (make-com-subscription-card %del desk.com.u.duk)
     ~&  >  "%mast-unbind: /{(trip not)} unbound"
     :: %-  emil
     :: %+  make-resource-subscription-cards  not  bos
@@ -390,7 +390,7 @@
     ?+  method.request.req  ~|(bad-method/method.request.req !!)
       ::
         %'GET'
-      =/  [url=path que=quay]  (parse-url (slav %uv i.paf))
+      =/  [url=path que=quay]  (parse-url url.request.req)
       ?~  url
         %-  emil
         %-  make-404-res  rid
@@ -428,12 +428,12 @@
   ?+  poe  ~
     ::
       [%x %diff rest=*]
-    =/  iel  (parse-diff-scry-path rest)
+    =/  iel  (parse-diff-scry-path rest.poe)
     =/  com  (~(got by deck) com.lin.iel)
-    =/  sal  ~(sail +.com (make-hull url.iel que.iel bom.com lin.iel))
+    =/  sal  ~(sail +.com (make-hull url.iel que.iel boom.com lin.iel))
     :+  ~  ~
     :-  %json
-    !>  `json`[%a (luff lin.iel sud.iel [(process-sail lin.iel sal) ~])]
+    !>  `json`[%a (luff url.iel que.iel lin.iel lot.iel [(process-sail lin.iel sal) ~])]
     ::
   ==
 ::
@@ -446,19 +446,19 @@
 ++  parse-diff-scry-path
   |=  paf=path
   ^-  isle
-  ?>  ?=([^ ^] paf)
-  =+  (,[url=path que=quay] (cue (slav %uv i.paf)))
+  ?>  ?=([@ ^] paf)
+  =+  ;;([url=path que=quay] (cue (slav %uv i.paf)))
   :^  url
       que
       (line (cue (slav %uv i.t.paf)))
   =/  poe  `(pole @ta)`t.t.paf
-  |-  ^-  scud
+  |-  ^-  loot
   ?~  poe  ~
   ?:  =([~.~ ~] poe)  ~
   ?:  ?=([%$ *] poe)  ~
   ?>  ?=([tag=@ta key=@ta hax=@ta nex=*] poe)  :: TODO: remove tag. path parsing will crash on cell mane
   ?:  ?=([%$ nux=*] nex.poe)
-    :_  $(poe nux.poe)
+    :_  $(poe nux.nex.poe)
     :*  tag.poe
         key.poe
         hax.poe
@@ -472,21 +472,21 @@
         $(poe nex.poe)
     ==
   =|  dep=@
-  |-  ^+  poe
+  |-  ^+  nex.poe
   ?:  ?=([%$ nux=*] nex.poe)
-    ?:  =(0 dep)  nux.poe
+    ?:  =(0 dep)  nux.nex.poe
     %=  $
       dep  (dec dep)
-      poe  nux.poe
+      nex.poe  nux.nex.poe
     ==
   ?:  ?=([@ta @ta @ta %$ nux=*] nex.poe)
     %=  $
-      poe  nux.poe
+      nex.poe  nux.nex.poe
     ==
   ?>  ?=([@ta @ta @ta nux=*] nex.poe)
   %=  $
     dep  +(dep)
-    poe  nex.poe
+    nex.poe  nux.nex.poe
   ==
 ::
 :: ++parse-component-element
@@ -515,7 +515,7 @@
   =/  prev-key  com-key
   =/  pos-key  *(list @)
   =.  a.g.sal
-    :*  [%mast (scot %uv (jam lin))]
+    :*  [%mast (scow %uv (jam lin))]
         a.g.sal
     ==
   |-  ^-  manx
@@ -525,13 +525,14 @@
   ?:  ?=(%mast n.g.sal)
     :: this key must correspond to the key of the component's root element
     =/  key  (mug (parse-component-element sal))
-    :~  [n.g.sal [[%key ((v-co:co 1) key)] [[%ma %st] "0"] ~]]
+    %_  sal
+      a.g  [[%key ((v-co:co 1) key)] [[%ma %st] "0"] a.g.sal]
     ==
   :: also handle client-state elements separately
   ?:  ?=([%client-state] n.g.sal)
     =/  key  `@uw`(mug a.g.sal)
     %_  sal
-      a.g  [[%key ((v-co:co 1) key)] a.g.sal]
+      a.g  [[%key ((v-co:co 1) key)] [[%ma %st] "0"] a.g.sal]
     ==
   :: else, if not a component element,
   :: build the current element's key:
@@ -549,6 +550,7 @@
     ?:  =(%t- n.g.sal)
       ?>  ?=([[[%$ [[%$ *] ~]] ~] ~] c.sal)
       %-  mug  v.i.a.g.i.c.sal
+    ?~  a.g.sal  0
     %-  mug  a.g.sal
   =.  a.g.sal
     :+  [%key ((v-co:co 1) this-key)]
@@ -604,11 +606,13 @@
 ++  make-hull
   |=  [url=path que=quay bom=boom lin=line]
   ^-  hull
+  ?>  ?=(^ url)
   :*  our.bowl
       src.bowl
       now.bowl
       eny.bowl
-      url
+      i.url
+      t.url
       que
       par.lin
       (hydrate-component bom res.lin)
@@ -619,13 +623,13 @@
   ^-  blow
   =/  com  (~(got by deck) com.lin)
   %.  cro
-  %~  spar  +.com  (make-hull url que bom.com lin)
+  %~  spar  +.com  (make-hull url que boom.com lin)
 ::
 ++  render-full
   |=  [url=path que=quay lin=line]
   ^-  manx
   =/  com  (~(got by deck) com.lin)
-  =/  doc  ~(sail +.com (make-hull url que bom.com lin))
+  =/  doc  ~(sail +.com (make-hull url que boom.com lin))
   :: assert that the product of the sail arm
   :: is a complete document of the following structure:
   ?.  ?&  ?=([* * ~] c.doc)
@@ -643,12 +647,13 @@
       ==
     c.i.c  [script-node c.i.c.doc]
     i.t.c
-      %-  handle-component-elements
+      =<  ?>(?=(%body n.g) .)
+      %^  handle-component-elements  url  que
       %+  process-sail  lin  i.t.c.doc
   ==
 ::
 ++  handle-component-elements
-  |=  sal=manx
+  |=  [url=path que=quay sal=manx]
   ^-  manx
   =<  ?>  ?=(^ .)
       i
@@ -662,7 +667,7 @@
     ==
   =/  lin  (parse-component-element i)
   =/  com  (~(got by deck) com.lin)
-  =/  sal  ~(sail +.com (make-hull url que bom.com lin))
+  =/  sal  ~(sail +.com (make-hull url que boom.com lin))
   =.  sal  (process-sail lin sal)
   %_  sal
     c  ^$(mal c.sal)
@@ -671,7 +676,7 @@
 :: ++luff
 :: diffs manx into a format that gets sent and applied to the client.
 ++  luff
-  |=  [lin=line old=scud new=marl]
+  |=  [url=path que=quay lin=line old=loot new=marl]
   =|  i=@ud
   =|  pkey=@t
   =|  acc=diff
@@ -688,8 +693,7 @@
         :-  ~  [%s key.o]
     ==
   ?:  =(%$ n.g.i.new)  acc
-  ?~  old  acc
-  ?:  ?=(%skip i.old)
+  ?:  &(?=(^ old) ?=(%skip i.old))
     %=  $
       old  t.old
     ==
@@ -697,8 +701,8 @@
     %=  $
       i    +(i)
       new  t.new
-      q.acc
-        %+  snoc  q.acc
+      acc
+        %+  snoc  acc
         %-  swig
         :*  %move
             [%s (getv %key a.g.i.new)]
@@ -706,11 +710,9 @@
         ==
     ==
   =|  j=@ud
-  =/  jold=scud  old
+  =/  jold=loot  old
   =/  nkey=[n=mane k=@t]  [n.g.i.new (getv %key a.g.i.new)]
   |-  ^-  diff
-  :: ?~  new
-  ::   !!
   ?~  jold
     %=  ^$
       i    +(i)
@@ -721,9 +723,10 @@
         :*  %new
             [%s pkey]
             [%n (scot %ud i)]
-            [%s (crip (en-xml:html (handle-component-elements i.new)))]
+            [%s (crip (en-xml:html (handle-component-elements url que i.new)))]
         ==
     ==
+  ?<  |(?=(~ old) ?=(%skip i.old))
   ?:  ?=(%skip i.jold)
     %=  $
       j     +(j)
@@ -760,7 +763,8 @@
             %=  ^^$
               old  t.old
               new
-                %^  snap  new  n
+                %^  snap  `marl`new  n
+                ^-  manx
                 ;move-(i (y-co:co (add n i)), key (trip k.nnky));
               acc
                 ?:  =(hax.i.old (getv [%ma %st] a.g.i.nnew))  acc
@@ -780,7 +784,7 @@
         acc
           %=  ^^$
             i    +(i)
-            old  (snap old j %skip)
+            old  (snap `loot`old j `gold`%skip)
             new  t.new
             acc
               =.  acc
@@ -801,7 +805,7 @@
       ==
     ?:  =(%t- n.g.i.new)
       ?:  ?&  =(%t- tag.i.old)
-              =(hax.i.old (getv [%ma %st] a.i.new))
+              =(hax.i.old (getv [%ma %st] a.g.i.new))
           ==
         %=  ^$
           i    +(i)
@@ -852,10 +856,8 @@
   |=  mor=mart
   =|  att=[%a [%s k=@t] [%s v=@t] ~]
   ^-  (list _att)
-  %+  murn  mor
+  %+  turn  mor
   |=  [k=mane v=tape]
-  ?:  =(%key k)  ~
-  :-  ~
   %_  att
     k
       ?@  k  k

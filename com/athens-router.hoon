@@ -1,14 +1,21 @@
 /-  mast
-^-  mist:mast
+^-  mast:mast
 =<
-|=  =keel:mast
-?+  url.keel
-  ::
-  not-found
-  ::
-  ~  main-thread
-  ::
-==
+:-  ~
+|_  =hull:mast
+::
+++  spar  *$-(crow:mast blow:mast)
+::
+++  sail
+  ^-  manx
+  ?+  rut.hull
+    ::
+    not-found
+    ::
+    ~  main-thread
+    ::
+  ==
+--
 ::
   ::
 ::
@@ -18,8 +25,7 @@
   ;html
     ;head;
     ;body
-      ;+  =<  ?>(?=([%mast @] -<) .)  :: TODO: fix this
-          %^  make:mast  mast/%athens
+      ;+  %^  make:mast  mast/%athens
           ~
           :~  [%posts /athens/posts]
           ==
@@ -30,8 +36,7 @@
   ;html
     ;head;
     ;body
-      ;+  =<  ?>(?=([%mast @] -<) .)
-          (make:mast mast/%athens-404 ~ ~)
+      ;+  (make:mast mast/%athens-404 ~ ~)
     ==
   ==
 ::

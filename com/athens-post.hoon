@@ -1,7 +1,6 @@
 /-  mast, athens
 ^-  mast:mast
-:-  :~  %auth
-        post+%athens-post
+:-  :~  post+%athens-post
         hidden+%noun
     ==
 =<
@@ -108,7 +107,7 @@
               |=  p=path
               %^  make:mast  mast/%athens-post  ~
               :~  [%post (weld paf p)]
-                  [%hidden /athens/hidden/[(scot %p (need src.hull))]/[(rear p)]]
+                  [%hidden /athens/hidden/[(scot %p src.hull)]/[(rear p)]]
               ==
         ==
   ==
