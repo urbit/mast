@@ -1,9 +1,7 @@
 /-  mast, athens
 /+  lucide
 ^-  mast:mast
-:-  :~  %auth
-        posts+%athens-post-list
-        access+%athens-access
+:-  :~  posts+%athens-post-list
     ==
 =<
 |_  =hull:mast
@@ -44,14 +42,13 @@
 ::
 ++  sail
   ^-  manx
-  =/  src  (need src.hull)
   =/  access  get-access
-  =/  is-comet=?  ?=(%pawn (clan:title src))
+  =/  is-comet=?  ?=(%pawn (clan:title src.hull))
   |^
     ;div.root
       ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"true" ~])
       ;+
-          ?:  |(=(our.hull src) (has-access src access))
+          ?:  |(=(our.hull src.hull) (has-access src.hull access))
             authenticated-page
           unauthenticated-page
     ==
@@ -87,13 +84,13 @@
         ;div
           =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-center gap-2 ".
                   "p-[8px] h-[26px] cursor-pointer patp"
-          ;span:  {(cite:title src)}
+          ;span:  {(cite:title src.hull)}
             ;+  settings:lucide
         == 
         ;div
         =client-display  "show-settings true"
         =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
-          ;+  ?.  =(our.hull src)  
+          ;+  ?.  =(our.hull src.hull)  
               user-menu
             admin-menu
         ==
@@ -239,7 +236,7 @@
         ;+
         ?:  is-comet  ;/("")
         ;div.flex.gap-2
-          ;div.font-mono: {(cite:title src)}
+          ;div.font-mono: {(cite:title src.hull)}
           ;a.opacity-50(href "/~/logout?redirect=/mast/athens")
             ; logout
           ==
