@@ -1,9 +1,13 @@
 |%
 +$  action
   $%  [%put-post post-at=path content=@t]
+      [%patch-post post-at=path content=@t]
       [%del-post at=path]
-      [%hide-post id=post-id]
-      [%unhide-post id=post-id]
+      [%hide-post at=path]
+      [%unhide-post at=path]
+      [%access-public public=?]
+      [%edit-access-id ids=(list @p)]
+      [%del-access-id id=@p]
   ==
 ::
 +$  post-id  @da
@@ -19,16 +23,33 @@
   ==
 +$  post-view
   $:  post
-      replies=(list path)
+      replies=posts-view
+  ==
++$  posts-view
+  %-  list
+  %+  pair
+      path
+      view
++$  view
+  $%  [%old ~]
+      [%new ~]
+      [%hidden [replies=@ud new-post-total=@ud]]
   ==
 +$  user-sessions  (map @p user-session)
 +$  user-session
   $:  hidden-posts=(set post-id)
+      new-posts=(set path)
+  ==
++$  access  
+  $:  public=? 
+      members=(list @p)
+      blacklist=(list @p)
   ==
 ::
 +$  state
   $:  =posts
       =user-sessions
+      =access
   ==
 --
 
