@@ -81,31 +81,29 @@
   ++  header-menu
     ;div
       =client-event  "mouseenter show-settings true"
-      =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
       ;div
-      =client-event  "mouseleave show-settings false"
+        =class  "flex flex-col gap-2 w-[18ch]"
+        =client-event  "mouseleave show-settings false"
         ;div
-          =class  "flex items-center justify-center ".
-                  "p-[8px] h-[28px]"
-          =client-display  "show-settings !true !font-mono"
-          ;  {(cite:title src)}
+          =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-center gap-2 ".
+                  "p-[8px] h-[26px] cursor-pointer patp"
+          ;span:  {(cite:title src)}
+            ;+  settings:lucide
         == 
-        ;+  ?.  =(our.hull src)  
-            user-menu
-          admin-menu
+        ;div
+        =client-display  "show-settings true"
+        =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
+          ;+  ?.  =(our.hull src)  
+              user-menu
+            admin-menu
+        ==
       ==
     ==
   ++  user-menu
     ;div
-      =class  "grid grid-cols-[auto_1fr] divide-y ".
-              "divide-[#A3A3A3]"
-      =style  "max-height: 400px; overflow-y: auto;"
-      =client-display  "show-settings true"
-      ;div.px-4.py-2: Urbit ID
-      ;div.px-4.py-2
-        ; {(cite:title src)}
-      ==
-      ;a.px-4.py-2.cursor-pointer.col-span-2.flex.justify-center
+      =class  "flex justify-center items-center h-[26px]"
+      =style  "overflow-y: auto;"
+      ;a.px-2.py-2.cursor-pointer.col-span-2.flex.justify-center.items-center
         =href  "/~/logout?redirect=/mast/athens"
         ; Sign out
       ==
@@ -113,19 +111,12 @@
   ++  admin-menu
     ;div
       =class  "grid grid-cols-[auto_1fr] divide-y ".
-              "divide-[#A3A3A3]"
-      =style  "max-height: 400px; overflow-y: auto;"
-      =client-display  "show-settings true"
-      ;div.px-4.py-2
-        ; Urbit ID
+              "divide-[#A3A3A3] leading-tight"
+      =style  "max-height: 400px; overflow-y: auto; line-height:0.8;"
+      ;div.px-2.py-2
+        ; Public
       ==
-      ;div.px-4.py-2
-        ; {(cite:title src)}
-      ==
-      ;div.px-4.py-2
-        ; Public Access
-      ==
-      ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
+      ;label.px-2.py-2.w-full.flex.items-center.justify-end.relative
         ;div.relative.inline-block
           ;+
           ?:  public.access
@@ -145,35 +136,40 @@
         ==
       ==
       ;*
+      =/  btn-class  "px-2 py-2 cursor-pointer col-span-2 flex justify-between items-center"
       ?:  public.access
         ;=
-          ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+          ;div
+            =class  btn-class
             =client-display  "show-ids !true"
             =client-event  "click show-ids true"
             ;span: Blocked
-            ;span: >
+            ;+  vector-out:lucide
           ==
-          ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+          ;div
+            =class  btn-class
             =client-display  "show-ids true"
             =client-event  "click show-ids false"
             ;span: Blocked
-            ;span: <
+            ;+  vector-in:lucide
           ==
           ;+  (edit-access-form public.access)
           ;*  (id-list blacklist.access)
         ==
       ;=
-        ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+        ;div
+          =class  btn-class
           =client-display  "show-ids !true"
           =client-event  "click show-ids true"
           ;span: Members
-          ;span: >
+          ;+  vector-out:lucide
         ==
-        ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+        ;div
+          =class  btn-class
           =client-display  "show-ids true"
           =client-event  "click show-ids false"
           ;span: Members
-          ;span: <
+          ;+  vector-in:lucide
         ==
         ;+  (edit-access-form public.access)
         ;*  (id-list members.access)
@@ -202,8 +198,8 @@
             [%view (welp /athens/view/[(scot %p src)] path)]
             [%new (weld /athens/new/[(scot %p src)] path)] 
         ==
-      ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full") 
-        =key  "athens-post-form"
+      ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full")
+        =key  "athens-post-form" 
         ;div(class "mx-auto max-w-[1000px]")
           ;div
             =class  "md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
@@ -216,6 +212,7 @@
                           "overflow-hidden box-border flex ".
                           "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
                           "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white" 
+                  =id  "post-form"
                   ;athens-textarea-litdev.grow
                     =name  "post-input"
                     ;
@@ -250,7 +247,7 @@
         ;div.flex.gap-2
           ;input
             =name  "name"
-            =class  "font-mono px-3 py-2 border rounded-sm border-neutral-800 w-60"
+            =class  "px-3 py-2 border rounded-sm border-neutral-800 w-60"
             =placeholder  "~sampel-palnet"
             =spellcheck  "false"
             =autocomplete  "off"
@@ -284,14 +281,15 @@
 ++  edit-access-form
   |=  public=?
   ^-  manx
-  ;form.col-span-2.px-4.py-2.flex(event "/submit/add-ship")
-    ;input(type "textbox", name "ship-input")
-      =class  "border-0 focus:outline-none text-white"
+  ;form(event "/submit/add-ship")
+    =class  "col-span-2 px-2 w-full flex gap-2 h-[26px]"
+    ;+  ?:  public
+      ;button.ml-auto.cursor-pointer: ~
+    ;button.ml-auto.cursor-pointer: +
+    ;input(type "text", name "ship-input")
+      =class  "border-0 focus:outline-none text-white w-full leading-tight"
     ;
     ==
-    ;+  ?:  public
-      ;button.ml-auto: ~
-    ;button.ml-auto: +
   ==
 ::
 ++  id-list
@@ -302,12 +300,12 @@
   ^-  manx
   ;div
     =client-display  "show-ids true"
-    =class  "col-span-2 flex"
-    ;div.px-4.py-2: {(scow %p ship)}
-    ;form.px-4.py-2.ml-auto(event "/submit/remove-ship")
+    =class  "col-span-2 flex gap-auto"
+    ;div.pl-2.py-2: {(scow %p ship)}
+    ;form.pr-2.py-2.ml-auto(event "/submit/remove-ship")
     =id  (scow %p ship)
       ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
-      ;button: x
+      ;button.cursor-pointer: x
     ==
   ==
 ::

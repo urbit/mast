@@ -88,8 +88,6 @@
     color: #FAFAFA;
   }
   .user {
-    font-family: 'Fragment Mono', monospace;
-    font-weight: 500;
     font-size: 14px;
     leading-trim: Cap height;
     line-height: 140%;
@@ -103,6 +101,10 @@
   .user.open{
     left: 15;
     width: 100%;
+  }
+  .user .patp{
+    font-family: 'Fragment Mono', monospace;
+    font-weight: 400;
   }
   .athens {
     height: 100%;
