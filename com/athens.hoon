@@ -1,8 +1,7 @@
 /-  mast, athens
 /+  lucide
 ^-  mast:mast
-:-  :~  %auth
-        posts+%athens-post-list
+:-  :~  posts+%athens-post-list
         access+%athens-access
     ==
 =<
@@ -44,14 +43,13 @@
 ::
 ++  sail
   ^-  manx
-  =/  src  (need src.hull)
   =/  access  get-access
-  =/  is-comet=?  ?=(%pawn (clan:title src))
+  =/  is-comet=?  ?=(%pawn (clan:title src.hull))
   |^
     ;div.root
       ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"true" ~])
       ;+
-          ?:  |(=(our.hull src) (has-access src access))
+          ?:  |(=(our.hull src.hull) (has-access src.hull access))
             authenticated-page
           unauthenticated-page
     ==
@@ -88,9 +86,9 @@
           =class  "flex items-center justify-center ".
                   "p-[8px] h-[28px]"
           =client-display  "show-settings !true !font-mono"
-          ;  {(cite:title src)}
+          ;  {(cite:title src.hull)}
         == 
-        ;+  ?.  =(our.hull src)  
+        ;+  ?.  =(our.hull src.hull)  
             user-menu
           admin-menu
       ==
@@ -103,7 +101,7 @@
       =client-display  "show-settings true"
       ;div.px-4.py-2: Urbit ID
       ;div.px-4.py-2
-        ; {(cite:title src)}
+        ; {(cite:title src.hull)}
       ==
       ;a.px-4.py-2.cursor-pointer.col-span-2.flex.justify-center
         =href  "/~/logout?redirect=/mast/athens"
@@ -120,7 +118,7 @@
         ; Urbit ID
       ==
       ;div.px-4.py-2
-        ; {(cite:title src)}
+        ; {(cite:title src.hull)}
       ==
       ;div.px-4.py-2
         ; Public Access
@@ -199,8 +197,8 @@
         |=  =path
         %^  make:mast  mast/%athens-post  ~
         :~  [%post (weld /athens/posts path)]
-            [%view (welp /athens/view/[(scot %p src)] path)]
-            [%new (weld /athens/new/[(scot %p src)] path)] 
+            [%view (welp /athens/view/[(scot %p src.hull)] path)]
+            [%new (weld /athens/new/[(scot %p src.hull)] path)] 
         ==
       ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full") 
         =key  "athens-post-form"
@@ -242,7 +240,7 @@
         ;+
         ?:  is-comet  ;/("")
         ;div.flex.gap-2
-          ;div.font-mono: {(cite:title src)}
+          ;div.font-mono: {(cite:title src.hull)}
           ;a.opacity-50(href "/~/logout?redirect=/mast/athens")
             ; logout
           ==
