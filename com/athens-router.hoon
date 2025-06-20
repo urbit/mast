@@ -3,20 +3,28 @@
 /*  athens-preview  %js  /fil/athens-preview/js
 /*  footnote-parser  %js  /fil/footnote-parser/js
 /*  scroll  %js  /fil/scroll/js
-^-  mist:mast
+^-  mast:mast
 =<
-|=  =keel:mast
-?+  url.keel  not-found
-  ::
-  ~  main-thread
-  ::
-==
+:-  ~
+|_  =hull:mast
+++  spar  *$-(crow:mast blow:mast)
+++  sail
+  ^-  manx
+  ?+  rut.hull  not-found
+    ::
+    ~  main-thread
+    ::
+  ==
+--
 ::
 |%
 ::
 ++  main-thread
   %-  document
-  %^  make:mast  mast/%athens-wrapper  ~  ~
+  %^  make:mast  mast/%athens  ~
+  :~  [%posts /athens/posts-all]
+      [%access /athens/access]
+  ==
 ::
 ++  not-found
   %-  document

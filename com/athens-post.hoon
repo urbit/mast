@@ -1,7 +1,6 @@
 /-  mast, athens
 ^-  mast:mast
-:-  :~  %auth
-        post+%athens-post
+:-  :~  post+%athens-post
         view+%noun
         new+%noun
     ==
@@ -67,7 +66,7 @@
   =/  idt  (trip (rear paf)) 
   =/  num-lines  (lent (to-wain:format content.post.dat))
   =/  sticky  ?:((gth num-lines 8) "md:sticky" "")
-  =/  is-comet=?  ?=(%pawn (clan:title src))
+  =/  is-comet=?  ?=(%pawn (clan:title src.hull))
   =/  reply=?
     ?>  ?=([%athens %posts *] paf)
     (gth (lent t.t.paf) 1) 
@@ -260,7 +259,7 @@
             "leading-none align-top md:justify-start"
     ;button(client-display "reply !{idt}", client-event "click reply {idt}", onclick "delayedScrollToTop('{(trip (rear paf))}', false)"): reply
     ;button(client-display "reply {idt}", client-event "click reply ~"): reply
-    ;*  ?:  =(author.post.dat src)
+    ;*  ?:  =(author.post.dat src.hull)
       ;=
         ;button(client-display "edit !{idt}", client-event "click edit {idt}"): edit
         ;button(client-display "edit {idt}", client-event "click edit ~"): edit
@@ -281,8 +280,8 @@
           |=  p=path
           %^  make:mast  mast/%athens-post  ~
           :~  [%post (welp paf p)] 
-              [%view (welp /athens/view/[(scot %p src)] (welp t.t.paf p))]
-              [%new (welp /athens/new/[(scot %p src)] (welp t.t.paf p))] 
+              [%view (welp /athens/view/[(scot %p src.hull)] (welp t.t.paf p))]
+              [%new (welp /athens/new/[(scot %p src.hull)] (welp t.t.paf p))] 
           ==
     ==
   --

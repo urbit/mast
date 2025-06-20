@@ -192,8 +192,8 @@
         |=  =path
         %^  make:mast  mast/%athens-post  ~
         :~  [%post (weld /athens/posts path)]
-            [%view (welp /athens/view/[(scot %p src)] path)]
-            [%new (weld /athens/new/[(scot %p src)] path)] 
+            [%view (welp /athens/view/[(scot %p src.hull)] path)]
+            [%new (weld /athens/new/[(scot %p src.hull)] path)] 
         ==
       ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full")
         =key  "athens-post-form" 
