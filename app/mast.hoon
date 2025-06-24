@@ -7,7 +7,8 @@
 ::
 |%
 +$  state-0
-  $:  =navy
+  $:  swab=@da
+      =navy
       =dock
       =deck
   ==
@@ -27,9 +28,8 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  :_  this
-  :~  (bind-url dap.bowl /mast)
-  ==
+  =^  cards  state  abet:init:cor
+  :-  cards  this
 ::
 ++  on-save
   ^-  vase
@@ -103,6 +103,23 @@
   ^-  card:agent:gall
   :*  %pass  /bind  %arvo  %e  %connect  [~ url]  app
   ==
+::
+++  cleanup-timer
+  =/  tim  `@da`(add ~d1 now.bowl)
+  =/  wir  `wire`/cleanup
+  =/  wab  swab
+  |%
+  ++  set
+    ^+  cor
+    =.  swab  tim
+    %-  emit  wait
+  ++  reset
+    ^+  cor
+    =.  swab  tim
+    %-  emil  [wait rest ~]
+  ++  rest  `card`[%pass wir %arvo %b %rest wab]
+  ++  wait  `card`[%pass wir %arvo %b %wait tim]
+  --
 ::
 ++  parse-url
   |=  cod=cord
@@ -257,6 +274,12 @@
   |=  [k=hook *]
   .=  des  desk.k
 ::
+++  init
+  =.  cor  set:cleanup-timer
+  %-  emil
+  :~  (bind-url dap.bowl /mast)
+  ==
+::
 ++  save
   ^-  vase
   !>  state(deck ~)
@@ -269,6 +292,7 @@
     ::
       %state-0
     =.  state  lod
+    =.  cor  reset:cleanup-timer
     =/  des
       ^-  (list desk)
       %~  tap  in
@@ -297,6 +321,36 @@
     =.  deck  (del-deck i.t.wire)
     =.  deck  (put-deck i.t.wire)
     %-  emit  (make-com-subscription-card %add i.t.wire)
+    ::
+      [%behn %wake *]
+    ?+  wire  !!
+      ::
+        [%cleanup ~]
+      =.  cor  set:cleanup-timer
+      ?^  error.sign  cor
+      =/  hav
+        %+  roll  ~(val by sup.bowl)
+        |=  [[who=ship paf=path] acc=(set (pair ship cord))]
+        ::  /com/[client-ship]/[com-id]
+        ?.  ?=([%com @ @ ~] paf)  acc
+        %+  ~(put in acc)  (slav %p i.t.paf)  i.t.t.paf
+      =^  caz=(list card)  navy
+        %-  ~(rep by navy)
+        |=  $:  [key=path val=(set (pair ship cord))]
+                acc=[caz=(list card) new=^navy]
+            ==
+        =/  kil  (~(dif in val) hav)
+        =/  liv  (~(dif in val) kil)
+        ?^  liv
+          %_  acc
+            new  (~(put by new.acc) key liv)
+          ==
+        %_  acc
+          caz  [(make-resource-subscription-card [%del key]) caz.acc]
+        ==
+      %-  emil  caz
+      ::
+    ==
     ::
   ==
 ::
@@ -374,18 +428,11 @@
     ?~  duk
       ~&  >>  "%mast-unbind: /{(trip not)} is already unbound"
       !!
-    :: =/  bos
-    ::   ^-  (set buoy)
-    ::   %-  ~(rep by q.u.duk)
-    ::   |=  [[k=rope v=bitt] a=(set buoy)]
-    ::   %-  ~(gas in a)  (make-component-buoys %del k bom.v res.v) :: TODO: end affected resource subscriptions
     =.  dock  (~(del by dock) not)
     =?  cor  !(dock-has-desk desk.com.u.duk)
       =.  deck  (del-deck desk.com.u.duk)
       %-  emit  (make-com-subscription-card %del desk.com.u.duk)
     ~&  >  "%mast-unbind: /{(trip not)} unbound"
-    :: %-  emil
-    :: %+  make-resource-subscription-cards  not  bos
     cor
     ::
       %handle-http-request
