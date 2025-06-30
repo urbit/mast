@@ -57,7 +57,7 @@
       =class  "relative h-[112px] w-full"
       ;div
         =class  "fixed top-0 left-0 w-full h-[18vh] md:h-[9vh] ".
-                "bg-gradient-to-b from-black/100 to-transparent ".
+                "gradient-top ".
                 "z-50 pointer-events-none"
         ;
       ==
@@ -68,34 +68,54 @@
             header-menu
       ==
       ;div
-        =class  "gradient fixed bottom-0 left-0 w-full h-[18vh] md:h-[9vh] ".
-                "bg-gradient-to-t from-black/100 to-transparent z-50 ".
-                "pointer-events-none"
+        =class  "gradient-bottom fixed bottom-0 left-0 w-full h-[18vh] md:h-[9vh] ".
+                "z-50 pointer-events-none"
         ;
       ==
       ;+  list-posts
     ==
   ++  header-menu
+  ;div
     ;div
-      =client-event  "mouseenter show-settings true"
+      =client-event  "click show-settings true"
+      =client-display  "show-settings false"
+      ;div
+        =class  "flex flex-col gap-2 w-[18ch] menu"
+        ;div
+          =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-between gap-2 ".
+                  "p-[8px] h-[26px] cursor-pointer patp"
+          ;span:  {(cite:title src.hull)}
+            ;+  settings:lucide
+        == 
+        ;div
+          =class  "settings-menu border border-[#A3A3A3] rounded bg-[#0F0F0F] hidden"
+            ;+  ?.  =(our.hull src.hull)  
+                user-menu
+              admin-menu
+        ==
+      ==
+    ==
+    ;div
+      =client-display  "show-settings true"
       ;div
         =class  "flex flex-col gap-2 w-[18ch]"
-        =client-event  "mouseleave show-settings false"
         ;div
-          =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-center gap-2 ".
+          =client-event  "click show-settings false"
+          =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-between gap-2 ".
                   "p-[8px] h-[26px] cursor-pointer patp"
           ;span:  {(cite:title src.hull)}
             ;+  settings:lucide
         == 
         ;div
         =client-display  "show-settings true"
-        =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
+        =class  "settings-menu border border-[#A3A3A3] rounded bg-[#0F0F0F]"
           ;+  ?.  =(our.hull src.hull)  
               user-menu
             admin-menu
         ==
       ==
     ==
+  ==
   ++  user-menu
     ;div
       =class  "flex justify-center items-center h-[26px]"

@@ -61,7 +61,6 @@
 ::
 ++  sail
   ^-  manx
-  =/  src  (need src.hull)
   =/  [paf=path dat=[[post=post:athens rep-num=@] rep=(list path)]]  =+(post [src !<([[post:athens @] (list path)] fil)])
   =/  idt  (trip (rear paf)) 
   =/  num-lines  (lent (to-wain:format content.post.dat))
@@ -145,8 +144,9 @@
       =class  "post-container relative grid grid-cols-2 ".
               "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
               "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
-              "md:items-start md:w-full md:grid-cols-[14ch_auto_120px] ".
+              "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] grid-cols-[1fr_min-content] ".
               "z-10 form-post-wrapper cursor-pointer" 
+      ;div(class "author w-[15ch] max-w-[15ch] md:col-start-1 md:row-start-1 hidden md:block");
       ;div
         =class  "message w-full col-start-1 md:col-start-2 md:col-span-1 ".
                 "row-start-1 md:row-start-1 flex ".

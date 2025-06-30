@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const elements = Array.from(document.querySelectorAll('.post-container'))
     if (!elements.length) return
 
-    if (e.key === 'j') {
+    if (e.key === 'j' || e.key === ' ') {
       if (currentIndex < elements.length - 1) {
         scrollToIndex(currentIndex + 1)
       }
@@ -233,10 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!focused || !focused.matches('textarea.track-focus')) {
           isInputFocused = false
           postForm.classList.remove('hidden')
-          //   const closestReplyForm = e.target.closest('form[name="reply-form"]')
-          //   if (closestReplyForm) {
-          //     closestReplyForm.style.display = 'none'
-          //   }
         }
       }, 0)
     })

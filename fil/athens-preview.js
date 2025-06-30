@@ -18,7 +18,6 @@ class AthensPreview extends LitElement {
     super()
     this.internals = this.attachInternals()
     this.value = ''
-    this.clampClass = this.classList.contains('hide') ? 'clamp-one-line' : ''
   }
 
   createRenderRoot() {
@@ -73,7 +72,7 @@ class AthensPreview extends LitElement {
     }
 
     if (this.classList.contains('hide')) {
-      preview.style.height = '18px'
+      preview.style.height = '16px'
     } else {
       preview.style.height = 'auto'
       requestAnimationFrame(() => {
@@ -85,31 +84,9 @@ class AthensPreview extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
-
-    // Attach observer
-    this._classObserver = new MutationObserver(() => {
-      this._syncClampClass()
-    })
-
-    this._classObserver.observe(this, {
-      attributes: true,
-      attributeFilter: ['class']
-    })
-
-    // Initialize clampClass immediately (in case class was already set)
-    this._syncClampClass()
   }
 
-  disconnectedCallback() {
-    this._classObserver?.disconnect()
-  }
-
-  _syncClampClass() {
-    const newClamp = this.classList.contains('hide') ? 'clamp-one-line' : ''
-    this.clampClass = newClamp
-    this.requestUpdate('clampClass')
-    this._updatePreview()
-  }
+  disconnectedCallback() {}
 }
 
 customElements.define('athens-preview', AthensPreview)

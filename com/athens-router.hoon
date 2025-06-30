@@ -41,6 +41,9 @@
       ;link(rel "manifest", href "/athens/manifest");
       ;link(rel "preconnect", href "https://rsms.me/");
       ;link(rel "stylesheet", href "https://rsms.me/inter/inter.css");
+      ;link(rel "preconnect", href "https://fonts.googleapis.com");
+      ;link(rel "preconnect", href "https://fonts.gstatic.com", crossorigin "");
+      ;link(href "https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Oswald:wght@200..700&display=swap", rel "stylesheet");
       ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
       ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
       ;script(type "module"): {(trip footnote-parser)}
@@ -75,6 +78,14 @@
   body{
     overflow-x: hidden;
     font-family: Inter, sans-serif;
+  }
+  .gradient-top{
+  background: linear-gradient(0deg, rgba(15, 15, 15, 0.00) 0%, #0F0F0F 32.21%);
+  height: 69px;
+  }
+  .gradient-bottom{
+  background: linear-gradient(180deg, rgba(15, 15, 15, 0.00) 0%, #0F0F0F 27.4%);
+  height: 88px;
   }
   .options {
     color: #A3A3A3;
@@ -118,6 +129,9 @@
     height: 100%;
     width: 100%;
     overflow-y: scroll;
+  }
+  .menu:hover > .settings-menu {
+    display: flex;
   }
   .posts {
     padding: 110px 16px 110px 16px;
