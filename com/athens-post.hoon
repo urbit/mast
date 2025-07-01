@@ -234,7 +234,7 @@
           =event           "/submit/reply"
           =client-event    "submit reply ~"
           ;athens-textarea-litdev.grow
-            =name  "post-input"
+            =name  "reply-input"
             ;
           ==
           ;button

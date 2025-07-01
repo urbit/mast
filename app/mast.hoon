@@ -34,13 +34,10 @@
 ++  on-save
   ^-  vase
   =<  save  cor
-  =<  save  cor
 ::
 ++  on-load
   |=  =vase
   ^-  (quip card _this)
-  =^  cards  state  abet:(load:cor vase)
-  :-  cards  this
   =^  cards  state  abet:(load:cor vase)
   :-  cards  this
 ::
