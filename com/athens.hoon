@@ -2,6 +2,7 @@
 /+  lucide
 ^-  mast:mast
 :-  :~  posts+%athens-post-list
+        access+%athens-access
     ==
 =<
 |_  =hull:mast
@@ -69,7 +70,7 @@
       ==
       ;div
         =class  "gradient-bottom fixed bottom-0 left-0 w-full h-[18vh] md:h-[9vh] ".
-                "z-50 pointer-events-none"
+                "z-25 pointer-events-none"
         ;
       ==
       ;+  list-posts
@@ -216,12 +217,13 @@
             [%new (weld /athens/new/[(scot %p src.hull)] path)] 
         ==
       ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full")
+        =client-display  "reply ~"
         =key  "athens-post-form" 
         ;div(class "mx-auto max-w-[1000px]")
           ;div
             =class  "md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
                     "md:items-start md:grid-cols-[14ch_auto_120px] mx-4 ".
-                    "z-50 md:gap-x-4 form-post-wrapper "
+                    "md:gap-x-4 form-post-wrapper "
             ;+  ?:  is-comet
                   ;div.post-form.login-block: Login to post
                 ;form(event "/submit/post")

@@ -93,7 +93,7 @@
         =class  "post-container relative grid grid-cols-2 ".
                 "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
                 "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
-                "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] z-10" 
+                "md:items-start md:w-full md:grid-cols-[min-content_auto_120px]" 
         ;+  author
         ;+  
           =/  depth=@
@@ -107,7 +107,7 @@
                     "{?.(reply "" "reply")} col-span-2 md:col-start-2 ".
                     "md:col-span-1 row-start-2 md:row-start-1 flex flex-col ".
                     "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}px] ".
-                    "border-l-0" 
+                    "border-l-0 relative" 
             ;+  edit-form
             ;athens-preview(value (trip content.post.dat)) 
               =client-display  "edit !{idt}"
@@ -145,7 +145,7 @@
               "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
               "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
               "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] grid-cols-[1fr_min-content] ".
-              "z-10 form-post-wrapper cursor-pointer" 
+              "form-post-wrapper cursor-pointer" 
       ;div(class "author w-[15ch] max-w-[15ch] md:col-start-1 md:row-start-1 hidden md:block");
       ;div
         =class  "message w-full col-start-1 md:col-start-2 md:col-span-1 ".
@@ -207,18 +207,42 @@
     ==
   ::
   ++  reply-form
-    ;form
-      =name            "reply-form"
-      =event           "/submit/reply"
-      =client-event    "submit reply ~"
+    ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full")
       =client-display  "reply {idt}"
-      =class  "post-reply-form form-border flex ".
-              "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white"
-      ;athens-textarea-litdev(class "grow", name "reply-input", textareaClass "track-focus"); 
-      ;button
-        =type   "submit"
-        =class  "mt-auto p-2 text-[14px]"
-        ;span: →
+      ;div
+        =class  "md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
+                "md:items-start md:grid-cols-[14ch_auto_120px] mx-4 ".
+                "md:gap-x-4 form-border rounded-md shadow-md bg-[#0F0F0F]"
+        ;div
+          =class  "flex justify-between items-center px-[15px] py-[10px] text-[#A3A3A3]"
+          ;p
+            =style  "font-size: 12px; font-weight: 400;"
+            ;  Replying to {(cite:title author.post.dat)}
+          ==
+          ;button.cursor-pointer(client-event "click reply ~")
+            =style  "font-size: 16px;"
+            ; x
+          ==
+        ==
+        ;form
+          =class  "post-form form-border rounded-md border-r-0 ".
+                  "border-l-0 border-b-0 shadow-md ".
+                  "overflow-hidden box-border flex items-stretch".
+                  "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
+                  "[&.is-focused]:!border-white [&.is-focused]:!text-white" 
+          =name            "reply-form"
+          =event           "/submit/reply"
+          =client-event    "submit reply ~"
+          ;athens-textarea-litdev.grow
+            =name  "post-input"
+            ;
+          ==
+          ;button
+            =type   "submit"
+            =class  "mt-auto p-2 text-[14px]"
+            ; →
+          ==
+        ==
       ==
     ==
   ::
@@ -273,8 +297,8 @@
       =-  (mul (dec -) 8)
       ?>  ?=([%athens %posts *] paf)
         (lent t.t.paf)  
-    ;div.replies-container.z-10.relative
-      ;div(class "border-left absolute w-px bg-[#737373] z-0 top-0 bottom-[5px]", style "--depth: {((d-co:co 1) depth)}px;");
+    ;div.replies-container.relative
+      ;div(class "border-left absolute w-px bg-[#737373] top-0 bottom-[5px]", style "--depth: {((d-co:co 1) depth)}px;");
       ;*  ?>  ?=([%athens %posts *] paf)
           %+  turn  rep.dat
           |=  p=path

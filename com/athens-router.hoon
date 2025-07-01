@@ -78,6 +78,7 @@
   body{
     overflow-x: hidden;
     font-family: Inter, sans-serif;
+    font-weight: 400;
   }
   .gradient-top{
   background: linear-gradient(0deg, rgba(15, 15, 15, 0.00) 0%, #0F0F0F 32.21%);
