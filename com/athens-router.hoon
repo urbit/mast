@@ -205,7 +205,6 @@
   .reply-num{
     color: #737373;
     font-size: 14px;
-    width: 7ch;
   }
   .reply-num.full{
     display: none;
@@ -292,12 +291,6 @@
   athens-preview .markdown-preview {
     font-size: 14px;
   }
-  athens-preview .clamp-one-line,
-  athens-preview .clamp-one-line * {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
   athens-textarea-litdev textarea{
     background: #0f0f0f;
     border-radius: 4px;
@@ -305,29 +298,20 @@
   athens-preview .clamp-one-line * {
     font-size: 14px !important;
     font-weight: 400 !important;
-    line-height: 1.5 !important;
     color: #737373 !important;
-  }
-  athens-preview .clamp-one-line p {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: block;
-    overflow: hidden;
   }
   athens-preview .clamp-one-line table {
     font-size: 14px;
     font-weight: 400;
-    line-height: 1.5;
     display: inline;
     border: none;
   }
-  athens-textarea-litdev .clamp-one-line pre {
+  athens-textarea-litdev .clamp-one-line pre,
+  athens-textarea-litdev .clamp-one-line code{
     font-size: 14px;
     font-weight: 400;
-    line-height: 1.5;
     display: inline;
     border: none;
-    color: #737373;
   }
   athens-preview .clamp-one-line tbody {
     display: none;
@@ -371,7 +355,7 @@
   .prose code {
     background: transparent;
     color: #FAFAFA;
-    padding: 1rem; /* p-4 */
+    padding: 0.5rem;
     border-radius: 0.5rem; /* rounded-lg */
     overflow-x: auto;
   }

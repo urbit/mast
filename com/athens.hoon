@@ -78,11 +78,11 @@
   ++  header-menu
   ;div
     ;div
-      =client-event  "click show-settings true"
       =client-display  "show-settings false"
       ;div
         =class  "flex flex-col gap-2 w-[18ch] menu"
         ;div
+          =client-event  "click show-settings true"
           =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-between gap-2 ".
                   "p-[8px] h-[32px] cursor-pointer patp"
           ;span:  {(cite:title src.hull)}

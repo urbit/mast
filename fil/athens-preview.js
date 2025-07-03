@@ -63,7 +63,12 @@ class AthensPreview extends LitElement {
     })
 
     const trimValue = this.value.trimEnd()
-    preview.innerHTML = window.marked.parse(trimValue)
+    if (this.classList.contains('hide')) {
+      const truncateValue = smartTruncate(this.value)
+      preview.innerHTML = window.marked.parse(truncateValue)
+    } else {
+      preview.innerHTML = window.marked.parse(trimValue)
+    }
 
     // Remove empty trailing paragraph if it exists
     const last = preview.lastElementChild
@@ -73,12 +78,36 @@ class AthensPreview extends LitElement {
 
     if (this.classList.contains('hide')) {
       preview.style.height = '16px'
+      this.clampClass = 'clamp-one-line'
     } else {
       preview.style.height = 'auto'
+      this.clampClass = ''
       requestAnimationFrame(() => {
         const initialHeight = preview.offsetHeight
         preview.style.height = `${initialHeight - 4}px`
       })
+    }
+
+    function smartTruncate(text) {
+      const maxLength = 85
+      let cleanText = text
+        .replace(/\.\.\.+$/, '') // Remove existing ellipsis
+        .replace(/\s*-+\s*$/, '') // Remove trailing dashes with optional spaces
+        .trim()
+
+      if (cleanText.length <= maxLength) return cleanText + '...'
+
+      let truncated = cleanText.substring(0, maxLength)
+
+      let lastSpace = truncated.lastIndexOf(' ')
+
+      if (lastSpace > 0) {
+        truncated = cleanText.substring(0, lastSpace)
+      }
+
+      truncated = truncated.replace(/\s*-+\s*$/, '').trim()
+
+      return truncated + '...'
     }
   }
 

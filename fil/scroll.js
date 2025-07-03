@@ -130,17 +130,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function scrollToIndex(index) {
     const elements = Array.from(document.querySelectorAll('.post-container'))
+    const currentScrollY =
+      window.pageYOffset || document.documentElement.scrollTop
 
     const rect = elements[index].getBoundingClientRect()
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-    const targetY = scrollTop + rect.top - 50
+    const targetY = scrollTop + rect.top - 65
 
     window.scrollTo({
       top: targetY,
       behavior: 'smooth'
     })
 
-    currentIndex = index
+    setTimeout(() => {
+      const newScrollY =
+        window.pageYOffset || document.documentElement.scrollTop
+
+      if (Math.abs(newScrollY - currentScrollY) > 1) {
+        currentIndex = index
+      }
+    }, 100)
   }
 
   document.addEventListener('keydown', (e) => {
@@ -156,10 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!elements.length) return
 
     if (e.key === 'j' || e.key === ' ') {
+      e.preventDefault()
       if (currentIndex < elements.length - 1) {
         scrollToIndex(currentIndex + 1)
       }
     } else if (e.key === 'k') {
+      e.preventDefault()
       if (currentIndex > 0) {
         scrollToIndex(currentIndex - 1)
       }
@@ -177,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const rect = elem.getBoundingClientRect()
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-    const targetY = scrollTop + rect.top - 80
+    const targetY = scrollTop + rect.top - 65
     window.scrollTo({
       top: targetY,
       behavior: 'smooth'
@@ -350,8 +361,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updatePositions() {
-      const viewportTop = window.scrollY
-      const viewportBottom = viewportTop + window.innerHeight
+      const viewportTop = window.scrollY + 60
+      const viewportBottom = viewportTop + window.innerHeight - 110
 
       let aboveSum = 0
       let belowSum = 0
@@ -467,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollToNearest(forceDirection = null) {
       if (!forceDirection) return
 
-      const viewportTop = window.scrollY
+      const viewportTop = window.scrollY + 60
       const viewportBottom = viewportTop + window.innerHeight
 
       let targetElement = null
@@ -503,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const rect = grandparent.getBoundingClientRect()
           const scrollTop =
             window.pageYOffset || document.documentElement.scrollTop
-          const targetY = scrollTop + rect.top - 80 // 80px offset from top
+          const targetY = scrollTop + rect.top - 65 // 80px offset from top
 
           window.scrollTo({
             top: targetY,

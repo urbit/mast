@@ -110,7 +110,6 @@
                     "border-l-0 relative" 
             ;+  edit-form
             ;athens-preview(value (trip content.post.dat)) 
-              =client-display  "edit !{idt}"
               =class  "w-full resize-none overflow-hidden box-border text-sm {?:(new "text-fade" "")}{?:(hid "hide" "")}"
               ;*  ~
             ==
@@ -194,8 +193,8 @@
       =client-display  "edit {idt}"
       ;div
         =class  "form-post-wrapper md:grid md:grid-rows-[min-content] ".    
-              "md:grid-cols-3 md:items-start md:grid-cols-[15ch_auto_120px] ".
-              "mx-4 md:gap-x-4 mx-auto max-w-[1000px]"
+                "md:grid-cols-3 md:items-start md:grid-cols-[15ch_auto_120px] ".
+                "mx-4 md:gap-x-4 mx-auto max-w-[1000px]"
         ;div 
           =class  "mx-4 border-b-0 md:col-start-2 ".
                   "form-wrapper-border rounded-md shadow-md bg-[#0F0F0F] ".
@@ -285,7 +284,7 @@
           ;div 
             =class  "reply-num {?:(hid "hide" "full")} pr-4 ".
                     "text-[{txt-color}] inline whitespace-nowrap ". 
-                    "w-auto text-[{txt-color}] ". 
+                    "w-auto text-[{txt-color}] md:w-[7ch] w-auto ". 
                     "leading-none align-top"
             {?:((gth `@ud`rep 0) <rep> "")}
             ;span
