@@ -84,7 +84,7 @@
         =class  "flex flex-col gap-2 w-[18ch] menu"
         ;div
           =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-between gap-2 ".
-                  "p-[8px] h-[26px] cursor-pointer patp"
+                  "p-[8px] h-[32px] cursor-pointer patp"
           ;span:  {(cite:title src.hull)}
             ;+  settings:lucide
         == 
@@ -103,7 +103,7 @@
         ;div
           =client-event  "click show-settings false"
           =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-between gap-2 ".
-                  "p-[8px] h-[26px] cursor-pointer patp"
+                  "p-[8px] h-[32px] cursor-pointer patp"
           ;span:  {(cite:title src.hull)}
             ;+  settings:lucide
         == 
@@ -119,7 +119,7 @@
   ==
   ++  user-menu
     ;div
-      =class  "flex justify-center items-center h-[26px]"
+      =class  "flex justify-center items-center h-[32px]"
       =style  "overflow-y: auto;"
       ;a.px-2.py-2.cursor-pointer.col-span-2.flex.justify-center.items-center
         =href  "/~/logout?redirect=/mast/athens"
@@ -194,7 +194,7 @@
       ==
     ==
   ++  public-login-form
-    ;form.flex
+    ;form.flex 
       =action  "/~/login"
       =method  "POST"
       ;label.p-2(for "login-input"): login:
@@ -216,32 +216,34 @@
             [%view (welp /athens/view/[(scot %p src.hull)] path)]
             [%new (weld /athens/new/[(scot %p src.hull)] path)] 
         ==
-      ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full")
+      ;div(class "fixed bottom-[24px] inset-x-0 z-50 md:w-full")
         =client-display  "reply ~"
         =key  "athens-post-form" 
-        ;div(class "mx-auto max-w-[1000px]")
+        :: ;div(class "mx-auto max-w-[1000px]")
+        :: =client-display  "edit ~"
           ;div
-            =class  "md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
-                    "md:items-start md:grid-cols-[14ch_auto_120px] mx-4 ".
-                    "md:gap-x-4 form-post-wrapper "
+            =class  "form-post-wrapper md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
+                    "md:items-start md:items-start md:grid-cols-[15ch_auto_120px] mx-4 ".
+                    "md:gap-x-4 h-[32px] mx-auto max-w-[1000px]"
+            =client-display  "edit ~"
             ;+  ?:  is-comet
                   ;div.post-form.login-block: Login to post
                 ;form(event "/submit/post")
                   =class  "post-form form-border rounded-md shadow-md bg-[#0F0F0F] ".
-                          "overflow-hidden box-border flex ".
+                          "overflow-hidden box-border flex  ".
                           "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
-                          "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white" 
+                          "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white mx-4" 
                   =id  "post-form"
                   ;athens-textarea-litdev.grow
                     =name  "post-input"
                     ;
                   ==
                   ;button
-                  =class  "mt-auto p-2 text-[14px]"
+                  =class  "mt-auto p-2 text-[14px] h-[32px]"
                     ; →
                   ==
                 ==
-          ==
+          ::==
         ==
       ==
     ==
@@ -301,7 +303,7 @@
   |=  public=?
   ^-  manx
   ;form(event "/submit/add-ship")
-    =class  "col-span-2 px-2 w-full flex gap-2 h-[26px]"
+    =class  "col-span-2 px-2 w-full flex gap-2 h-[32px]"
     ;+  ?:  public
       ;button.ml-auto.cursor-pointer: ~
     ;button.ml-auto.cursor-pointer: +

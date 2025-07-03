@@ -78,7 +78,6 @@
   body{
     overflow-x: hidden;
     font-family: Inter, sans-serif;
-    font-weight: 400;
   }
   .gradient-top{
   background: linear-gradient(0deg, rgba(15, 15, 15, 0.00) 0%, #0F0F0F 32.21%);
@@ -88,18 +87,27 @@
   background: linear-gradient(180deg, rgba(15, 15, 15, 0.00) 0%, #0F0F0F 27.4%);
   height: 88px;
   }
+  .tracker > span {
+    leading-trim: both;
+    text-edge: cap;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+  }
   .options {
     color: #A3A3A3;
   }
+  .options > div,
   .options > button {
     color: #A3A3A3;
-    margin-inline: 0.25em;
     font-family: Inter, sans-serif;
-    font-size: 0.85rem;
+    font-size: 14px;
   }
   .post-container:hover > .options{
     visibility: visible;
   }
+  .options > div:hover,
   .options > button:hover {
     color: #FAFAFA;
   }
@@ -114,8 +122,6 @@
     letter-spacing: 0%;
     top: 24px;
     right: 24px;
-    padding-block: 0.2em;
-    padding-inline: 0.3em;
     color: #A3A3A3;
   }
   .user.open{
@@ -180,11 +186,14 @@
   }
   .border-left,
   .form-post-wrapper{
-    font-weight: 500;
+    font-family: 'Fragment Mono', monospace;
+    font-weight: 400;
     font-size: 14px;
   }
+  .post-form{
+    font-family: Inter, sans-serif;
+  }
   .border-left{
-    font-family: 'Fragment Mono', monospace;
     leading-trim: Cap height;
     line-height: 140%;
     letter-spacing: 0%;
@@ -212,11 +221,26 @@
     color: #737373;
     font-size: 14px;
   }
+  .form-reply-text{
+    font-size: 14px;
+    font-weight: 400;
+    font-family: Inter, sans-serif;
+    }
+  .form-wrapper-border,
+  .form-reply,
   .form-border {
     border: 1px solid #575757;
-    border-radius: 6px;
+    border-radius: 4px;
+  }
+  .form-wrapper-border{
+    border-bottom: 0;
+  }
+  .form-reply{
+    border-right:0;
+    border-left: 0;
   }
   .post-reply-form {
+    font-family: Inter, sans-serif;
     line-height: normal;
   }
   .post-form {
@@ -237,7 +261,7 @@
     padding: 0.15em;
     border: solid;
     border-width: 1px;
-    border-radius: 6px;
+    border-radius: 4px;
     border-color: #2C2C2C;
     background-color: #2C2C2C;
   }
@@ -276,7 +300,7 @@
   }
   athens-textarea-litdev textarea{
     background: #0f0f0f;
-    border-radius: 10px;
+    border-radius: 4px;
   }
   athens-preview .clamp-one-line * {
     font-size: 14px !important;

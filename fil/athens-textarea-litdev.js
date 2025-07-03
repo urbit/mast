@@ -8,6 +8,7 @@ class AthensTextareaLitdev extends LitElement {
   internals
 
   static properties = {
+    name: { type: String },
     value: { type: String, reflect: true },
     activeTab: { type: String },
     textareaClass: { type: String }
@@ -24,6 +25,8 @@ class AthensTextareaLitdev extends LitElement {
   }
 
   render() {
+    const placeholderText =
+      this.name === 'reply-input' ? 'Reply' : 'Write something...'
     return html`
       <div class="athens-editor flex items-start">
         <textarea
@@ -31,7 +34,7 @@ class AthensTextareaLitdev extends LitElement {
           class="${this
             .textareaClass} flex items-center min-h-[16px] h-[0px] w-full focus:text-white focus:outline-none leading-[16px] text-[16px] md:text-[14px] p-2 border-0 box-border shadow-none"
           rows="1"
-          placeholder="Write something..."
+          placeholder=${placeholderText}
           .value=${this.value}
           @input=${this._onInput}
           @keydown=${this._onKeydown}
