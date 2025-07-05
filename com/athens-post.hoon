@@ -12,6 +12,7 @@
     new-posts  !<  (list path)  fil:(~(got by res.hull) %new)
     hid   =(-.viw %hidden)
     new   =(-.viw %new)
+    show  =(-.viw %display-none)
 ::
 ++  spar
   |=  =crow:mast
@@ -60,7 +61,7 @@
 ::
 ++  sail
   ^-  manx
-  =/  [paf=path dat=[=post:athens rep=(list path)]]  =+(post [src !<([post:athens (list path)] fil)])
+  =/  [paf=path dat=[[post=post:athens rep-num=@] rep=(list path)]]  =+(post [src !<([[post:athens @] (list path)] fil)])
   =/  idt  (trip (rear paf)) 
   =/  num-lines  (lent (to-wain:format content.post.dat))
   =/  sticky  ?:((gth num-lines 8) "md:sticky" "")
@@ -80,159 +81,264 @@
         ==
       "delayedScrollToTop('{(trip (rear (head new-posts)))}')"
     ""
-  ;div
-    =event  "{?~(hid "/click/unhide" "")}"
-    =onclick  scroll
-    =id  idt
-    =class  "post-node-container flex flex-col md:gap-[16px] gap-[16px] {?~(hid "cursor-pointer" "")}"
-    :: ;+  ?.  reply  ;div;
-      :: ;div(class "border-left absolute w-px bg-[#737373] z-0 top-0 bottom-[5px]", style "--depth: {((d-co:co 1) depth)}px;");
+  |^
+    ?:  show  ;div.hidden;
+    ?:  &(hid !=(-.+.viw 0))  nested-replies
     ;div
-      =class  "post-container relative grid grid-cols-2 ".
-              "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
-              "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
-              "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] z-10" 
-      ;div(event "/click/toggle-hide")
-        =class  "author {?:(hid "hide" "")} {sticky} ".
-                "top-20 cursor-pointer w-[15ch] max-w-[15ch] ".
-                "ml-[{((d-co:co 1) depth)}px] overflow-hidden ".
-                "whitespace-nowrap flex items-start col-start-1 ".
-                "row-start-1 md:text-right {?.(reply "" "pl-2")} md:pl-0"
-        =client-event  "click edit ~" 
-        ;span(class "inline-block leading-none align-top w-full"): {(cite:title author.post.dat)}
+      =event  "{?:(hid "/click/unhide" "")}"
+      =onclick  scroll
+      =id  idt
+      =class  "post-node-container flex flex-col md:gap-[16px] gap-[16px] {?~(hid "cursor-pointer" "")}"
+      ;div
+        =class  "post-container relative grid grid-cols-2 ".
+                "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
+                "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
+                "md:items-start md:w-full md:grid-cols-[min-content_auto_120px]" 
+        ;+  author
+        ;+  
+          =/  depth=@
+            =-  (mul (dec -) 8)
+            ?>  ?=([%athens %posts *] paf) 
+            ?:  (gth (lent t.t.paf) 2) 
+              (dec (lent t.t.paf))  
+            1
+          ;div
+            =class  "message {?:(hid "hide md:w-[95%] w-[85%]" "full")} ".
+                    "{?.(reply "" "reply")} col-span-2 md:col-start-2 ".
+                    "md:col-span-1 row-start-2 md:row-start-1 flex flex-col ".
+                    "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}px] ".
+                    "border-l-0 relative" 
+            ;+  edit-form
+            ;athens-preview(value (trip content.post.dat)) 
+              =class  "w-full resize-none overflow-hidden box-border text-sm {?:(new "text-fade" "")}{?:(hid "hide" "")}"
+              ;*  ~
+            ==
+            ;+  ?:  hid
+                  ;div.hidden;
+                reply-form
+          ==
+        ;+  ?:  ?&  ?|  =((lent paf) 4)
+                        !=(~ rep.dat)
+                    ==
+                !hid
+                ==
+          ;form(event "/submit/hide", class "track-visibility opacity-0 pointer-events-none md:col-start-2 md:col-span-1 row-start-2 md:row-start-1");
+        ;div.hidden;
+        ;+  post-metadata
+        ;+  ?:  is-comet
+              ;div.hidden;
+            option-buttons
       ==
       ;+  
-        =/  depth=@
-          =-  (mul (dec -) 8)
-          ?>  ?=([%athens %posts *] paf)
-          ?:  (gth (lent t.t.paf) 2) 
-            (dec (lent t.t.paf))  
-          1
-        ;div
-          =class  "message {?:(hid "hide md:w-[95%] w-[85%]" "full")} ".
-                  "{?.(reply "" "reply")} col-span-2 md:col-start-2 ".
-                  "md:col-span-1 row-start-2 md:row-start-1 flex flex-col ".
-                  "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}px] ".
-                  "border-l-0" 
-            ;form
-              =name   "edit-form" 
-              =event  "/submit/edit"
-              =client-event  "submit edit ~"
-              =client-display  "edit {idt}"
-              =class  "post-reply-form w-full min-h-[16px] ".
-                      "resize-none overflow-hidden box-border ".
-                      "form-border flex items-stretch justify-between gap-0 ".
-                      "[&.is-focused]:!border-white [&.is-focused]:!text-white"
-              ;athens-textarea-litdev(value (trip content.post.dat), class "grow", name "edit-input");
-              ;button 
-                =event  "/click/toggle-edit"
-                =class  "mt-auto p-2 text-[14px]"
-                ;span: →
-              == 
-            ==
-          ;athens-preview(value (trip content.post.dat)) 
-            =client-display  "edit !{idt}"
-            =class  "w-full resize-none overflow-hidden box-border text-sm {?:(new "text-fade" "")}{?:(hid "hide" "")}"
-            ;*  ~
-          ==
-          ;+  ?:  hid
-              ;div.hidden;
-            ;form
-              =name   "reply-form"
-              =event  "/submit/reply"
-              =client-event  "submit reply ~"
-              =client-display  "reply {idt}"
-              =class  "post-reply-form form-border flex ".
-                      "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white"
-              ;athens-textarea-litdev(class "grow", name "reply-input"); 
-              ;button 
-                =type  "submit"
-                =class  "mt-auto p-2 text-[14px]"
-                ;span: →
-              ==
-            ==
-        ==
-      ;+  ?:  ?&  ?|  =((lent paf) 4)
-                      !=(~ rep.dat)
-                      :: %+  levy  rep.dat
-                      :: |=  [p=path =view:athens]
-                      :: =(-.view %hidden)
-                  ==
-              !hid
-              ==
-        ;form(event "/submit/hide", class "track-visibility opacity-0 pointer-events-none md:col-start-2 md:col-span-1 row-start-2 md:row-start-1");
-      ;div.hidden;
-      ;div
-        =class  "md:col-start-3 md:row-start-1 flex flex-row justify-end md:justify-start {?:(hid "" "hidden")}"
-        ;+  ?:  =(0 (lent rep.dat))
-            ;div.hidden;
-          ?:  hid
-            =/  num  +.viw
-            ;div 
-              =class  "reply-num {?:(hid "hide" "full")} pr-4 text-[{txt-color}] inline whitespace-nowrap w-auto text-[{txt-color}] inline-block leading-none align-top"
-              {<(lent rep.dat)>}
-              ;span.text-white: {?:((gth `@ud`+.+.viw 0) "+{(scow %ud +.+.viw)}" "")}
-            ==
-          ;div 
-            =class  "reply-num {?:(hid "hide" "full")} pr-4 text-[{txt-color}] inline whitespace-nowrap w-auto text-[{txt-color}] inline-block leading-none align-top"
-            {<(lent rep.dat)>} 
-          ==
-        ;+
-          ?:  hid
-            =/  num  +.+.viw
-            ^-  manx
-            ;div
-              =class  "reply-date {?:(hid "hide" "full")} inline ".
-                      "whitespace-nowrap w-auto text-[{txt-color}] inline-block ".
-                      "leading-none align-top {?:((gth num 0) "!text-white" "")}"
-              {(date-to-tape (slav %da (rear paf)) now.hull)}
-            ==
-          ;div
-            =class  "reply-date {?:(hid "hide" "full")} inline ".
-                    "whitespace-nowrap w-auto text-[{txt-color}] inline-block ".
-                    "leading-none align-top"
-            {(date-to-tape (slav %da (rear paf)) now.hull)}
-          ==
-      ==
-      ;+  ?:  is-comet
-            ;div.hidden;
-          ;div
-            =class  "options {sticky} top-20 col-start-2 ".
-                    "row-start-1 md:col-start-3 md:row-start-1 ".
-                    "flex gap-2 justify-end md:invisible  visible ".
-                    "color-[#646464] {?:(hid "hidden" "")}  translate-y-[-1px] ".
-                    "leading-none align-top md:justify-start"
-            ;button(client-display "reply !{idt}", client-event "click reply {idt}"): reply
-            ;button(client-display "reply {idt}", client-event "click reply ~"): reply
-            ;*  ?:  =(author.post.dat src.hull)
-              ;=
-                ;button(client-display "edit !{idt}", client-event "click edit {idt}"): edit
-                ;button(client-display "edit {idt}", client-event "click edit ~"): edit
-                ;button(event "/click/delete"): delete
-              ==
-            ~
-          ==
-    ==
-    ;+  ?:  ?|  hid
+        ?:  ?|  hid
                 ?=(~ rep.dat)
             ==
           ;div.hidden;
-        =/  depth=@
-          =-  (mul (dec -) 8)
-          ?>  ?=([%athens %posts *] paf)
-            (lent t.t.paf)  
-        ;div.replies-container.z-10.relative
-          ;div(class "border-left absolute w-px bg-[#737373] z-0 top-0 bottom-[5px]", style "--depth: {((d-co:co 1) depth)}px;");
-          ;*  ?>  ?=([%athens %posts *] paf)
-              %+  turn  rep.dat
-              |=  p=path
-              %^  make:mast  mast/%athens-post  ~
-              :~  [%post (welp paf p)] 
-                  [%view (welp /athens/view/[(scot %p src.hull)] (welp t.t.paf p))]
-                  [%new (welp /athens/new/[(scot %p src.hull)] (welp t.t.paf p))] 
-              ==
+        make-replies
+    ==
+  ++  nested-replies
+    =/  new-rep  +.+.viw
+    ;div(event "/click/unhide")
+      =onclick  scroll
+      =class  "post-container relative grid grid-cols-2 ".
+              "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
+              "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
+              "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] grid-cols-[1fr_min-content] ".
+              "form-post-wrapper cursor-pointer"
+      ;div(class "author w-[15ch] max-w-[15ch] md:col-start-1 md:row-start-1 hidden md:block");
+      ;div
+        =class  "message w-full col-start-1 md:col-start-2 md:col-span-1 ".
+                "row-start-1 md:row-start-1 flex ".
+                "flex-row md:flex-grow ml-[0px] border-l-0 ".
+                "ml-[{((d-co:co 1) depth)}px] pl-2 items-center"
+          ;span: {<posts.-.+.viw>} 
+          ;span: {" posts"}
+          ;div(class "ml-4 flex-grow h-px bg-[#A3A3A3] opacity-50");
+      ==
+      ;div
+        =class  "col-start-2 md:col-start-3 row-start-1 md:row-start-1 flex justify-end md:justify-start"
+        ;div
+          =class  "reply-num pr-4 ".
+                  "text-[{txt-color}] inline whitespace-nowrap ". 
+                  "w-auto text-[{txt-color}] ". 
+                  "leading-none align-top"
+          ;span
+            =class  "text-white {?:((gth `@ud`new-rep 0) "new" "")}"
+            {?:((gth `@ud`new-rep 0) "+{(scow %ud new-rep)} " " ")}
+          ==
         ==
+        ;div
+          =class  "reply-date inline leading-none align-top ".
+                  "whitespace-nowrap w-auto text-[{txt-color}] ".
+                  "{?:((gth +.+.viw 0) "!text-white" "")} "
+          =style  "font-weight: 400"
+          {(date-to-tape (slav %da (rear paf)) now.hull)}
+        ==
+      ==
+    ==
+  ::
+  ++  author
+    ;div
+      =event  "{?~(hid "" "/click/toggle-hide")}"
+      =class  "author {?:(hid "hide" "")} {sticky} ".
+              "top-20 cursor-pointer w-[15ch] max-w-[15ch] ".
+              "ml-[{((d-co:co 1) depth)}px] overflow-hidden ".
+              "whitespace-nowrap flex items-start col-start-1 ".
+              "row-start-1 md:text-right {?.(reply "" "pl-2")} md:pl-0"
+      =client-event  "click edit ~" 
+      ;span(class "inline-block leading-none align-top w-full"): {(cite:title author.post.dat)}
+    ==
+  ++  edit-form
+    ;div(class "fixed bottom-[24px] inset-x-0 z-51 md:w-full")
+      =client-display  "edit {idt}"
+      ;div
+        =class  "form-post-wrapper md:grid md:grid-rows-[min-content] ".    
+                "md:grid-cols-3 md:items-start md:grid-cols-[15ch_auto_120px] ".
+                "mx-4 md:gap-x-4 mx-auto max-w-[1000px]"
+        ;div 
+          =class  "mx-4 border-b-0 md:col-start-2 ".
+                  "form-wrapper-border rounded-md shadow-md bg-[#0F0F0F] ".
+                  "mx-4 focus-within:!border-white focus-within:!text-white"
+          ;div
+            =class  "flex justify-between items-center px-2 py-[10px] text-[#A3A3A3] h-[32px]"
+            ;p.form-reply-text
+              ;  Edit
+            ==
+            ;div(client-event "click reply ~")
+              ;button.cursor-pointer(client-event "click edit ~")
+                =style  "font-size: 16px;"
+                ; x
+              ==
+            ==
+          ==
+          ;form
+            =name            "edit-form"
+            =event           "/submit/edit"
+            =client-event    "submit edit ~"
+            =class  "post-reply-form w-full min-h-[16px] ".
+                    "resize-none overflow-hidden box-border ".
+                    "form-reply flex items-stretch justify-between gap-0 ".
+                    "[&.is-focused]:!border-white [&.is-focused]:!text-white"
+            ;athens-textarea-litdev(value (trip content.post.dat), class "grow", name "edit-input", textareaClass "track-focus");
+            ;button 
+              =client-event    "click reply ~"
+              =class  "mt-auto p-2 text-[14px]"
+              ; →
+            ==
+          ==
+        ==
+      ==
+    ==
+  ::
+  ++  reply-form
+    ;div(class "fixed bottom-[24px] inset-x-0 z-50 md:w-full")
+      =client-display  "edit ~"
+      ;div
+        =class  "form-post-wrapper md:grid md:grid-rows-[min-content] ".    
+                "md:grid-cols-3 md:items-start md:grid-cols-[15ch_auto_120px] ".
+                "mx-4 md:gap-x-4 mx-auto max-w-[1000px]"
+        ;div
+          =client-display  "reply {idt}"
+          =class  "mx-4 border-b-0 md:col-start-2 ".
+                  "form-wrapper-border rounded-md shadow-md bg-[#0F0F0F] focus-within:!border-white focus-within:!text-white"
+          ;div 
+            =class  "flex justify-between items-center px-2 py-[10px] text-[#A3A3A3] h-[32px]"
+            ;p.form-reply-text
+              ;  Replying to {(cite:title author.post.dat)}
+            ==
+            ;button.cursor-pointer(client-event "click reply ~")
+              =style  "font-size: 16px;"
+              ; x
+            ==
+          ==
+          ;form
+            =class  "post-form form-reply rounded-md shadow-md ".
+                    "overflow-hidden box-border flex items-stretch".
+                    "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
+                    "[&.is-focused]:!border-white [&.is-focused]:!text-white z-10" 
+            =name            "reply-form"
+            =event           "/submit/reply"
+            =client-event    "submit reply ~"
+            ;athens-textarea-litdev.grow
+              =name       "reply-input"
+              ;
+            ==
+            ;button
+              =type   "submit"
+              =class  "mt-auto p-2 text-[14px] h-[32px]"
+              ; →
+            ==
+          ==
+        ==
+      ==
+    ==
+  ::
+  ++  post-metadata
+    ;div 
+      =class  "md:col-start-3 md:row-start-1 flex flex-row justify-end md:justify-start {?:(hid "" "hidden")}"
+      ;*
+        =/  rep      rep-num.dat
+        =/  new-rep  ?:  hid  +.+.viw  0
+        ?:  &(=(0 rep) =(new-rep 0))  ~
+        ;=
+          ;div 
+            =class  "reply-num {?:(hid "hide" "full")} pr-4 ".
+                    "text-[{txt-color}] inline whitespace-nowrap ". 
+                    "w-auto text-[{txt-color}] md:w-[7ch] w-auto ". 
+                    "leading-none align-top"
+            {?:((gth `@ud`rep 0) <rep> "")}
+            ;span
+            =class  "text-white {?:((gth `@ud`new-rep 0) "new" "")}"
+              {?:(&((gth `@ud`rep 0) (gth `@ud`new-rep 0)) "+" "")}{?:((gth `@ud`new-rep 0) "{(scow %ud +.+.viw)}" "")}
+            ==
+          ==
+          ;div
+            =class  "reply-date {?:(hid "hide" "full")} inline ".
+                    "whitespace-nowrap w-auto text-[{txt-color}] ".
+                    "leading-none align-top {?:((gth new-rep 0) "!text-white" "")} ".
+                    "{?:(&(=(0 rep) =(new-rep 0)) "md:pl-[7ch]" "")}"
+            {(date-to-tape (slav %da (rear paf)) now.hull)}
+          ==
+        ==
+      ==
+  ::
+  ++  option-buttons
+  ;div
+    =class  "options {sticky} top-20 col-start-2 ".
+            "row-start-1 md:col-start-3 md:row-start-1 ".
+            "flex gap-1 justify-end md:invisible visible ".
+            "color-[#646464] {?:(hid "hidden" "")}  translate-y-[-1px] ".
+            "leading-none align-top md:justify-start"
+    ;button(client-display "reply !{idt}", client-event "click reply {idt}", onclick "delayedScrollToTop('{(trip (rear paf))}', false)"): reply
+    ;button(client-display "reply {idt}", client-event "click reply ~"): reply
+    ;*  ?:  =(author.post.dat src.hull)
+      ;=
+        ;div(client-display "edit ~", client-event "click reply ~")
+          ;button(client-event "click edit {idt}"): edit
+        ==
+        ;button(client-display "edit {idt}", client-event "click edit ~"): edit
+        ;button(event "/click/delete"): delete
+      ==
+    ~
   ==
+  ::
+  ++  make-replies 
+    =/  depth=@
+      =-  (mul (dec -) 8)
+      ?>  ?=([%athens %posts *] paf)
+        (lent t.t.paf)  
+    ;div.replies-container.relative
+      ;div(class "border-left absolute w-px bg-[#737373] top-0 bottom-[5px]", style "--depth: {((d-co:co 1) depth)}px;");
+      ;*  ?>  ?=([%athens %posts *] paf)
+          %+  turn  rep.dat
+          |=  p=path
+          %^  make:mast  mast/%athens-post  ~
+          :~  [%post (welp paf p)] 
+              [%view (welp /athens/view/[(scot %p src.hull)] (welp t.t.paf p))]
+              [%new (welp /athens/new/[(scot %p src.hull)] (welp t.t.paf p))] 
+          ==
+    ==
+  --
 ::
 --
 |%
@@ -303,4 +409,3 @@
   "{<d>}d" 
 ::
 --
-

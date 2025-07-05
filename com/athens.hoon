@@ -58,7 +58,7 @@
       =class  "relative h-[112px] w-full"
       ;div
         =class  "fixed top-0 left-0 w-full h-[18vh] md:h-[9vh] ".
-                "bg-gradient-to-b from-black/100 to-transparent ".
+                "gradient-top ".
                 "z-50 pointer-events-none"
         ;
       ==
@@ -69,41 +69,59 @@
             header-menu
       ==
       ;div
-        =class  "gradient fixed bottom-0 left-0 w-full h-[18vh] md:h-[9vh] ".
-                "bg-gradient-to-t from-black/100 to-transparent z-50 ".
-                "pointer-events-none"
+        =class  "gradient-bottom fixed bottom-0 left-0 w-full h-[18vh] md:h-[9vh] ".
+                "z-25 pointer-events-none"
         ;
       ==
       ;+  list-posts
     ==
   ++  header-menu
+  ;div
     ;div
-      =client-event  "mouseenter show-settings true"
-      =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F]"
+      =client-display  "show-settings false"
       ;div
-      =client-event  "mouseleave show-settings false"
+        =class  "flex flex-col gap-2 w-[18ch] menu"
         ;div
-          =class  "flex items-center justify-center ".
-                  "p-[8px] h-[28px]"
-          =client-display  "show-settings !true !font-mono"
-          ;  {(cite:title src.hull)}
+          =client-event  "click show-settings true"
+          =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-between gap-2 ".
+                  "p-[8px] h-[32px] cursor-pointer patp"
+          ;span:  {(cite:title src.hull)}
+            ;+  settings:lucide
         == 
-        ;+  ?.  =(our.hull src.hull)  
-            user-menu
-          admin-menu
+        ;div
+          =class  "settings-menu border border-[#A3A3A3] rounded bg-[#0F0F0F] hidden"
+            ;+  ?.  =(our.hull src.hull)  
+                user-menu
+              admin-menu
+        ==
       ==
     ==
+    ;div
+      =client-display  "show-settings true"
+      ;div
+        =class  "flex flex-col gap-2 w-[18ch]"
+        ;div
+          =client-event  "click show-settings false"
+          =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-between gap-2 ".
+                  "p-[8px] h-[32px] cursor-pointer patp"
+          ;span:  {(cite:title src.hull)}
+            ;+  settings:lucide
+        == 
+        ;div
+        =client-display  "show-settings true"
+        =class  "settings-menu border border-[#A3A3A3] rounded bg-[#0F0F0F]"
+          ;+  ?.  =(our.hull src.hull)  
+              user-menu
+            admin-menu
+        ==
+      ==
+    ==
+  ==
   ++  user-menu
     ;div
-      =class  "grid grid-cols-[auto_1fr] divide-y ".
-              "divide-[#A3A3A3]"
-      =style  "max-height: 400px; overflow-y: auto;"
-      =client-display  "show-settings true"
-      ;div.px-4.py-2: Urbit ID
-      ;div.px-4.py-2
-        ; {(cite:title src.hull)}
-      ==
-      ;a.px-4.py-2.cursor-pointer.col-span-2.flex.justify-center
+      =class  "flex justify-center items-center h-[32px]"
+      =style  "overflow-y: auto;"
+      ;a.px-2.py-2.cursor-pointer.col-span-2.flex.justify-center.items-center
         =href  "/~/logout?redirect=/mast/athens"
         ; Sign out
       ==
@@ -111,19 +129,12 @@
   ++  admin-menu
     ;div
       =class  "grid grid-cols-[auto_1fr] divide-y ".
-              "divide-[#A3A3A3]"
-      =style  "max-height: 400px; overflow-y: auto;"
-      =client-display  "show-settings true"
-      ;div.px-4.py-2
-        ; Urbit ID
+              "divide-[#A3A3A3] leading-tight"
+      =style  "max-height: 400px; overflow-y: auto; line-height:0.8;"
+      ;div.px-2.py-2
+        ; Public
       ==
-      ;div.px-4.py-2
-        ; {(cite:title src.hull)}
-      ==
-      ;div.px-4.py-2
-        ; Public Access
-      ==
-      ;label.px-4.py-2.w-full.flex.items-center.justify-end.relative
+      ;label.px-2.py-2.w-full.flex.items-center.justify-end.relative
         ;div.relative.inline-block
           ;+
           ?:  public.access
@@ -143,42 +154,47 @@
         ==
       ==
       ;*
+      =/  btn-class  "px-2 py-2 cursor-pointer col-span-2 flex justify-between items-center"
       ?:  public.access
         ;=
-          ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+          ;div
+            =class  btn-class
             =client-display  "show-ids !true"
             =client-event  "click show-ids true"
             ;span: Blocked
-            ;span: >
+            ;+  vector-out:lucide
           ==
-          ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+          ;div
+            =class  btn-class
             =client-display  "show-ids true"
             =client-event  "click show-ids false"
             ;span: Blocked
-            ;span: <
+            ;+  vector-in:lucide
           ==
           ;+  (edit-access-form public.access)
           ;*  (id-list blacklist.access)
         ==
       ;=
-        ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+        ;div
+          =class  btn-class
           =client-display  "show-ids !true"
           =client-event  "click show-ids true"
           ;span: Members
-          ;span: >
+          ;+  vector-out:lucide
         ==
-        ;div.px-4.py-2.cursor-pointer.col-span-2.flex.justify-between
+        ;div
+          =class  btn-class
           =client-display  "show-ids true"
           =client-event  "click show-ids false"
           ;span: Members
-          ;span: <
+          ;+  vector-in:lucide
         ==
         ;+  (edit-access-form public.access)
         ;*  (id-list members.access)
       ==
     ==
   ++  public-login-form
-    ;form.flex
+    ;form.flex 
       =action  "/~/login"
       =method  "POST"
       ;label.p-2(for "login-input"): login:
@@ -200,30 +216,34 @@
             [%view (welp /athens/view/[(scot %p src.hull)] path)]
             [%new (weld /athens/new/[(scot %p src.hull)] path)] 
         ==
-      ;div(class "fixed bottom-4 inset-x-0 z-50 md:w-full") 
-        =key  "athens-post-form"
-        ;div(class "mx-auto max-w-[1000px]")
+      ;div(class "fixed bottom-[24px] inset-x-0 z-50 md:w-full")
+        =client-display  "reply ~"
+        =key  "athens-post-form" 
+        :: ;div(class "mx-auto max-w-[1000px]")
+        :: =client-display  "edit ~"
           ;div
-            =class  "md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
-                    "md:items-start md:grid-cols-[14ch_auto_120px] mx-4 ".
-                    "z-50 md:gap-x-4 form-post-wrapper "
+            =class  "form-post-wrapper md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
+                    "md:items-start md:items-start md:grid-cols-[15ch_auto_120px] mx-4 ".
+                    "md:gap-x-4 h-[32px] mx-auto max-w-[1000px]"
+            =client-display  "edit ~"
             ;+  ?:  is-comet
                   ;div.post-form.login-block: Login to post
                 ;form(event "/submit/post")
                   =class  "post-form form-border rounded-md shadow-md bg-[#0F0F0F] ".
-                          "overflow-hidden box-border flex ".
+                          "overflow-hidden box-border flex  ".
                           "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
-                          "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white" 
+                          "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white mx-4" 
+                  =id  "post-form"
                   ;athens-textarea-litdev.grow
                     =name  "post-input"
                     ;
                   ==
                   ;button
-                  =class  "mt-auto p-2 text-[14px]"
+                  =class  "mt-auto p-2 text-[14px] h-[32px]"
                     ; →
                   ==
                 ==
-          ==
+          ::==
         ==
       ==
     ==
@@ -248,7 +268,7 @@
         ;div.flex.gap-2
           ;input
             =name  "name"
-            =class  "font-mono px-3 py-2 border rounded-sm border-neutral-800 w-60"
+            =class  "px-3 py-2 border rounded-sm border-neutral-800 w-60"
             =placeholder  "~sampel-palnet"
             =spellcheck  "false"
             =autocomplete  "off"
@@ -282,14 +302,15 @@
 ++  edit-access-form
   |=  public=?
   ^-  manx
-  ;form.col-span-2.px-4.py-2.flex(event "/submit/add-ship")
-    ;input(type "textbox", name "ship-input")
-      =class  "border-0 focus:outline-none text-white"
+  ;form(event "/submit/add-ship")
+    =class  "col-span-2 px-2 w-full flex gap-2 h-[32px]"
+    ;+  ?:  public
+      ;button.ml-auto.cursor-pointer: ~
+    ;button.ml-auto.cursor-pointer: +
+    ;input(type "text", name "ship-input")
+      =class  "border-0 focus:outline-none text-white w-full leading-tight"
     ;
     ==
-    ;+  ?:  public
-      ;button.ml-auto: ~
-    ;button.ml-auto: +
   ==
 ::
 ++  id-list
@@ -300,14 +321,13 @@
   ^-  manx
   ;div
     =client-display  "show-ids true"
-    =class  "col-span-2 flex"
-    ;div.px-4.py-2: {(scow %p ship)}
-    ;form.px-4.py-2.ml-auto(event "/submit/remove-ship")
+    =class  "col-span-2 flex gap-auto"
+    ;div.pl-2.py-2: {(scow %p ship)}
+    ;form.pr-2.py-2.ml-auto(event "/submit/remove-ship")
     =id  (scow %p ship)
       ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
-      ;button: x
+      ;button.cursor-pointer: x
     ==
   ==
 ::
 --
-

@@ -41,6 +41,9 @@
       ;link(rel "manifest", href "/athens/manifest");
       ;link(rel "preconnect", href "https://rsms.me/");
       ;link(rel "stylesheet", href "https://rsms.me/inter/inter.css");
+      ;link(rel "preconnect", href "https://fonts.googleapis.com");
+      ;link(rel "preconnect", href "https://fonts.gstatic.com", crossorigin "");
+      ;link(href "https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Oswald:wght@200..700&display=swap", rel "stylesheet");
       ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
       ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
       ;script(type "module"): {(trip footnote-parser)}
@@ -76,18 +79,35 @@
     overflow-x: hidden;
     font-family: Inter, sans-serif;
   }
+  .gradient-top{
+  background: linear-gradient(0deg, rgba(15, 15, 15, 0.00) 0%, #0F0F0F 32.21%);
+  height: 69px;
+  }
+  .gradient-bottom{
+  background: linear-gradient(180deg, rgba(15, 15, 15, 0.00) 0%, #0F0F0F 27.4%);
+  height: 88px;
+  }
+  .tracker > span {
+    leading-trim: both;
+    text-edge: cap;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+  }
   .options {
     color: #A3A3A3;
   }
+  .options > div,
   .options > button {
     color: #A3A3A3;
-    margin-inline: 0.25em;
     font-family: Inter, sans-serif;
-    font-size: 0.85rem;
+    font-size: 14px;
   }
   .post-container:hover > .options{
     visibility: visible;
   }
+  .options > div:hover,
   .options > button:hover {
     color: #FAFAFA;
   }
@@ -96,26 +116,29 @@
     color: #FAFAFA;
   }
   .user {
-    font-family: 'Fragment Mono', monospace;
-    font-weight: 500;
     font-size: 14px;
     leading-trim: Cap height;
     line-height: 140%;
     letter-spacing: 0%;
     top: 24px;
     right: 24px;
-    padding-block: 0.2em;
-    padding-inline: 0.3em;
     color: #A3A3A3;
   }
   .user.open{
     left: 15;
     width: 100%;
   }
+  .user .patp{
+    font-family: 'Fragment Mono', monospace;
+    font-weight: 400;
+  }
   .athens {
     height: 100%;
     width: 100%;
     overflow-y: scroll;
+  }
+  .menu:hover > .settings-menu {
+    display: flex;
   }
   .posts {
     padding: 110px 16px 110px 16px;
@@ -163,11 +186,14 @@
   }
   .border-left,
   .form-post-wrapper{
-    font-weight: 500;
+    font-family: 'Fragment Mono', monospace;
+    font-weight: 400;
     font-size: 14px;
   }
+  .post-form{
+    font-family: Inter, sans-serif;
+  }
   .border-left{
-    font-family: 'Fragment Mono', monospace;
     leading-trim: Cap height;
     line-height: 140%;
     letter-spacing: 0%;
@@ -179,7 +205,6 @@
   .reply-num{
     color: #737373;
     font-size: 14px;
-    width: 7ch;
   }
   .reply-num.full{
     display: none;
@@ -195,11 +220,26 @@
     color: #737373;
     font-size: 14px;
   }
+  .form-reply-text{
+    font-size: 14px;
+    font-weight: 400;
+    font-family: Inter, sans-serif;
+    }
+  .form-wrapper-border,
+  .form-reply,
   .form-border {
     border: 1px solid #575757;
-    border-radius: 6px;
+    border-radius: 4px;
+  }
+  .form-wrapper-border{
+    border-bottom: 0;
+  }
+  .form-reply{
+    border-right:0;
+    border-left: 0;
   }
   .post-reply-form {
+    font-family: Inter, sans-serif;
     line-height: normal;
   }
   .post-form {
@@ -220,7 +260,7 @@
     padding: 0.15em;
     border: solid;
     border-width: 1px;
-    border-radius: 6px;
+    border-radius: 4px;
     border-color: #2C2C2C;
     background-color: #2C2C2C;
   }
@@ -251,42 +291,27 @@
   athens-preview .markdown-preview {
     font-size: 14px;
   }
-  athens-preview .clamp-one-line,
-  athens-preview .clamp-one-line * {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
   athens-textarea-litdev textarea{
     background: #0f0f0f;
-    border-radius: 10px;
+    border-radius: 4px;
   }
   athens-preview .clamp-one-line * {
     font-size: 14px !important;
     font-weight: 400 !important;
-    line-height: 1.5 !important;
     color: #737373 !important;
-  }
-  athens-preview .clamp-one-line p {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: block;
-    overflow: hidden;
   }
   athens-preview .clamp-one-line table {
     font-size: 14px;
     font-weight: 400;
-    line-height: 1.5;
     display: inline;
     border: none;
   }
-  athens-textarea-litdev .clamp-one-line pre {
+  athens-textarea-litdev .clamp-one-line pre,
+  athens-textarea-litdev .clamp-one-line code{
     font-size: 14px;
     font-weight: 400;
-    line-height: 1.5;
     display: inline;
     border: none;
-    color: #737373;
   }
   athens-preview .clamp-one-line tbody {
     display: none;
@@ -330,7 +355,7 @@
   .prose code {
     background: transparent;
     color: #FAFAFA;
-    padding: 1rem; /* p-4 */
+    padding: 0.5rem;
     border-radius: 0.5rem; /* rounded-lg */
     overflow-x: auto;
   }
