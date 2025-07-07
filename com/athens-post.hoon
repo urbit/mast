@@ -214,7 +214,7 @@
             =onsubmit  "toggleView('edit-{idt}', true)"
             =class  "post-reply-form w-full min-h-[16px] ".
                     "resize-none overflow-hidden box-border ".
-                    "form-reply flex items-stretch justify-between gap  -0 ".
+                    "form-reply flex items-stretch justify-between gap-0 ".
                     "[&.is-focused]:!border-white [&.is-focused]:!text-white"
             ;athens-textarea-litdev(value (trip content.post.dat), class "grow", name "edit-input", textareaClass "track-focus");
             ;button 
