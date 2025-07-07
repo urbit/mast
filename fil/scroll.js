@@ -201,6 +201,68 @@ document.addEventListener('DOMContentLoaded', () => {
     if (index !== -1) currentIndex = index
   }
 
+  window.toggleView = function (id, togglePostForm = false, hideForms = false) {
+    if (hideForms) {
+      if (id.startsWith('reply-')) {
+        document.querySelectorAll('.reply-form').forEach((el) => {
+          if (el.id !== id) {
+            el.classList.add('hidden')
+            el.classList.add('md:hidden')
+          }
+        })
+        document.querySelectorAll('.edit-form').forEach((el) => {
+          el.classList.add('hidden')
+          el.classList.add('md:hidden')
+        })
+      } else if (id.startsWith('edit-')) {
+        document.querySelectorAll('.edit-form').forEach((el) => {
+          if (el.id !== id) {
+            el.classList.add('hidden')
+            el.classList.add('md:hidden')
+          }
+        })
+        document.querySelectorAll('.reply-form').forEach((el) => {
+          el.classList.add('hidden')
+          el.classList.add('md:hidden')
+        })
+      }
+    }
+
+    const el = document.getElementById(id)
+    if (el) {
+      el.classList.toggle('hidden')
+      el.classList.toggle('md:hidden')
+      if (togglePostForm) {
+        const postForm = document.getElementById('form-post-wrapper')
+        if (postForm) {
+          if (el.classList.contains('hidden')) {
+            postForm.classList.remove('hidden')
+            postForm.classList.remove('md:hidden')
+          } else {
+            postForm.classList.add('hidden')
+            postForm.classList.add('md:hidden')
+          }
+        }
+      }
+    }
+  }
+
+  window.hideClassView = function (className) {
+    const elements = document.querySelectorAll('.' + className)
+    elements.forEach((el) => {
+      el.classList.add('hidden')
+      el.classList.add('md:hidden')
+    })
+  }
+
+  window.toggleClassView = function (className) {
+    const elements = document.querySelectorAll('.' + className)
+    elements.forEach((el) => {
+      el.classList.toggle('hidden')
+      el.classList.toggle('md:hidden')
+    })
+  }
+
   window.delayedScrollToTop = function (
     id,
     getParent = true,

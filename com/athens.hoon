@@ -78,41 +78,21 @@
   ++  header-menu
   ;div
     ;div
-      =client-display  "show-settings false"
       ;div
         =class  "flex flex-col gap-2 w-[18ch] menu"
         ;div
-          =client-event  "click show-settings true"
+          =onclick  "toggleView('settings-menu')"
           =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-between gap-2 ".
                   "p-[8px] h-[32px] cursor-pointer patp"
           ;span:  {(cite:title src.hull)}
             ;+  settings:lucide
         == 
         ;div
-          =class  "settings-menu border border-[#A3A3A3] rounded bg-[#0F0F0F] hidden"
+          =id  "settings-menu"
+          =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] hidden md:hover:flex"
             ;+  ?.  =(our.hull src.hull)  
                 user-menu
               admin-menu
-        ==
-      ==
-    ==
-    ;div
-      =client-display  "show-settings true"
-      ;div
-        =class  "flex flex-col gap-2 w-[18ch]"
-        ;div
-          =client-event  "click show-settings false"
-          =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-between gap-2 ".
-                  "p-[8px] h-[32px] cursor-pointer patp"
-          ;span:  {(cite:title src.hull)}
-            ;+  settings:lucide
-        == 
-        ;div
-        =client-display  "show-settings true"
-        =class  "settings-menu border border-[#A3A3A3] rounded bg-[#0F0F0F]"
-          ;+  ?.  =(our.hull src.hull)  
-              user-menu
-            admin-menu
         ==
       ==
     ==
@@ -159,35 +139,29 @@
         ;=
           ;div
             =class  btn-class
-            =client-display  "show-ids !true"
-            =client-event  "click show-ids true"
+            =onclick  "toggleClassView('show-ids')"
             ;span: Blocked
-            ;+  vector-out:lucide
-          ==
-          ;div
-            =class  btn-class
-            =client-display  "show-ids true"
-            =client-event  "click show-ids false"
-            ;span: Blocked
-            ;+  vector-in:lucide
+            ;div.show-ids
+                ;+  vector-out:lucide
+              ==
+            ;div(class "show-ids hidden md:hidden")
+                ;+  vector-in:lucide
+            ==
           ==
           ;+  (edit-access-form public.access)
           ;*  (id-list blacklist.access)
         ==
       ;=
         ;div
+          =onclick  "toggleClassView('show-ids')"
           =class  btn-class
-          =client-display  "show-ids !true"
-          =client-event  "click show-ids true"
           ;span: Members
-          ;+  vector-out:lucide
-        ==
-        ;div
-          =class  btn-class
-          =client-display  "show-ids true"
-          =client-event  "click show-ids false"
-          ;span: Members
-          ;+  vector-in:lucide
+          ;div.show-ids
+            ;+  vector-out:lucide
+          ==
+          ;div(class "show-ids hidden md:hidden")
+            ;+  vector-in:lucide
+          ==
         ==
         ;+  (edit-access-form public.access)
         ;*  (id-list members.access)
@@ -217,11 +191,9 @@
             [%new (weld /athens/new/[(scot %p src.hull)] path)] 
         ==
       ;div(class "fixed bottom-[24px] inset-x-0 z-50 md:w-full")
-        =client-display  "reply ~"
         =key  "athens-post-form" 
-        :: ;div(class "mx-auto max-w-[1000px]")
-        :: =client-display  "edit ~"
           ;div
+            =id  "form-post-wrapper" 
             =class  "form-post-wrapper md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
                     "md:items-start md:items-start md:grid-cols-[15ch_auto_120px] mx-4 ".
                     "md:gap-x-4 h-[32px] mx-auto max-w-[1000px]"
@@ -243,7 +215,6 @@
                     ; →
                   ==
                 ==
-          ::==
         ==
       ==
     ==
@@ -320,8 +291,7 @@
   |=  =ship
   ^-  manx
   ;div
-    =client-display  "show-ids true"
-    =class  "col-span-2 flex gap-auto"
+    =class  "show-ids hidden md:hidden col-span-2 flex gap-auto"
     ;div.pl-2.py-2: {(scow %p ship)}
     ;form.pr-2.py-2.ml-auto(event "/submit/remove-ship")
     =id  (scow %p ship)
