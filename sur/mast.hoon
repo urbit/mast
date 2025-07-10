@@ -64,7 +64,7 @@
   ==                                             ::
 +$  cove                                         ::
   $:  bom=boom                                   ::
-      aft=cord                                   ::
+      aft=manx                                   ::
       lin=line                                   ::
   ==                                             ::
 +$  isle  (map rode cove)                        ::

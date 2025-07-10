@@ -575,7 +575,7 @@
     ^-  [[(list json) (set buoy)] _ui-core]
     =/  cov  (~(got by yel) rod)
     =/  com  (~(got by deck) com.lin.cov)
-    =/  old  (need (de-xml:html aft.cov))
+    =/  old  aft.cov
     =/  new  (process-sail rod ~(sail com (make-hull boom.com lin.cov)))
     =/  dif
       %+  luff
@@ -585,7 +585,7 @@
       %-  %~  uni  by
         %+  ~(put by yel)  rod
         %_  cov
-          aft  (crip (en-xml:html new))
+          aft  new
         ==
       add.p.dif
     =^  bos=(set buoy)  yel
@@ -644,8 +644,11 @@
     ?:  =(%html n.g.sal)
       ?>  ?=([* [[%body *] *] ~] c.sal)
       %_  sal
-        a.g.i.t.c  [[%mast ~] a.g.i.t.c.sal]
-        i.t.c  =>(loop(sal i.t.c.sal) ?>(?=([[%body *] *] .) .))
+        i.t.c
+          =<  ?>(?=([[%body *] *] .) .)
+          %=  loop
+            sal  i.t.c.sal(a.g [[%mast ~] a.g.i.t.c.sal])
+          ==
       ==
     %=  loop
       a.g.sal  [[%mast ~] a.g.sal]
@@ -746,14 +749,14 @@
       =/  cuv  (~(get by yel) rod)
       ?^  cuv
         :+  |
-            [(need (de-xml:html aft.u.cuv)) ~]
+            [aft.u.cuv ~]
             u.cuv
       =/  com  (~(got by deck) com.lin)
       =/  sal  (process-sail rod ~(sail com (make-hull boom.com lin)))
       :+  &
           [sal ~]
       :*  boom.com
-          (crip (en-xml:html sal))
+          sal
           lin
       ==
     =-  ?>  ?=(^ p)
@@ -814,10 +817,9 @@
     =/  rod  `rode`(getv %key a.g.m)
     =/  cuv  (~(get by yel) rod)
     ?~  cuv  a
-    =/  sal  (need (de-xml:html aft.u.cuv))
     %-  ~(uni in (~(put in a) rod))
     %=  ^$
-      mal  c.sal
+      mal  c.aft.u.cuv
     ==
   ::
   ++  luff
