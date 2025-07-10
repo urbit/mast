@@ -45,38 +45,49 @@
 +$  dock  (map knot line)                        :: base path to root component bindings
 +$  deck  (map hook mast)                        :: component cache
 +$  hook  [=desk name=@tas]                      :: component desk and file name
++$  rode  @t                                     ::
++$  rope                                         ::
+  $:  bas=knot                                   ::
+      rut=path                                   ::
+      que=quay                                   ::
+  ==                                             ::
 +$  line                                         :: component reference and inputs
   $:  com=hook                                   ::
       par=gust                                   ::
-      res=rode                                   ::
+      res=pool                                   ::
   ==                                             ::
-+$  rode  (map @tas path)                        :: resources for a component
-+$  buoy  [?(%add %del) p=path]                  :: resource subscription effect
-+$  navy  (map path (set (pair ship cord)))      :: resource paths to subscribed components
-+$  loot  (list gold)
-+$  gold
-  $@  ?(%skip)
-  $:  tag=@t
-      key=@t
-      hax=@t
-      kid=loot
-  ==
-+$  isle
-  $:  url=path
-      que=quay
-      lin=line
-      lot=loot
-  ==
++$  pool  (map @tas path)                        :: resources for a component
++$  buoy  [?(%add %del) p=rode q=path]           :: resource subscription effect
++$  wake                                         ::
+  $:  bos=(set buoy)                             ::
+      new=isle                                   ::
+  ==                                             ::
++$  cove                                         ::
+  $:  bom=boom                                   ::
+      aft=cord                                   ::
+      lin=line                                   ::
+  ==                                             ::
++$  isle  (map rode cove)                        ::
++$  gulf  (map [ship rope] isle)                 ::
++$  navy                                         :: resource to client subscription state
+  %+  map  path                                  ::
+  %+  map  (pair ship rope)                      ::
+  %-  set  rode                                  ::
 ::
   ::
 ::
-+$  diff  (list json)                            :: ++luff diff output
++$  diff                                         :: ++luff diff output
+  %+  pair
+  $:  bos=(set buoy)
+      del=(set rode)
+      add=isle
+  ==
+  %-  list  json
 +$  jiff
   $%  [%new parent-key=_s+'' index=_n+'' data=_s+'']
       [%delete keys=[%a (list _s+'')]]
       [%move key=_s+'' index=_n+'']
-      :: [%change-attr key=_s+'' del=[%a (list k=_s+'')] new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
-      [%attr key=_s+'' new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
+      [%change-attr key=_s+'' del=[%a (list k=_s+'')] new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
       [%text container-key=_s+'' data=_s+'']
   ==
 ::
