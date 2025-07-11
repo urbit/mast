@@ -38,6 +38,7 @@ class AthensTextareaLitdev extends LitElement {
           .value=${this.value}
           @input=${this._onInput}
           @keydown=${this._onKeydown}
+          required
         ></textarea>
       </div>
     `
@@ -85,6 +86,12 @@ class AthensTextareaLitdev extends LitElement {
     const textarea = this.querySelector('textarea')
     if (textarea) {
       requestAnimationFrame(() => this._resize(textarea))
+    }
+  }
+
+  _onSubmit() {
+    if (this.name !== 'edit-input') {
+      this.value = ''
     }
   }
 
