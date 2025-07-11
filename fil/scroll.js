@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const trackedElements = new Set()
   const lastStates = new Map()
 
-  function getTrackedElements() {
-    return Array.from(document.querySelectorAll('.track-visibility'))
+  function getPostElements() {
+    return Array.from(document.querySelectorAll('.post-container'))
   }
 
   const grandparentToChildMap = new Map()
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   )
 
   function observeNewElements() {
-    const elements = getTrackedElements()
+    const elements = Array.from(document.querySelectorAll('.track-visibility'))
 
     elements.forEach((child) => {
       const grandparent = child.parentElement?.parentElement
@@ -105,51 +105,133 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
-  function getElementClosestToViewportCenter() {
-    const elements = Array.from(getTrackedElements())
-    const viewportCenter = window.innerHeight / 2
+  let isManualScroll = true
+  let currentFocus = ''
 
+  function getElementClosestToViewportTop() {
+    const elements = getPostElements()
     let closestIndex = -1
     let smallestDistance = Infinity
 
     elements.forEach((el, index) => {
       const rect = el.getBoundingClientRect()
-      const elementCenter = rect.top + rect.height / 2
-      const distance = Math.abs(viewportCenter - elementCenter)
+      const elementTop = rect.top
 
-      if (distance < smallestDistance) {
-        smallestDistance = distance
-        closestIndex = index
+      // Only consider elements that are at or below the viewport top (not above)
+      if (elementTop >= 0) {
+        const distance = elementTop
+
+        if (distance < smallestDistance) {
+          smallestDistance = distance
+          closestIndex = index
+        }
       }
     })
-
-    return closestIndex
+    return elements[closestIndex].id
   }
 
-  let currentIndex = getElementClosestToViewportCenter()
+  let scrollTimer = null
 
-  function scrollToIndex(index) {
-    const elements = Array.from(document.querySelectorAll('.post-container'))
-    const currentScrollY =
-      window.pageYOffset || document.documentElement.scrollTop
+  // let scrollTimeout
+  // window.addEventListener('scroll', () => {
+  //   console.log('trying to run scroll event detected')
+  //   if (isManualScroll == false) return
+  //   console.log('updating current focus')
+  //   clearTimeout(scrollTimeout)
+  //   scrollTimeout = setTimeout(() => {
+  //     currentFocus = getElementClosestToViewportTop()
+  //     console.log('new id focus after scroll:', currentFocus)
+  //   }, 50)
+  // })
 
-    const rect = elements[index].getBoundingClientRect()
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-    const targetY = scrollTop + rect.top - 65
+  function scrollToNearest(forceDirection = null) {
+    if (!forceDirection) return
 
-    window.scrollTo({
-      top: targetY,
-      behavior: 'smooth'
+    const viewportTop = window.scrollY + 60
+    const viewportBottom = viewportTop + window.innerHeight
+
+    let targetElement = null
+    let bestDistance = Infinity
+
+    let elements = Array.from(document.querySelectorAll('.has-new'))
+
+    elements.forEach((element) => {
+      const rect = element.getBoundingClientRect()
+      const elementTop = rect.top + window.scrollY
+      const elementBottom = elementTop + rect.height
+
+      // Check if element is in the direction we're looking for
+      if (forceDirection === 'above' && elementBottom < viewportTop) {
+        // Find the closest element above viewport
+        const distance = viewportTop - elementBottom
+        if (distance < bestDistance) {
+          bestDistance = distance
+          targetElement = element
+        }
+      } else if (
+        forceDirection === 'above' &&
+        elementBottom > viewportTop &&
+        elementTop < viewportBottom
+      ) {
+        // If looking above and element is in viewport, choose from bottom up (bottommost first)
+        const distance = viewportBottom - elementBottom
+        if (distance < bestDistance) {
+          bestDistance = distance
+          targetElement = element
+        }
+      } else if (forceDirection === 'below' && elementTop > viewportBottom) {
+        // Find the closest element below viewport
+        const distance = elementTop - viewportBottom
+        if (distance < bestDistance) {
+          bestDistance = distance
+          targetElement = element
+        }
+      } else if (
+        forceDirection === 'below' &&
+        elementBottom > viewportTop &&
+        elementTop < viewportBottom
+      ) {
+        // If looking below and element is in viewport, choose from top to bottom (topmost first)
+        const distance = elementTop - viewportTop
+        if (distance < bestDistance) {
+          bestDistance = distance
+          targetElement = element
+        }
+      }
     })
 
-    setTimeout(() => {
-      const newScrollY =
-        window.pageYOffset || document.documentElement.scrollTop
+    if (targetElement) {
+      targetElement.click()
 
-      if (Math.abs(newScrollY - currentScrollY) > 1) {
-        currentIndex = index
+      const rect = targetElement.getBoundingClientRect()
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+      const targetY = scrollTop + rect.top - 157
+
+      window.scrollTo({
+        top: targetY,
+        behavior: 'smooth'
+      })
+    } else {
+      // No target element found, scroll to next viewport
+      const currentScrollY = window.scrollY
+      const viewportHeight = window.innerHeight
+
+      if (forceDirection === 'above') {
+        // Scroll up by one viewport height
+        window.scrollTo({
+          top: Math.max(0, currentScrollY - viewportHeight + 157),
+          behavior: 'smooth'
+        })
+      } else if (forceDirection === 'below') {
+        // Scroll down by one viewport height
+        const maxScroll =
+          document.documentElement.scrollHeight - window.innerHeight
+        window.scrollTo({
+          top: Math.min(maxScroll, currentScrollY + viewportHeight - 157),
+          behavior: 'smooth'
+        })
       }
-    }, 100)
+    }
   }
 
   document.addEventListener('keydown', (e) => {
@@ -161,19 +243,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return
     }
 
-    const elements = Array.from(document.querySelectorAll('.post-container'))
-    if (!elements.length) return
-
     if (e.key === 'j' || e.key === ' ') {
       e.preventDefault()
-      if (currentIndex < elements.length - 1) {
-        scrollToIndex(currentIndex + 1)
-      }
+      scrollToNearest('below')
     } else if (e.key === 'k') {
       e.preventDefault()
-      if (currentIndex > 0) {
-        scrollToIndex(currentIndex - 1)
-      }
+      scrollToNearest('above')
     }
   })
 
@@ -194,11 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
       behavior: 'smooth'
     })
 
-    const elements = Array.from(
-      Array.from(document.querySelectorAll('.post-container'))
-    )
-    const index = elements.indexOf(elem.querySelector('.post-container'))
-    if (index !== -1) currentIndex = index
+    currentFocus = id
   }
 
   window.toggleView = function (id, togglePostForm = false, hideForms = false) {
@@ -338,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const indicator = document.createElement('div')
         indicator.id = 'position-indicator'
         const buttonClass =
-          'bg-gray-950 border border-[#A3A3A3] rounded p-2 font-inter text-sm text-[#A3A3A3] hidden items-center gap-1 cursor-pointer z-50 h-[32px]'
+          'bg-gray-950 border md:border-[var(--grey-default)] border-[var(--grey-light)] hover:border-[var(--grey-light)] rounded p-2 font-inter text-sm md:text-[var(--grey-default)] text-[var(--grey-light)] hover:text-[var(--grey-light)] hidden items-center gap-1 cursor-pointer z-50 h-[28px]'
 
         indicator.innerHTML = `
           <!-- Desktop buttons -->
@@ -379,9 +450,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const mobileAbove = document.getElementById('mobile-tracker-above')
         const mobileBelow = document.getElementById('mobile-tracker-below')
 
-        trackerAbove?.addEventListener('click', () =>
+        trackerAbove?.addEventListener('click', () => {
+          const event = new CustomEvent('click/toggle-hide')
+          document.dispatchEvent(event)
           this.scrollToNearest('above')
-        )
+        })
         trackerBelow?.addEventListener('click', () =>
           this.scrollToNearest('below')
         )
@@ -570,13 +643,16 @@ document.addEventListener('DOMContentLoaded', () => {
       })
 
       if (targetElement) {
-        // Get the grandparent element
-        const grandparent = targetElement.parentElement?.parentElement
-        if (grandparent) {
-          const rect = grandparent.getBoundingClientRect()
+        const container =
+          targetElement.parentElement?.parentElement?.parentElement
+            ?.parentElement
+        if (container) {
+          container.click()
+
+          const rect = container.getBoundingClientRect()
           const scrollTop =
             window.pageYOffset || document.documentElement.scrollTop
-          const targetY = scrollTop + rect.top - 65 // 80px offset from top
+          const targetY = scrollTop + rect.top - 70
 
           window.scrollTo({
             top: targetY,

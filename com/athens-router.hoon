@@ -3,6 +3,7 @@
 /*  athens-preview  %js  /fil/athens-preview/js
 /*  footnote-parser  %js  /fil/footnote-parser/js
 /*  scroll  %js  /fil/scroll/js
+/*  urbit-sigil  %js  /fil/urbit-sigil/js
 ^-  mast:mast
 =<
 :-  ~
@@ -49,6 +50,7 @@
       ;script(type "module"): {(trip footnote-parser)}
       ;script(type "module"): {(trip athens-textarea-litdev)} 
       ;script(type "module"): {(trip athens-preview)} 
+      ;script(type "module"): {(trip urbit-sigil)}
       ;script(defer ""): {(trip scroll)}
       ;script(src "https://unpkg.com/lucide@latest");
       ;script:  lucide.createIcons();
@@ -72,6 +74,12 @@
 ::
 ++  style
   '''
+  :root{
+    --bg-color: #0F0F0F;
+    --grey-light: #A3A3A3;
+    --grey-default: #737373;
+    --text-color: #FAFAFA;
+  }
   html {
     scroll-behavior: smooth;
   }
@@ -80,12 +88,13 @@
     font-family: Inter, sans-serif;
   }
   .gradient-top{
-  background: linear-gradient(0deg, rgba(15, 15, 15, 0.00) 0%, #0F0F0F 32.21%);
+  background: linear-gradient(0deg, rgba(15, 15, 15, 0.00) 0%, var(--bg-color) 32.21%);
   height: 69px;
   }
   .gradient-bottom{
-  background: linear-gradient(180deg, rgba(15, 15, 15, 0.00) 0%, #0F0F0F 27.4%);
+  background: linear-gradient(180deg, rgba(15, 15, 15, 0.00) 0%, var(--bg-color) 27.4%);
   height: 88px;
+  max-height: 57vh;
   }
   .tracker > span {
     leading-trim: both;
@@ -96,11 +105,11 @@
     line-height: 1;
   }
   .options {
-    color: #A3A3A3;
+    color: var(--grey-light);
   }
   .options > div,
   .options > button {
-    color: #A3A3A3;
+    color: var(--grey-light);
     font-family: Inter, sans-serif;
     font-size: 14px;
   }
@@ -109,11 +118,11 @@
   }
   .options > div:hover,
   .options > button:hover {
-    color: #FAFAFA;
+    color: var(--text-color);
   }
   .login-link {
     margin-right: 0.2em;
-    color: #FAFAFA;
+    color: var(--text-color);
   }
   .user {
     font-size: 14px;
@@ -122,7 +131,7 @@
     letter-spacing: 0%;
     top: 24px;
     right: 24px;
-    color: #A3A3A3;
+    color: var(--grey-light);
   }
   .user.open{
     left: 15;
@@ -131,6 +140,7 @@
   .user .patp{
     font-family: 'Fragment Mono', monospace;
     font-weight: 400;
+    color: var(--grey-light);
   }
   .athens {
     height: 100%;
@@ -153,10 +163,10 @@
     line-height: 140%;
     letter-spacing: 0%;
     vertical-align: middle;
-    color: #FAFAFA;
+    color: var(--text-color);
   }
   .author.hide {
-    color: #737373;
+    color: var(--grey-default);
   }
   .message {
     font-family: Inter, sans-serif;
@@ -165,10 +175,10 @@
     leading-trim: Cap height;
     line-height: 130%;
     letter-spacing: 0%;
-    color: #A3A3A3;
+    color: var(--grey-light);
   }
   .message.hide {
-    color: #737373;
+    color: var(--grey-default);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -200,7 +210,7 @@
     padding-left: 0px;
   }
   .reply-num{
-    color: #737373;
+    color: var(--grey-default);
     font-size: 14px;
   }
   .reply-num.full{
@@ -214,7 +224,7 @@
   }
   .reply-date.hide{
     display: flex;
-    color: #737373;
+    color: var(--grey-default);
     font-size: 14px;
   }
   .form-reply-text{
@@ -225,7 +235,7 @@
   .form-wrapper-border,
   .form-reply,
   .form-border {
-    border: 1px solid #575757;
+    border: 1px solid var(--grey-default);
     border-radius: 4px;
   }
   .form-wrapper-border{
@@ -251,15 +261,7 @@
     font-size: 0.85rem;
   }
   .post-form > button:hover {
-    color: #FAFAFA;
-  }
-  .reply-button:hover{
-    padding: 0.15em;
-    border: solid;
-    border-width: 1px;
-    border-radius: 4px;
-    border-color: #2C2C2C;
-    background-color: #2C2C2C;
+    color: var(--text-color);
   }
   athens-textarea-litdev .tab-controls,
   athens-preview .tab-controls {
@@ -276,7 +278,7 @@
   }
   athens-textarea-litdev .tab.active,
   athens-preview .tab.active {
-    background: #262626;
+    background: var(--bg-color);
   }
   athens-textarea-litdev textarea {
     width: 100%;
@@ -289,13 +291,13 @@
     font-size: 14px;
   }
   athens-textarea-litdev textarea{
-    background: #0f0f0f;
+    background: var(--bg-color);
     border-radius: 4px;
   }
   athens-preview .clamp-one-line * {
     font-size: 14px !important;
     font-weight: 400 !important;
-    color: #737373 !important;
+    color: var(--grey-default) !important;
   }
   athens-preview .clamp-one-line table {
     font-size: 14px;
@@ -319,7 +321,7 @@
     padding: 0;
     background: none;
     border: none;
-    color: #737373;
+    color: var(--grey-default);
   }
   .prose h1, h2, h3, h4, h5, h6 {
     margin: 1rem 0;
@@ -351,14 +353,14 @@
   .prose pre,
   .prose code {
     background: transparent;
-    color: #FAFAFA;
-    padding: 0.5rem;
+    color: var(--text-color);
+    padding: 0.5rem; /* p-4 */
     border-radius: 0.5rem; /* rounded-lg */
     overflow-x: auto;
   }
   .prose table {
     font-family: Inter, sans-serif;
-    border: 1px solid #A3A3A3;
+    border: 1px solid var(--grey-light);
     border-radius: 0.5rem;
     margin-top: 8px;
     margin-bottom: 8px;
@@ -368,38 +370,41 @@
     font-family: Inter, sans-serif;
     font-weight: normal;
     padding: 16px;
-    color: #A3A3A3;
-    border-bottom: 1px solid #A3A3A3;
+    color: var(--grey-light);
+    border-bottom: 1px solid var(--grey-light);
   }
   .prose td {
     font-family: Inter, sans-serif;
     padding: 16px;
-    color: #FAFAFA;
-    border-bottom: 1px solid #A3A3A3;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--grey-light);
   }
   .prose tr:last-child td {
     border-bottom: none;
   }
   .prose sup.footnote {
     font-size: 0.75em;
-    color: #A3A3A3;
+    color: var(--grey-light);
   }
   .prose a {
     text-decoration: underline;
   }
   .grid > div:nth-last-child(-n+3) {
-    margin-bottom: 0; /* Remove bottom margin for last item */
+    margin-bottom: 0;
+  }
+  urbit-sigil {
+    cursor: pointer;
   }
   @keyframes textFade {
       0%, 100% {
-        color: #ffffff;
+        color: var(--text-color);
       }
       100% {
-        color: #A3A3A3;
+        color: var(--grey-light);
       }
     }
     .text-fade {
-      animation: textFade 1s ease-in-out forwards;
+      animation: textFade 3s ease-in-out forwards;
     }
   @media (min-width: 768px) {
     .author {
@@ -411,11 +416,17 @@
     .spacing-left{
       left: calc(15ch + 32px);
     }
+    .user .patp{
+      color: var(--grey-default);
+    }
   }
   @media (hover: hover) {
   .menu:hover > #settings-menu {
     display: flex !important;
   }
+  .user:hover .patp{
+      color: var(--grey-light);
+    }
   }
   '''
 ::
