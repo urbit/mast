@@ -635,9 +635,9 @@
   ++  process-sail
     |=  [com-key=@t sal=manx]
     ^-  manx
-    =|  n=@ud
-    =|  prev-key=tape
-    =|  pos-key=(list @)
+    =/  n  0
+    =/  prev-key   (trip com-key)
+    =/  pos-key  *(list @)
     :: if rendered from a root component,
     :: make %body the root element
     =?  sal  =(%html n.g.sal)
