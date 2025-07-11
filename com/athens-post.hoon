@@ -151,8 +151,8 @@
                 "row-start-1 md:row-start-1 flex ".
                 "flex-row md:flex-grow ml-[0px] border-l-0 ".
                 "ml-[{((d-co:co 1) depth)}px] pl-2 items-center"
-          ;span: {<posts.-.+.viw>} 
-          ;span: {" posts"}
+          ;span.whitespace-pre: {<posts.-.+.viw>} 
+          ;span:  posts
           ;div(class "ml-4 flex-grow h-px bg-[#A3A3A3] opacity-50");
       ==
       ;div
@@ -185,12 +185,10 @@
               "ml-[{((d-co:co 1) depth)}px] overflow-hidden ".
               "whitespace-nowrap flex items-start col-start-1 ".
               "row-start-1 md:text-right {?.(reply "" "pl-2")} md:pl-0"
-      =client-event  "click edit ~" 
       ;span(class "inline-block leading-none align-top w-full"): {(cite:title author.post.dat)}
     ==
   ++  edit-form
-    ;div(class "fixed bottom-[24px] inset-x-0 z-51 md:w-full")
-      =client-display  "edit {idt}"
+    ;div(id "edit-{idt}", class "edit-form form hidden md:hidden fixed bottom-[24px] inset-x-0 z-51 md:w-full")
       ;div
         =class  "form-post-wrapper md:grid md:grid-rows-[min-content] ".    
                 "md:grid-cols-3 md:items-start md:grid-cols-[15ch_auto_120px] ".
@@ -204,24 +202,22 @@
             ;p.form-reply-text
               ;  Edit
             ==
-            ;div(client-event "click reply ~")
-              ;button.cursor-pointer(client-event "click edit ~")
-                =style  "font-size: 16px;"
-                ; x
-              ==
+            ;button.cursor-pointer
+              =onclick  "toggleView('edit-{idt}', true)"
+              =style  "font-size: 16px;"
+              ; x
             ==
           ==
           ;form
-            =name            "edit-form"
-            =event           "/submit/edit"
-            =client-event    "submit edit ~"
+            =name      "edit-form"
+            =event     "/submit/edit"
+            =onsubmit  "toggleView('edit-{idt}', true)"
             =class  "post-reply-form w-full min-h-[16px] ".
                     "resize-none overflow-hidden box-border ".
                     "form-reply flex items-stretch justify-between gap-0 ".
                     "[&.is-focused]:!border-white [&.is-focused]:!text-white"
             ;athens-textarea-litdev(value (trip content.post.dat), class "grow", name "edit-input", textareaClass "track-focus");
             ;button 
-              =client-event    "click reply ~"
               =class  "mt-auto p-2 text-[14px]"
               ; →
             ==
@@ -231,14 +227,12 @@
     ==
   ::
   ++  reply-form
-    ;div(class "fixed bottom-[24px] inset-x-0 z-50 md:w-full")
-      =client-display  "edit ~"
+    ;div(id "reply-{idt}", class "reply-form form hidden md:hidden fixed bottom-[24px] inset-x-0 z-50 md:w-full")
       ;div
         =class  "form-post-wrapper md:grid md:grid-rows-[min-content] ".    
                 "md:grid-cols-3 md:items-start md:grid-cols-[15ch_auto_120px] ".
                 "mx-4 md:gap-x-4 mx-auto max-w-[1000px]"
         ;div
-          =client-display  "reply {idt}"
           =class  "mx-4 border-b-0 md:col-start-2 ".
                   "form-wrapper-border rounded-md shadow-md bg-[#0F0F0F] focus-within:!border-white focus-within:!text-white"
           ;div 
@@ -246,7 +240,7 @@
             ;p.form-reply-text
               ;  Replying to {(cite:title author.post.dat)}
             ==
-            ;button.cursor-pointer(client-event "click reply ~")
+            ;button.cursor-pointer(onclick "toggleView('reply-{idt}', true)")
               =style  "font-size: 16px;"
               ; x
             ==
@@ -256,9 +250,9 @@
                     "overflow-hidden box-border flex items-stretch".
                     "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
                     "[&.is-focused]:!border-white [&.is-focused]:!text-white z-10" 
-            =name            "reply-form"
-            =event           "/submit/reply"
-            =client-event    "submit reply ~"
+            =name      "reply-form"
+            =event     "/submit/reply"
+            =onsubmit  "toggleView('reply-{idt}', true)"
             ;athens-textarea-litdev.grow
               =name       "reply-input"
               ;
@@ -309,14 +303,12 @@
             "flex gap-1 justify-end md:invisible visible ".
             "color-[#646464] {?:(hid "hidden" "")}  translate-y-[-1px] ".
             "leading-none align-top md:justify-start"
-    ;button(client-display "reply !{idt}", client-event "click reply {idt}", onclick "delayedScrollToTop('{(trip (rear paf))}', false)"): reply
-    ;button(client-display "reply {idt}", client-event "click reply ~"): reply
+    ;div(onclick "toggleView('reply-{idt}', true, true)")
+      ;button(onclick "delayedScrollToTop('{(trip (rear paf))}', false)"): reply
+    ==
     ;*  ?:  =(author.post.dat src.hull)
       ;=
-        ;div(client-display "edit ~", client-event "click reply ~")
-          ;button(client-event "click edit {idt}"): edit
-        ==
-        ;button(client-display "edit {idt}", client-event "click edit ~"): edit
+        ;button(onclick "toggleView('edit-{idt}', true, true)"): edit
         ;button(event "/click/delete"): delete
       ==
     ~

@@ -137,9 +137,6 @@
     width: 100%;
     overflow-y: scroll;
   }
-  .menu:hover > .settings-menu {
-    display: flex;
-  }
   .posts {
     padding: 110px 16px 110px 16px;
     margin: auto;
@@ -414,6 +411,11 @@
     .spacing-left{
       left: calc(15ch + 32px);
     }
+  }
+  @media (hover: hover) {
+  .menu:hover > #settings-menu {
+    display: flex !important;
+  }
   }
   '''
 ::
