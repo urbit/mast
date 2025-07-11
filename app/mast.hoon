@@ -546,26 +546,31 @@
     :: the component key for the root is null
     =/  rod  *rode
     =/  lin  (~(got by dock) bas.rop)
-    =/  [sal=manx wak=wake]  (build-component-branch rod lin)
-    =.  yel  (~(uni by yel) new.wak)
-    :_  ui-core
-    :_  bos.wak
+    =/  com  (~(got by deck) com.lin)
+    =/  doc  ~(sail com (make-hull boom.com lin))
     :: assert that the product of the sail arm
     :: is a complete document of the following structure:
-    ?.  ?&  ?=([* * ~] c.sal)
-            ?=(%html n.g.sal)
-            ?=(%head n.g.i.c.sal)
-            ?=(%body n.g.i.t.c.sal)
+    ?.  ?&  ?=([* * ~] c.doc)
+            ?=(%html n.g.doc)
+            ?=(%head n.g.i.c.doc)
+            ?=(%body n.g.i.t.c.doc)
         ==
       ~&  >>>  [%malformed-root-component com.lin]
       !!
-    %_  sal
+    =/  [sal=manx wak=wake]  (build-component-branch rod lin)
+    :: the root element after building should be %body
+    ?>  ?=(%body n.g.sal)
+    =.  yel  (~(uni by yel) new.wak)
+    :_  ui-core
+    :_  bos.wak
+    %_  doc
       a.g
         :~  [%our +:(scow %p our.bowl)]
             [%src (scow %p src.bowl)]
             [%sub (spud (make-client-sub-path src rop))]
         ==
-      c.i.c  [script-element c.i.c.sal]
+      c.i.c  [script-element c.i.c.doc]
+      i.t.c  sal
     ==
   ::
   :: ++ui-furl
@@ -575,12 +580,8 @@
     ^-  [[(list json) (set buoy)] _ui-core]
     =/  cov  (~(got by yel) rod)
     =/  com  (~(got by deck) com.lin.cov)
-    =/  old  aft.cov
     =/  new  (process-sail rod ~(sail com (make-hull boom.com lin.cov)))
-    =/  dif
-      %+  luff
-      :_  ~  ?.(=(%html n.g.old) old ?>(?=([* [[%body *] *] ~] c.old) i.t.c.old))
-      :_  ~  ?.(=(%html n.g.new) new ?>(?=([* [[%body *] *] ~] c.new) i.t.c.new))
+    =/  dif  (luff [aft.cov ~] [new ~])
     =.  yel
       %-  %~  uni  by
         %+  ~(put by yel)  rod
@@ -637,25 +638,13 @@
     =|  n=@ud
     =|  prev-key=tape
     =|  pos-key=(list @)
-    |^
-    :: if this is for a root component,
-    :: assert that the second child is the body,
-    :: and use it as the beginning element
-    ?:  =(%html n.g.sal)
-      ?>  ?=([* [[%body *] *] ~] c.sal)
-      %_  sal
-        i.t.c
-          =<  ?>(?=([[%body *] *] .) .)
-          %=  loop
-            sal  i.t.c.sal(a.g [[%mast ~] a.g.i.t.c.sal])
-          ==
-      ==
-    %=  loop
-      a.g.sal  [[%mast ~] a.g.sal]
-    ==
-    ::
-    ++  loop
-    ^-  manx
+    :: if rendered from a root component,
+    :: make %body the root element
+    =?  sal  =(%html n.g.sal)
+      ?>  ?=([* [[%body *] *] *] c.sal)
+      i.t.c.sal
+    =.  a.g.sal  [[%mast ~] a.g.sal]
+    |-  ^-  manx
     :: temporary: if text node, add text node wrapper
     =?  sal  =(%$ n.g.sal)  ;t-  ;+  sal  ==
     =/  found-key
@@ -668,15 +657,27 @@
       ^-  tape
       :: for the root element of this component, the key is given:
       ?:  =(0 n)  (trip com-key)
-      :: else the key is this:
       %-  (v-co:co 1)
       %-  mug
-      :+  prev-key
+      :: for each of these cases
+      :: the position key needs to drop this element's index
+      :: so that it is determined by a third part
+      :: instead of its own position
+      ?:  =(%mast n.g.sal)
+        :+  prev-key
+            ?.(.?(pos-key) ~ +.pos-key)
+            (parse-component-element sal)
+      ?:  =(%client-state n.g.sal)
+        :+  prev-key
+            ?.(.?(pos-key) ~ +.pos-key)
+            a.g.sal
+      ?^  found-key
+        :+  prev-key
+            ?.(.?(pos-key) ~ +.pos-key)
+            found-key
+      :: else the key is only positional
+      :-  prev-key
           pos-key
-      ^-  *
-      ?:  ?=(%mast n.g.sal)  (parse-component-element sal)
-      ?:  =(%client-state n.g.sal)  a.g.sal
-      found-key
     =.  a.g.sal
       :-  [%key this-key]
       ?~  found-key  a.g.sal
@@ -699,12 +700,11 @@
     %+  spun  c.sal
     |=  [m=manx i=@]
     :_  +(i)
-    %=  loop
+    %=  ^$
       n  +(n)
       sal  m
       pos-key  [i pos-key]
     ==
-    --
   ::
   ++  hydrate-component
     |=  [bom=boom res=pool]
