@@ -64,7 +64,8 @@ class AthensPreview extends LitElement {
 
     const trimValue = this.value.trimEnd()
     if (this.classList.contains('hide')) {
-      const truncateValue = smartTruncate(this.value)
+      const athensEditor = this.querySelector('.athens-editor')
+      const truncateValue = smartTruncate(this.value, athensEditor)
       preview.innerHTML = window.marked.parse(truncateValue)
     } else {
       preview.innerHTML = window.marked.parse(trimValue)
@@ -88,14 +89,17 @@ class AthensPreview extends LitElement {
       })
     }
 
-    function smartTruncate(text) {
-      const maxLength = 85
+    function smartTruncate(text, athensEditorElement) {
+      const maxLength = athensEditorElement
+        ? Math.floor(athensEditorElement.offsetWidth / 8)
+        : 85
+
       let cleanText = text
         .replace(/\.\.\.+$/, '') // Remove existing ellipsis
         .replace(/\s*-+\s*$/, '') // Remove trailing dashes with optional spaces
         .trim()
 
-      if (cleanText.length <= maxLength) return cleanText + '...'
+      if (cleanText.length <= maxLength) return cleanText
 
       let truncated = cleanText.substring(0, maxLength)
 

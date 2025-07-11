@@ -32,7 +32,7 @@ class AthensTextareaLitdev extends LitElement {
         <textarea
           name=${this.textareaClass}
           class="${this
-            .textareaClass} flex items-center min-h-[16px] h-[0px] w-full focus:text-white focus:outline-none leading-[16px] text-[16px] md:text-[14px] p-2 border-0 box-border shadow-none"
+            .textareaClass} flex items-center min-h-[14px] h-[0px] max-h-[35vh] overflow-y-auto w-full focus:text-white focus:outline-none leading-[14px] text-[14px] md:text-[14px] py-[7px] px-2 border-0 box-border shadow-none"
           rows="1"
           placeholder=${placeholderText}
           .value=${this.value}
@@ -92,11 +92,22 @@ class AthensTextareaLitdev extends LitElement {
   _onSubmit() {
     if (this.name !== 'edit-input') {
       this.value = ''
+    } else {
+      const currentValue = this.value
+
+      requestAnimationFrame(() => {
+        this.value = currentValue
+        const textarea = this.querySelector('textarea')
+        if (textarea) {
+          textarea.value = currentValue
+        }
+      })
     }
   }
 
   _resize(textarea) {
     if (!textarea) return
+    let gradient = document.getElementsByClassName('gradient-bottom')[0]
 
     // Function to attempt resize until the textarea is ready
     const tryResize = () => {
@@ -106,9 +117,30 @@ class AthensTextareaLitdev extends LitElement {
       }
 
       textarea.style.height = '0px'
+      gradient.style.height =
+        this.name === 'edit-input' || this.name === 'reply-input'
+          ? '120px'
+          : '88px'
       requestAnimationFrame(() => {
-        textarea.style.height = 'auto'
-        textarea.style.height = textarea.scrollHeight + 'px'
+        const isEditOrReply =
+          this.name === 'edit-input' || this.name === 'reply-input'
+        const defaultTextareaHeight = 28
+        const defaultGradientHeight = isEditOrReply ? 140 : 88
+
+        const finalTextareaHeight = Math.max(
+          defaultTextareaHeight,
+          textarea.scrollHeight
+        )
+
+        const additionalGradientHeight = isEditOrReply ? 100 : 60
+
+        const finalGradientHeight =
+          textarea.scrollHeight > defaultTextareaHeight
+            ? finalTextareaHeight + additionalGradientHeight
+            : defaultGradientHeight
+
+        textarea.style.height = finalTextareaHeight + 'px'
+        gradient.style.height = finalGradientHeight + 'px'
       })
     }
 
@@ -142,11 +174,17 @@ class AthensTextareaLitdev extends LitElement {
     this.addEventListener('focusout', () =>
       form?.classList.remove('is-focused')
     )
+    form.addEventListener('submit', this._onSubmit.bind(this))
   }
 
   disconnectedCallback() {
     this._classObserver?.disconnect()
     this._resizeObserver?.disconnect()
+
+    const form = this.closest('form')
+    if (form) {
+      form.removeEventListener('submit', this._onSubmit.bind(this))
+    }
   }
 
   // Form callbacks

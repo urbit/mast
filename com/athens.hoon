@@ -58,8 +58,7 @@
       =class  "relative h-[112px] w-full"
       ;div
         =class  "fixed top-0 left-0 w-full h-[18vh] md:h-[9vh] ".
-                "gradient-top ".
-                "z-50 pointer-events-none"
+                "gradient-top z-50 pointer-events-none"
         ;
       ==
       ;div
@@ -69,8 +68,8 @@
             header-menu
       ==
       ;div
-        =class  "gradient-bottom fixed bottom-0 left-0 w-full h-[18vh] md:h-[9vh] ".
-                "z-25 pointer-events-none"
+        =class  "gradient-bottom fixed bottom-0 left-0 w-full ".
+                "h-[18vh] md:h-[9vh] z-25 pointer-events-none"
         ;
       ==
       ;+  list-posts
@@ -79,17 +78,19 @@
   ;div
     ;div
       ;div
-        =class  "flex flex-col gap-2 w-[18ch] menu"
+        =class  "flex flex-col gap-2 w-auto md:w-[160px] menu"
         ;div
           =onclick  "toggleView('settings-menu')"
-          =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] flex items-center justify-between gap-2 ".
-                  "p-[8px] h-[32px] cursor-pointer patp"
-          ;span:  {(cite:title src.hull)}
-            ;+  settings:lucide
+          =class  "border border-[var(--grey-default)] hover:border-[var(--grey-light)] ".
+                  "rounded bg-[var(--bg-color)] flex items-center ".
+                  "justify-between gap-2 p-[8px] h-[28px] ".
+                  "cursor-pointer patp justify-end md:justify-start" 
+          ;urbit-sigil(patp (cite:title src.hull));
+          ;span(class "hidden md:block w-[16ch] m-0"):  {(cite:title src.hull)}
         == 
         ;div
-          =id  "settings-menu"
-          =class  "border border-[#A3A3A3] rounded bg-[#0F0F0F] hidden md:hover:flex"
+          =id     "settings-menu"
+          =class  "border border-[var(--grey-light)] rounded bg-[var(--bg-color)] hidden md:hover:flex w-[158px]"
             ;+  ?.  =(our.hull src.hull)  
                 user-menu
               admin-menu
@@ -99,7 +100,7 @@
   ==
   ++  user-menu
     ;div
-      =class  "flex justify-center items-center h-[32px]"
+      =class  "flex justify-center items-center h-[28px]"
       =style  "overflow-y: auto;"
       ;a.px-2.py-2.cursor-pointer.col-span-2.flex.justify-center.items-center
         =href  "/~/logout?redirect=/mast/athens"
@@ -108,13 +109,13 @@
     ==
   ++  admin-menu
     ;div
-      =class  "grid grid-cols-[auto_1fr] divide-y ".
-              "divide-[#A3A3A3] leading-tight"
-      =style  "max-height: 400px; overflow-y: auto; line-height:0.8;"
-      ;div.px-2.py-2
+      =class  "grid grid-cols-[auto_1fr] grid-rows-[repeat(auto-fit,28px)] ".
+              "divide-y divide-[var(--grey-light)] leading-tight ".
+              "max-h-[400px] overflow-y-auto leading-[0.8]"
+      ;div(class "mt-auto p-2 h-[28px] flex items-center justify-center")
         ; Public
       ==
-      ;label.px-2.py-2.w-full.flex.items-center.justify-end.relative
+      ;label.p-2.w-full.flex.items-center.justify-end.relative
         ;div.relative.inline-block
           ;+
           ?:  public.access
@@ -133,39 +134,24 @@
           ==
         ==
       ==
-      ;*
-      =/  btn-class  "px-2 py-2 cursor-pointer col-span-2 flex justify-between items-center"
-      ?:  public.access
-        ;=
-          ;div
-            =class  btn-class
-            =onclick  "toggleClassView('show-ids')"
-            ;span: Blocked
-            ;div.show-ids
-                ;+  vector-out:lucide
-              ==
-            ;div(class "show-ids hidden md:hidden")
-                ;+  vector-in:lucide
-            ==
-          ==
-          ;+  (edit-access-form public.access)
-          ;*  (id-list blacklist.access)
-        ==
-      ;=
-        ;div
-          =onclick  "toggleClassView('show-ids')"
-          =class  btn-class
-          ;span: Members
-          ;div.show-ids
+      ;+
+      ;div
+        =class  "p-2 cursor-pointer col-span-2 ".
+                "flex justify-between items-center"
+        =onclick  "toggleClassView('show-ids')"
+        ;span: {?:(public.access "Blocked" "Members")}
+        ;div.show-ids
             ;+  vector-out:lucide
           ==
-          ;div(class "show-ids hidden md:hidden")
+        ;div(class "show-ids hidden md:hidden")
             ;+  vector-in:lucide
-          ==
         ==
-        ;+  (edit-access-form public.access)
-        ;*  (id-list members.access)
       ==
+      ;+  (edit-access-form public.access)
+      ;*  
+      ?:  public.access
+        (id-list blacklist.access)
+      (id-list members.access)
     ==
   ++  public-login-form
     ;form.flex 
@@ -192,29 +178,36 @@
         ==
       ;div(class "fixed bottom-[24px] inset-x-0 z-50 md:w-full")
         =key  "athens-post-form" 
-          ;div
-            =id  "form-post-wrapper" 
-            =class  "form-post-wrapper md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
-                    "md:items-start md:items-start md:grid-cols-[15ch_auto_120px] mx-4 ".
-                    "md:gap-x-4 h-[32px] mx-auto max-w-[1000px]"
-            =client-display  "edit ~"
-            ;+  ?:  is-comet
-                  ;div.post-form.login-block: Login to post
-                ;form(event "/submit/post")
-                  =class  "post-form form-border rounded-md shadow-md bg-[#0F0F0F] ".
-                          "overflow-hidden box-border flex  ".
-                          "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
-                          "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white mx-4" 
-                  =id  "post-form"
-                  ;athens-textarea-litdev.grow
-                    =name  "post-input"
-                    ;
-                  ==
-                  ;button
-                  =class  "mt-auto p-2 text-[14px] h-[32px]"
-                    ; →
-                  ==
+        ;div
+          =id     "form-post-wrapper" 
+          =class  "form-post-wrapper md:grid md:grid-rows-[min-content] md:grid-cols-3 ".
+                  "md:items-start md:items-start md:grid-cols-[15ch_auto_120px] mx-4 ".
+                  "md:gap-x-4 mx-auto max-w-[1000px]"
+          =client-display  "edit ~"
+          ;+  
+            ?:  is-comet
+              ;div.post-form.login-block: Login to post
+            ;div
+              =class  "mx-4 md:col-start-2 ".
+                      "form-border rounded-md shadow-md ". 
+                      "bg-[var(--bg-color)] focus-within:!border-white ". 
+                      "focus-within:!text-white"
+              ;form(event "/submit/post")
+                =id     "post-form"
+                =class  "post-form rounded-md shadow-md ".
+                        "overflow-hidden box-border flex items-stretch ".
+                        "md:rounded-none md:shadow-none md:p-0 ".
+                        "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white" 
+                ;athens-textarea-litdev.grow
+                  =name  "post-input"
+                  ;
                 ==
+                ;button
+                  =class  "mt-auto p-2 text-[14px] h-[28px] flex items-center justify-center"
+                  ; →
+                ==
+              ==
+            ==
         ==
       ==
     ==
@@ -266,15 +259,15 @@
 ++  toggle
   ^-  marl
   ;=
-    ;div(class "w-[20px] h-[11px] bg-[#A3A3A3] rounded-full transition-colors");
-    ;div(class "absolute left-[0] top-[0] w-[9px] h-[9px] bg-[#0F0F0F] rounded-full transition-transform transform peer-checked:translate-x-full m-[1px]");
+    ;div(class "w-[20px] h-[11px] bg-[var(--grey-light)] rounded-full transition-colors");
+    ;div(class "absolute left-[0] top-[0] w-[9px] h-[9px] bg-[var(--bg-color)] rounded-full transition-transform transform peer-checked:translate-x-full m-[1px]");
   ==
 ::
 ++  edit-access-form
   |=  public=?
   ^-  manx
   ;form(event "/submit/add-ship")
-    =class  "col-span-2 px-2 w-full flex gap-2 h-[32px]"
+    =class  "col-span-2 px-2 w-full flex gap-2 h-[28px]"
     ;+  ?:  public
       ;button.ml-auto.cursor-pointer: ~
     ;button.ml-auto.cursor-pointer: +
@@ -292,11 +285,11 @@
   ^-  manx
   ;div
     =class  "show-ids hidden md:hidden col-span-2 flex gap-auto"
-    ;div.pl-2.py-2: {(scow %p ship)}
-    ;form.pr-2.py-2.ml-auto(event "/submit/remove-ship")
+    ;div(class "mt-auto p-2 h-[28px] flex items-center justify-center"): {(scow %p ship)}
+    ;form(event "/submit/remove-ship", class "ml-auto mt-auto p-2 h-[28px] flex items-center justify-center")
     =id  (scow %p ship)
       ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
-      ;button.cursor-pointer: x
+      ;button(class "cursor-pointer"): x
     ==
   ==
 ::

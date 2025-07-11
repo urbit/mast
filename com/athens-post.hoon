@@ -79,28 +79,33 @@
     ?:  ?&  !=(new-posts ~)
             hid
         ==
-      "delayedScrollToTop('{(trip (rear (head new-posts)))}')"
+      ""
+      ::"delayedScrollToTop('{(trip (rear (head new-posts)))}')"
     ""
   |^
     ?:  show  ;div.hidden;
     ?:  &(hid !=(-.+.viw 0))  nested-replies
+    =/  has-new  ?^(`*`+.viw (gth +.+.viw 0) |) 
     ;div
       =event  "{?:(hid "/click/unhide" "")}"
-      =onclick  scroll
+      ::=onclick  scroll
       =id  idt
       =class  "post-node-container flex flex-col md:gap-[16px] gap-[16px] {?~(hid "cursor-pointer" "")}"
       ;div
+        =id  idt
         =class  "post-container relative grid grid-cols-2 ".
                 "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
                 "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
-                "md:items-start md:w-full md:grid-cols-[min-content_auto_120px]" 
+                "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] ".
+                "{?:(hid "open" "")} ".
+                "{?:(&(hid has-new) "has-new" "")}"
         ;+  author
         ;+  
           =/  depth=@
             =-  (mul (dec -) 8)
             ?>  ?=([%athens %posts *] paf) 
             ?:  (gth (lent t.t.paf) 2) 
-              (dec (lent t.t.paf))  
+              (dec (lent t.t.paf))
             1
           ;div
             =class  "message {?:(hid "hide md:w-[95%] w-[85%]" "full")} ".
@@ -110,7 +115,7 @@
                     "border-l-0 relative" 
             ;+  edit-form
             ;athens-preview(value (trip content.post.dat)) 
-              =class  "w-full resize-none overflow-hidden box-border text-sm {?:(new "text-fade" "")}{?:(hid "hide" "")}"
+              =class  "w-full resize-none overflow-hidden box-border text-sm {?:(new "text-fade" "")} {?:(hid "hide" "")}"
               ;*  ~
             ==
             ;+  ?:  hid
@@ -139,8 +144,9 @@
   ++  nested-replies
     =/  new-rep  +.+.viw
     ;div(event "/click/unhide")
+      =id  idt
       =onclick  scroll
-      =class  "post-container relative grid grid-cols-2 ".
+      =class  "relative grid grid-cols-2 ".
               "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
               "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
               "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] grid-cols-[1fr_min-content] ".
@@ -153,15 +159,14 @@
                 "ml-[{((d-co:co 1) depth)}px] pl-2 items-center"
           ;span.whitespace-pre: {<posts.-.+.viw>} 
           ;span:  posts
-          ;div(class "ml-4 flex-grow h-px bg-[#A3A3A3] opacity-50");
+          ;div(class "ml-4 flex-grow h-px bg-[var(--grey-light)] opacity-50");
       ==
       ;div
         =class  "col-start-2 md:col-start-3 row-start-1 md:row-start-1 flex justify-end md:justify-start"
         ;div
-          =class  "reply-num pr-4 ".
-                  "text-[{txt-color}] inline whitespace-nowrap ". 
-                  "w-auto text-[{txt-color}] ". 
-                  "leading-none align-top"
+          =class  "reply-num pr-4 text-[var(--grey-default)] inline ".
+                  "whitespace-nowrap w-auto text-[var(--grey-default)] ".
+                  "leading-none align-top justify-end"
           ;span
             =class  "text-white {?:((gth `@ud`new-rep 0) "new" "")}"
             {?:((gth `@ud`new-rep 0) "+{(scow %ud new-rep)} " " ")}
@@ -169,7 +174,7 @@
         ==
         ;div
           =class  "reply-date inline leading-none align-top ".
-                  "whitespace-nowrap w-auto text-[{txt-color}] ".
+                  "whitespace-nowrap w-auto text-[var(--grey-default)] ".
                   "{?:((gth +.+.viw 0) "!text-white" "")} "
           =style  "font-weight: 400"
           {(date-to-tape (slav %da (rear paf)) now.hull)}
@@ -195,10 +200,10 @@
                 "mx-4 md:gap-x-4 mx-auto max-w-[1000px]"
         ;div 
           =class  "mx-4 border-b-0 md:col-start-2 ".
-                  "form-wrapper-border rounded-md shadow-md bg-[#0F0F0F] ".
+                  "form-wrapper-border rounded-md shadow-md bg-[var(--bg-color)] ".
                   "mx-4 focus-within:!border-white focus-within:!text-white"
           ;div
-            =class  "flex justify-between items-center px-2 py-[10px] text-[#A3A3A3] h-[32px]"
+            =class  "flex justify-between items-center px-2 py-[10px] text-[var(--grey-light)] h-[28px]"
             ;p.form-reply-text
               ;  Edit
             ==
@@ -212,13 +217,13 @@
             =name      "edit-form"
             =event     "/submit/edit"
             =onsubmit  "toggleView('edit-{idt}', true)"
-            =class  "post-reply-form w-full min-h-[16px] ".
+            =class  "post-reply-form form-reply w-full ".
                     "resize-none overflow-hidden box-border ".
-                    "form-reply flex items-stretch justify-between gap-0 ".
+                    "flex items-stretch justify-between gap-0 ".
                     "[&.is-focused]:!border-white [&.is-focused]:!text-white"
             ;athens-textarea-litdev(value (trip content.post.dat), class "grow", name "edit-input", textareaClass "track-focus");
             ;button 
-              =class  "mt-auto p-2 text-[14px]"
+              =class  "mt-auto p-2 text-[14px] h-[28px] flex items-center justify-center"
               ; →
             ==
           ==
@@ -234,9 +239,11 @@
                 "mx-4 md:gap-x-4 mx-auto max-w-[1000px]"
         ;div
           =class  "mx-4 border-b-0 md:col-start-2 ".
-                  "form-wrapper-border rounded-md shadow-md bg-[#0F0F0F] focus-within:!border-white focus-within:!text-white"
+                  "form-wrapper-border rounded-md shadow-md ". 
+                  "bg-[var(--bg-color)] focus-within:!border-white ". 
+                  "focus-within:!text-white"
           ;div 
-            =class  "flex justify-between items-center px-2 py-[10px] text-[#A3A3A3] h-[32px]"
+            =class  "flex justify-between items-center px-2 py-[10px] text-[var(--grey-light)] h-[28px]"
             ;p.form-reply-text
               ;  Replying to {(cite:title author.post.dat)}
             ==
@@ -247,8 +254,8 @@
           ==
           ;form
             =class  "post-form form-reply rounded-md shadow-md ".
-                    "overflow-hidden box-border flex items-stretch".
-                    "md:col-start-2 md:rounded-none md:shadow-none md:p-0 ".
+                    "overflow-hidden box-border flex items-stretch ".
+                    "md:rounded-none md:shadow-none md:p-0 ".
                     "[&.is-focused]:!border-white [&.is-focused]:!text-white z-10" 
             =name      "reply-form"
             =event     "/submit/reply"
@@ -259,7 +266,7 @@
             ==
             ;button
               =type   "submit"
-              =class  "mt-auto p-2 text-[14px] h-[32px]"
+              =class  "mt-auto p-2 text-[14px] h-[28px] flex items-center justify-center"
               ; →
             ==
           ==
@@ -268,31 +275,30 @@
     ==
   ::
   ++  post-metadata
+    =/  rep      rep-num.dat
+    =/  new-rep  ?:  hid  +.+.viw  0
+    ^-  manx
     ;div 
-      =class  "md:col-start-3 md:row-start-1 flex flex-row justify-end md:justify-start {?:(hid "" "hidden")}"
-      ;*
-        =/  rep      rep-num.dat
-        =/  new-rep  ?:  hid  +.+.viw  0
-        ?:  &(=(0 rep) =(new-rep 0))  ~
-        ;=
+      =class  "md:col-start-3 md:row-start-1 flex flex-row ". 
+              "justify-end md:justify-start {?:(hid "" "hidden")}"
+      ;+  ?:  &(=(0 rep) =(new-rep 0))  ;div.hidden;
           ;div 
             =class  "reply-num {?:(hid "hide" "full")} pr-4 ".
-                    "text-[{txt-color}] inline whitespace-nowrap ". 
-                    "w-auto text-[{txt-color}] md:w-[7ch] w-auto ". 
-                    "leading-none align-top"
+                    "text-[var(--grey-default)] inline whitespace-nowrap ". 
+                    "w-auto text-[var(--grey-default)] md:w-[7ch] w-auto ". 
+                    "leading-none align-top justify-end"
             {?:((gth `@ud`rep 0) <rep> "")}
             ;span
             =class  "text-white {?:((gth `@ud`new-rep 0) "new" "")}"
               {?:(&((gth `@ud`rep 0) (gth `@ud`new-rep 0)) "+" "")}{?:((gth `@ud`new-rep 0) "{(scow %ud +.+.viw)}" "")}
             ==
           ==
-          ;div
-            =class  "reply-date {?:(hid "hide" "full")} inline ".
-                    "whitespace-nowrap w-auto text-[{txt-color}] ".
-                    "leading-none align-top {?:((gth new-rep 0) "!text-white" "")} ".
-                    "{?:(&(=(0 rep) =(new-rep 0)) "md:pl-[7ch]" "")}"
-            {(date-to-tape (slav %da (rear paf)) now.hull)}
-          ==
+        ;div
+          =class  "reply-date {?:(hid "hide" "full")} inline ".
+                  "whitespace-nowrap w-auto text-[var(--grey-default)] ".
+                  "leading-none align-top {?:((gth new-rep 0) "!text-white" "")} ".
+                  "{?:(&(=(0 rep) =(new-rep 0)) "md:pl-[7ch]" "")}"
+          {(date-to-tape (slav %da (rear paf)) now.hull)}
         ==
       ==
   ::
@@ -304,7 +310,8 @@
             "color-[#646464] {?:(hid "hidden" "")}  translate-y-[-1px] ".
             "leading-none align-top md:justify-start"
     ;div(onclick "toggleView('reply-{idt}', true, true)")
-      ;button(onclick "delayedScrollToTop('{(trip (rear paf))}', false)"): reply
+      ::;button(onclick "delayedScrollToTop('{(trip (rear paf))}', false)"): reply
+      ;button: reply
     ==
     ;*  ?:  =(author.post.dat src.hull)
       ;=
@@ -320,7 +327,7 @@
       ?>  ?=([%athens %posts *] paf)
         (lent t.t.paf)  
     ;div.replies-container.relative
-      ;div(class "border-left absolute w-px bg-[#737373] top-0 bottom-[5px]", style "--depth: {((d-co:co 1) depth)}px;");
+      ;div(class "border-left absolute w-px bg-[var(--grey-default)] top-0 bottom-[5px]", style "--depth: {((d-co:co 1) depth)}px;");
       ;*  ?>  ?=([%athens %posts *] paf)
           %+  turn  rep.dat
           |=  p=path
@@ -334,8 +341,6 @@
 ::
 --
 |%
-::
-++  txt-color  "#737373"
 ::
 ++  parse-content
   |=  tap=tape
@@ -397,7 +402,7 @@
     =/  month  (sub (add m:date-now 12) m:date-old)
     "{<month>}M" 
   ?:  (gte d 7)
-    "{<(div d 7)>}d" 
+    "{<(div d 7)>}w" 
   "{<d>}d" 
 ::
 --
