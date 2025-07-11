@@ -566,7 +566,7 @@
     %_  doc
       a.g
         :~  [%our +:(scow %p our.bowl)]
-            [%src (scow %p src.bowl)]
+            [%src (scow %p src)]
             [%sub (spud (make-client-sub-path src rop))]
         ==
       c.i.c  [script-element c.i.c.doc]
@@ -732,7 +732,7 @@
     |=  [bom=boom lin=line]
     ^-  hull
     :*  our.bowl
-        src.bowl
+        src
         now.bowl
         eny.bowl
         bas.rop
