@@ -80,6 +80,7 @@
       ;div
         =class  "flex flex-col gap-2 w-auto md:w-[160px] menu"
         ;div
+          =id  "menu-border"
           =onclick  "toggleView('settings-menu')"
           =class  "border border-[var(--grey-default)] hover:border-[var(--grey-light)] ".
                   "rounded bg-[var(--bg-color)] flex items-center ".
