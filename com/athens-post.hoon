@@ -114,10 +114,7 @@
                     "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}px] ".
                     "border-l-0 relative" 
             ;+  edit-form
-            ;athens-preview(value (trip content.post.dat)) 
-              =class  "w-full resize-none overflow-hidden box-border text-sm {?:(new "text-fade" "")} {?:(hid "hide" "")}"
-              ;*  ~
-            ==
+            ;athens-preview(value (trip content.post.dat), class "w-full resize-none overflow-hidden box-border text-sm {?:(new "text-fade" "")} {?:(hid "hide" "")}");
             ;+  ?:  hid
                   ;div.hidden;
                 reply-form

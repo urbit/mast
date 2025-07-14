@@ -50,8 +50,6 @@ class SigilElement extends HTMLElement {
     this.boundHandlers.onClick = () => {
       this.isClicked = !this.isClicked
       this.isHovered = this.isClicked
-      console.log('isClicked:', this.isClicked)
-      console.log('isHovered:', this.isHovered)
       requestAnimationFrame(() => {
         this.render()
       })

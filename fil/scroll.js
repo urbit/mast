@@ -305,7 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
       el.classList.toggle('md:hidden')
       if (!el.classList.contains('hidden')) {
         const textarea = el.querySelector('textarea')
-        console.log(el)
         if (textarea) {
           textarea.focus()
         }

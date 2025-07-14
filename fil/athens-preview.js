@@ -9,8 +9,6 @@ class AthensPreview extends LitElement {
 
   static properties = {
     value: { type: String, reflect: true },
-    activeTab: { type: String },
-    textareaClass: { type: String },
     clampClass: { type: String }
   }
 
@@ -18,6 +16,8 @@ class AthensPreview extends LitElement {
     super()
     this.internals = this.attachInternals()
     this.value = ''
+    this._isHidden = false
+    this.clampClass = 'h-auto'
   }
 
   createRenderRoot() {
@@ -63,9 +63,10 @@ class AthensPreview extends LitElement {
     })
 
     const trimValue = this.value.trimEnd()
-    if (this.classList.contains('hide')) {
+
+    if (this._isHidden) {
       const athensEditor = this.querySelector('.athens-editor')
-      const truncateValue = smartTruncate(this.value, athensEditor)
+      const truncateValue = this._smartTruncate(this.value, athensEditor)
       preview.innerHTML = window.marked.parse(truncateValue)
     } else {
       preview.innerHTML = window.marked.parse(trimValue)
@@ -77,49 +78,98 @@ class AthensPreview extends LitElement {
       last.remove()
     }
 
-    if (this.classList.contains('hide')) {
-      preview.style.height = '16px'
-      this.clampClass = 'clamp-one-line'
+    this._applyHideStyles(preview)
+  }
+
+  _applyHideStyles(preview) {
+    if (this._isHidden) {
+      this.clampClass = 'clamp-one-line h-[16px]'
+      this.requestUpdate() // Trigger re-render
     } else {
-      preview.style.height = 'auto'
-      this.clampClass = ''
+      this.clampClass = 'h-auto'
+      this.requestUpdate() // Trigger re-render
       requestAnimationFrame(() => {
         const initialHeight = preview.offsetHeight
-        preview.style.height = `${initialHeight - 4}px`
+        this.clampClass = `h-[${initialHeight - 4}px]`
+        this.requestUpdate() // Trigger re-render after height calculation
       })
     }
+  }
 
-    function smartTruncate(text, athensEditorElement) {
-      const maxLength = athensEditorElement
-        ? Math.floor(athensEditorElement.offsetWidth / 8)
-        : 85
+  _smartTruncate(text, athensEditorElement) {
+    const maxLength = athensEditorElement
+      ? Math.floor(athensEditorElement.offsetWidth / 8)
+      : 85
 
-      let cleanText = text
-        .replace(/\.\.\.+$/, '') // Remove existing ellipsis
-        .replace(/\s*-+\s*$/, '') // Remove trailing dashes with optional spaces
-        .trim()
+    let cleanText = text
+      .replace(/\.\.\.+$/, '') // Remove existing ellipsis
+      .replace(/\s*-+\s*$/, '') // Remove trailing dashes with optional spaces
+      .trim()
 
-      if (cleanText.length <= maxLength) return cleanText
+    if (cleanText.length <= maxLength) return cleanText
 
-      let truncated = cleanText.substring(0, maxLength)
+    let truncated = cleanText.substring(0, maxLength)
 
-      let lastSpace = truncated.lastIndexOf(' ')
+    let lastSpace = truncated.lastIndexOf(' ')
 
-      if (lastSpace > 0) {
-        truncated = cleanText.substring(0, lastSpace)
-      }
+    if (lastSpace > 0) {
+      truncated = cleanText.substring(0, lastSpace)
+    }
 
-      truncated = truncated.replace(/\s*-+\s*$/, '').trim()
+    truncated = truncated.replace(/\s*-+\s*$/, '').trim()
 
-      return truncated + '...'
+    return truncated + '...'
+  }
+
+  _checkHideStateChange() {
+    const shouldHide = this.classList.contains('hide')
+
+    if (shouldHide !== this._isHidden) {
+      this._isHidden = shouldHide
+      this._updatePreview()
     }
   }
 
   connectedCallback() {
     super.connectedCallback()
+
+    this._isHidden = this.classList.contains('hide')
+
+    if (this._isHidden) {
+      this.clampClass = 'clamp-one-line h-[16px]'
+    } else {
+      this.clampClass = 'h-auto'
+    }
+
+    this._classObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.type === 'attributes' &&
+          mutation.attributeName === 'class'
+        ) {
+          this._checkHideStateChange()
+        }
+      })
+    })
+
+    // Start observing class changes
+    this._classObserver.observe(this, {
+      attributes: true,
+      attributeFilter: ['class'],
+      attributeOldValue: true
+    })
+
+    this.updateComplete.then(() => {
+      this._updatePreview()
+    })
   }
 
-  disconnectedCallback() {}
+  disconnectedCallback() {
+    super.disconnectedCallback()
+    if (this._classObserver) {
+      this._classObserver.disconnect()
+    }
+  }
 }
 
 customElements.define('athens-preview', AthensPreview)
