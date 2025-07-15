@@ -205,6 +205,7 @@
     line-height: 140%;
     letter-spacing: 0%;
     left: calc(var(--depth, 0px));
+    z-index: 10;
   }
   .replies {
     padding-left: 0px;
@@ -394,6 +395,9 @@
   }
   .target{
     background: #1E1F1E;
+    box-sizing: border-box;
+    padding: 8px 0; 
+    margin: -8px 0; 
   }
   urbit-sigil {
     cursor: pointer;
