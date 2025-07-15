@@ -392,6 +392,9 @@
   .grid > div:nth-last-child(-n+3) {
     margin-bottom: 0;
   }
+  .target{
+    background: #1E1F1E;
+  }
   urbit-sigil {
     cursor: pointer;
   }
