@@ -80,6 +80,7 @@
       ;div
         =class  "flex flex-col gap-2 w-auto md:w-[160px] menu"
         ;div
+          =id  "menu-border"
           =onclick  "toggleView('settings-menu')"
           =class  "border border-[var(--grey-default)] hover:border-[var(--grey-light)] ".
                   "rounded bg-[var(--bg-color)] flex items-center ".
@@ -90,7 +91,7 @@
         == 
         ;div
           =id     "settings-menu"
-          =class  "border border-[var(--grey-light)] rounded bg-[var(--bg-color)] hidden md:hover:flex w-[158px]"
+          =class  "border border-[var(--grey-light)] rounded bg-[var(--bg-color)] hidden md:hover:flex w-[160px]"
             ;+  ?.  =(our.hull src.hull)  
                 user-menu
               admin-menu
@@ -100,9 +101,8 @@
   ==
   ++  user-menu
     ;div
-      =class  "flex justify-center items-center h-[28px]"
-      =style  "overflow-y: auto;"
-      ;a.px-2.py-2.cursor-pointer.col-span-2.flex.justify-center.items-center
+      =class  "flex justify-center items-center h-[28px] overflow-hidden"
+      ;a.px-2.py-2.cursor-pointer.col-span-2.flex.justify-center.items-center.overflow-hidden
         =href  "/~/logout?redirect=/mast/athens"
         ; Sign out
       ==

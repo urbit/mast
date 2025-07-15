@@ -48,13 +48,13 @@ class SigilElement extends HTMLElement {
     }
 
     this.boundHandlers.onClick = () => {
-      this.isClicked = !this.isClicked
-      this.isHovered = this.isClicked
-      console.log('isClicked:', this.isClicked)
-      console.log('isHovered:', this.isHovered)
-      requestAnimationFrame(() => {
-        this.render()
-      })
+      if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        this.isClicked = !this.isClicked
+        this.isHovered = this.isClicked
+        requestAnimationFrame(() => {
+          this.render()
+        })
+      }
     }
 
     this.menuElements.forEach((element) => {
@@ -85,6 +85,11 @@ class SigilElement extends HTMLElement {
     const patp = this.getAttribute('patp')
     if (!patp) return
     const color = this.isHovered || this.isClicked ? '#A3A3A3' : '#737373'
+    const borderMenu = this.closest('#menu-border')
+    if (borderMenu) {
+      borderMenu.style.borderColor =
+        this.isHovered || this.isClicked ? '#A3A3A3' : '#737373'
+    }
 
     const svgString = sigil({
       patp: patp.slice(1),

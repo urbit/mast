@@ -1,87 +1,87 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const trackedElements = new Set()
-  const lastStates = new Map()
+  // const trackedElements = new Set()
+  // const lastStates = new Map()
 
   function getPostElements() {
     return Array.from(document.querySelectorAll('.post-container'))
   }
 
-  const grandparentToChildMap = new Map()
+  // const grandparentToChildMap = new Map()
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const grandparent = entry.target
-        const child = grandparentToChildMap.get(grandparent)
-        if (!child) return
+  // const observer = new IntersectionObserver(
+  //   (entries) => {
+  //     entries.forEach((entry) => {
+  //       const grandparent = entry.target
+  //       const child = grandparentToChildMap.get(grandparent)
+  //       if (!child) return
 
-        const isOutOfView =
-          entry.boundingClientRect.top < 0 && !entry.isIntersecting
-        const wasOutOfView = lastStates.get(child) || false
+  //       const isOutOfView =
+  //         entry.boundingClientRect.top < 0 && !entry.isIntersecting
+  //       const wasOutOfView = lastStates.get(child) || false
 
-        if (!wasOutOfView && isOutOfView && document.body.contains(child)) {
-          triggerEvent(child)
-        }
+  //       if (!wasOutOfView && isOutOfView && document.body.contains(child)) {
+  //         triggerEvent(child)
+  //       }
 
-        lastStates.set(child, isOutOfView)
-      })
-    },
-    { threshold: 0 }
-  )
+  //       lastStates.set(child, isOutOfView)
+  //     })
+  //   },
+  //   { threshold: 0 }
+  // )
 
-  function observeNewElements() {
-    const elements = Array.from(document.querySelectorAll('.track-visibility'))
+  // function observeNewElements() {
+  //   const elements = Array.from(document.querySelectorAll('.track-visibility'))
 
-    elements.forEach((child) => {
-      const grandparent = child.parentElement?.parentElement
-      if (!grandparent) return
+  //   elements.forEach((child) => {
+  //     const grandparent = child.parentElement?.parentElement
+  //     if (!grandparent) return
 
-      if (!trackedElements.has(grandparent)) {
-        observer.observe(grandparent)
-        trackedElements.add(grandparent)
-        grandparentToChildMap.set(grandparent, child)
-        lastStates.set(child, false)
-      }
-    })
+  //     if (!trackedElements.has(grandparent)) {
+  //       observer.observe(grandparent)
+  //       trackedElements.add(grandparent)
+  //       grandparentToChildMap.set(grandparent, child)
+  //       lastStates.set(child, false)
+  //     }
+  //   })
 
-    // Cleanup for removed elements
-    trackedElements.forEach((grandparent) => {
-      if (!document.body.contains(grandparent)) {
-        observer.unobserve(grandparent)
-        trackedElements.delete(grandparent)
-        const child = grandparentToChildMap.get(grandparent)
-        if (child) lastStates.delete(child)
-        grandparentToChildMap.delete(grandparent)
-      }
-    })
-  }
+  //   // Cleanup for removed elements
+  //   trackedElements.forEach((grandparent) => {
+  //     if (!document.body.contains(grandparent)) {
+  //       observer.unobserve(grandparent)
+  //       trackedElements.delete(grandparent)
+  //       const child = grandparentToChildMap.get(grandparent)
+  //       if (child) lastStates.delete(child)
+  //       grandparentToChildMap.delete(grandparent)
+  //     }
+  //   })
+  // }
 
-  function triggerEvent(elem) {
-    try {
-      const submitEvent = new Event('submit', {
-        bubbles: true,
-        cancelable: true
-      })
-      elem.dispatchEvent(submitEvent)
-    } catch (err) {
-      console.warn('Submit event failed:', err)
-    }
-  }
+  // function triggerEvent(elem) {
+  //   try {
+  //     const submitEvent = new Event('submit', {
+  //       bubbles: true,
+  //       cancelable: true
+  //     })
+  //     elem.dispatchEvent(submitEvent)
+  //   } catch (err) {
+  //     console.warn('Submit event failed:', err)
+  //   }
+  // }
 
-  const mutationObserver = new MutationObserver(() => {
-    observeNewElements()
+  // const mutationObserver = new MutationObserver(() => {
+  //   observeNewElements()
 
-    if (window.positionTracker) {
-      window.positionTracker.updateElements()
-    }
-  })
+  //   if (window.positionTracker) {
+  //     window.positionTracker.updateElements()
+  //   }
+  // })
 
-  mutationObserver.observe(document.body, {
-    childList: true,
-    subtree: true
-  })
+  // mutationObserver.observe(document.body, {
+  //   childList: true,
+  //   subtree: true
+  // })
 
-  observeNewElements()
+  // observeNewElements()
 
   function setupFocusTracking() {
     const inputs = document.querySelectorAll(
@@ -303,6 +303,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) {
       el.classList.toggle('hidden')
       el.classList.toggle('md:hidden')
+      if (!el.classList.contains('hidden')) {
+        const textarea = el.querySelector('textarea')
+        if (textarea) {
+          textarea.focus()
+        }
+      }
       if (togglePostForm) {
         const postForm = document.getElementById('form-post-wrapper')
         if (postForm) {
