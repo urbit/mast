@@ -54,6 +54,11 @@ class SigilElement extends HTMLElement {
         requestAnimationFrame(() => {
           this.render()
         })
+
+        this.patp = document.querySelector('#patp')
+        if (this.patp) {
+          this.patp.classList.toggle('hidden')
+        }
       }
     }
 
