@@ -1,13 +1,15 @@
 /-  athens, mast
 |%
 +$  card  card:agent:gall
-+$  state-0  state:athens
-+$  state-n
-  $%  [%state-0 state-0]
++$  state-1
+  $:  =posts:athens
+      =user-sessions:athens
+      access=access:athens
   ==
 --
 ::
-=|  state-n
+!:
+=|  state-1
 =*  state  -
 =<
 ^-  agent:gall
@@ -24,15 +26,37 @@
   !>  state
 ::
 ++  on-load
-  |=  =vase
-  ^-  (quip card _this)
-  =/  old  (mole |.(!<(state-n vase)))
-  =?  state  ?=(^ old)  u.old
-  :_  this
-  :~
-    :*  %pass  /bind  %arvo  %e  %connect  [~ /athens]  %athens
+  |=  ole=vase
+  |^
+    ^-  (quip card _this)
+    =/  old  (mole |.(!<(state-n ole)))
+    =?  state  ?=(^ old)
+      ?-  -.u.old
+        %state-1  +.u.old
+        %state-0  (state-0-to-1 +.u.old)
+      ==
+    :_  this
+    :~
+      :*  %pass  /bind  %arvo  %e  %connect  [~ /athens]  %athens
+      ==
     ==
-  ==
+  +$  state-n
+    $%  [%state-0 state-0]
+        [%state-1 state-1]
+    ==
+  +$  state-0
+    $:  =posts:athens
+        =user-sessions:athens
+        =access:athens
+    ==
+  ++  state-0-to-1
+    |=  zero=state-0
+    ^-  state-1
+    :*  posts.zero
+        user-sessions.zero
+        *access:athens
+    ==
+  --
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -96,7 +120,11 @@
 ::
 ++  on-agent  |=([wire sign:agent:gall] ^-((quip card _this) !!))
 ++  on-arvo   |=([wire sign-arvo] ^-((quip card _this) !!))
-++  on-fail   |=([term tang] ^-((quip card _this) !!))
+++  on-fail
+  |=  [=term =tang]
+  ^-  (quip card _this)
+  %-  (slog term tang)
+  `this
 --
 ::
 |_  [=bowl:gall cards=(list card)]
@@ -117,6 +145,11 @@
 ++  poke
   |=  [=mark =vase]
   ^+  cor
+  =;  =(each _cor tang)
+    ?:  ?=([%.y *] each)  p.each
+    %-  (slog %poke-failed p.each)
+    cor
+  %-  mule  |.
   ?+  mark  ~|(bad-poke/mark !!) 
     ::
       %handle-http-request
@@ -124,9 +157,17 @@
     !<  [rid=@ta req=inbound-request:eyre]  vase
     ::
       %athens-action
-    ?:  ?=(%pawn (clan:title src.bowl))  !!
+    :: ?:  ?=(%pawn (clan:title src.bowl))  !!
     =/  act  !<  action:athens  vase
     ?-  -.act
+        %gated-set-door-code
+      %-  set-door-code  code.act
+      ::
+        %gated-register
+      cor
+      ::
+        %gated-sign-in
+      cor
       ::
         %put-post
       %+  put-post  post-at.act  content.act
@@ -143,8 +184,8 @@
         %unhide-post
       %-  unhide-post  at.act
       ::
-        %access-public
-      %-  access-public  public.act
+        %set-access-mode
+      %-  set-access-mode  mode.act
       ::
         %edit-access-id
       %-  edit-access-id  ids.act
@@ -331,43 +372,50 @@
     %-  make-fact-card  (weld /r/view/[(scot %p src.bowl)] (weld (snip at) /[(scot %da id)]))
 --
 ::
-++  access-public
-  |=  public=?
+++  set-door-code
+  |=  code=@t
   ^+  cor
-  ?:  =(public public.access)  cor
-  =.  access  :*  public 
-                  members.access
-                  blacklist.access
-              ==
+  =.  door-code.access  code
   %-  emit
   %-  make-fact-card  /r/access
+  ::
+::
+++  set-access-mode
+  |=  =term
+  ^+  cor
+  =.  mode.access  (access-mode:athens term)
+  %-  emit
+  %-  make-fact-card  /r/access
+  ::
 ::
 ++  edit-access-id
   |=  ids=(list @p)
   ^+  cor
-  ?.  public.access
-    =.  members.access  ~(tap in (silt (welp members.access ids)))
-    %-  emit
-    %-  make-fact-card  /r/access
-  =.  blacklist.access  ~(tap in (silt (welp blacklist.access ids)))
-  %-  emit
-  %-  make-fact-card  /r/access
+  cor
+  :: ?.  public.access
+  ::   =.  members.access  ~(tap in (silt (welp members.access ids)))
+  ::   %-  emit
+  ::   %-  make-fact-card  /r/access
+  :: =.  blacklist.access  ~(tap in (silt (welp blacklist.access ids)))
+  :: %-  emit
+  :: %-  make-fact-card  /r/access
 ::
 ++  del-access-id
   |=  id=@p
   ^+  cor
-  =/  index-id  %+  find  [id]~ 
-                ?.  public.access
-                  members.access
-                blacklist.access
-  ?~  index-id  cor
-  ?.  public.access
-    =.  members.access  (oust [(need index-id) 1] members.access)
-    %-  emit
-    %-  make-fact-card  /r/access
-  =.  blacklist.access  (oust [(need index-id) 1] blacklist.access)
-  %-  emit
-  %-  make-fact-card  /r/access
+  cor
+  :: =/  index-id  %+  find  [id]~ 
+  ::               ?.  public.access
+  ::                 members.access
+  ::               blacklist.access
+  :: ?~  index-id  cor
+  :: ?.  public.access
+  ::   =.  members.access  (oust [(need index-id) 1] members.access)
+  ::   %-  emit
+  ::   %-  make-fact-card  /r/access
+  :: =.  blacklist.access  (oust [(need index-id) 1] blacklist.access)
+  :: %-  emit
+  :: %-  make-fact-card  /r/access
 ::
 ++  get-post-key-paths
   |=  poz=posts:athens
@@ -523,8 +571,9 @@
   ^-  user-session:athens
   :: ?.  (~(has in hidden-posts.session) (slav %da (rear post-at)))
   ::   session
-  :-  hidden-posts.session
+  :+  hidden-posts.session
       (~(put in new-posts.session) (welp post-at /[(scot %da post-id)]))
+  ~
   --
 ::
 ++  get-sort-posts
