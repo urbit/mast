@@ -49,6 +49,8 @@
     =/  fingerprint=@p
       %-  ~(sit fo (pow 2 95))
       `@`(~(got by data.crow) 'fingerprint')
+    ?.  ?=(^ (find ~[fingerprint] ~(val by accounts.access)))
+      ~     :: fail sign-in if the user does not have an account
     :~  [%athens %athens-action !>(gated-sign-in+[src.hull fingerprint])]
     ==
     ::
