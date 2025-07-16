@@ -101,30 +101,30 @@
       ;+  list-posts
     ==
   ++  header-menu
+  ;div
     ;div
       ;div
+        =class  "flex flex-col gap-2 w-auto max-w-[160px] md:w-[160px] menu"
         ;div
-          =class  "flex flex-col gap-2 w-auto md:w-[160px] menu"
-          ;div
-            =id  "menu-border"
-            =onclick  "toggleView('settings-menu')"
-            =class  "border border-[var(--grey-default)] hover:border-[var(--grey-light)] ".
-                    "rounded bg-[var(--bg-color)] flex items-center ".
-                    "justify-between gap-2 p-[8px] h-[28px] ".
-                    "cursor-pointer patp justify-end md:justify-start" 
-            ;urbit-sigil(patp (cite:title user));
-            ;span(class "hidden md:block w-[16ch] m-0"):  {(cite:title user)}
-          == 
-          ;div
-            =id     "settings-menu"
-            =class  "border border-[var(--grey-light)] rounded bg-[var(--bg-color)] hidden md:hover:flex w-[160px]"
-              ;+  ?.  =(our.hull src.hull)  
-                  user-menu
-                admin-menu
-          ==
+          =id  "menu-border"
+          =onclick  "toggleView('settings-menu')"
+          =class  "border border-[var(--grey-default)] hover:border-[var(--grey-light)] ".
+                  "rounded bg-[var(--bg-color)] flex items-center ".
+                  "justify-between gap-2 p-[8px] h-[28px] ".
+                  "cursor-pointer patp justify-end md:justify-start" 
+          ;urbit-sigil(patp (cite:title user));
+          ;span(class "hidden md:block w-[16ch] m-0", id "patp"):  {(cite:title user)}
+        == 
+        ;div
+          =id     "settings-menu"
+          =class  "border border-[var(--grey-light)] rounded bg-[var(--bg-color)] hidden md:hover:flex w-[160px]"
+            ;+  ?.  =(our.hull src.hull)  
+                user-menu
+              admin-menu
         ==
       ==
     ==
+  ==
   ++  user-menu
     ;div
       =class  "flex justify-center items-center h-[28px] overflow-hidden"

@@ -321,6 +321,21 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       }
+
+      const actualId = id.substring(6)
+      const target = document.getElementById('post-' + actualId)
+      let alreadyTarget = false
+      if (target) {
+        alreadyTarget = target.classList.contains('target')
+      }
+
+      document
+        .querySelectorAll('.target')
+        .forEach((el) => el.classList.remove('target'))
+
+      if (target && !alreadyTarget) {
+        target.classList.add('target')
+      }
     }
   }
 

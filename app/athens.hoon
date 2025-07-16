@@ -219,17 +219,11 @@
   ?~  post-at 
       :~  %-  make-fact-card  /r/posts-all
       ==
-  =/  parent-cards
-    =/  paths  (get-post-key-paths posts)
-    %+  turn  paths
-    |=  p=path
-    %-  make-fact-card  (weld /r/posts p)
   =/  cards  *(list card)
   =/  at=path  post-at
-  %+  weld  parent-cards
   |-  ^-  (list card)
   ?:  =(/ (tail at))
-    cards
+    (snoc `(list card)`cards (make-fact-card (weld /r/posts `(list @ta)`at)))
   =/  c  (snoc `(list card)`cards (make-fact-card (weld /r/posts `(list @ta)`at)))
   %=  $
     at   (snip `path`at)

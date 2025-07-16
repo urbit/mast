@@ -96,11 +96,11 @@
       =id  idt
       =class  "post-node-container flex flex-col md:gap-[16px] gap-[16px] {?~(hid "cursor-pointer" "")}"
       ;div
-        =id  idt
+        =id  "post-{idt}"
         =class  "post-container relative grid grid-cols-2 ".
                 "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
                 "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
-                "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] ".
+                "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] box-border ".
                 "{?:(hid "open" "")} ".
                 "{?:(&(hid has-new) "has-new" "")}"
         ;+  author

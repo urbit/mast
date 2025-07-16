@@ -38,7 +38,7 @@
     ;head
       ;title: Athens
       ;meta(charset "UTF-8");
-      ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;meta(name "viewport", content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no");
       ;link(rel "manifest", href "/athens/manifest");
       ;link(rel "preconnect", href "https://rsms.me/");
       ;link(rel "stylesheet", href "https://rsms.me/inter/inter.css");
@@ -205,6 +205,7 @@
     line-height: 140%;
     letter-spacing: 0%;
     left: calc(var(--depth, 0px));
+    z-index: 10;
   }
   .replies {
     padding-left: 0px;
@@ -391,6 +392,12 @@
   }
   .grid > div:nth-last-child(-n+3) {
     margin-bottom: 0;
+  }
+  .target{
+    background: #1E1F1E;
+    box-sizing: border-box;
+    padding: 8px 0; 
+    margin: -8px 0; 
   }
   urbit-sigil {
     cursor: pointer;
