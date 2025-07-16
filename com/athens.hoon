@@ -45,17 +45,35 @@
     :~  [%athens %athens-action !>([%gated-set-door-code code])]
     ==
     ::
+      [%submit %sign-in ~]
+    =/  fingerprint=@p
+      %-  ~(sit fo (pow 2 95))
+      `@`(~(got by data.crow) 'fingerprint')
+    :~  [%athens %athens-action !>(gated-sign-in+[src.hull fingerprint])]
+    ==
+    ::
+      [%submit %register ~]
+    =/  fingerprint=@p
+      %-  ~(sit fo (pow 2 95))
+      `@`(~(got by data.crow) 'fingerprint')
+    =/  door-code=@t  (~(got by data.crow) 'door-code')
+    ?.  =(door-code door-code.access)
+      ~
+    :~  [%athens %athens-action !>(gated-sign-in+[src.hull fingerprint])]
+    ==
   ==
 ::
 ++  sail
   ^-  manx
   =/  access  get-access
-  =/  is-comet=?  ?=(%pawn (clan:title src.hull))
+  =/  authenticated-user=(unit @p)  (has-access src.hull access)
+  =/  is-logged-in=?  |(?=(^ authenticated-user) =(our.hull src.hull))
+  =/  user=@p  (fall authenticated-user src.hull)
   |^
     ;div.root
       ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"true" ~])
       ;+
-          ?:  |(=(our.hull src.hull) (has-access src.hull access))
+          ?:  |(=(our.hull src.hull) is-logged-in)
             authenticated-page
           unauthenticated-page
     ==
@@ -69,7 +87,7 @@
       ==
       ;div
         =class  "user fixed z-100"
-        ;+  ?:  is-comet  
+        ;+  ?:  !is-logged-in
               public-login-form
             header-menu
       ==
@@ -81,30 +99,30 @@
       ;+  list-posts
     ==
   ++  header-menu
-  ;div
     ;div
       ;div
-        =class  "flex flex-col gap-2 w-auto md:w-[160px] menu"
         ;div
-          =id  "menu-border"
-          =onclick  "toggleView('settings-menu')"
-          =class  "border border-[var(--grey-default)] hover:border-[var(--grey-light)] ".
-                  "rounded bg-[var(--bg-color)] flex items-center ".
-                  "justify-between gap-2 p-[8px] h-[28px] ".
-                  "cursor-pointer patp justify-end md:justify-start" 
-          ;urbit-sigil(patp (cite:title src.hull));
-          ;span(class "hidden md:block w-[16ch] m-0"):  {(cite:title src.hull)}
-        == 
-        ;div
-          =id     "settings-menu"
-          =class  "border border-[var(--grey-light)] rounded bg-[var(--bg-color)] hidden md:hover:flex w-[160px]"
-            ;+  ?.  =(our.hull src.hull)  
-                user-menu
-              admin-menu
+          =class  "flex flex-col gap-2 w-auto md:w-[160px] menu"
+          ;div
+            =id  "menu-border"
+            =onclick  "toggleView('settings-menu')"
+            =class  "border border-[var(--grey-default)] hover:border-[var(--grey-light)] ".
+                    "rounded bg-[var(--bg-color)] flex items-center ".
+                    "justify-between gap-2 p-[8px] h-[28px] ".
+                    "cursor-pointer patp justify-end md:justify-start" 
+            ;urbit-sigil(patp (cite:title user));
+            ;span(class "hidden md:block w-[16ch] m-0"):  {(cite:title user)}
+          == 
+          ;div
+            =id     "settings-menu"
+            =class  "border border-[var(--grey-light)] rounded bg-[var(--bg-color)] hidden md:hover:flex w-[160px]"
+              ;+  ?.  =(our.hull src.hull)  
+                  user-menu
+                admin-menu
+          ==
         ==
       ==
     ==
-  ==
   ++  user-menu
     ;div
       =class  "flex justify-center items-center h-[28px] overflow-hidden"
@@ -219,8 +237,9 @@
         |=  =path
         %^  make:mast  mast/%athens-post  ~
         :~  [%post (weld /athens/posts path)]
-            [%view (welp /athens/view/[(scot %p src.hull)] path)]
-            [%new (weld /athens/new/[(scot %p src.hull)] path)] 
+            [%view (welp /athens/view/[(scot %p user)] path)]
+            [%new (weld /athens/new/[(scot %p user)] path)] 
+            [%access /athens/access]
         ==
       ;div(class "fixed bottom-[24px] inset-x-0 z-50 md:w-full")
         =key  "athens-post-form" 
@@ -231,7 +250,7 @@
                   "md:gap-x-4 mx-auto max-w-[1000px]"
           =client-display  "edit ~"
           ;+  
-            ?:  is-comet
+            ?:  !is-logged-in
               ;div.post-form.login-block: Login to post
             ;div
               =class  "mx-4 md:col-start-2 ".
@@ -258,38 +277,138 @@
       ==
     ==
   ++  unauthenticated-page
-    ;form
-      =class  "h-full w-full flex flex-column ".
-              "items-center justify-center "
-      =method  "post"
-      =action  "/~/login"
-      ;input.hidden(name "eauth", value "");
-      ;input.hidden(name "redirect", value "/mast/athens");
-      ;div.flex.flex-col.gap-3.border.rounded-md.p-3.border-neutral-800
-        ;div.text-red-400: access denied
-        ;+
-        ?:  is-comet  ;/("")
-        ;div.flex.gap-2
-          ;div.font-mono: {(cite:title src.hull)}
-          ;a.opacity-50(href "/~/logout?redirect=/mast/athens")
-            ; logout
+    |^
+      ?:  =(mode.access %gated)
+        ?:  =('' door-code.access)
+          ;div
+            =class  "h-full w-full flex flex-col gap-5 ".
+                    "items-center justify-center"
+            ;div.font-bold: Unavailable
+            ;div: The host needs to set the "door code" before you can register.
+            ;a.underline
+              =href  "/~/login?redirect=/mast/athens"
+              ; login as host
+            ==
           ==
-        ==
-        ;div.flex.gap-2
-          ;input
-            =name  "name"
-            =class  "px-3 py-2 border rounded-sm border-neutral-800 w-60"
-            =placeholder  "~sampel-palnet"
-            =spellcheck  "false"
-            =autocomplete  "off"
-            ;
+        gated-login
+      normal-login
+      ::
+    ++  gated-login
+      ;div
+        =class  "h-full w-full flex flex-column ".
+                "items-center justify-center font-mono "
+        ;div.flex.flex-col.items-center.gap-5
+          ;div: unauthenticated
+          ;hr.w-20.opacity-70;
+          ;form.flex.scroll-none.border.rounded-sm.border-neutral-800
+            =method  "post"
+            =event  "/submit/register"
+            ;input#register-input.hidden(name "fingerprint");
+            ;input
+              =name  "door-code"
+              =class  "px-3 py-2 border-neutral-800 w-35"
+              =placeholder  "door code"
+              =required  ""
+              =spellcheck  "false"
+              =autocomplete  "off"
+              =onkeydown  "if (event.key == 'Enter') \{ this.nextElementSibling.click() }"
+              ;
+            ==
+            ;button.bg-neutral-900.px-3.py-2.border-l.rounded-r-sm.border-neutral-800
+              =type  "button"
+              =onclick  "register(event)"
+              ; register
+            ==
           ==
-          ;button.bg-neutral-900.px-3.py-2.rounded-sm.border.border-neutral-800
-            ;+  arrow-right:lucide
+          ;div.font-mono.opacity-70: or
+          ;form.flex.gap-2
+            =method  "post"
+            =event  "/submit/sign-in"
+            ;input#sign-in-input.hidden(name "fingerprint", required "");
+            ;button.bg-neutral-900.px-3.py-2.rounded-sm.border.border-neutral-800
+              =type  "button"
+              =onclick  "signIn(event)"
+              ; sign in
+            ==
+          ==
+          ;script
+            ;-  %-  trip
+            '''
+            function stringToUint8Array(str) {
+              const encoder = new TextEncoder();
+              return encoder.encode(str);
+            }
+            function arrayBufferToString(buffer, encoding = 'utf-8') {
+              const decoder = new TextDecoder(encoding);
+              const view = new Uint8Array(buffer);
+              return decoder.decode(view);
+            }
+            function urbitChallenge() {
+              return stringToUint8Array('urbit-deadbeef');
+            }
+            async function register(evt) {
+              let credential = await navigator.credentials.create({
+                publicKey: {
+                  challenge: urbitChallenge(),
+                  user: {
+                    id: stringToUint8Array('athens'),
+                    name: 'anonymous user',
+                    displayName: 'anonymous user',
+                  },
+                  rp: { id: "localhost", name: "Urbit" },
+                  pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+                },
+              });
+              let fingerprint = credential.id
+              document.getElementById('register-input').value = fingerprint;
+              evt.target.closest('form').requestSubmit()
+            }
+            async function signIn(evt) {
+              let credential = await navigator.credentials.get({
+                publicKey: { challenge: urbitChallenge() }
+              });
+              let fingerprint = credential.id
+              document.getElementById('sign-in-input').value = fingerprint;
+              evt.target.closest('form').requestSubmit()
+            }
+            '''
           ==
         ==
       ==
-    ==
+    ++  normal-login
+      ;form
+        =class  "h-full w-full flex flex-column ".
+                "items-center justify-center "
+        =method  "post"
+        =action  "/~/login"
+        ;input.hidden(name "eauth", value "");
+        ;input.hidden(name "redirect", value "/mast/athens");
+        ;div.flex.flex-col.gap-3.border.rounded-md.p-3.border-neutral-800
+          ;div.text-red-400: access denied
+          ;+
+          ?:  !is-logged-in  ;/("")
+          ;div.flex.gap-2
+            ;div.font-mono: {(cite:title user)}
+            ;a.opacity-50(href "/~/logout?redirect=/mast/athens")
+              ; logout
+            ==
+          ==
+          ;div.flex.gap-2
+            ;input
+              =name  "name"
+              =class  "px-3 py-2 border rounded-sm border-neutral-800 w-60"
+              =placeholder  "~sampel-palnet"
+              =spellcheck  "false"
+              =autocomplete  "off"
+              ;
+            ==
+            ;button.bg-neutral-900.px-3.py-2.rounded-sm.border.border-neutral-800
+              ;+  arrow-right:lucide
+            ==
+          ==
+        ==
+      ==
+    --
   --
 ::
 --
@@ -297,14 +416,18 @@
 ::
 ++  has-access
   |=  [=ship =access:athens]
-  ^-  ?
+  ^-  (unit @p)
   ?-  mode.access
     %gated
-      (~(has by accounts.access) ship)
+      (~(get by accounts.access) ship)
     %public
-      ?=(~ (find [ship]~ blacklist.access))
+      ?:  ?=(~ (find [ship]~ blacklist.access))
+        `ship
+      ~
     %private
-      ?=(^ (find [ship]~ members.access))
+      ?:  ?=(^ (find [ship]~ members.access))
+        `ship
+      ~
   ==
 ::
 ++  toggle

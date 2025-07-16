@@ -3,6 +3,7 @@
 :-  :~  post+%athens-post
         view+%noun
         new+%noun
+        access+%athens-access
     ==
 =<
 |_  =hull:mast
@@ -13,6 +14,7 @@
     hid   =(-.viw %hidden)
     new   =(-.viw %new)
     show  =(-.viw %display-none)
+    get-access      !<  access:athens  fil:(~(got by res.hull) %access)
 ::
 ++  spar
   |=  =crow:mast
@@ -63,9 +65,11 @@
   ^-  manx
   =/  [paf=path dat=[[post=post:athens rep-num=@] rep=(list path)]]  =+(post [src !<([[post:athens @] (list path)] fil)])
   =/  idt  (trip (rear paf)) 
+  =/  access  get-access
   =/  num-lines  (lent (to-wain:format content.post.dat))
   =/  sticky  ?:((gth num-lines 8) "md:sticky" "")
-  =/  is-comet=?  ?=(%pawn (clan:title src.hull))
+  =/  user  (~(gut by accounts.access) src.hull src.hull)
+  =/  is-author  =(user author.post.dat)
   =/  reply=?
     ?>  ?=([%athens %posts *] paf)
     (gth (lent t.t.paf) 1) 
@@ -127,7 +131,7 @@
           ;form(event "/submit/hide", class "track-visibility opacity-0 pointer-events-none md:col-start-2 md:col-span-1 row-start-2 md:row-start-1");
         ;div.hidden;
         ;+  post-metadata
-        ;+  ?:  is-comet
+        ;+  ?.  is-author
               ;div.hidden;
             option-buttons
       ==
@@ -187,7 +191,13 @@
               "ml-[{((d-co:co 1) depth)}px] overflow-hidden ".
               "whitespace-nowrap flex items-start col-start-1 ".
               "row-start-1 md:text-right {?.(reply "" "pl-2")} md:pl-0"
-      ;span(class "inline-block leading-none align-top w-full"): {(cite:title author.post.dat)}
+      ;span(class "inline-block leading-none align-top w-full")
+        ;-
+          %-  cite:title
+          ::(~(gut by accounts.access) src.hull src.hull)
+          author.post.dat
+          :: {(cite:title author.post.dat)}
+      ==
     ==
   ++  edit-form
     ;div(id "edit-{idt}", class "edit-form form hidden md:hidden fixed bottom-[24px] inset-x-0 z-51 md:w-full")
@@ -332,6 +342,7 @@
           :~  [%post (welp paf p)] 
               [%view (welp /athens/view/[(scot %p src.hull)] (welp t.t.paf p))]
               [%new (welp /athens/new/[(scot %p src.hull)] (welp t.t.paf p))] 
+              [%access /athens/access]
           ==
     ==
   --

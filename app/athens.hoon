@@ -163,11 +163,8 @@
         %gated-set-door-code
       %-  set-door-code  code.act
       ::
-        %gated-register
-      cor
-      ::
         %gated-sign-in
-      cor
+      %+  gated-sign-in  comet.act  id.act
       ::
         %put-post
       %+  put-post  post-at.act  content.act
@@ -200,7 +197,9 @@
 ++  put-post
   |=  [post-at=path dat=@t]
   ^+  cor
-  =/  new-post=post:athens  [src.bowl dat]
+  =/  new-post=post:athens
+    :-  (~(gut by accounts.access) src.bowl src.bowl)  :: use fingerprint if available
+    dat
   =/  new-id=post-id:athens  now.bowl
   =.  user-sessions
     ?~  post-at  user-sessions
@@ -379,6 +378,12 @@
   %-  emit
   %-  make-fact-card  /r/access
   ::
+++  gated-sign-in
+  |=  [comet=@p id=@p]
+  ^+  cor
+  =.  accounts.access  (~(put by accounts.access) comet id)
+  %-  emit
+  %-  make-fact-card  /r/access
 ::
 ++  set-access-mode
   |=  =term
