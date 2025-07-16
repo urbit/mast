@@ -35,8 +35,14 @@
     :~  [%athens %athens-action !>([%edit-access-id [`@p`(slav %p dat)]~])]
     ==
     ::
-      [%change %toggle-public ~]
-    :~  [%athens %athens-action !>([%access-public !public.access])]
+     [%input %set-access-mode ~]
+    =/  mode  (~(got by data.crow) '/target/mode')
+    :~  [%athens %athens-action !>([%set-access-mode mode])]
+    ==
+    ::
+     [%submit %set-door-code ~]
+    =/  code  (~(got by data.crow) 'code')
+    :~  [%athens %athens-action !>([%gated-set-door-code code])]
     ==
     ::
   ==
@@ -111,47 +117,80 @@
     ;div
       =class  "grid grid-cols-[auto_1fr] grid-rows-[repeat(auto-fit,28px)] ".
               "divide-y divide-[var(--grey-light)] leading-tight ".
-              "max-h-[400px] overflow-y-auto leading-[0.8]"
-      ;div(class "mt-auto p-2 h-[28px] flex items-center justify-center")
-        ; Public
+              "max-h-[400px] overflow-y-auto leading-[0.8] w-full"
+      ;*
+      %+  turn
+        ^-  (list tape)
+        :~  "Gated"
+            "Public"
+            "Private"
+        ==
+      |=  mode=tape
+      ;label.col-span-2.px-2.flex.items-center.justify-start.gap-2
+        ;+
+          =;  m=manx
+          ?.  =((crip (cass mode)) mode.access)  m
+          m(a.g [[%checked ""] a.g.m])
+        ;input
+          =type  "radio"
+          =name  "access-mode"
+          =mode  (cass mode)
+          =event  "/input/set-access-mode"
+          =return  "/target/mode"
+          ;
+        ==
+        ;span: {mode}
       ==
-      ;label.p-2.w-full.flex.items-center.justify-end.relative
-        ;div.relative.inline-block
-          ;+
-          ?:  public.access
-            ;input.sr-only.peer
-              =type  "checkbox"
-              =event  "/change/toggle-public"
-              =name  "toggle-access"
-              =checked  ""
-              ;*  toggle
+      ::
+      ;*
+      ;=
+        ;div
+          =class  "p-2 cursor-pointer col-span-2 ".
+                  "flex justify-between items-center"
+          =onclick  "toggleClassView('show-ids')"
+          ;span
+            ;-
+              ?-  mode.access
+                %gated    "Door Code"
+                %public   "Blocked"
+                %private  "Members"
+              ==
+          ==
+          ;div.show-ids
+              ;+  vector-out:lucide
             ==
-          ;input.sr-only.peer
-            =type  "checkbox"
-            =event  "/change/toggle-public"
-            =name  "toggle-access"
-            ;*  toggle
+          ;div(class "show-ids hidden md:hidden")
+              ;+  vector-in:lucide
           ==
         ==
       ==
-      ;+
-      ;div
-        =class  "p-2 cursor-pointer col-span-2 ".
-                "flex justify-between items-center"
-        =onclick  "toggleClassView('show-ids')"
-        ;span: {?:(public.access "Blocked" "Members")}
-        ;div.show-ids
-            ;+  vector-out:lucide
-          ==
-        ;div(class "show-ids hidden md:hidden")
-            ;+  vector-in:lucide
-        ==
-      ==
-      ;+  (edit-access-form public.access)
       ;*  
-      ?:  public.access
-        (id-list blacklist.access)
-      (id-list members.access)
+      ?-  mode.access
+        %gated
+          ;=
+            ;form(event "/submit/set-door-code")
+              =class  "col-span-2 px-2 w-full flex gap-2 show-ids hidden md:hidden"
+              ;input(type "text", name "code")
+                =class  "border-0 focus:outline-none text-white w-full leading-tight"
+                =placeholder  "door code"
+                =autocomplete  "off"
+                =spellcheck  "false"
+                =value  (trip door-code.access)
+                ;
+              ==
+            ==
+          ==
+        %public
+          ;=
+            ;*  (edit-access-form mode.access)
+            ;*  (id-list blacklist.access)
+          ==
+        %private
+          ;=
+            ;*  (edit-access-form mode.access)
+            ;*  (id-list members.access)
+          ==
+      ==
     ==
   ++  public-login-form
     ;form.flex 
@@ -169,6 +208,13 @@
     ;div
       =class  "posts md:gap-[16px] gap-[16px] relative"
       ;*  
+        =;  =marl  ?^  marl  marl
+          ;=
+            ;div.flex.flex-col.items-center
+              ;div.text-lg.font-bold: Welcome to Circles.
+              ;div: There are no posts yet.
+            ==
+          ==
         %+  turn  get-post-paths
         |=  =path
         %^  make:mast  mast/%athens-post  ~
@@ -252,9 +298,14 @@
 ++  has-access
   |=  [=ship =access:athens]
   ^-  ?
-  ?:  public.access 
-    ?=(~ (find [ship]~ blacklist.access))
-  ?=(^ (find [ship]~ members.access))
+  ?-  mode.access
+    %gated
+      (~(has by accounts.access) ship)
+    %public
+      ?=(~ (find [ship]~ blacklist.access))
+    %private
+      ?=(^ (find [ship]~ members.access))
+  ==
 ::
 ++  toggle
   ^-  marl
@@ -264,16 +315,21 @@
   ==
 ::
 ++  edit-access-form
-  |=  public=?
-  ^-  manx
-  ;form(event "/submit/add-ship")
-    =class  "col-span-2 px-2 w-full flex gap-2 h-[28px]"
-    ;+  ?:  public
-      ;button.ml-auto.cursor-pointer: ~
-    ;button.ml-auto.cursor-pointer: +
-    ;input(type "text", name "ship-input")
-      =class  "border-0 focus:outline-none text-white w-full leading-tight"
-    ;
+  |=  mode=access-mode:athens
+  ^-  marl
+  ?:  ?=(%gated mode)  ~
+  ;=
+    ;form(event "/submit/add-ship")
+      =class  "col-span-2 px-2 w-full flex gap-2 h-[28px]"
+      ;+  ?:  ?=(%public mode)
+        ;button.ml-auto.cursor-pointer: ~
+      ;button.ml-auto.cursor-pointer: +
+      ;input(type "text", name "ship-input")
+        =class  "border-0 focus:outline-none text-white w-full leading-tight"
+        =autocomplete  "off"
+        =spellcheck  "false"
+        ;
+      ==
     ==
   ==
 ::
