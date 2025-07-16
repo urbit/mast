@@ -38,7 +38,7 @@
     ;head
       ;title: Athens
       ;meta(charset "UTF-8");
-      ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;meta(name "viewport", content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no");
       ;link(rel "manifest", href "/athens/manifest");
       ;link(rel "preconnect", href "https://rsms.me/");
       ;link(rel "stylesheet", href "https://rsms.me/inter/inter.css");
