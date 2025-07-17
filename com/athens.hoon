@@ -237,11 +237,16 @@
           ==
         %+  turn  get-post-paths
         |=  =path
-        %^  make:mast  mast/%athens-post  ~
+        %^  make:mast  mast/%athens-post
+          :~
+            :-  %fingerprint
+              %+  scot  %p
+              (~(gut by accounts.access) src.hull src.hull)
+          ==
         :~  [%post (weld /athens/posts path)]
             [%view (welp /athens/view/[(scot %p user)] path)]
             [%new (weld /athens/new/[(scot %p user)] path)] 
-            [%access /athens/access]
+            :: [%access /athens/access]
         ==
       ;div(class "fixed bottom-[24px] inset-x-0 z-50 md:w-full")
         =key  "athens-post-form" 
