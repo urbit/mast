@@ -134,9 +134,7 @@
           ;form(event "/submit/hide", class "track-visibility opacity-0 pointer-events-none md:col-start-2 md:col-span-1 row-start-2 md:row-start-1");
         ;div.hidden;
         ;+  post-metadata
-        ;+  ?.  is-author
-              ;div.hidden;
-            option-buttons
+        ;+  option-buttons
       ==
       ;+  
         ?:  ?|  hid
