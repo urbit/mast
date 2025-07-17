@@ -63,7 +63,8 @@
       new=isle                                   ::
   ==                                             ::
 +$  cove                                         ::
-  $:  bom=boom                                   ::
+  $:  dif=atom                                   ::
+      bom=boom                                   ::
       aft=manx                                   ::
       lin=line                                   ::
   ==                                             ::
