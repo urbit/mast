@@ -65,7 +65,8 @@
   =/  idt  (trip (rear paf)) 
   =/  num-lines  (lent (to-wain:format content.post.dat))
   =/  sticky  ?:((gth num-lines 8) "md:sticky" "")
-  =/  is-comet=?  ?=(%pawn (clan:title src.hull))
+  =/  user=@p  (slav %p (~(got by par.hull) %fingerprint))
+  =/  is-author  =(user author.post.dat)
   =/  reply=?
     ?>  ?=([%athens %posts *] paf)
     (gth (lent t.t.paf) 1) 
@@ -112,9 +113,15 @@
                     "{?.(reply "" "reply")} col-span-2 md:col-start-2 ".
                     "md:col-span-1 row-start-2 md:row-start-1 flex flex-col ".
                     "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}px] ".
-                    "border-l-0 relative" 
+                    "border-l-0 relative overflow-hidden" 
             ;+  edit-form
-            ;athens-preview(value (trip content.post.dat), class "w-full resize-none overflow-hidden box-border text-sm {?:(new "text-fade" "")} {?:(hid "hide" "")}");
+            ;athens-preview
+              =value  (trip content.post.dat)
+              =class  "w-full resize-none overflow-x-scroll overflow-y-hidden ".
+                      "box-border text-sm ".
+                      "{?:(new "text-fade" "")} {?:(hid "hide" "")}"
+              ;
+            ==
             ;+  ?:  hid
                   ;div.hidden;
                 reply-form
@@ -127,9 +134,7 @@
           ;form(event "/submit/hide", class "track-visibility opacity-0 pointer-events-none md:col-start-2 md:col-span-1 row-start-2 md:row-start-1");
         ;div.hidden;
         ;+  post-metadata
-        ;+  ?:  is-comet
-              ;div.hidden;
-            option-buttons
+        ;+  option-buttons
       ==
       ;+  
         ?:  ?|  hid
@@ -187,7 +192,11 @@
               "ml-[{((d-co:co 1) depth)}px] overflow-hidden ".
               "whitespace-nowrap flex items-start col-start-1 ".
               "row-start-1 md:text-right {?.(reply "" "pl-2")} md:pl-0"
-      ;span(class "inline-block leading-none align-top w-full"): {(cite:title author.post.dat)}
+      ;span(class "inline-block leading-none align-top w-full")
+        ;-
+          %-  cite:title
+          author.post.dat
+      ==
     ==
   ++  edit-form
     ;div(id "edit-{idt}", class "edit-form form hidden md:hidden fixed bottom-[24px] inset-x-0 z-51 md:w-full")
@@ -310,7 +319,7 @@
       ::;button(onclick "delayedScrollToTop('{(trip (rear paf))}', false)"): reply
       ;button: reply
     ==
-    ;*  ?:  =(author.post.dat src.hull)
+    ;*  ?:  is-author
       ;=
         ;button(onclick "toggleView('edit-{idt}', true, true)"): edit
         ;button(event "/click/delete"): delete
@@ -328,7 +337,10 @@
       ;*  ?>  ?=([%athens %posts *] paf)
           %+  turn  rep.dat
           |=  p=path
-          %^  make:mast  mast/%athens-post  ~
+          %^  make:mast  mast/%athens-post
+            :~
+              :-  %fingerprint  (~(got by par.hull) %fingerprint)
+            ==
           :~  [%post (welp paf p)] 
               [%view (welp /athens/view/[(scot %p src.hull)] (welp t.t.paf p))]
               [%new (welp /athens/new/[(scot %p src.hull)] (welp t.t.paf p))] 

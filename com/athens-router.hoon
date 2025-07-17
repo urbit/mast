@@ -148,7 +148,7 @@
     overflow-y: scroll;
   }
   .posts {
-    padding: 110px 16px 110px 16px;
+    padding: 110px 16px 180px 16px;
     margin: auto;
     width: 100%;
     max-width: 1000px;
@@ -268,6 +268,9 @@
   athens-preview .tab-controls {
     display: flex;
   }
+  athens-preview pre {
+    overflow-x: auto;
+  }
   athens-textarea-litdev .tab,
   athens-preview .tab {
     padding: 8px 16px;
@@ -290,6 +293,7 @@
   }
   athens-preview .markdown-preview {
     font-size: 14px;
+    word-break: break-word;
   }
   athens-textarea-litdev textarea{
     background: var(--bg-color);
@@ -438,4 +442,3 @@
   '''
 ::
 --
-
