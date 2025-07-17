@@ -268,6 +268,9 @@
   athens-preview .tab-controls {
     display: flex;
   }
+  athens-preview pre {
+    overflow-x: auto;
+  }
   athens-textarea-litdev .tab,
   athens-preview .tab {
     padding: 8px 16px;
@@ -290,6 +293,7 @@
   }
   athens-preview .markdown-preview {
     font-size: 14px;
+    word-break: break-word;
   }
   athens-textarea-litdev textarea{
     background: var(--bg-color);
@@ -438,4 +442,3 @@
   '''
 ::
 --
-
