@@ -51,7 +51,7 @@
     $:  %state-0
         =posts:athens
         =user-sessions:athens
-        =access:athens
+        access=access-0:athens
     ==
   ++  state-0-to-1
     |=  zero=state-0
@@ -59,7 +59,11 @@
     :*  %state-1
         posts.zero
         user-sessions.zero
-        *access:athens
+        %*  .  *access:athens
+          mode  ?:(public.access.zero %public %private)
+          blacklist  blacklist.access.zero
+          members  members.access.zero
+        ==
     ==
   --
 ::
