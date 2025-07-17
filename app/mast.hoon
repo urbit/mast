@@ -181,13 +181,10 @@
   ==
 ::
 ++  make-diff-card
-  |=  [src=ship rop=rope jon=(list json)]
+  |=  [src=ship rop=rope jon=json]
   ^-  card
-  :*  %give
-      %fact
-      [(make-client-sub-path src rop) ~]
-      %json
-      !>(`json`[%a jon])
+  :*  %give  %fact  [(make-client-sub-path src rop) ~]
+      %json  !>(jon)
   ==
 ::
 ++  make-gull-cards
@@ -513,7 +510,7 @@
       |-  ^+  cor
       ?~  cus  ^$(gus t.gus)
       =/  ui-core  (ui-abed:ui src.i.gus rop.i.gus)
-      =^  [jon=(list json) bos=(set buoy)]  ui-core  (ui-furl:ui-core i.cus)
+      =^  [jon=json bos=(set buoy)]  ui-core  (ui-furl:ui-core i.cus)
       =.  gulf  ui-abet:ui-core
       =?  cor  .?(bos)  (handle-component-buoys src.i.gus rop.i.gus ~(tap in bos))
       =?  cor  .?(jon)  (emit (make-diff-card src.i.gus rop.i.gus jon))
@@ -576,7 +573,7 @@
   :: rerender and diff a component
   ++  ui-furl
     |=  rod=rode
-    ^-  [[(list json) (set buoy)] _ui-core]
+    ^-  [[json (set buoy)] _ui-core]
     =/  cov  (~(got by yel) rod)
     =/  com  (~(got by deck) com.lin.cov)
     =/  cun  +(dif.cov)
@@ -584,9 +581,16 @@
     =/  dif  (luff [aft.cov ~] [new ~])
     ?~  q.dif
       :-  ~^~  ui-core
-    :: if there is a diff, prepend the json list
-    :: with the diff counter for that component
-    =.  q.dif  [[%n (crip ((d-co:co 1) cun))] q.dif]
+    :: if there is a diff, build the full diff object
+    :: with the key and diff counter for this component
+    =/  jon
+      ^-  json
+      :-  %o
+      %-  my
+      :~  ['p' [%s rod]]
+          ['q' [%n (crip ((d-co:co 1) cun))]]
+          ['r' [%a q.dif]]
+      ==
     =.  yel
       %.  add.p.dif
       %~  uni  by
@@ -608,7 +612,7 @@
         yel  (~(del by yel) i.ros)
       ==
     :_  ui-core
-    :-  q.dif  (~(uni in bos.p.dif) bos)
+    :-  jon  (~(uni in bos.p.dif) bos)
   ::
   :: ++ui-sway
   :: apply an event to a component
