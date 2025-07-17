@@ -394,16 +394,18 @@
   ::
 ::
 ++  edit-access-id
-  |=  ids=(list @p)
+  |=  ids=(list @p)  ::  xx why is this a list?
   ^+  cor
   ?-  mode.access
     %gated  cor
     %private
-      =.  members.access  ~(tap in (silt (welp members.access ids)))
+      ?^  (find ids members.access)  cor
+      =.  members.access  (welp ids members.access)
       %-  emit
       %-  make-fact-card  /r/access
     %public
-      =.  blacklist.access  ~(tap in (silt (welp blacklist.access ids)))
+      ?^  (find ids blacklist.access)  cor
+      =.  blacklist.access  (welp ids blacklist.access)
       %-  emit
       %-  make-fact-card  /r/access
   ==
