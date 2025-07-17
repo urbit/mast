@@ -50,19 +50,29 @@
   +$  state-0
     $:  %state-0
         =posts:athens
-        =user-sessions:athens
-        access=access-0:athens
+        =user-sessions-0:athens
+        =access-0:athens
     ==
   ++  state-0-to-1
     |=  zero=state-0
     ^-  state-1
     :*  %state-1
         posts.zero
-        user-sessions.zero
+        ::
+        ^-  user-sessions:athens
+        %-  malt
+        %+  turn  ~(tap by user-sessions-0.zero)
+        |=  [=ship s=user-session-0:athens]
+        :-  ship
+        ^-  user-session:athens
+        :+  hidden-posts.s
+          new-posts.s
+        ~
+        ::
         %*  .  *access:athens
-          mode  ?:(public.access.zero %public %private)
-          blacklist  blacklist.access.zero
-          members  members.access.zero
+          mode  ?:(public.access-0.zero %public %private)
+          blacklist  blacklist.access-0.zero
+          members  members.access-0.zero
         ==
     ==
   --

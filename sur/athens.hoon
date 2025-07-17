@@ -48,6 +48,7 @@
       new-posts=(set path)
       selected-post=(unit path)
   ==
++$  user-sessions-0  (map @p user-session-0)
 +$  user-sessions  (map @p user-session)
 +$  access-0
   $:  public=?
