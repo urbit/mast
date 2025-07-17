@@ -113,9 +113,15 @@
                     "{?.(reply "" "reply")} col-span-2 md:col-start-2 ".
                     "md:col-span-1 row-start-2 md:row-start-1 flex flex-col ".
                     "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}px] ".
-                    "border-l-0 relative" 
+                    "border-l-0 relative overflow-hidden" 
             ;+  edit-form
-            ;athens-preview(value (trip content.post.dat), class "w-full resize-none overflow-hidden box-border text-sm {?:(new "text-fade" "")} {?:(hid "hide" "")}");
+            ;athens-preview
+              =value  (trip content.post.dat)
+              =class  "w-full resize-none overflow-x-scroll overflow-y-hidden ".
+                      "box-border text-sm ".
+                      "{?:(new "text-fade" "")} {?:(hid "hide" "")}"
+              ;
+            ==
             ;+  ?:  hid
                   ;div.hidden;
                 reply-form
