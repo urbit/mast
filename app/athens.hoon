@@ -550,8 +550,8 @@
         %-  as-octs:mimes:html
         '''
         {
-          "short_name": "Athens",
-          "name": "Athens",
+          "short_name": "Circles",
+          "name": "Circles",
           "icons": [
             {
               "src": "https://em-content.zobj.net/source/apple/419/classical-building_1f3db-fe0f.png",
