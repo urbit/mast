@@ -276,6 +276,7 @@
 ++  del-post
   |=  at=path
   ^+  cor
+  =/  user  user
   =.  posts
     |-  ^-  posts:athens
     ?~  at  !!
@@ -300,6 +301,7 @@
 ++  hide-post
   |=  at=path
   ^+  cor
+  =/  user  user
   =/  usr  (~(get by user-sessions) user)
   =/  id  (slav %da (rear at))
   =/  hidden-posts
@@ -332,6 +334,7 @@
 ++  unhide-post
   |=  at=path
   ^+  cor
+  =/  user  user
   =/  usr  (~(got by user-sessions) user)
   =/  id  (slav %da (rear at))
   =/  new-posts  (get-sort-posts new-posts.usr at)
