@@ -73,7 +73,7 @@
   =/  user=@p  (fall authenticated-user src.hull)
   |^
     ;div.root
-      ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"true" ~])
+      ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"false" ~])
       ;+
           ?:  |(=(our.hull src.hull) is-logged-in)
             authenticated-page
@@ -137,7 +137,7 @@
     ;div
       =class  "grid grid-cols-[auto_1fr] grid-rows-[repeat(auto-fit,28px)] ".
               "divide-y divide-[var(--grey-light)] leading-tight ".
-              "max-h-[400px] overflow-y-auto leading-[0.8] w-full"
+              "max-h-[65vh] overflow-y-auto leading-[0.8] w-full"
       ;*
       %+  turn
         ^-  (list tape)
@@ -163,33 +163,37 @@
       ==
       ::
       ;*
-      ;=
-        ;div
-          =class  "p-2 cursor-pointer col-span-2 ".
-                  "flex justify-between items-center"
-          =onclick  "toggleClassView('show-ids')"
-          ;span
-            ;-
-              ?-  mode.access
-                %gated    "Door Code"
-                %public   "Blocked"
-                %private  "Members"
-              ==
+        =/  class  "p-2 cursor-pointer col-span-2 ".
+                   "flex justify-between items-center"
+        =/  btn-label
+          ?-  mode.access
+            %gated    "Door Code"
+            %public   "Blocked"
+            %private  "Members"
           ==
-          ;div.show-ids
-              ;+  vector-out:lucide
-            ==
-          ;div(class "show-ids hidden md:hidden")
-              ;+  vector-in:lucide
+        ;=
+          ;button
+            =class  class
+            =client-event  "click show-ids false"
+            =client-display  "show-ids true"
+            ;span: {btn-label}
+            ;+  vector-in:lucide
+          ==
+          ;button
+            =class  class
+            =client-event  "click show-ids true"
+            =client-display  "show-ids false"
+            ;span: {btn-label}
+            ;+  vector-out:lucide
           ==
         ==
-      ==
       ;*  
       ?-  mode.access
         %gated
           ;=
             ;form(event "/submit/set-door-code")
-              =class  "col-span-2 px-2 w-full flex gap-2 show-ids hidden md:hidden"
+              =class  "col-span-2 px-2 w-full flex gap-2"
+              =client-display  "show-ids true"
               ;input(type "text", name "code")
                 =class  "border-0 focus:outline-none text-white w-full leading-tight"
                 =placeholder  "door code"
@@ -451,6 +455,7 @@
   ;=
     ;form(event "/submit/add-ship")
       =class  "col-span-2 px-2 w-full flex gap-2 h-[28px]"
+      =client-display  "show-ids true"
       ;+  ?:  ?=(%public mode)
         ;button.ml-auto.cursor-pointer: ~
       ;button.ml-auto.cursor-pointer: +
@@ -466,14 +471,17 @@
 ++  id-list
   |=  ids=(list @p)
   ^-  marl
-  ;*  %+  turn  (flop ids)
+  ;*  %+  turn  ids
   |=  =ship
   ^-  manx
   ;div
-    =class  "show-ids hidden md:hidden col-span-2 flex gap-auto"
+    =class  "col-span-2 flex gap-auto"
+    =client-display  "show-ids true"
     ;div(class "mt-auto p-2 h-[28px] flex items-center justify-center"): {(scow %p ship)}
-    ;form(event "/submit/remove-ship", class "ml-auto mt-auto p-2 h-[28px] flex items-center justify-center")
-    =id  (scow %p ship)
+    ;form
+      =event  "/submit/remove-ship"
+      =class  "ml-auto mt-auto p-2 h-[28px] flex items-center justify-center"
+      =id  (scow %p ship)
       ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
       ;button(class "cursor-pointer"): x
     ==
