@@ -1,4 +1,6 @@
 /-  athens, mast
+/*  favicon  %png  /fil/favicon/png
+/*  app-tile  %png  /fil/app-tile/png
 |%
 +$  card  card:agent:gall
 +$  state-1
@@ -623,6 +625,29 @@
         %-  emil
         %-  payload-cards
         [[404 ~] ~]
+      [%'GET' %'/athens/favicon']
+        ::
+        %-  emil
+        %-  payload-cards
+        :-  :-  200
+            :~  ['Content-Type' 'image/png']
+                ['Cache-Control' 'public, max-age=86400']
+            ==
+        :-  ~
+        %-  as-octs:mimes:html
+        favicon
+        ::
+      [%'GET' %'/athens/app-tile']
+        ::
+        %-  emil
+        %-  payload-cards
+        :-  :-  200
+            :~  ['Content-Type' 'image/png']
+            ==
+        :-  ~
+        %-  as-octs:mimes:html
+        app-tile
+        ::
       [%'GET' %'/athens/manifest']
         ::
         %-  emil
@@ -634,12 +659,12 @@
         %-  as-octs:mimes:html
         '''
         {
-          "short_name": "Athens",
-          "name": "Athens",
+          "short_name": "Circles",
+          "name": "Circles",
           "icons": [
             {
-              "src": "https://em-content.zobj.net/source/apple/419/classical-building_1f3db-fe0f.png",
-              "sizes": "160x160",
+              "src": "/athens/app-tile",
+              "sizes": "192x192",
               "type": "image/png"
             }
           ],
