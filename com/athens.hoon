@@ -127,8 +127,8 @@
   ==
   ++  user-menu
     ;div
-      =class  "flex justify-center items-center h-[28px] overflow-hidden"
-      ;a.px-2.py-2.cursor-pointer.col-span-2.flex.justify-center.items-center.overflow-hidden
+      =class  "w-full flex justify-center items-center h-[28px] overflow-hidden"
+      ;a.px-2.py-2.w-full.cursor-pointer.flex.justify-center.items-center.overflow-hidden
         =href  "/~/logout?redirect=/mast/athens"
         ; Sign out
       ==
