@@ -268,9 +268,6 @@
   athens-preview .tab-controls {
     display: flex;
   }
-  athens-preview pre {
-    overflow-x: auto;
-  }
   athens-textarea-litdev .tab,
   athens-preview .tab {
     padding: 8px 16px;
@@ -359,7 +356,7 @@
   .prose code {
     background: transparent;
     color: var(--text-color);
-    padding: 0.5rem; /* p-4 */
+    margin: 0.5rem; /* p-4 */
     border-radius: 0.5rem; /* rounded-lg */
     overflow-x: auto;
   }

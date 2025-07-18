@@ -29,7 +29,7 @@ class AthensPreview extends LitElement {
       <div class="athens-editor flex items-start">
         <div
           class="markdown-preview ${this
-            .clampClass} prose prose-p:mb-0 prose-p:mt-0 inline-block translate-y-[-4px] align-top min-h-[16px]"
+            .clampClass} w-full prose prose-p:mb-0 prose-p:mt-0 inline-block translate-y-[-4px] align-top min-h-[16px]"
           id="preview"
         ></div>
       </div>
