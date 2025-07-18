@@ -366,7 +366,7 @@
                     name: 'anonymous user',
                     displayName: 'anonymous user',
                   },
-                  rp: { id: "localhost", name: "Urbit" },
+                  rp: { name: "Urbit" },
                   pubKeyCredParams: [{ type: "public-key", alg: -7 }],
                 },
               });
