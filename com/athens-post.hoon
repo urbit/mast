@@ -117,7 +117,7 @@
             ;+  edit-form
             ;athens-preview
               =value  (trip content.post.dat)
-              =class  "w-full resize-none overflow-x-scroll overflow-y-hidden ".
+              =class  "w-full resize-none overflow-x-hidden overflow-y-hidden ".
                       "box-border text-sm ".
                       "{?:(new "text-fade" "")} {?:(hid "hide" "")}"
               ;
