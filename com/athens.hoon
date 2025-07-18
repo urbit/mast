@@ -15,6 +15,10 @@
   ^-  blow:mast
   =/  access  get-access
   =/  pol  ^-  (pole @ta)  path.crow
+  =/  fingerprint-to-id
+    |=  fingerprint=cord
+    ^-  @p
+    (fil 5 3 (muk 'seed' (as-octs:mimes:html fingerprint)))
   ?+  pol  ~
     ::
       [%submit %post ~]
@@ -47,8 +51,8 @@
     ::
       [%submit %sign-in ~]
     =/  fingerprint=@p
-      %-  ~(sit fo (pow 2 95))
-      `@`(~(got by data.crow) 'fingerprint')
+      %-  fingerprint-to-id
+      (~(got by data.crow) 'fingerprint')
     ?.  ?=(^ (find ~[fingerprint] ~(val by accounts.access)))
       ~     :: fail sign-in if the user does not have an account
     :~  [%athens %athens-action !>(gated-sign-in+[src.hull fingerprint])]
@@ -56,8 +60,8 @@
     ::
       [%submit %register ~]
     =/  fingerprint=@p
-      %-  ~(sit fo (pow 2 95))
-      `@`(~(got by data.crow) 'fingerprint')
+      %-  fingerprint-to-id
+      (~(got by data.crow) 'fingerprint')
     =/  door-code=@t  (~(got by data.crow) 'door-code')
     ?.  =(door-code door-code.access)
       ~
