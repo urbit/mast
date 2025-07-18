@@ -104,7 +104,7 @@
     ;div
       ;div
         ;div
-          =class  "flex flex-col gap-2 w-auto md:w-[160px] menu"
+          =class  "flex flex-col gap-2 w-auto max-w-[160px] md:w-[160px] menu"
           ;div
             =id  "menu-border"
             =onclick  "toggleView('settings-menu')"
@@ -113,7 +113,7 @@
                     "justify-between gap-2 p-[8px] h-[28px] ".
                     "cursor-pointer patp justify-end md:justify-start" 
             ;urbit-sigil(patp (cite:title user));
-            ;span(class "hidden md:block w-[16ch] m-0"):  {(cite:title user)}
+            ;span(class "hidden md:block w-[16ch] m-0", id "patp"):  {(cite:title user)}
           == 
           ;div
             =id     "settings-menu"
