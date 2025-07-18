@@ -335,7 +335,7 @@
       ?>  ?=([%athens %posts *] paf)
         (lent t.t.paf)  
     ;div.replies-container.relative
-      ;div(class "border-left absolute w-px bg-[var(--grey-default)] top-0 bottom-0", style "--depth: {((d-co:co 1) depth)}px;");
+      ;div(class "border-left absolute w-px bg-[var(--grey-default)] top-0 bottom-[2px]", style "--depth: {((d-co:co 1) depth)}px;");
       ;*  ?>  ?=([%athens %posts *] paf)
           %+  turn  rep.dat
           |=  p=path
