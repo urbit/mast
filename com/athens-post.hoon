@@ -300,6 +300,8 @@
       ==
   ::
   ++  option-buttons
+  ?:  hid  
+    ;div.hidden;
   ;div
     =class  "options {sticky} top-20 col-start-2 ".
             "row-start-1 md:col-start-3 md:row-start-1 ".

@@ -394,10 +394,10 @@
     margin-bottom: 0;
   }
   .target{
-    background: #1E1F1E;
+    background: rgba(30, 31, 30, 0.8);
     box-sizing: border-box;
-    padding: 8px 0; 
-    margin: -8px 0; 
+    ::padding: 8px 0; 
+    ::margin: -8px 0; 
   }
   urbit-sigil {
     cursor: pointer;

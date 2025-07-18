@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // const trackedElements = new Set()
-  // const lastStates = new Map()
+  //const trackedElements = new Set()
+  //const lastStates = new Map()
 
   function getPostElements() {
     return Array.from(document.querySelectorAll('.post-container'))
@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //       const wasOutOfView = lastStates.get(child) || false
 
   //       if (!wasOutOfView && isOutOfView && document.body.contains(child)) {
+  //         console.log('trigering event on:', child)
   //         triggerEvent(child)
   //       }
 
@@ -105,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
-  let isManualScroll = true
+  //let isManualScroll = true
   let currentFocus = ''
 
   function getElementClosestToViewportTop() {
@@ -130,8 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return elements[closestIndex].id
   }
 
-  let scrollTimer = null
-
   // let scrollTimeout
   // window.addEventListener('scroll', () => {
   //   console.log('trying to run scroll event detected')
@@ -144,92 +143,160 @@ document.addEventListener('DOMContentLoaded', () => {
   //   }, 50)
   // })
 
+  function getPostElements(filterPosition = null) {
+    const posts = Array.from(document.querySelectorAll('.post-container'))
+
+    if (!filterPosition) return posts
+
+    const HEADER_HEIGHT = 70
+
+    return posts.filter((element) => {
+      const rect = element.getBoundingClientRect()
+      return filterPosition === 'above'
+        ? rect.bottom < HEADER_HEIGHT
+        : rect.top >= HEADER_HEIGHT
+    })
+  }
+
+  function scrollInDirection(direction) {
+    if (!direction) return
+
+    const HEADER_HEIGHT = 69
+    const allPosts = Array.from(document.querySelectorAll('.post-container'))
+    const currentTarget = document.querySelector('.target')
+    const currentTargetIndex = allPosts.indexOf(currentTarget)
+
+    let nextIndex
+
+    if (direction === 'above') {
+      const elementsAbove = getPostElements('above')
+
+      if (
+        currentTarget &&
+        currentTarget.getBoundingClientRect().top >= HEADER_HEIGHT
+      ) {
+        nextIndex = currentTargetIndex - 1
+      } else if (elementsAbove.length > 0) {
+        nextIndex = allPosts.indexOf(elementsAbove[elementsAbove.length - 1])
+      } else {
+        nextIndex = allPosts.length - 1
+      }
+
+      if (nextIndex < 0) nextIndex = allPosts.length - 1
+    } else {
+      const elementsBelow = getPostElements('below')
+
+      if (elementsBelow.length > 0) {
+        const firstBelowIndex = allPosts.indexOf(elementsBelow[0])
+        nextIndex =
+          firstBelowIndex > currentTargetIndex
+            ? firstBelowIndex
+            : currentTargetIndex + 1
+      } else {
+        nextIndex = currentTargetIndex + 1
+      }
+
+      if (nextIndex >= allPosts.length) nextIndex = 0
+    }
+
+    const nextElement = allPosts[nextIndex]
+    if (!nextElement) return
+
+    // Update target class
+    document
+      .querySelectorAll('.target')
+      .forEach((el) => el.classList.remove('target'))
+    nextElement.classList.add('target')
+
+    // Scroll to element
+    const rect = nextElement.getBoundingClientRect()
+    const targetY = window.pageYOffset + rect.top - HEADER_HEIGHT
+
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth'
+    })
+  }
+
   function scrollToNearest(forceDirection = null) {
+    console.log(forceDirection)
+    console.log('target', document.querySelector('.options'))
     if (!forceDirection) return
 
-    const viewportTop = window.scrollY + 60
-    const viewportBottom = viewportTop + window.innerHeight
+    const hasUncollapsed = document.querySelector('.options') !== null
 
-    let targetElement = null
-    let bestDistance = Infinity
-
-    let elements = Array.from(document.querySelectorAll('.has-new'))
-
-    elements.forEach((element) => {
-      const rect = element.getBoundingClientRect()
-      const elementTop = rect.top + window.scrollY
-      const elementBottom = elementTop + rect.height
-
-      // Check if element is in the direction we're looking for
-      if (forceDirection === 'above' && elementBottom < viewportTop) {
-        // Find the closest element above viewport
-        const distance = viewportTop - elementBottom
-        if (distance < bestDistance) {
-          bestDistance = distance
-          targetElement = element
-        }
-      } else if (
-        forceDirection === 'above' &&
-        elementBottom > viewportTop &&
-        elementTop < viewportBottom
-      ) {
-        // If looking above and element is in viewport, choose from bottom up (bottommost first)
-        const distance = viewportBottom - elementBottom
-        if (distance < bestDistance) {
-          bestDistance = distance
-          targetElement = element
-        }
-      } else if (forceDirection === 'below' && elementTop > viewportBottom) {
-        // Find the closest element below viewport
-        const distance = elementTop - viewportBottom
-        if (distance < bestDistance) {
-          bestDistance = distance
-          targetElement = element
-        }
-      } else if (
-        forceDirection === 'below' &&
-        elementBottom > viewportTop &&
-        elementTop < viewportBottom
-      ) {
-        // If looking below and element is in viewport, choose from top to bottom (topmost first)
-        const distance = elementTop - viewportTop
-        if (distance < bestDistance) {
-          bestDistance = distance
-          targetElement = element
-        }
-      }
-    })
-
-    if (targetElement) {
-      targetElement.click()
-
-      const rect = targetElement.getBoundingClientRect()
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-      const targetY = scrollTop + rect.top - 157
-
-      window.scrollTo({
-        top: targetY,
-        behavior: 'smooth'
-      })
+    if (hasUncollapsed) {
+      scrollInDirection(forceDirection)
     } else {
-      // No target element found, scroll to next viewport
-      const currentScrollY = window.scrollY
-      const viewportHeight = window.innerHeight
+      const viewportTop = window.scrollY + 60
+      const viewportBottom = viewportTop + window.innerHeight
 
-      if (forceDirection === 'above') {
-        // Scroll up by one viewport height
+      let targetElement = null
+      let bestDistance = Infinity
+
+      let elements = Array.from(document.querySelectorAll('.has-new'))
+
+      console.log(elements)
+
+      elements.forEach((element) => {
+        const rect = element.getBoundingClientRect()
+        const elementTop = rect.top + window.scrollY
+        const elementBottom = elementTop + rect.height
+
+        // Check if element is in the direction we're looking for
+        if (forceDirection === 'above' && elementBottom < viewportTop) {
+          // Find the closest element above viewport
+          const distance = viewportTop - elementBottom
+          if (distance < bestDistance) {
+            bestDistance = distance
+            targetElement = element
+          }
+        } else if (
+          forceDirection === 'above' &&
+          elementBottom > viewportTop &&
+          elementTop < viewportBottom
+        ) {
+          // If looking above and element is in viewport, choose from bottom up (bottommost first)
+          const distance = viewportBottom - elementBottom
+          if (distance < bestDistance) {
+            bestDistance = distance
+            targetElement = element
+          }
+        } else if (forceDirection === 'below' && elementTop > viewportBottom) {
+          // Find the closest element below viewport
+          const distance = elementTop - viewportBottom
+          if (distance < bestDistance) {
+            bestDistance = distance
+            targetElement = element
+          }
+        } else if (
+          forceDirection === 'below' &&
+          elementBottom > viewportTop &&
+          elementTop < viewportBottom
+        ) {
+          // If looking below and element is in viewport, choose from top to bottom (topmost first)
+          const distance = elementTop - viewportTop
+          if (distance < bestDistance) {
+            bestDistance = distance
+            targetElement = element
+          }
+        }
+      })
+
+      if (targetElement) {
+        targetElement.click()
+
+        const rect = targetElement.getBoundingClientRect()
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop
+        const targetY = scrollTop + rect.top - 157
+
         window.scrollTo({
-          top: Math.max(0, currentScrollY - viewportHeight + 157),
+          top: targetY,
           behavior: 'smooth'
         })
-      } else if (forceDirection === 'below') {
-        // Scroll down by one viewport height
-        const maxScroll =
-          document.documentElement.scrollHeight - window.innerHeight
-        window.scrollTo({
-          top: Math.min(maxScroll, currentScrollY + viewportHeight - 157),
-          behavior: 'smooth'
-        })
+      } else {
+        scrollInDirection(forceDirection)
       }
     }
   }
@@ -243,10 +310,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return
     }
 
-    if (e.key === 'j' || e.key === ' ') {
+    if (e.key === 'j' || e.key === ' ' || e.key === 'ArrowDown') {
       e.preventDefault()
       scrollToNearest('below')
-    } else if (e.key === 'k') {
+    } else if (e.key === 'k' || e.key === 'ArrowUp') {
       e.preventDefault()
       scrollToNearest('above')
     }
@@ -324,16 +391,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const actualId = id.substring(6)
       const target = document.getElementById('post-' + actualId)
+      console.log(target)
       let alreadyTarget = false
       if (target) {
         alreadyTarget = target.classList.contains('target')
       }
+      console.log('alreadyTarget:', alreadyTarget)
 
       document
         .querySelectorAll('.target')
         .forEach((el) => el.classList.remove('target'))
 
       if (target && !alreadyTarget) {
+        console.log('add target')
         target.classList.add('target')
       }
     }
