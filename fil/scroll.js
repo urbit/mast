@@ -219,8 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function scrollToNearest(forceDirection = null) {
-    console.log(forceDirection)
-    console.log('target', document.querySelector('.options'))
     if (!forceDirection) return
 
     const hasUncollapsed = document.querySelector('.options') !== null
@@ -235,8 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
       let bestDistance = Infinity
 
       let elements = Array.from(document.querySelectorAll('.has-new'))
-
-      console.log(elements)
 
       elements.forEach((element) => {
         const rect = element.getBoundingClientRect()
@@ -319,6 +315,104 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
+  //  Mobile
+
+  function scrollToDirection(forceDirection = null) {
+    if (!forceDirection) return
+
+    // No target element found, scroll to next viewport
+    const currentScrollY = window.scrollY
+    const viewportHeight = window.innerHeight
+
+    if (forceDirection === 'above') {
+      // Scroll up by one viewport height
+      window.scrollTo({
+        top: Math.max(0, currentScrollY - viewportHeight + 157),
+        behavior: 'smooth'
+      })
+    } else if (forceDirection === 'below') {
+      // Scroll down by one viewport height
+      const maxScroll =
+        document.documentElement.scrollHeight - window.innerHeight
+      window.scrollTo({
+        top: Math.min(maxScroll, currentScrollY + viewportHeight - 157),
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  let startX = 0
+  let startY = 0
+  let startTime = 0
+
+  document.addEventListener(
+    'touchstart',
+    (e) => {
+      const touch = e.touches[0]
+      startX = touch.clientX
+      startY = touch.clientY
+      startTime = Date.now()
+    },
+    { passive: false }
+  )
+
+  document.addEventListener(
+    'touchmove',
+    (e) => {
+      // Prevent native scrolling during potential swipes
+      const deltaTime = Date.now() - startTime
+      if (deltaTime < 300) {
+        const touch = e.touches[0]
+        const deltaX = touch.clientX - startX
+        const deltaY = touch.clientY - startY
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+
+        if (distance > 10 && Math.abs(deltaX) < Math.abs(deltaY)) {
+          e.preventDefault() // Stop native scroll for vertical swipes
+        }
+      }
+    },
+    { passive: false }
+  )
+
+  document.addEventListener(
+    'touchend',
+    (e) => {
+      const touch = e.changedTouches[0]
+      const endX = touch.clientX
+      const endY = touch.clientY
+      const endTime = Date.now()
+
+      const deltaX = endX - startX
+      const deltaY = endY - startY
+      const deltaTime = endTime - startTime
+
+      // Check if it's a quick swipe (under 300ms)
+      if (deltaTime < 300) {
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+
+        // Minimum distance for swipe (50px)
+        if (distance > 50) {
+          // Determine direction
+          if (Math.abs(deltaX) < Math.abs(deltaY)) {
+            if (e.cancelable) {
+              e.preventDefault()
+            }
+            // Vertical swipe
+            if (deltaY > 0) {
+              // Handle swipe down
+              scrollToDirection('above')
+            } else {
+              // Handle swipe up
+              scrollToDirection('below')
+            }
+          }
+        }
+      }
+    },
+    { passive: false }
+  )
+
   //  Handles scroll to the top for new replies and reply form
 
   window.scrollToElementTop = function (id, getParent) {
@@ -391,19 +485,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const actualId = id.substring(6)
       const target = document.getElementById('post-' + actualId)
-      console.log(target)
       let alreadyTarget = false
       if (target) {
         alreadyTarget = target.classList.contains('target')
       }
-      console.log('alreadyTarget:', alreadyTarget)
 
       document
         .querySelectorAll('.target')
         .forEach((el) => el.classList.remove('target'))
 
       if (target && !alreadyTarget) {
-        console.log('add target')
         target.classList.add('target')
       }
     }
@@ -500,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const indicator = document.createElement('div')
         indicator.id = 'position-indicator'
         const buttonClass =
-          'bg-gray-950 border md:border-[var(--grey-default)] border-[var(--grey-light)] hover:border-[var(--grey-light)] rounded p-2 font-inter text-sm md:text-[var(--grey-default)] text-[var(--grey-light)] hover:text-[var(--grey-light)] hidden items-center gap-1 cursor-pointer z-50 h-[28px]'
+          'bg-gray-950 border md:border-[var(--grey-default)] border-[var(--grey-default)] hover:border-[var(--grey-light)] rounded p-2 font-inter text-sm md:text-[var(--grey-default)] text-[var(--grey-default)] hover:text-[var(--grey-light)] hidden items-center gap-1 cursor-pointer z-50 h-[28px]'
 
         indicator.innerHTML = `
           <!-- Desktop buttons -->
