@@ -50,11 +50,11 @@ class AthensPreview extends LitElement {
 
     renderer.image = () => ''
 
-    renderer.html = (html) => {
-      if (/<audio[\s\S]*?>[\s\S]*?<\/audio>/gi.test(html)) {
-        return ''
-      }
-      return html
+    renderer.link = (token) => {
+      const href = token.href || ''
+      const title = token.title || href
+      const text = token.text || href
+      return `<a href="${href}" title="${title}" target="_blank" rel="noopener noreferrer">${text}</a>`
     }
 
     window.marked.setOptions({
@@ -64,15 +64,19 @@ class AthensPreview extends LitElement {
 
     const trimValue = this.value.trimEnd()
 
+    const filteredValue = trimValue.replace(
+      /<audio[\s\S]*?>[\s\S]*?<\/audio>/gi,
+      ''
+    )
+
     if (this._isHidden) {
       const athensEditor = this.querySelector('.athens-editor')
-      const truncateValue = this._smartTruncate(this.value, athensEditor)
+      const truncateValue = this._smartTruncate(filteredValue, athensEditor)
       preview.innerHTML = window.marked.parse(truncateValue)
     } else {
-      preview.innerHTML = window.marked.parse(trimValue)
+      preview.innerHTML = window.marked.parse(filteredValue)
     }
 
-    // Remove empty trailing paragraph if it exists
     const last = preview.lastElementChild
     if (last?.tagName === 'P' && !last.textContent.trim()) {
       last.remove()
