@@ -187,7 +187,7 @@
   ++  author
     ;div
       =event  "{?~(hid "" "/click/toggle-hide")}"
-      =class  "author {?:(hid "hide" "")} {sticky} ".
+      =class  "author {?:(hid "hide" "")} {sticky} md:translate-y-[-1px] ".
               "top-20 cursor-pointer w-[15ch] max-w-[15ch] ".
               "ml-[{((d-co:co 1) depth)}px] overflow-hidden ".
               "whitespace-nowrap flex items-start col-start-1 ".
@@ -335,7 +335,7 @@
       ?>  ?=([%athens %posts *] paf)
         (lent t.t.paf)  
     ;div.replies-container.relative
-      ;div(class "border-left absolute w-px bg-[var(--grey-default)] top-0 bottom-[5px]", style "--depth: {((d-co:co 1) depth)}px;");
+      ;div(class "border-left absolute w-px bg-[var(--grey-default)] top-0 bottom-0", style "--depth: {((d-co:co 1) depth)}px;");
       ;*  ?>  ?=([%athens %posts *] paf)
           %+  turn  rep.dat
           |=  p=path

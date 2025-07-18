@@ -128,7 +128,9 @@
   ++  user-menu
     ;div
       =class  "flex justify-center items-center h-[28px] overflow-hidden"
-      ;a.px-2.py-2.cursor-pointer.col-span-2.flex.justify-center.items-center.overflow-hidden
+      ;a
+        =class  "p-2 cursor-pointer col-span-2 flex justify-center ". 
+        "items-center overflow-hidden text-[var(--grey-default)] hover:text-[var(--grey-light)]"
         =href  "/~/logout?redirect=/mast/athens"
         ; Sign out
       ==
@@ -164,7 +166,7 @@
       ::
       ;*
         =/  class  "p-2 cursor-pointer col-span-2 ".
-                   "flex justify-between items-center"
+                   "flex justify-between items-center text-[var(--grey-default)] hover:text-[var(--grey-light)]"
         =/  btn-label
           ?-  mode.access
             %gated    "Door Code"
@@ -475,7 +477,7 @@
   |=  =ship
   ^-  manx
   ;div
-    =class  "col-span-2 flex gap-auto"
+    =class  "col-span-2 flex gap-auto text-[var(--grey-default)] hover:*:text-[var(--grey-light)]"
     =client-display  "show-ids true"
     ;div(class "mt-auto p-2 h-[28px] flex items-center justify-center"): {(scow %p ship)}
     ;form
