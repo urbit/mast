@@ -1,6 +1,6 @@
-:~  title+'%athens-demo'
+:~  title+'Circles'
     info+''
-    color+0x2f.11d6
+    color+0xf.0f0f
     website+'https://github.com/urbit/mast'
     version+[0 0 1]
     license+'MIT'

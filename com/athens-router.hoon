@@ -37,10 +37,11 @@
   ^-  manx
   ;html
     ;head
-      ;title: Athens
+      ;title: Circles
       ;meta(charset "UTF-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no");
       ;link(rel "manifest", href "/athens/manifest");
+      ;link(rel "icon", href "/athens/favicon");
       ;link(rel "preconnect", href "https://rsms.me/");
       ;link(rel "stylesheet", href "https://rsms.me/inter/inter.css");
       ;link(rel "preconnect", href "https://fonts.googleapis.com");
@@ -150,7 +151,7 @@
     overflow-y: scroll;
   }
   .posts {
-    padding: 110px 16px 180px 16px;
+    padding: 110px 16px 120px 16px;
     margin: auto;
     width: 100%;
     max-width: 1000px;
