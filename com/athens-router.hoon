@@ -167,6 +167,7 @@
     letter-spacing: 0%;
     vertical-align: middle;
     color: var(--text-color);
+    height: 15px;
   }
   .author.hide {
     color: var(--grey-default);

@@ -330,10 +330,7 @@
             "flex gap-1 justify-end md:invisible visible ".
             "color-[#646464] {?:(hid "hidden" "")}  translate-y-[-1px] ".
             "leading-none align-top md:justify-start"
-    ;div(onclick "toggleView('reply-{idt}', true, true)")
-      ::;button(onclick "delayedScrollToTop('{(trip (rear paf))}', false)"): reply
-      ;button: reply
-    ==
+      ;button(onclick "toggleView('reply-{idt}', true, true)"): reply
     ;*  ?:  is-author
       ;=
         ;button(onclick "toggleView('edit-{idt}', true, true)"): edit
