@@ -105,34 +105,36 @@
       ;+  list-posts
     ==
   ++  header-menu
-  ;div
     ;div
       ;div
-        =class  "flex flex-col gap-2 w-auto max-w-[160px] md:w-[160px] menu"
         ;div
-          =id  "menu-border"
-          =onclick  "toggleView('settings-menu')"
-          =class  "border border-[var(--grey-default)] hover:border-[var(--grey-light)] ".
-                  "rounded bg-[var(--bg-color)] flex items-center ".
-                  "justify-between gap-2 p-[8px] h-[28px] ".
-                  "cursor-pointer patp justify-end md:justify-start" 
-          ;urbit-sigil(patp (cite:title user));
-          ;span(class "hidden md:block w-[16ch] m-0", id "patp"):  {(cite:title user)}
-        == 
-        ;div
-          =id     "settings-menu"
-          =class  "border border-[var(--grey-light)] rounded bg-[var(--bg-color)] hidden md:hover:flex w-[160px]"
-            ;+  ?.  =(our.hull src.hull)  
-                user-menu
-              admin-menu
+          =class  "flex flex-col gap-2 w-auto max-w-[160px] md:w-[160px] menu"
+          ;div
+            =id  "menu-border"
+            =onclick  "toggleView('settings-menu')"
+            =class  "border border-[var(--grey-default)] hover:border-[var(--grey-light)] ".
+                    "rounded bg-[var(--bg-color)] flex items-center ".
+                    "justify-between gap-2 p-[8px] h-[28px] ".
+                    "cursor-pointer patp justify-end md:justify-start" 
+            ;urbit-sigil(patp (cite:title user));
+            ;span(class "hidden md:block w-[16ch] m-0", id "patp"):  {(cite:title user)}
+          == 
+          ;div
+            =id     "settings-menu"
+            =class  "border border-[var(--grey-light)] rounded bg-[var(--bg-color)] hidden md:hover:flex w-[160px]"
+              ;+  ?.  =(our.hull src.hull)  
+                  user-menu
+                admin-menu
+          ==
         ==
       ==
     ==
-  ==
   ++  user-menu
     ;div
-      =class  "w-full flex justify-center items-center h-[28px] overflow-hidden"
-      ;a.px-2.py-2.w-full.cursor-pointer.flex.justify-center.items-center.overflow-hidden
+      =class  "flex justify-center items-center h-[28px] overflow-hidden"
+      ;a
+        =class  "p-2 cursor-pointer col-span-2 flex justify-center ". 
+        "items-center overflow-hidden text-[var(--grey-default)] hover:text-[var(--grey-light)]"
         =href  "/~/logout?redirect=/mast/athens"
         ; Sign out
       ==
@@ -168,7 +170,7 @@
       ::
       ;*
         =/  class  "p-2 cursor-pointer col-span-2 ".
-                   "flex justify-between items-center"
+                   "flex justify-between items-center text-[var(--grey-default)] hover:text-[var(--grey-light)]"
         =/  btn-label
           ?-  mode.access
             %gated    "Door Code"
@@ -479,7 +481,7 @@
   |=  =ship
   ^-  manx
   ;div
-    =class  "col-span-2 flex gap-auto"
+    =class  "col-span-2 flex gap-auto text-[var(--grey-default)] hover:*:text-[var(--grey-light)]"
     =client-display  "show-ids true"
     ;div(class "mt-auto p-2 h-[28px] flex items-center justify-center"): {(scow %p ship)}
     ;form

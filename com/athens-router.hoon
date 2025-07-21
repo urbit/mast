@@ -4,6 +4,7 @@
 /*  footnote-parser  %js  /fil/footnote-parser/js
 /*  scroll  %js  /fil/scroll/js
 /*  urbit-sigil  %js  /fil/urbit-sigil/js
+/*  local-notifications  %js  /fil/local-notifications/js
 ^-  mast:mast
 =<
 :-  ~
@@ -53,6 +54,7 @@
       ;script(type "module"): {(trip athens-preview)} 
       ;script(type "module"): {(trip urbit-sigil)}
       ;script(defer ""): {(trip scroll)}
+      ;script(defer ""): {(trip local-notifications)}
       ;script(src "https://unpkg.com/lucide@latest");
       ;script:  lucide.createIcons();
       ;style(type "text/tailwindcss")
@@ -396,10 +398,10 @@
     margin-bottom: 0;
   }
   .target{
-    background: #1E1F1E;
+    background: rgba(30, 31, 30, 0.8);
     box-sizing: border-box;
-    padding: 8px 0; 
-    margin: -8px 0; 
+    ::padding: 8px 0; 
+    ::margin: -8px 0; 
   }
   urbit-sigil {
     cursor: pointer;
