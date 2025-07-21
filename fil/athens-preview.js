@@ -26,10 +26,10 @@ class AthensPreview extends LitElement {
 
   render() {
     return html`
-      <div class="athens-editor flex items-start">
+      <div class="athens-editor flex items-start mb-[-6px]">
         <div
           class="markdown-preview ${this
-            .clampClass} prose prose-p:mb-0 prose-p:mt-0 inline-block translate-y-[-4px] align-top min-h-[16px]"
+            .clampClass} w-full prose prose-p:mb-0 prose-p:mt-0 inline-block translate-y-[-4px] align-top min-h-[16px]"
           id="preview"
         ></div>
       </div>
@@ -87,16 +87,11 @@ class AthensPreview extends LitElement {
 
   _applyHideStyles(preview) {
     if (this._isHidden) {
-      this.clampClass = 'clamp-one-line h-[16px]'
+      this.clampClass = 'line-clamp-1 h-auto'
       this.requestUpdate() // Trigger re-render
     } else {
       this.clampClass = 'h-auto'
       this.requestUpdate() // Trigger re-render
-      requestAnimationFrame(() => {
-        const initialHeight = preview.offsetHeight
-        this.clampClass = `h-[${initialHeight - 4}px]`
-        this.requestUpdate() // Trigger re-render after height calculation
-      })
     }
   }
 

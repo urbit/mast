@@ -4,6 +4,7 @@
 /*  footnote-parser  %js  /fil/footnote-parser/js
 /*  scroll  %js  /fil/scroll/js
 /*  urbit-sigil  %js  /fil/urbit-sigil/js
+/*  local-notifications  %js  /fil/local-notifications/js
 ^-  mast:mast
 =<
 :-  ~
@@ -52,6 +53,7 @@
       ;script(type "module"): {(trip athens-preview)} 
       ;script(type "module"): {(trip urbit-sigil)}
       ;script(defer ""): {(trip scroll)}
+      ;script(defer ""): {(trip local-notifications)}
       ;script(src "https://unpkg.com/lucide@latest");
       ;script:  lucide.createIcons();
       ;style(type "text/tailwindcss")
@@ -148,7 +150,7 @@
     overflow-y: scroll;
   }
   .posts {
-    padding: 110px 16px 110px 16px;
+    padding: 110px 16px 180px 16px;
     margin: auto;
     width: 100%;
     max-width: 1000px;
@@ -290,6 +292,7 @@
   }
   athens-preview .markdown-preview {
     font-size: 14px;
+    word-break: break-word;
   }
   athens-textarea-litdev textarea{
     background: var(--bg-color);
@@ -355,7 +358,7 @@
   .prose code {
     background: transparent;
     color: var(--text-color);
-    padding: 0.5rem; /* p-4 */
+    margin: 0.5rem; /* p-4 */
     border-radius: 0.5rem; /* rounded-lg */
     overflow-x: auto;
   }
@@ -438,4 +441,3 @@
   '''
 ::
 --
-

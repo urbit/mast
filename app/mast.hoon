@@ -181,13 +181,10 @@
   ==
 ::
 ++  make-diff-card
-  |=  [src=ship rop=rope jon=(list json)]
+  |=  [src=ship rop=rope jon=json]
   ^-  card
-  :*  %give
-      %fact
-      [(make-client-sub-path src rop) ~]
-      %json
-      !>(`json`[%a jon])
+  :*  %give  %fact  [(make-client-sub-path src rop) ~]
+      %json  !>(jon)
   ==
 ::
 ++  make-gull-cards
@@ -513,7 +510,7 @@
       |-  ^+  cor
       ?~  cus  ^$(gus t.gus)
       =/  ui-core  (ui-abed:ui src.i.gus rop.i.gus)
-      =^  [jon=(list json) bos=(set buoy)]  ui-core  (ui-furl:ui-core i.cus)
+      =^  [jon=json bos=(set buoy)]  ui-core  (ui-furl:ui-core i.cus)
       =.  gulf  ui-abet:ui-core
       =?  cor  .?(bos)  (handle-component-buoys src.i.gus rop.i.gus ~(tap in bos))
       =?  cor  .?(jon)  (emit (make-diff-card src.i.gus rop.i.gus jon))
@@ -576,18 +573,32 @@
   :: rerender and diff a component
   ++  ui-furl
     |=  rod=rode
-    ^-  [[(list json) (set buoy)] _ui-core]
+    ^-  [[json (set buoy)] _ui-core]
     =/  cov  (~(got by yel) rod)
     =/  com  (~(got by deck) com.lin.cov)
-    =/  new  (process-sail rod ~(sail com (make-hull boom.com lin.cov)))
+    =/  cun  +(dif.cov)
+    =/  new  (process-sail rod cun ~(sail com (make-hull boom.com lin.cov)))
     =/  dif  (luff [aft.cov ~] [new ~])
+    ?~  q.dif
+      :-  ~^~  ui-core
+    :: if there is a diff, build the full diff object
+    :: with the key and diff counter for this component
+    =/  jon
+      ^-  json
+      :-  %o
+      %-  my
+      :~  ['p' [%s rod]]
+          ['q' [%n (crip ((d-co:co 1) cun))]]
+          ['r' [%a q.dif]]
+      ==
     =.  yel
-      %-  %~  uni  by
-        %+  ~(put by yel)  rod
-        %_  cov
-          aft  new
-        ==
-      add.p.dif
+      %.  add.p.dif
+      %~  uni  by
+      %+  ~(put by yel)  rod
+      %_  cov
+        aft  new
+        dif  cun
+      ==
     =^  bos=(set buoy)  yel
       =/  bos  *(set buoy)
       =/  ros  ~(tap in del.p.dif)
@@ -601,7 +612,7 @@
         yel  (~(del by yel) i.ros)
       ==
     :_  ui-core
-    :-  q.dif  (~(uni in bos.p.dif) bos)
+    :-  jon  (~(uni in bos.p.dif) bos)
   ::
   :: ++ui-sway
   :: apply an event to a component
@@ -632,7 +643,7 @@
   :: ++process-sail
   :: process a component's rendered sail, mainly adding keys
   ++  process-sail
-    |=  [com-key=@t sal=manx]
+    |=  [com-key=@t com-dif=@ sal=manx]
     ^-  manx
     =/  n  0
     =/  prev-key   (trip com-key)
@@ -642,7 +653,9 @@
     =?  sal  =(%html n.g.sal)
       ?>  ?=([* [[%body *] *] *] c.sal)
       i.t.c.sal
-    =.  a.g.sal  [[%mast ~] a.g.sal]
+    :: add a mast component attribute to the root
+    :: with the current diff counter as its value
+    =.  a.g.sal  [[%mast ((d-co:co 1) com-dif)] a.g.sal]
     |-  ^-  manx
     :: temporary: if text node, add text node wrapper
     =?  sal  =(%$ n.g.sal)  ;t-  ;+  sal  ==
@@ -750,11 +763,13 @@
         :+  |
             [aft.u.cuv ~]
             u.cuv
+      =/  dif  0
       =/  com  (~(got by deck) com.lin)
-      =/  sal  (process-sail rod ~(sail com (make-hull boom.com lin)))
+      =/  sal  (process-sail rod dif ~(sail com (make-hull boom.com lin)))
       :+  &
           [sal ~]
-      :*  boom.com
+      :*  dif
+          boom.com
           sal
           lin
       ==
@@ -883,7 +898,7 @@
               %-  swig
               :*  %new
                   [%s pkey]
-                  [%n (scot %ud i)]
+                  [%n (crip ((d-co:co 1) i))]
                   [%s (crip (en-xml:html i.new))]
               ==
           ==
@@ -929,7 +944,7 @@
                 new
                   %^  snap  `marl`new  n
                   ^-  manx
-                  ;move-(i (y-co:co (add n i)), key (trip k.nnky));
+                  ;move-(i ((d-co:co 1) (add n i)), key (trip k.nnky));
                 q.acc
                   ?:  &(?=(~ del.jib) ?=(~ new.jib))  q.acc
                   :_  q.acc
@@ -957,7 +972,7 @@
                   %-  swig
                   :*  %move
                       [%s k.nkey]
-                      [%n (scot %ud i)]
+                      [%n (crip ((d-co:co 1) i))]
                   ==
                 ?:  &(?=(~ del.jib) ?=(~ new.jib))  q.acc
                 :_  q.acc
@@ -1057,7 +1072,9 @@
     ?~  om
       !!
     ?:  =(n.i.com n.i.nm)
-      ?:  =(v.i.com v.i.nm)
+      ?:  ?|  =(v.i.com v.i.nm)
+              =(%mast n.i.nm)  :: skip if mast component attribute
+          ==
         %=  ^$
           om  (oust [i 1] (mart om))
           nm  t.nm
