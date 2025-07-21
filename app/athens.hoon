@@ -90,7 +90,7 @@
   ^-  (quip card _this)
   :-  ~  this
 ::
-++  on-leave  |=(path ^-((quip card _this) !!))
+++  on-leave  |=(path ^*((quip card _this)))
 ::
 ++  on-peek
   |=  pax=path
