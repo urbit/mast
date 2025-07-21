@@ -5,6 +5,7 @@
       [%del-post at=path]
       [%hide-post at=path]
       [%unhide-post at=path]
+      [%set-user-position at=path]
       [%set-access-mode mode=term]
       [%edit-access-id ids=(list @p)]
       [%del-access-id id=@p]
@@ -34,10 +35,10 @@
       path
       view
 +$  view
-  $%  [%old ~]
-      [%new ~]
+  $%  [%old selected=?]
+      [%new selected=?]
       [%display-none ~]
-      [%hidden [posts=@ud new-post-total=@ud]]
+      [%hidden [posts=@ud new-post-total=@ud selected=?]]
   ==
 +$  user-session-0
   $:  hidden-posts=(set post-id)

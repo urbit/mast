@@ -1,4 +1,84 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  const debounce = (func, delay) => {
+    let timeoutId
+    return (...args) => {
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => func.apply(null, args), delay)
+    }
+  }
+
+  const scrollToSelectedPost = () => {
+    const postContainers = document.querySelectorAll('.post-node-container')
+
+    for (const container of postContainers) {
+      if (container.classList.contains('selected')) {
+        const rect = container.getBoundingClientRect()
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop
+        const targetY = scrollTop + rect.top - 70
+
+        window.scrollTo({
+          top: targetY,
+          behavior: 'smooth'
+        })
+        initialLoadComplete = true
+        break
+      }
+    }
+  }
+
+  // Call on page load
+  window.addEventListener('load', scrollToSelectedPost)
+  window.addEventListener('load', () => {
+    // Add a small delay to ensure scrollToSelectedPost completes
+    setTimeout(() => {
+      initialLoadComplete = true
+    }, 1000)
+  })
+
+  const savePosition = debounce((position) => {
+    const postContainers = document.querySelectorAll('.post-node-container')
+
+    for (const container of postContainers) {
+      const rect = container.getBoundingClientRect()
+
+      if (rect.top >= 60 && rect.bottom > 0) {
+        selectedPostContainer = container
+        console.log(selectedPostContainer)
+        break
+      }
+    }
+
+    if (selectedPostContainer) {
+      console.log(
+        'Selected container for submission:',
+        selectedPostContainer.id
+      )
+      const formSelectedChange =
+        selectedPostContainer.querySelector('.submit-selected')
+      if (formSelectedChange) {
+        console.log(
+          'Submitting form for container:',
+          selectedPostContainer.id,
+          formSelectedChange
+        )
+        const submitEvent = new Event('submit', {
+          bubbles: true,
+          cancelable: true
+        })
+        formSelectedChange.dispatchEvent(submitEvent)
+      }
+    }
+  }, 800)
+
+  // On scroll/position change
+  window.addEventListener('scroll', () => {
+    if (initialLoadComplete) {
+      const scrollPosition = window.scrollY
+      savePosition(scrollPosition)
+    }
+  })
+
   function getPostElements() {
     return Array.from(document.querySelectorAll('.post-container'))
   }
