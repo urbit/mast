@@ -90,7 +90,7 @@
   ^-  (quip card _this)
   :-  ~  this
 ::
-++  on-leave  |=(path ^-((quip card _this) !!))
+++  on-leave  |=(path ^*((quip card _this)))
 ::
 ++  on-peek
   |=  pax=path
@@ -200,6 +200,9 @@
       ::
         %unhide-post
       %-  unhide-post  at.act
+      ::
+        %set-user-position
+      %-  set-user-position  at.act
       ::
         %set-access-mode
       %-  set-access-mode  mode.act
@@ -404,13 +407,37 @@
   %-  emit
   %-  make-fact-card  /r/access
 ::
+++  set-user-position
+  |=  at=path
+  ^+  cor
+  =/  usr  (~(get by user-sessions) user)
+  =/  old-selected-card  
+    ?~  usr  ~  
+    ?~  selected-post.u.usr  ~
+    ?:  =(u.selected-post.u.usr at)  !!
+    :~ 
+      %-  make-fact-card  (weld /r/view/[(scot %p user)] u.selected-post.u.usr)
+    ==
+  =.  user-sessions  
+    ?~  usr
+      =|  new=user-session:athens
+      =.  selected-post.new  `at
+      %+  ~(put by user-sessions)  user  new
+    =.  selected-post.u.usr  `at
+    %+  ~(put by user-sessions)  user  u.usr
+  %-  emil
+  %+  weld  
+  :~
+    %-  make-fact-card  (weld /r/view/[(scot %p user)] at)
+  ==
+  old-selected-card
+::
 ++  set-access-mode
   |=  =term
   ^+  cor
   =.  mode.access  (access-mode:athens term)
   %-  emit
   %-  make-fact-card  /r/access
-  ::
 ::
 ++  edit-access-id
   |=  ids=(list @p)  ::  xx why is this a list?
@@ -462,18 +489,26 @@
 ++  get-view
   |=  [post-path=path usr=(unit user-session:athens) =posts:athens]
   ^-  view:athens
-  ?~  usr  [%old ~]
+  ?~  usr  [%old |]
+  =/  selected-post=path  
+    ?~  selected-post.u.usr  ~  
+    u.selected-post.u.usr
   =/  id=post-id:athens  (slav %da (rear post-path))
   ?.  (~(has in hidden-posts.u.usr) id)
-    ?.  (~(has in new-posts.u.usr) post-path)  [%old ~]
-    [%new ~]
-  =/  hidden-view
-    :-  %hidden
-    :-  0
-    %-  lent  %-  homo
-    %+  skip  ~(tap in new-posts.u.usr)
-    |=  p=path
-    =(~ (find ~[(rear post-path)] p))
+    ?.  (~(has in new-posts.u.usr) post-path)  
+      :-  %old
+      =(post-path selected-post)
+    :-  %new
+    =(post-path selected-post)
+  =/  hidden-view=view:athens
+    :*  %hidden
+      0
+      %-  lent  %-  homo
+      %+  skip  ~(tap in new-posts.u.usr)
+      |=  p=path
+      =(~ (find ~[(rear post-path)] p))
+      =(post-path selected-post)
+    ==
   ?.  =(/ (tail post-path)) 
     =/  replies  replies:(get-post-node `path`(snip `(list @ta)`post-path) posts)
     =/  id-list=(list post-id:athens)  
@@ -492,7 +527,7 @@
       ==
     ::if post above is hidden 
       =/  siblings   ~(tap in (hidden-siblings-below id replies hidden-posts.u.usr))
-      =/  num-new
+      =/  num-new=@ud
         %-  reel  :_  add
         %+  turn  siblings 
         |=  i=post-id:athens
@@ -502,7 +537,7 @@
         |=  p=path
         =(~ (find ~[(rear sib-path)] p))
       =/  num  (lent siblings)
-      [%hidden [num num-new]]
+      `view:athens`[%hidden [num num-new =(post-path selected-post)]]
     hidden-view
   hidden-view
 ::

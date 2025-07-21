@@ -72,7 +72,14 @@ class AthensPreview extends LitElement {
     if (this._isHidden) {
       const athensEditor = this.querySelector('.athens-editor')
       const truncateValue = this._smartTruncate(filteredValue, athensEditor)
-      preview.innerHTML = window.marked.parse(truncateValue)
+      const plainText = truncateValue
+        .replace(/^#{1,6}\s+/gm, '') // Remove heading markers
+        .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markers
+        .replace(/\*(.*?)\*/g, '$1') // Remove italic markers
+        .replace(/`(.*?)`/g, '$1') // Remove inline code markers
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove link syntax, keep text
+
+      preview.textContent = plainText
     } else {
       preview.innerHTML = window.marked.parse(filteredValue)
     }

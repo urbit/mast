@@ -13,6 +13,11 @@
     hid   =(-.viw %hidden)
     new   =(-.viw %new)
     show  =(-.viw %display-none)
+    sel   ;;  ?  
+          ?:  |(=(-.viw %new) =(-.viw %old))  
+            +.viw 
+          ?:  =(-.viw %hidden)  `?`+.+.+.viw
+          |
 ::
 ++  spar
   |=  =crow:mast
@@ -57,6 +62,11 @@
     :~  [%athens %athens-action !>([%del-post t.t.paf])]
     ==
     ::
+      [%submit %selected ~]
+    ?<  sel
+    :~  [%athens %athens-action !>([%set-user-position t.t.paf])]
+    ==
+    ::
   ==
 ::
 ++  sail
@@ -86,12 +96,14 @@
   |^
     ?:  show  ;div.hidden;
     ?:  &(hid !=(-.+.viw 0))  nested-replies
-    =/  has-new  ?^(`*`+.viw (gth +.+.viw 0) |) 
+    =/  has-new  ?^(`*`+.viw (gth -.+.+.viw 0) |)
     ;div
       =event  "{?:(hid "/click/unhide" "")}"
       ::=onclick  scroll
       =id  idt
-      =class  "post-node-container flex flex-col md:gap-[16px] gap-[16px] {?~(hid "cursor-pointer" "")}"
+      =class  "post-node-container flex flex-col md:gap-[16px] gap-[16px] ".
+              "{?~(hid "cursor-pointer" "")} ".
+              "{?:(sel "selected" "")}"
       ;div
         =id  "post-{idt}"
         =class  "post-container relative grid grid-cols-2 ".
@@ -133,6 +145,7 @@
                 ==
           ;form(event "/submit/hide", class "track-visibility opacity-0 pointer-events-none md:col-start-2 md:col-span-1 row-start-2 md:row-start-1");
         ;div.hidden;
+        ;form(event "/submit/selected", class "submit-selected submit-selected-{idt} opacity-0 pointer-events-none md:col-start-2 md:col-span-1 row-start-2 md:row-start-1");
         ;+  post-metadata
         ;+  option-buttons
       ==
@@ -144,7 +157,7 @@
         make-replies
     ==
   ++  nested-replies
-    =/  new-rep  +.+.viw
+    =/  new-rep  -.+.+.viw
     ;div(event "/click/unhide")
       =id  idt
       =onclick  scroll
@@ -177,7 +190,7 @@
         ;div
           =class  "reply-date inline leading-none align-top ".
                   "whitespace-nowrap w-auto text-[var(--grey-default)] ".
-                  "{?:((gth +.+.viw 0) "!text-white" "")} "
+                  "{?:((gth -.+.+.viw 0) "!text-white" "")} "
           =style  "font-weight: 400"
           {(date-to-tape (slav %da (rear paf)) now.hull)}
         ==
@@ -282,7 +295,7 @@
   ::
   ++  post-metadata
     =/  rep      rep-num.dat
-    =/  new-rep  ?:  hid  +.+.viw  0
+    =/  new-rep  ?:  hid  -.+.+.viw  0
     ^-  manx
     ;div 
       =class  "md:col-start-3 md:row-start-1 flex flex-row ". 
@@ -296,7 +309,7 @@
             {?:((gth `@ud`rep 0) <rep> "")}
             ;span
             =class  "text-white {?:((gth `@ud`new-rep 0) "new" "")}"
-              {?:(&((gth `@ud`rep 0) (gth `@ud`new-rep 0)) "+" "")}{?:((gth `@ud`new-rep 0) "{(scow %ud +.+.viw)}" "")}
+              {?:(&((gth `@ud`rep 0) (gth `@ud`new-rep 0)) "+" "")}{?:((gth `@ud`new-rep 0) "{(scow %ud -.+.+.viw)}" "")}
             ==
           ==
         ;div
@@ -317,10 +330,7 @@
             "flex gap-1 justify-end md:invisible visible ".
             "color-[#646464] {?:(hid "hidden" "")}  translate-y-[-1px] ".
             "leading-none align-top md:justify-start"
-    ;div(onclick "toggleView('reply-{idt}', true, true)")
-      ::;button(onclick "delayedScrollToTop('{(trip (rear paf))}', false)"): reply
-      ;button: reply
-    ==
+      ;button(onclick "toggleView('reply-{idt}', true, true)"): reply
     ;*  ?:  is-author
       ;=
         ;button(onclick "toggleView('edit-{idt}', true, true)"): edit
