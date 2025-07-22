@@ -4,6 +4,7 @@
       [%patch-post post-at=path content=@t]
       [%del-post at=path]
       [%hide-post at=path]
+      [%hide-all ~]
       [%unhide-post at=path]
       [%set-user-position at=path]
       [%set-access-mode mode=term]

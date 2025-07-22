@@ -198,6 +198,8 @@
         %hide-post
       %-  hide-post  at.act
       ::
+        %hide-all  hide-all  
+      ::
         %unhide-post
       %-  unhide-post  at.act
       ::
@@ -335,6 +337,69 @@
     %-  make-fact-card  (weld /r/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
   %-  emit
   %-  make-fact-card  (weld /r/view/[(scot %p user)] at)
+::
+++  hide-all
+  ^+  cor 
+  =/  user  user
+  =/  usr  (~(get by user-sessions) user)
+  |^
+  =/  posts-id  posts-to-id
+  =/  hidden-posts=(list post-id:athens)
+    %~  tap  in
+    ?~  usr  *(set post-id:athens)
+    hidden-posts.u.usr
+  =/  open-posts
+    %+  skim  posts-id 
+    |=  =post-id:athens
+    =(~ (find [post-id]~ hidden-posts))
+  =.  user-sessions  
+    %+  ~(put by user-sessions)  user 
+    ?~  usr  [(silt posts-id) *(set path) ~]
+    =/  new-posts-ids=(list post-id:athens)
+      %+  turn  ~(tap in new-posts.u.usr)
+      |=  p=path
+      (slav %da (rear p))
+    =/  hide-new-posts=(list path) 
+      %-  turn  
+      :_  |=  p=post-id:athens  (find-path p ~(tap in new-posts.u.usr))
+      %+  skip  open-posts
+      |=  =post-id:athens
+      =(~ (find [post-id]~ new-posts-ids))
+    :*  (silt posts-id) 
+      (~(dif in new-posts.u.usr) (silt hide-new-posts))
+      selected-post.u.usr
+    ==
+  %-  emil  
+  %+  turn  open-posts
+  |=  at=post-id:athens
+  %-  make-fact-card  /r/view/[(scot %p user)]/[(scot %da at)]
+  ::
+  ++  posts-to-id
+    ^-  (list post-id:athens)
+    =/  all-posts  posts
+    =/  ids=(list post-id:athens)  ~
+    |-  ^-  (list post-id:athens)
+    ?:  =(~ all-posts)  ids
+    =/  get-posts
+      %-  ~(rep by all-posts)
+      |=  [p=[i=post-id:athens node=post-node:athens] q=[i=(list post-id:athens) p=posts:athens]]
+      :-  (snoc i.q i.p)
+      `posts:athens`(~(uni by p.q) replies.node.p) 
+    %=  $
+      ids  (weld ids i.q.get-posts)
+      all-posts  p.q.get-posts
+    ==
+  ::
+  ++  find-path
+  |=  [id=post-id:athens new-posts=(list path)]
+  ^-  path
+  =/  post-path=(list path)
+    %+  skim  new-posts
+    |=  p=path
+    =(id (slav %da (rear p)))
+  ?~  post-path  ~
+  -.post-path
+--
 ::
 ++  unhide-post
   |=  at=path

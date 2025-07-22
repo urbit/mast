@@ -67,6 +67,10 @@
       ~
     :~  [%athens %athens-action !>(gated-sign-in+[src.hull fingerprint])]
     ==
+    ::
+      [%click %hide-all ~]
+    :~  [%athens %athens-action !>([%hide-all ~])]
+    ==
   ==
 ::
 ++  sail
@@ -131,12 +135,23 @@
     ==
   ++  user-menu
     ;div
-      =class  "flex justify-center items-center h-[28px] overflow-hidden"
-      ;a
-        =class  "p-2 cursor-pointer col-span-2 flex justify-center ". 
-        "items-center overflow-hidden text-[var(--grey-default)] hover:text-[var(--grey-light)]"
-        =href  "/~/logout?redirect=/mast/athens"
-        ; Sign out
+      ;div
+        =class  "flex justify-center items-center h-[28px] overflow-hidden"
+        ;a
+          =class  "p-2 cursor-pointer col-span-2 flex justify-center ". 
+          "items-center overflow-hidden text-[var(--grey-default)] hover:text-[var(--grey-light)]"
+          =href  "/~/logout?redirect=/mast/athens"
+          ; Sign out
+        ==
+      ==
+      ;div
+        =class  "flex justify-center items-center h-[28px] overflow-hidden"
+        ;button
+          =class  "p-2 cursor-pointer col-span-2 flex justify-center ". 
+          "items-center overflow-hidden text-[var(--grey-default)] hover:text-[var(--grey-light)]"
+          =event  "/click/hide-all"
+          ;  Read all
+        ==
       ==
     ==
   ++  admin-menu
