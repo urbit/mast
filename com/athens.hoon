@@ -144,6 +144,7 @@
       ;div
         =class  button-wrapper-class
         ;button
+          =onclick  "toggleView('settings-menu')"
           =class  button-class
           =event  "/click/hide-all"
           ;  Read all
