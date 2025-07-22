@@ -126,31 +126,35 @@
           ;div
             =id     "settings-menu"
             =class  "border border-[var(--grey-light)] rounded bg-[var(--bg-color)] hidden md:hover:flex w-[160px]"
-              ;+  ?.  =(our.hull src.hull)  
-                  user-menu
-                admin-menu
+            ;+  ?.  =(our.hull src.hull)  
+                user-menu
+              admin-menu
           ==
         ==
       ==
     ==
   ++  user-menu
+    =/  button-wrapper-class  "flex items-center h-[28px] overflow-hidden"
+    =/  button-class  "p-2 cursor-pointer col-span-2 flex items-center overflow-hidden text-[var(--grey-default)] hover:text-[var(--grey-light)]"
+    ^-  manx
     ;div
+      =class  "grid grid-rows-[repeat(auto-fit,28px)] ".
+              "divide-y divide-[var(--grey-light)] leading-tight ".
+              "max-h-[65vh] overflow-y-auto leading-[0.8] w-full"
       ;div
-        =class  "flex justify-center items-center h-[28px] overflow-hidden"
-        ;a
-          =class  "p-2 cursor-pointer col-span-2 flex justify-center ". 
-          "items-center overflow-hidden text-[var(--grey-default)] hover:text-[var(--grey-light)]"
-          =href  "/~/logout?redirect=/mast/athens"
-          ; Sign out
+        =class  button-wrapper-class
+        ;button
+          =class  button-class
+          =event  "/click/hide-all"
+          ;  Read all
         ==
       ==
       ;div
-        =class  "flex justify-center items-center h-[28px] overflow-hidden"
-        ;button
-          =class  "p-2 cursor-pointer col-span-2 flex justify-center ". 
-          "items-center overflow-hidden text-[var(--grey-default)] hover:text-[var(--grey-light)]"
-          =event  "/click/hide-all"
-          ;  Read all
+        =class  button-wrapper-class
+        ;a
+          =class  button-class
+          =href  "/~/logout?redirect=/mast/athens"
+          ; Sign out
         ==
       ==
     ==
