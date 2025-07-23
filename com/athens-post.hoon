@@ -11,12 +11,13 @@
     viw  !<  view:athens  fil:(~(got by res.hull) %view)
     new-posts  !<  (list path)  fil:(~(got by res.hull) %new)
     hid   =(-.viw %hidden)
+    hid-old  ;;  (unit date-type:athens)  ?:  =(-.viw %hid-old)  `-.+.viw  ~
     new   =(-.viw %new)
     show  =(-.viw %display-none)
     sel   ;;  ?  
           ?:  |(=(-.viw %new) =(-.viw %old))  
             +.viw 
-          ?:  =(-.viw %hidden)  `?`+.+.+.viw
+          ?:  =(-.viw %hidden)  +.+.+.viw
           |
 ::
 ++  spar
@@ -41,10 +42,16 @@
     ==
     ::
       [%click %unhide ~]
-    =/  id  (slav %da (rear src:post))
-    ?>  hid
+    ~&  %click-unhide
+    ~&  hid-old
+    ?~  hid-old
+      ?>  hid
       :~  [%athens %athens-action !>([%unhide-post t.t.paf])]
       ==
+    ~&  hid-old
+    =/  dt=date-type:athens  (need hid-old)
+    :~  [%athens %athens-action !>([%unhide-posts dt t.t.paf])]
+    ==
     ::
       [%submit %reply ~]
     =/  dat  (~(got by data.crow) 'reply-input')
@@ -95,14 +102,16 @@
     ""
   |^
     ?:  show  ;div.hidden;
+    ?:  &(!=(hid-old ~) !=(-.+.+.viw 0))  bundle-by-date
     ?:  &(hid !=(-.+.viw 0))  nested-replies
     =/  has-new  ?^(`*`+.viw (gth -.+.+.viw 0) |)
+    =/  hidden  |(hid !=(hid-old ~))
     ;div
-      =event  "{?:(hid "/click/unhide" "")}"
+      =event  "{?:(hidden "/click/unhide" "")}"
       ::=onclick  scroll
       =id  idt
       =class  "post-node-container flex flex-col md:gap-[16px] gap-[16px] ".
-              "{?~(hid "cursor-pointer" "")} ".
+              "{?~(hidden "cursor-pointer" "")} ".
               "{?:(sel "selected" "")}"
       ;div
         =id  "post-{idt}"
@@ -110,8 +119,8 @@
                 "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
                 "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
                 "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] box-border ".
-                "{?:(hid "open" "")} ".
-                "{?:(&(hid has-new) "has-new" "")}"
+                "{?:(hidden "open" "")} ".
+                "{?:(&(hidden has-new) "has-new" "")}"
         ;+  author
         ;+  
           =/  depth=@
@@ -121,7 +130,7 @@
               (dec (lent t.t.paf))
             1
           ;div
-            =class  "message {?:(hid "hide md:w-[95%] w-[85%]" "full")} ".
+            =class  "message {?:(hidden "hide md:w-[95%] w-[85%]" "full")} ".
                     "{?.(reply "" "reply")} col-span-2 md:col-start-2 ".
                     "md:col-span-1 row-start-2 md:row-start-1 flex flex-col ".
                     "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}px] ".
@@ -131,17 +140,17 @@
               =value  (trip content.post.dat)
               =class  "w-full resize-none overflow-x-hidden overflow-y-hidden ".
                       "box-border text-sm ".
-                      "{?:(new "text-fade" "")} {?:(hid "hide" "")}"
+                      "{?:(new "text-fade" "")} {?:(hidden "hide" "")}"
               ;
             ==
-            ;+  ?:  hid
+            ;+  ?:  hidden
                   ;div.hidden;
                 reply-form
           ==
         ;+  ?:  ?&  ?|  =((lent paf) 4)
                         !=(~ rep.dat)
                     ==
-                !hid
+                !hidden
                 ==
           ;form(event "/submit/hide", class "track-visibility opacity-0 pointer-events-none md:col-start-2 md:col-span-1 row-start-2 md:row-start-1");
         ;div.hidden;
@@ -150,7 +159,7 @@
         ;+  option-buttons
       ==
       ;+  
-        ?:  ?|  hid
+        ?:  ?|  hidden
                 ?=(~ rep.dat)
             ==
           ;div.hidden;
@@ -158,6 +167,7 @@
     ==
   ++  nested-replies
     =/  new-rep  -.+.+.viw
+    =/  post-num=@ud  ;;  @ud  ?:  =(-.viw %hidden)  -.+.viw  0
     ;div(event "/click/unhide")
       =id  idt
       =onclick  scroll
@@ -172,7 +182,7 @@
                 "row-start-1 md:row-start-1 flex ".
                 "flex-row md:flex-grow ml-[0px] border-l-0 ".
                 "ml-[{((d-co:co 1) depth)}px] pl-2 items-center"
-          ;span.whitespace-pre: {<posts.-.+.viw>} 
+          ;span.whitespace-pre: {<post-num>} 
           ;span:  posts
           ;div(class "ml-4 flex-grow h-px bg-[var(--grey-light)] opacity-50");
       ==
@@ -190,7 +200,7 @@
         ;div
           =class  "reply-date inline leading-none align-top ".
                   "whitespace-nowrap w-auto text-[var(--grey-default)] ".
-                  "{?:((gth -.+.+.viw 0) "!text-white" "")} "
+                  "{?:((gth new-rep 0) "!text-white" "")} "
           =style  "font-weight: 400"
           {(date-to-tape (slav %da (rear paf)) now.hull)}
         ==
@@ -198,9 +208,10 @@
     ==
   ::
   ++  author
+    =/  hidden  |(hid !=(hid-old ~))
     ;div
-      =event  "{?~(hid "" "/click/toggle-hide")}"
-      =class  "author {?:(hid "hide" "")} {sticky} md:translate-y-[-1px] ".
+      =event  "{?:(hidden "" "/click/toggle-hide")}"
+      =class  "author {?:(hidden "hide" "")} {sticky} md:translate-y-[-1px] ".
               "top-20 cursor-pointer w-[15ch] max-w-[15ch] ".
               "ml-[{((d-co:co 1) depth)}px] overflow-hidden ".
               "whitespace-nowrap flex items-start col-start-1 ".
@@ -209,6 +220,43 @@
         ;-
           %-  cite:title
           author.post.dat
+      ==
+    ==
+  ++  bundle-by-date
+    =/  type=date-type:athens  (need hid-old)
+    =/  old  
+      ;;  (unit @da)  
+      ?:(=(-.viw %hid-old) `+.+.+.+.viw ~)
+    =/  new-rep  -.+.+.+.viw
+    =/  post-num=@ud  ;;  @ud  ?:  =(-.viw %hid-old)  -.+.+.viw  0
+    ;div(event "/click/unhide")
+      =id  idt
+      =onclick  scroll
+      =class  "relative grid grid-cols-2 ".
+              "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
+              "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
+              "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] grid-cols-[1fr_min-content] ".
+              "form-post-wrapper cursor-pointer"
+      ;div(class "author w-[15ch] max-w-[15ch] md:col-start-1 md:row-start-1 hidden md:block");
+      ;div
+        =class  "message w-full col-start-1 md:col-start-2 md:col-span-1 ".
+                "row-start-1 md:row-start-1 flex ".
+                "flex-row md:flex-grow ml-[0px] border-l-0 ".
+                "ml-[{((d-co:co 1) depth)}px] items-center"
+          ;span.whitespace-pre: {(date-tape (need old) type)}
+          ;div(class "ml-4 flex-grow h-px bg-[var(--grey-light)] opacity-50");
+      ==
+      ;div
+        =class  "col-start-2 md:col-start-3 row-start-1 md:row-start-1 flex justify-end md:justify-start"
+        ;div
+          =class  "reply-num pr-4 text-[var(--grey-default)] inline ".
+                  "whitespace-nowrap w-auto text-[var(--grey-default)] ".
+                  "leading-none align-top justify-end"
+          ;span
+            =class  "text-white {?:((gth `@ud`new-rep 0) "new" "")}"
+            {?:((gth `@ud`new-rep 0) "+{(scow %ud new-rep)} " " ")}
+          ==
+        ==
       ==
     ==
   ++  edit-form
@@ -313,7 +361,7 @@
             ==
           ==
         ;div
-          =class  "reply-date {?:(hid "hide" "full")} inline ".
+          =class  "reply-date {?.(|(hid !=(hid-old ~)) "hide" "full")} inline ".
                   "whitespace-nowrap w-auto text-[var(--grey-default)] ".
                   "leading-none align-top {?:((gth new-rep 0) "!text-white" "")} ".
                   "{?:(&(=(0 rep) =(new-rep 0)) "md:pl-[7ch]" "")}"
@@ -394,6 +442,32 @@
     =/  txt  (oust [0 +:new-line] tape)
     [url txt ~]
   [tape ~]
+::
+++  date-tape
+  |=  [date=@da type=date-type:athens]
+  ::  date would be latest post on that time period 
+  ^-  tape
+  =/  yor  (yore date)
+  =/  month=(list tape)
+      :~  "january"
+        "february" 
+        "march"
+        "april"
+        "may"
+        "june"
+        "july"
+        "august"
+        "september"
+        "october"
+        "novembe"
+        "december"
+      ==
+  ?-  type
+      %day    "Monday"
+      %week   "{<d.t.yor>} {(snag (dec m.yor) month)}-{<(add d.t.yor 6)>} {(snag (dec m.yor) month)}"
+      %month  "{(snag (dec m.yor) month)} {(scow %ud y.-.yor)}-{(snag m.yor month)} {(scow %ud y.-.yor)}"
+      %year   "{(scow %ud y.-.yor)}"
+  ==
 ::
 ++  date-to-tape 
   |=  [old=@da now=@da]
