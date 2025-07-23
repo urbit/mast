@@ -1,21 +1,16 @@
 |%
-+$  gull                                         :: poke, component --> agent
-  $:  src=ship                                   ::   client id
-      com=hook                                   ::   component
-      dat=cage                                   ::   poke data
-  ==                                             ::
-+$  crow  [=path data=(map @t @t)]               :: event poke, client --> component
-+$  blow  (list (pair @tas cage))                :: pokes emitted from a component
++$  crow  [=path data=(map @t @t)]               :: event for a component
++$  blow  (list cage)                            :: pokes for an agent from a component
 +$  hull                                         :: component sample
   $:  our=ship                                   ::
       src=ship                                   ::
     ::                                           ::
-      now=time                                   ::
-      eny=@uvJ                                   ::
-    ::                                           ::
       bas=knot                                   ::   base url segment bound to
       rut=path                                   ::   rest of the url path
       que=quay                                   ::   query params
+    ::                                           ::
+      now=time                                   ::
+      eny=@uvJ                                   ::
     ::                                           ::
       par=gust                                   ::
       res=gale                                   ::
@@ -41,15 +36,15 @@
       ++  sail  *manx                            ::
       --                                         ::
   ==                                             ::
-+$  bind  (pair knot line)                       ::
-+$  dock  (map knot line)                        :: base path to root component bindings
++$  bind  (pair knot line)                       :: base url segment to root component
++$  dock  (map knot line)                        :: bindings
 +$  deck  (map hook mast)                        :: component cache
-+$  hook  [=desk name=@tas]                      :: component desk and file name
-+$  rode  @t                                     ::
-+$  rope                                         ::
-  $:  bas=knot                                   ::
-      rut=path                                   ::
-      que=quay                                   ::
++$  hook  term                                   :: component name
++$  rode  cord                                   :: component key
++$  rope                                         :: url
+  $:  bas=knot                                   ::   base segment
+      rut=path                                   ::   rest of path
+      que=quay                                   ::   query params
   ==                                             ::
 +$  line                                         :: component reference and inputs
   $:  com=hook                                   ::
@@ -58,11 +53,11 @@
   ==                                             ::
 +$  pool  (map @tas path)                        :: resources for a component
 +$  buoy  [?(%add %del) p=rode q=path]           :: resource subscription effect
-+$  wake                                         ::
++$  wake                                         :: component creation effect
   $:  bos=(set buoy)                             ::
       new=isle                                   ::
   ==                                             ::
-+$  cove                                         ::
++$  cove                                         :: component state
   $:  dif=atom                                   ::
       bom=boom                                   ::
       aft=manx                                   ::
@@ -104,7 +99,7 @@
   ^-  manx
   :_  ~
   :*  %mast
-      :-  [%hook desk.component]  (trip name.component)
+      :-  [%hook component]  ~
       %+  weld
       ^-  mart
       %+  turn  params
