@@ -776,27 +776,29 @@
         '''
       [%'POST' %'/athens/import']
         ::
-        ::  curl -X POST http://localhost/athens/import --data-binary @file-to-import.txt
+        ::  from the root of the repo:
+        ::  curl -X POST http://localhost/athens/import --data-binary @FORREST.hoon
         ::
-        ::    (list [[author content] $])
+        ::    (list [[date author content] $])
         ::
         ::  :~
-        ::    :-  :-  ~nec
+        ::    :-  :+  ~2025.1.2..12.01.00  ~nec
         ::        '''
         ::        first post
         ::        '''
         ::      :~
-        ::        :-  :-  ~nec
+        ::        :-  :+  ~2025.1.2..12.02.00  ~nec
         ::            '''
         ::            replying to my own post
         ::            '''
         ::          :~
-        ::            :-  :-  ~bus
+        ::            :-  :+  ~2025.1.2  ~bus
         ::                'hello nec'
         ::              ~
         ::          ==
         ::      ==
-        ::    :-  :-  ~bus  'another post'
+        ::    :-  :+  ~2025.1.3..14.01.01  ~bus
+        ::        'another post'
         ::      ~
         ::  ==
         ::
@@ -825,13 +827,14 @@
       =/  vas  (slap !>(..onan) (ream txt))
       =/  lis  !<(imports vas)
       =|  out=posts:athens
-      =/  wen  (sub now.bowl ~d1)
+      =|  wen=@dr
       |-
       ^+  out
       ?~  lis  out
+      %-  (slog (crip "importing post: {<when.i.lis>} {<author.i.lis>}") ~)
       =.  out
-        %+  ~(put by out)  wen
-        :-  post.i.lis
+        %+  ~(put by out)  (add when.i.lis wen)
+        :-  [author.i.lis content.i.lis]
         %=  $
           out  ~
           lis  replies.i.lis
@@ -844,8 +847,8 @@
       ::
     +$  imports  (list import-node)
     +$  import-node
-      $~  [*post:athens ~]
-      [=post:athens replies=imports]
+      $~  [[*@da *@p *@t] ~]
+      [[when=@da author=@p content=@t] replies=imports]
     --
   --
 --
