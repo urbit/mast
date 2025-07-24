@@ -4,6 +4,7 @@
 /*  footnote-parser  %js  /fil/footnote-parser/js
 /*  scroll  %js  /fil/scroll/js
 /*  urbit-sigil  %js  /fil/urbit-sigil/js
+/*  local-notifications  %js  /fil/local-notifications/js
 ^-  mast:mast
 =<
 :-  ~
@@ -36,10 +37,11 @@
   ^-  manx
   ;html
     ;head
-      ;title: Athens
+      ;title: Circles
       ;meta(charset "UTF-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no");
       ;link(rel "manifest", href "/athens/manifest");
+      ;link(rel "icon", href "/athens/favicon");
       ;link(rel "preconnect", href "https://rsms.me/");
       ;link(rel "stylesheet", href "https://rsms.me/inter/inter.css");
       ;link(rel "preconnect", href "https://fonts.googleapis.com");
@@ -52,6 +54,7 @@
       ;script(type "module"): {(trip athens-preview)} 
       ;script(type "module"): {(trip urbit-sigil)}
       ;script(defer ""): {(trip scroll)}
+      ;script(defer ""): {(trip local-notifications)}
       ;script(src "https://unpkg.com/lucide@latest");
       ;script:  lucide.createIcons();
       ;style(type "text/tailwindcss")
@@ -148,7 +151,7 @@
     overflow-y: scroll;
   }
   .posts {
-    padding: 110px 16px 110px 16px;
+    padding: 110px 16px 120px 16px;
     margin: auto;
     width: 100%;
     max-width: 1000px;
@@ -164,6 +167,7 @@
     letter-spacing: 0%;
     vertical-align: middle;
     color: var(--text-color);
+    height: 15px;
   }
   .author.hide {
     color: var(--grey-default);
@@ -290,6 +294,7 @@
   }
   athens-preview .markdown-preview {
     font-size: 14px;
+    word-break: break-word;
   }
   athens-textarea-litdev textarea{
     background: var(--bg-color);
@@ -355,7 +360,7 @@
   .prose code {
     background: transparent;
     color: var(--text-color);
-    padding: 0.5rem; /* p-4 */
+    margin: 0.5rem; /* p-4 */
     border-radius: 0.5rem; /* rounded-lg */
     overflow-x: auto;
   }
@@ -394,10 +399,10 @@
     margin-bottom: 0;
   }
   .target{
-    background: #1E1F1E;
+    background: rgba(30, 31, 30, 0.8);
     box-sizing: border-box;
-    padding: 8px 0; 
-    margin: -8px 0; 
+    ::padding: 8px 0; 
+    ::margin: -8px 0; 
   }
   urbit-sigil {
     cursor: pointer;
@@ -438,4 +443,3 @@
   '''
 ::
 --
-

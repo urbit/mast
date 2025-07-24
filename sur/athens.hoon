@@ -4,10 +4,15 @@
       [%patch-post post-at=path content=@t]
       [%del-post at=path]
       [%hide-post at=path]
+      [%hide-all ~]
       [%unhide-post at=path]
-      [%access-public public=?]
+      [%set-user-position at=path]
+      [%set-access-mode mode=term]
       [%edit-access-id ids=(list @p)]
       [%del-access-id id=@p]
+      ::
+      [%gated-sign-in comet=@p id=@p]
+      [%gated-set-door-code code=@t]
   ==
 ::
 +$  post-id  @da
@@ -31,26 +36,35 @@
       path
       view
 +$  view
-  $%  [%old ~]
-      [%new ~]
+  $%  [%old selected=?]
+      [%new selected=?]
       [%display-none ~]
-      [%hidden [posts=@ud new-post-total=@ud]]
+      [%hidden [posts=@ud new-post-total=@ud selected=?]]
   ==
-+$  user-sessions  (map @p user-session)
-+$  user-session
++$  user-session-0
   $:  hidden-posts=(set post-id)
       new-posts=(set path)
   ==
-+$  access  
-  $:  public=? 
++$  user-session
+  $:  hidden-posts=(set post-id)
+      new-posts=(set path)
+      selected-post=(unit path)
+  ==
++$  user-sessions-0  (map @p user-session-0)
++$  user-sessions  (map @p user-session)
++$  access-0
+  $:  public=?
       members=(list @p)
       blacklist=(list @p)
   ==
-::
-+$  state
-  $:  =posts
-      =user-sessions
-      =access
++$  access-mode  ?(%gated %private %public)
++$  access
+  $:  mode=access-mode      :: we don't use $% here so that the
+      ::                    ::   host can switch between modes
+      ::                    ::   without losing data for other modes
+      blacklist=(list @p)   :: if public
+      members=(list @p)     :: if private
+      accounts=(map @p @p)  :: if gated
+      door-code=@t          :: if gated
   ==
 --
-

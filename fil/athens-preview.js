@@ -26,10 +26,10 @@ class AthensPreview extends LitElement {
 
   render() {
     return html`
-      <div class="athens-editor flex items-start">
+      <div class="athens-editor flex items-start mb-[-6px]">
         <div
           class="markdown-preview ${this
-            .clampClass} prose prose-p:mb-0 prose-p:mt-0 inline-block translate-y-[-4px] align-top min-h-[16px]"
+            .clampClass} w-full prose prose-p:mb-0 prose-p:mt-0 inline-block translate-y-[-4px] align-top min-h-[16px]"
           id="preview"
         ></div>
       </div>
@@ -50,11 +50,11 @@ class AthensPreview extends LitElement {
 
     renderer.image = () => ''
 
-    renderer.html = (html) => {
-      if (/<audio[\s\S]*?>[\s\S]*?<\/audio>/gi.test(html)) {
-        return ''
-      }
-      return html
+    renderer.link = (token) => {
+      const href = token.href || ''
+      const title = token.title || href
+      const text = token.text || href
+      return `<a href="${href}" title="${title}" target="_blank" rel="noopener noreferrer">${text}</a>`
     }
 
     window.marked.setOptions({
@@ -64,15 +64,26 @@ class AthensPreview extends LitElement {
 
     const trimValue = this.value.trimEnd()
 
+    const filteredValue = trimValue.replace(
+      /<audio[\s\S]*?>[\s\S]*?<\/audio>/gi,
+      ''
+    )
+
     if (this._isHidden) {
       const athensEditor = this.querySelector('.athens-editor')
-      const truncateValue = this._smartTruncate(this.value, athensEditor)
-      preview.innerHTML = window.marked.parse(truncateValue)
+      const truncateValue = this._smartTruncate(filteredValue, athensEditor)
+      const plainText = truncateValue
+        .replace(/^#{1,6}\s+/gm, '') // Remove heading markers
+        .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markers
+        .replace(/\*(.*?)\*/g, '$1') // Remove italic markers
+        .replace(/`(.*?)`/g, '$1') // Remove inline code markers
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove link syntax, keep text
+
+      preview.textContent = plainText
     } else {
-      preview.innerHTML = window.marked.parse(trimValue)
+      preview.innerHTML = window.marked.parse(filteredValue)
     }
 
-    // Remove empty trailing paragraph if it exists
     const last = preview.lastElementChild
     if (last?.tagName === 'P' && !last.textContent.trim()) {
       last.remove()
@@ -83,16 +94,11 @@ class AthensPreview extends LitElement {
 
   _applyHideStyles(preview) {
     if (this._isHidden) {
-      this.clampClass = 'clamp-one-line h-[16px]'
+      this.clampClass = 'line-clamp-1 h-auto'
       this.requestUpdate() // Trigger re-render
     } else {
       this.clampClass = 'h-auto'
       this.requestUpdate() // Trigger re-render
-      requestAnimationFrame(() => {
-        const initialHeight = preview.offsetHeight
-        this.clampClass = `h-[${initialHeight - 4}px]`
-        this.requestUpdate() // Trigger re-render after height calculation
-      })
     }
   }
 
