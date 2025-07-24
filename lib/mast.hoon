@@ -135,14 +135,12 @@
 ::
 ++  parse-url                  :: TODO: better url parsing
   |=  cod=cord
-  ^-  (unit rope)
+  ^-  rope
   =/  url  (stab cod)
   ?~  url
-    :-  ~
     :+  %$
         ~
         ~
-  :-  ~
   :+  i.url
       t.url
       ~
@@ -460,19 +458,23 @@
     ::
       %handle-http-request
     =+  !<  [rid=@ta req=inbound-request:eyre]  vase
-    ?+  method.request.req  ~|(bad-method/method.request.req !!) :: TODO: fall through to nested agent
+    ?+  method.request.req
+      ::
+      :: fall through to nested agent
+      =^  caz  agent  (on-poke:yor mark vase)
+      %-  emil  caz
       ::
         %'GET'
-      =/  rup  (parse-url url.request.req)
-      ?~  rup
-        %-  emil  (make-404-res rid)
-      =/  duk  (~(get by dock) bas.u.rup)
+      =/  rop  (parse-url url.request.req)
+      =/  duk  (~(get by dock) bas.rop)
       ?~  duk
-        %-  emil  (make-404-res rid)
-      =/  ui-core  (ui-abed:ui src.bowl u.rup)
+        :: fall through to nested agent if binding not found
+        =^  caz  agent  (on-poke:yor mark vase)
+        %-  emil  caz
+      =/  ui-core  (ui-abed:ui src.bowl rop)
       =^  [sal=manx bos=(set buoy)]  ui-core  ui-moor:ui-core
       =.  gulf  ui-abet:ui-core
-      =.  cor  (handle-component-buoys src.bowl u.rup ~(tap in bos))
+      =.  cor  (handle-component-buoys src.bowl rop ~(tap in bos))
       %-  emil
       %^  make-direct-http-cards  rid  [200 ['Content-Type' 'text/html'] ~]
       :-  ~
@@ -488,6 +490,7 @@
             ?=(^ t.p.jon)
             =([%s 'mast'] i.p.jon)
         ==
+      :: fall through to nested agent
       =^  caz  agent  (on-poke:yor mark vase)
       %-  emil  caz
     =/  [rod=rode rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
