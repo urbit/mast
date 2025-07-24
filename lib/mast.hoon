@@ -351,7 +351,7 @@
   ?.  ?=([%mast *] +.vaz)
     =^  caz  agent  (on-load:yor vaz)
     %-  emil  caz
-  =+  !<  [maz=state-n nez=vase]  vaz
+  =+  !<  [%mast maz=state-n nez=vase]  vaz
   =^  caz  agent  (on-load:yor nez)
   =.  cor  (emil caz)
   ?-  -.maz
@@ -460,7 +460,7 @@
     ::
       %handle-http-request
     =+  !<  [rid=@ta req=inbound-request:eyre]  vase
-    ?+  method.request.req  ~|(bad-method/method.request.req !!)
+    ?+  method.request.req  ~|(bad-method/method.request.req !!) :: TODO: fall through to nested agent
       ::
         %'GET'
       =/  rup  (parse-url url.request.req)
@@ -488,7 +488,8 @@
             ?=(^ t.p.jon)
             =([%s 'mast'] i.p.jon)
         ==
-      cor
+      =^  caz  agent  (on-poke:yor mark vase)
+      %-  emil  caz
     =/  [rod=rode rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
     =^  caz  yor  (ui-sway:(ui-abed:ui src.bowl rop) rod cro)
     %-  emil  caz
