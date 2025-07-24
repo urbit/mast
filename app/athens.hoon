@@ -253,6 +253,7 @@
     %-  zing
     %+  murn  ~(tap in ~(key by user-sessions))
     |=  ship=@p
+    ?:  =(ship user)  ~
     =/  usr  (~(got by user-sessions) ship)
     =/  top-lvl  =(1 (lent post-at))
     =/  replies
@@ -563,6 +564,7 @@
       %~  tap  in
       (~(int in hidden-posts.usr) (silt month-posts))
       ::
+      ::  TODO:  implement sort by year
         %year  ~[post-id]
     ==
   =.  hidden-posts.usr  (~(dif in hidden-posts.usr) (silt unhide))
