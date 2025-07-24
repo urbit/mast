@@ -6,7 +6,7 @@
       [%hide-post at=path]
       [%hide-all ~]
       [%unhide-post at=path]
-      [%unhide-posts dat=date-type at=path]
+      [%unhide-bundles dat=date-type at=path]
       [%set-user-position at=path]
       [%set-access-mode mode=term]
       [%edit-access-id ids=(list @p)]

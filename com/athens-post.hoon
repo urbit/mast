@@ -12,6 +12,7 @@
     new-posts  !<  (list path)  fil:(~(got by res.hull) %new)
     hid   =(-.viw %hidden)
     hid-old  ;;  (unit date-type:athens)  ?:  =(-.viw %hid-old)  `-.+.viw  ~
+    is-hid  |(hid !=(hid-old ~))
     new   =(-.viw %new)
     show  =(-.viw %display-none)
     sel   ;;  ?  
@@ -29,7 +30,7 @@
     ::
       [%click %toggle-hide ~]
     =/  id  (slav %da (rear src:post))
-    ?:  hid
+    ?:  is-hid
       :~  [%athens %athens-action !>([%unhide-post t.t.paf])]
       ==
     :~  [%athens %athens-action !>([%hide-post t.t.paf])]
@@ -37,20 +38,17 @@
     ::
       [%submit %hide ~]
     =/  id  (slav %da (rear src:post))
-    ?<  hid
+    ?<  is-hid
     :~  [%athens %athens-action !>([%hide-post t.t.paf])]
     ==
     ::
       [%click %unhide ~]
-    ~&  %click-unhide
-    ~&  hid-old
     ?~  hid-old
       ?>  hid
       :~  [%athens %athens-action !>([%unhide-post t.t.paf])]
       ==
-    ~&  hid-old
     =/  dt=date-type:athens  (need hid-old)
-    :~  [%athens %athens-action !>([%unhide-posts dt t.t.paf])]
+    :~  [%athens %athens-action !>([%unhide-bundles dt t.t.paf])]
     ==
     ::
       [%submit %reply ~]
@@ -105,13 +103,12 @@
     ?:  &(!=(hid-old ~) !=(-.+.+.viw 0))  bundle-by-date
     ?:  &(hid !=(-.+.viw 0))  nested-replies
     =/  has-new  ?^(`*`+.viw (gth -.+.+.viw 0) |)
-    =/  hidden  |(hid !=(hid-old ~))
     ;div
-      =event  "{?:(hidden "/click/unhide" "")}"
+      =event  "{?:(is-hid "/click/unhide" "")}"
       ::=onclick  scroll
       =id  idt
       =class  "post-node-container flex flex-col md:gap-[16px] gap-[16px] ".
-              "{?~(hidden "cursor-pointer" "")} ".
+              "{?~(is-hid "cursor-pointer" "")} ".
               "{?:(sel "selected" "")}"
       ;div
         =id  "post-{idt}"
@@ -119,8 +116,8 @@
                 "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
                 "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
                 "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] box-border ".
-                "{?:(hidden "open" "")} ".
-                "{?:(&(hidden has-new) "has-new" "")}"
+                "{?:(is-hid "open" "")} ".
+                "{?:(&(is-hid has-new) "has-new" "")}"
         ;+  author
         ;+  
           =/  depth=@
@@ -130,7 +127,7 @@
               (dec (lent t.t.paf))
             1
           ;div
-            =class  "message {?:(hidden "hide md:w-[95%] w-[85%]" "full")} ".
+            =class  "message {?:(is-hid "hide md:w-[95%] w-[85%]" "full")} ".
                     "{?.(reply "" "reply")} col-span-2 md:col-start-2 ".
                     "md:col-span-1 row-start-2 md:row-start-1 flex flex-col ".
                     "gap-[8px] md:gap-[16px] md:flex-grow ml-[{((d-co:co 1) depth)}px] ".
@@ -140,17 +137,17 @@
               =value  (trip content.post.dat)
               =class  "w-full resize-none overflow-x-hidden overflow-y-hidden ".
                       "box-border text-sm ".
-                      "{?:(new "text-fade" "")} {?:(hidden "hide" "")}"
+                      "{?:(new "text-fade" "")} {?:(is-hid "hide" "")}"
               ;
             ==
-            ;+  ?:  hidden
+            ;+  ?:  is-hid
                   ;div.hidden;
                 reply-form
           ==
         ;+  ?:  ?&  ?|  =((lent paf) 4)
                         !=(~ rep.dat)
                     ==
-                !hidden
+                !is-hid
                 ==
           ;form(event "/submit/hide", class "track-visibility opacity-0 pointer-events-none md:col-start-2 md:col-span-1 row-start-2 md:row-start-1");
         ;div.hidden;
@@ -159,7 +156,7 @@
         ;+  option-buttons
       ==
       ;+  
-        ?:  ?|  hidden
+        ?:  ?|  is-hid
                 ?=(~ rep.dat)
             ==
           ;div.hidden;
@@ -208,10 +205,9 @@
     ==
   ::
   ++  author
-    =/  hidden  |(hid !=(hid-old ~))
     ;div
-      =event  "{?:(hidden "" "/click/toggle-hide")}"
-      =class  "author {?:(hidden "hide" "")} {sticky} md:translate-y-[-1px] ".
+      =event  "{?:(is-hid "" "/click/toggle-hide")}"
+      =class  "author {?:(is-hid "hide" "")} {sticky} md:translate-y-[-1px] ".
               "top-20 cursor-pointer w-[15ch] max-w-[15ch] ".
               "ml-[{((d-co:co 1) depth)}px] overflow-hidden ".
               "whitespace-nowrap flex items-start col-start-1 ".
@@ -343,25 +339,28 @@
   ::
   ++  post-metadata
     =/  rep      rep-num.dat
-    =/  new-rep  ?:  hid  -.+.+.viw  0
+    =/  new-rep  ?:  hid  -.+.+.viw  
+                 ?~  hid-old   0
+                 -.+.+.+.viw
     ^-  manx
     ;div 
       =class  "md:col-start-3 md:row-start-1 flex flex-row ". 
-              "justify-end md:justify-start {?:(hid "" "hidden")}"
-      ;+  ?:  &(=(0 rep) =(new-rep 0))  ;div.hidden;
+              "justify-end md:justify-start {?:(is-hid "" "hidden")}"
+      ;+  ?:  &(=(0 rep) =(new-rep 0))
+        ;div.hidden;
           ;div 
-            =class  "reply-num {?:(hid "hide" "full")} pr-4 ".
+            =class  "reply-num {?:(is-hid "hide" "full")} pr-4 ".
                     "text-[var(--grey-default)] inline whitespace-nowrap ". 
                     "w-auto text-[var(--grey-default)] md:w-[7ch] w-auto ". 
                     "leading-none align-top justify-end"
             {?:((gth `@ud`rep 0) <rep> "")}
             ;span
             =class  "text-white {?:((gth `@ud`new-rep 0) "new" "")}"
-              {?:(&((gth `@ud`rep 0) (gth `@ud`new-rep 0)) "+" "")}{?:((gth `@ud`new-rep 0) "{(scow %ud -.+.+.viw)}" "")}
+              {?:(&((gth `@ud`rep 0) (gth `@ud`new-rep 0)) "+" "")}{?:((gth `@ud`new-rep 0) "{(scow %ud new-rep)}" "")}
             ==
           ==
         ;div
-          =class  "reply-date {?.(|(hid !=(hid-old ~)) "hide" "full")} inline ".
+          =class  "reply-date {?:(is-hid "hide" "full")} inline ".
                   "whitespace-nowrap w-auto text-[var(--grey-default)] ".
                   "leading-none align-top {?:((gth new-rep 0) "!text-white" "")} ".
                   "{?:(&(=(0 rep) =(new-rep 0)) "md:pl-[7ch]" "")}"
@@ -370,7 +369,7 @@
       ==
   ::
   ++  option-buttons
-  ?:  hid  
+  ?:  is-hid
     ;div.hidden;
   ;div
     =class  "options {sticky} top-20 col-start-2 ".
@@ -459,7 +458,7 @@
         "august"
         "september"
         "october"
-        "novembe"
+        "november"
         "december"
       ==
   ?-  type
