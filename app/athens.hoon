@@ -407,36 +407,29 @@
 ++  hide-all
   ^+  cor 
   =/  user  user
-  =/  usr  (~(get by user-sessions) user)
+  =/  u-usr  (~(get by user-sessions) user)
   |^
   =/  posts-id  posts-to-id
-  =/  hidden-posts=(list post-id:athens)
-    %~  tap  in
-    ?~  usr  *(set post-id:athens)
-    hidden-posts.u.usr
-  =/  open-posts
-    %+  skim  posts-id 
-    |=  =post-id:athens
-    =(~ (find [post-id]~ hidden-posts))
+  =/  usr
+    ?~  u-usr  *user-session:athens  (need u-usr)
+  =/  open-post-ids=(set post-id:athens)  
+    ::  gets difference beween all posts and hidden to get all open posts
+    ::  TODO: update view for wrappers of the hidden bundles 
+    (~(dif in (silt posts-id)) hidden-posts.usr)
+  =/  open-post-paths=(set path)
+    %-  %~  run  in 
+        open-post-ids
+      |=  p=post-id:athens  (find-path p ~(tap in new-posts.usr))
   =.  user-sessions  
     %+  ~(put by user-sessions)  user 
-    ?~  usr  [(silt posts-id) *(set path) ~]
-    =/  new-posts-ids=(list post-id:athens)
-      %+  turn  ~(tap in new-posts.u.usr)
-      |=  p=path
-      (slav %da (rear p))
-    =/  hide-new-posts=(list path) 
-      %-  turn  
-      :_  |=  p=post-id:athens  (find-path p ~(tap in new-posts.u.usr))
-      %+  skip  open-posts
-      |=  =post-id:athens
-      =(~ (find [post-id]~ new-posts-ids))
+    ?~  u-usr  [(silt posts-id) *(set path) ~]
+    =/  hide-new-posts=(set path)  (~(int in open-post-paths) new-posts.usr)
     :*  (silt posts-id) 
-      (~(dif in new-posts.u.usr) (silt hide-new-posts))
-      selected-post.u.usr
+      (~(dif in new-posts.usr) hide-new-posts)
+      selected-post.usr
     ==
   %-  emil  
-  %+  turn  open-posts
+  %+  turn  ~(tap in open-post-ids)
   |=  at=post-id:athens
   %-  make-fact-card  /r/view/[(scot %p user)]/[(scot %da at)]
   ::
@@ -531,7 +524,7 @@
   =/  post-id  (slav %da (rear at))
   =/  posts-id=(list post-id:athens)
     ::  new to old
-    %-  sort  :_  gth
+    %-  sort  :_  lth
     %+  turn  ~(tap by posts)
     |=  [id=post-id:athens *]  id
   =/  id-list  (id-list-by-date post-id now.bowl posts-id)
@@ -712,8 +705,10 @@
     |=  [id=post-id:athens *]  id
   =/  poz  (id-list-by-date when now poz-id)
   =/  dat
-    ?:  (gth y:-:yor-now y:-:yor-when)  %year
-    ?:  (gte d 30)  %month
+    ?:  (gte d 365)
+    %year
+    ?:  &((gte d 30) (lth d 365))
+    %month
     ?.  (gte d 7)  %day  %week
   ::  checks sibling view in feed
   ?:  =(dat %day)  ~
@@ -798,24 +793,28 @@
   =/  yor-now  (yore now)
   =/  yor-when  (yore when)
   =/  d  (sub d:(yell now) d:(yell when))  
-  ?:  (gth y:-:yor-now y:-:yor-when)
+  ?:  (gte d 365)
     =/  y  (sub y:-:yor-now y:-:yor-when)
     %-  sort  :_  lth
     %+  skim  poz-id
     |=  id=post-id:athens
+    =/  d-post  (sub d:(yell now) d:(yell id))  
     =/  yor-post  (yore id)
-    =(y (sub y:-:yor-now y:-:yor-post))
-  ?:  (gte d 30)
+    &(=(y (sub y:-:yor-now y:-:yor-post)) (gte d-post 365))
+  ?:  &((gte d 30) (lth d 365))
       ::  amount of months ago 
     =/  m  
-      ?:  =(y:yor-now y:yor-when)
+      ?:  =(y:-:yor-now y:-:yor-when)
         (sub m:yor-now m:yor-when)
       (sub (add m:yor-now 12) m:yor-when)
     %-  sort  :_  lth
     %+  skim  poz-id
     |=  id=post-id:athens
+    =/  d-post  (sub d:(yell now) d:(yell id)) 
     =/  yor-post  (yore id)
-    ?:  (gth m:yor-post m:yor-now)  |
+    ?.  &((gte d 30) (lth d 365))  |
+    ?:  &((gth m:yor-post m:yor-now) =(+(y.-.yor-post) y.-.yor-now))
+      =(m (sub (add m:yor-now 12) m:yor-post))
     =(m (sub m:yor-now m:yor-post))
   ?.  (gte d 7)  ~  ::%days
   =/  w  (div d 7)

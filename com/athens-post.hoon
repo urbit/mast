@@ -491,10 +491,10 @@
     "{<h>}h"
   =/  date-now  (yore now)
   =/  date-old  (yore old)
-  ?:  (gth y.-.date-now y.-.date-old)
+  ?:  (gte d 365)
     =/  y  (sub y:date-now y:date-old)
     "{<y>}y" 
-  ?:  (gte d 30)
+  ?:  &((gte d 30) (lth d 365))
     ?:  =(y.-.date-now y.-.date-old)
       =/  month  (sub m:date-now m:date-old)
       "{<month>}M" 
