@@ -197,6 +197,7 @@
       ::
         %hide-post
       %-  hide-post  at.act
+      ::
         %hide-all  hide-all  
       ::
         %unhide-post
@@ -395,9 +396,9 @@
       (swag [(dec index) 2] poz-id)
     (swag [index 2] poz-id)
   =/  card-to
-    %+  skim  sibling-id
+    %+  skip  sibling-id
     |=  =post-id:athens
-    =(~ (find ~[post-id] hidden-posts))
+    =(~ (find ~[post-id] ~(tap in hidden-posts)))
   %-  emil 
   %+  turn  card-to
   |=  i=post-id:athens
@@ -533,40 +534,10 @@
     %-  sort  :_  gth
     %+  turn  ~(tap by posts)
     |=  [id=post-id:athens *]  id
+  =/  id-list  (id-list-by-date post-id now.bowl posts-id)
   =/  unhide=(list post-id:athens)
-    ?-  dat
-        %day  ~[post-id]
-      ::
-        %week 
-      =/  yel-now  (yell now.bowl)
-      =/  d  (sub d:yel-now d:(yell post-id))  
-      =/  w  (div d 7)
-      =/  week-posts
-        %-  sort  :_  gth
-        %+  skim  posts-id
-        |=  id=post-id:athens
-        =/  w-post  (sub d:yel-now d:(yell id))  
-        =(w (div w-post 7))
-      ::  check if posts are in hidden
-      %~  tap  in
-      (~(int in hidden-posts.usr) (silt week-posts))
-      ::
-        %month
-      =/  yor-now  (yore now.bowl)
-      =/  yor-when  (yore post-id)
-      =/  m  (sub m:yor-now m:yor-when)
-      =/  month-posts
-        %-  sort  :_  gth
-        %+  skim  posts-id
-        |=  id=post-id:athens
-        =/  yor-post  (yore id)
-        =(m (sub m:yor-now m:yor-post))
-      %~  tap  in
-      (~(int in hidden-posts.usr) (silt month-posts))
-      ::
-      ::  TODO:  implement sort by year
-        %year  ~[post-id]
-    ==
+    %~  tap  in
+      (~(int in hidden-posts.usr) (silt id-list))
   =.  hidden-posts.usr  (~(dif in hidden-posts.usr) (silt unhide))
   =.  user-sessions  (~(put by user-sessions) user usr)
   %-  emil
@@ -742,14 +713,14 @@
     |=  [id=post-id:athens *]  id
   =/  poz  (id-list-by-date when now poz-id)
   =/  dat
+    ?:  &(!=(y:-:yor-now y:-:yor-when) (gte m:yor-now m:yor-when))  %year
     ?:  &((gth m:yor-now m:yor-when) (gte d:t:yor-now d:t:yor-when))  %month
     ?.  (gte d 7)  %day  %week
   ::  checks sibling view in feed
-  =/  index  
-    =/  u-i
-      %+  find  ~[when]  poz
-    ?~  u-i  !!
-    (need u-i)
+  ?:  =(dat %day)  ~
+  =/  u-i  %+  find  ~[when]  poz
+  ?~  u-i  ~
+  =/  index  (need u-i)
   ?~  usr  ~
   ?:  ?&  (gth (lent poz) +(index))
           (~(has in hidden-posts.u.usr) (snag +(index) poz))
@@ -828,6 +799,13 @@
   =/  yor-now  (yore now)
   =/  yor-when  (yore when)
   =/  d  d:(yell `@da`(sub now when))
+  ?:  &(!=(y:-:yor-now y:-:yor-when) (gte m:yor-now m:yor-when))
+    =/  y  (sub y:yor-now y:yor-when)
+    %-  sort  :_  lth
+    %+  skim  poz-id
+    |=  id=post-id:athens
+    =/  yor-post  (yore id)
+    =(y (sub y:-:yor-now y:-:yor-post))
   ?:  &((gth m:yor-now m:yor-when) (gte d:t:yor-now d:t:yor-when))
       ::  amount of months ago 
     =/  m  
@@ -839,13 +817,14 @@
     |=  id=post-id:athens
     =/  yor-post  (yore id)
     =(m (sub m:yor-now m:yor-post))
-    ?.  (gte d 7)  ~  ::%days
-    =/  w  (div d 7)
-    %-  sort  :_  lth
-    %+  skim  poz-id
-    |=  id=post-id:athens
-    =/  w-post  (sub d:(yell now) d:(yell id))  
-    =(w (div w-post 7))
+  ?.  (gte d 7)  ~  ::%days
+  =/  w  (div d 7)
+  %-  sort  :_  lth
+  %+  skim  poz-id
+  |=  id=post-id:athens
+  =/  w-post  (sub d:(yell now) d:(yell id))  
+  =(w (div w-post 7))
+::
 ::  returns: post itself, last hidden sibling post below and hidden sibling above (if has hidden sibling posts)
 ++  hidden-siblings
   |=  [id=post-id:athens poz=posts:athens hidden-posts=(set post-id:athens)]

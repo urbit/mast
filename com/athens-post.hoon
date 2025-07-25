@@ -38,7 +38,7 @@
     ::
       [%submit %hide ~]
     =/  id  (slav %da (rear src:post))
-    ?<  is-hid
+    ?<  hid
     :~  [%athens %athens-action !>([%hide-post t.t.paf])]
     ==
     ::
