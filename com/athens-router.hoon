@@ -407,17 +407,21 @@
   urbit-sigil {
     cursor: pointer;
   }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
   @keyframes textFade {
-      0%, 100% {
-        color: var(--text-color);
-      }
-      100% {
-        color: var(--grey-light);
-      }
+    0%, 100% {
+      color: var(--text-color);
     }
-    .text-fade {
-      animation: textFade 3s ease-in-out forwards;
+    100% {
+      color: var(--grey-light);
     }
+  }
+  .text-fade {
+    animation: textFade 3s ease-in-out forwards;
+  }
   @media (min-width: 768px) {
     .author {
       margin-left: 0 !important;

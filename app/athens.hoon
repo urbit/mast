@@ -646,7 +646,6 @@
   |=  [post-path=path usr=(unit user-session:athens) =posts:athens now=@da]
   ^-  view:athens
   =/  id=post-id:athens  (slav %da (rear post-path))
-  ::=/  post-date (yall d:(yell id))
   ?~  usr  [%old |]
   =/  selected-post=path  
     ?~  selected-post.u.usr  ~  
@@ -713,8 +712,8 @@
     |=  [id=post-id:athens *]  id
   =/  poz  (id-list-by-date when now poz-id)
   =/  dat
-    ?:  &(!=(y:-:yor-now y:-:yor-when) (gte m:yor-now m:yor-when))  %year
-    ?:  &((gth m:yor-now m:yor-when) (gte d:t:yor-now d:t:yor-when))  %month
+    ?:  (gth y:-:yor-now y:-:yor-when)  %year
+    ?:  (gte d 30)  %month
     ?.  (gte d 7)  %day  %week
   ::  checks sibling view in feed
   ?:  =(dat %day)  ~
@@ -798,15 +797,15 @@
   ^-  (list post-id:athens)
   =/  yor-now  (yore now)
   =/  yor-when  (yore when)
-  =/  d  d:(yell `@da`(sub now when))
-  ?:  &(!=(y:-:yor-now y:-:yor-when) (gte m:yor-now m:yor-when))
-    =/  y  (sub y:yor-now y:yor-when)
+  =/  d  (sub d:(yell now) d:(yell when))  
+  ?:  (gth y:-:yor-now y:-:yor-when)
+    =/  y  (sub y:-:yor-now y:-:yor-when)
     %-  sort  :_  lth
     %+  skim  poz-id
     |=  id=post-id:athens
     =/  yor-post  (yore id)
     =(y (sub y:-:yor-now y:-:yor-post))
-  ?:  &((gth m:yor-now m:yor-when) (gte d:t:yor-now d:t:yor-when))
+  ?:  (gte d 30)
       ::  amount of months ago 
     =/  m  
       ?:  =(y:yor-now y:yor-when)
@@ -816,6 +815,7 @@
     %+  skim  poz-id
     |=  id=post-id:athens
     =/  yor-post  (yore id)
+    ?:  (gth m:yor-post m:yor-now)  |
     =(m (sub m:yor-now m:yor-post))
   ?.  (gte d 7)  ~  ::%days
   =/  w  (div d 7)
@@ -824,7 +824,6 @@
   |=  id=post-id:athens
   =/  w-post  (sub d:(yell now) d:(yell id))  
   =(w (div w-post 7))
-::
 ::  returns: post itself, last hidden sibling post below and hidden sibling above (if has hidden sibling posts)
 ++  hidden-siblings
   |=  [id=post-id:athens poz=posts:athens hidden-posts=(set post-id:athens)]
@@ -1028,13 +1027,14 @@
       =/  vas  (slap !>(..onan) (ream txt))
       =/  lis  !<(imports vas)
       =|  out=posts:athens
-      =/  wen  (sub now.bowl ~d1)
+      =|  wen=@dr
       |-
       ^+  out
       ?~  lis  out
+      %-  (slog (crip "importing post: {<when.i.lis>} {<author.i.lis>}") ~)
       =.  out
-        %+  ~(put by out)  wen
-        :-  post.i.lis
+        %+  ~(put by out)  (add when.i.lis wen)
+        :-  [author.i.lis content.i.lis]
         %=  $
           out  ~
           lis  replies.i.lis
@@ -1047,8 +1047,8 @@
       ::
     +$  imports  (list import-node)
     +$  import-node
-      $~  [*post:athens ~]
-      [=post:athens replies=imports]
+      $~  [[*@da *@p *@t] ~]
+      [[when=@da author=@p content=@t] replies=imports]
     --
   --
 --

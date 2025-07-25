@@ -225,15 +225,20 @@
       ?:(=(-.viw %hid-old) `+.+.+.+.viw ~)
     =/  new-rep  -.+.+.+.viw
     =/  post-num=@ud  ;;  @ud  ?:  =(-.viw %hid-old)  -.+.+.viw  0
-    ;div(event "/click/unhide")
+    ;div
       =id  idt
-      =onclick  scroll
+      =event  "/click/unhide"
+      =client-event  "click loading-bundle {idt}"
       =class  "relative grid grid-cols-2 ".
               "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
               "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
               "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] grid-cols-[1fr_min-content] ".
               "form-post-wrapper cursor-pointer"
-      ;div(class "author w-[15ch] max-w-[15ch] md:col-start-1 md:row-start-1 hidden md:block");
+      ;div(class "author w-[15ch] max-w-[15ch] md:col-start-1 md:row-start-1 hidden md:block", client-display "loading-bundle !{idt}");
+      ;div(class "author w-[15ch] max-w-[15ch] md:col-start-1 md:row-start-1 hidden md:block")
+      =client-display  "loading-bundle {idt}"
+          ;div(class "w-[15px] h-[15px] border-4 border-[var(--grey-default)] border-t-[var(--grey-light)] rounded-full animate-spin ml-auto");
+      ==
       ;div
         =class  "message w-full col-start-1 md:col-start-2 md:col-span-1 ".
                 "row-start-1 md:row-start-1 flex ".
@@ -484,13 +489,13 @@
         "{<(sub s:tarp-now s:tarp-old)>}s"
       "{<m>}m"
     "{<h>}h"
-  =/  date-now  (yall d:tarp-now)
-  =/  date-old  (yall d:tarp-old)
-  ?:  &(!=(y:date-now y:date-old) (gte m:date-now m:date-old))
+  =/  date-now  (yore now)
+  =/  date-old  (yore old)
+  ?:  (gth y.-.date-now y.-.date-old)
     =/  y  (sub y:date-now y:date-old)
     "{<y>}y" 
-  ?:  &((gth m:date-now m:date-old) (gte d:date-now d:date-old))
-    ?:  =(y:date-now y:date-old)
+  ?:  (gte d 30)
+    ?:  =(y.-.date-now y.-.date-old)
       =/  month  (sub m:date-now m:date-old)
       "{<month>}M" 
     =/  month  (sub (add m:date-now 12) m:date-old)

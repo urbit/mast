@@ -81,7 +81,7 @@
   =/  user=@p  (fall authenticated-user src.hull)
   |^
     ;div.root
-      ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"false" ~])
+      ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"false" loading-bundle+"~" ~])
       ;+
           ?:  |(=(our.hull src.hull) is-logged-in)
             authenticated-page
@@ -164,6 +164,15 @@
       =class  "grid grid-cols-[auto_1fr] grid-rows-[repeat(auto-fit,28px)] ".
               "divide-y divide-[var(--grey-light)] leading-tight ".
               "max-h-[65vh] overflow-y-auto leading-[0.8] w-full"
+      ;div
+        =class  "flex items-center h-[28px] overflow-hidden"
+        ;button
+          =onclick  "toggleView('settings-menu')"
+          =class  "p-2 cursor-pointer col-span-2 flex items-center overflow-hidden text-[var(--grey-default)] hover:text-[var(--grey-light)]"
+          =event  "/click/hide-all"
+          ;  Read all
+        ==
+      ==
       ;*
       %+  turn
         ^-  (list tape)
