@@ -111,14 +111,17 @@
       :+  ~  ~
       [%athens-post !>([[post.post-node rep-num] (get-post-key-paths replies.post-node)])]
     ::
-    [%view who=@ta rest=^]                                                          :: TODO: remove who and use src.bowl
-      ^-  (unit (unit cage))
-      =/  usr  (~(get by user-sessions) (slav %p who.pole))
+    [%view who=@ta rest=^]
+      =/  who  (slav %p who.pole)
+      ?.  =(who src.bowl)  ~
+      =/  usr  (~(get by user-sessions) who)
       :+  ~  ~
       [%noun !>((get-view rest.pole usr posts))]
     ::
-    [%new who=@ta rest=^]                                                           :: TODO: remove who and use src.bowl
-      =/  usr  (~(get by user-sessions) (slav %p who.pole))
+    [%new who=@ta rest=^]
+      =/  who  (slav %p who.pole)
+      ?.  =(who src.bowl)  ~
+      =/  usr  (~(get by user-sessions) who)
       ?~  usr  :+  ~  ~  [%noun !>(~)]
       =/  new-posts  (get-sort-posts new-posts.u.usr rest.pole)
       ?:  ?&  =((tail rest.pole) /)
