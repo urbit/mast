@@ -31,6 +31,8 @@
 ::
 ++  on-load
   |=  ole=vase
+  :: handle a load that removes the mast wrapper:
+  =?  ole  ?=([%mast *] +.ole)  =>(!<([%mast * v=vase] ole) v)
   |^
     ^-  (quip card _this)
     =/  old  (mole |.(!<(state-n ole)))
