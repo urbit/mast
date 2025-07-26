@@ -180,20 +180,6 @@
       [%give %kick ~[/http-response/[rid]] ~]
   ==
 ::
-++  make-404-res
-  |=  rid=@ta
-  ^-  (list card)
-  %^  make-direct-http-cards  rid  [404 ['Content-Type' 'text/html'] ~]
-  :-  ~
-  %-  as-octt:mimes:html
-  %-  en-xml:html
-  ;html
-    ;head;
-    ;body
-      ;h1: 404
-    ==
-  ==
-::
 ++  make-diff-card
   |=  [src=ship rop=rope jon=json]
   ^-  card
