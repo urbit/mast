@@ -5,8 +5,6 @@
 :: ╭╯ │││├─┤╰─╮ │
 :: ╯O ┴ ┴┴ ┴╰─╯ ┴
 ::
-|=  =agent:gall
-^-  agent:gall
 =>
 |%
 +$  state-0
@@ -22,14 +20,14 @@
 +$  card  card:agent:gall
 --
 ::
-=|  $>  %state-0  state-n
+|=  you=agent:gall
+=>  [[*$>(%state-0 state-n) you=you] +>]
 =*  state  -
 =<
 ^-  agent:gall
 |_  =bowl:gall
 +*  this  .
     cor  ~(. +> [bowl ~])
-    yor  ~(. agent bowl)
 ::
 ++  on-init
   ^-  (quip card _this)
@@ -331,31 +329,31 @@
 ::
 ++  init
   ^+  cor
-  =^  caz  agent  on-init:yor
+  =^  caz  you  ~(on-init you bowl)
   =.  cor  set:cleanup-timer
   =.  deck  load-deck
   %-  emil
-  :*  (emit (make-com-subscription-card %add))
+  :*  (make-com-subscription-card %add)
       caz
   ==
 ::
 ++  save
   ^-  vase
-  !>  [%mast state(deck ~) save:yor]
+  !>  [%mast `state-n`-:state(deck ~) ~(on-save you bowl)]
 ::
 ++  load
   |=  vaz=vase
   ^+  cor
   ?.  ?=([%mast *] +.vaz)
-    =^  caz  agent  (on-load:yor vaz)
+    =^  caz  you  (~(on-load you bowl) vaz)
     %-  emil  caz
   =+  !<  [%mast maz=state-n nez=vase]  vaz
-  =^  caz  agent  (on-load:yor nez)
+  =^  caz  you  (~(on-load you bowl) nez)
   =.  cor  (emil caz)
   ?-  -.maz
     ::
       %state-0
-    =.  state  maz
+    =.  -.state  maz
     :: cleanup previous component state
     =.  cor  (del-component-state [%all ~])
     =.  cor  reset:cleanup-timer
@@ -367,31 +365,31 @@
 ++  peek
   |=  poe=(pole @ta)
   ^-  (unit (unit cage))
-  %-  on-peek:yor  poe
+  %-  ~(on-peek you bowl)  poe
 ::
 ++  watch
   |=  poe=(pole @ta)
   ^+  cor
-  =^  caz  agent  (on-watch:yor poe)
+  =^  caz  you  (~(on-watch you bowl) poe)
   %-  emil  caz
 ::
 ++  leave
   |=  poe=(pole @ta)
   ^+  cor
-  =^  caz  agent  (on-leave:yor poe)
+  =^  caz  you  (~(on-leave you bowl) poe)
   %-  emil  caz
 ::
 ++  fail
   |=  [tem=term tan=tang]
   ^+  cor
-  =^  caz  agent  (on-fail:yor tem tan)
+  =^  caz  you  (~(on-fail you bowl) tem tan)
   %-  emil  caz
 ::
 ++  arvo
   |=  [=wire sign=sign-arvo]
   ^+  cor
   ?.  ?=([%mast *] wire)
-    =^  caz  agent  (on-arvo:yor wire sign)
+    =^  caz  you  (~(on-arvo you bowl) wire sign)
     %-  emil  caz
   ?+  sign  cor
     ::
@@ -433,7 +431,7 @@
   ^+  cor
   ?+  mark
     ::
-    =^  caz  agent  (on-poke:yor mark vase)
+    =^  caz  you  (~(on-poke you bowl) mark vase)
     %-  emil  caz
     ::
       %mast-bind
@@ -442,7 +440,7 @@
       ~&  >>>  "%mast-bind failed: /{(trip p.bid)} already exists"
       !!
     =.  dock  (~(put by dock) bid)
-    ~&  >  "%mast-bind: /{(trip p.bid)} --> {(trip name.com.q.bid)}"
+    ~&  >  "%mast-bind: /{(trip p.bid)} --> {(trip com.q.bid)}"
     %-  emit  (bind-eyre-url /[p.bid])
     ::
       %mast-unbind
@@ -461,7 +459,7 @@
     ?+  method.request.req
       ::
       :: fall through to nested agent
-      =^  caz  agent  (on-poke:yor mark vase)
+      =^  caz  you  (~(on-poke you bowl) mark vase)
       %-  emil  caz
       ::
         %'GET'
@@ -469,7 +467,7 @@
       =/  duk  (~(get by dock) bas.rop)
       ?~  duk
         :: fall through to nested agent if binding not found
-        =^  caz  agent  (on-poke:yor mark vase)
+        =^  caz  you  (~(on-poke you bowl) mark vase)
         %-  emil  caz
       =/  ui-core  (ui-abed:ui src.bowl rop)
       =^  [sal=manx bos=(set buoy)]  ui-core  ui-moor:ui-core
@@ -491,10 +489,10 @@
             =([%s 'mast'] i.p.jon)
         ==
       :: fall through to nested agent
-      =^  caz  agent  (on-poke:yor mark vase)
+      =^  caz  you  (~(on-poke you bowl) mark vase)
       %-  emil  caz
     =/  [rod=rode rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
-    =^  caz  yor  (ui-sway:(ui-abed:ui src.bowl rop) rod cro)
+    =^  caz  you  (ui-sway:(ui-abed:ui src.bowl rop) rod cro)
     %-  emil  caz
     ::
   ==
@@ -503,7 +501,7 @@
   |=  [wir=(pole @ta) sin=sign:agent:gall]
   ^+  cor
   ?.  ?=([%mast *] wir)
-    =^  caz  agent  (on-agent:yor wir sin)
+    =^  caz  you  (~(on-agent you bowl) wir sin)
     %-  emil  caz
   ?+  wir  cor
     ::
@@ -576,6 +574,7 @@
     %_  doc
       a.g
         :~  [%our +:(scow %p our.bowl)]
+            [%app (trip dap.bowl)]
             [%sub (spud (make-client-sub-path src rop))]
         ==
       c.i.c  [script-element c.i.c.doc]
@@ -631,16 +630,17 @@
   :: apply an event
   ++  ui-sway
     |=  [rod=rode cro=crow]
-    ^-  [(list card) _yor]
+    ^-  [(list card) _you]
     =/  cov  (~(got by yel) rod)
     =/  com  (~(got by deck) com.lin.cov)
     =/  blo  (~(spar com (make-hull bom.cov lin.cov)) cro)
     =/  caz  *(list card)
-    =/  pof  ~(. agent spoof-bowl)
-    |-  ^+  [caz pof]
-    ?~  blo  [caz pof]
-    =^  cuz  pof  (on-poke:pof blo)
+    =/  pof  ~(. you spoof-bowl)
+    |-  ^+  [caz you]
+    ?~  blo  [caz you]
+    =^  cuz  you  (on-poke:pof i.blo)
     %=  $
+      blo  t.blo
       caz  (weld caz cuz)
     ==
   ::
@@ -748,7 +748,7 @@
     |=  [bom=boom res=pool]
     ^-  gale
     :: load the nested agent with a modified bowl
-    =/  pof  ~(. agent spoof-bowl)
+    =/  pof  ~(. you spoof-bowl)
     %-  malt
     %+  murn  bom
     |=  [nam=@tas mak=@tas]
@@ -777,11 +777,11 @@
     ^-  hull
     :*  our.bowl
         src
-        now.bowl
-        eny.bowl
         bas.rop
         rut.rop
         que.rop
+        now.bowl
+        eny.bowl
         par.lin
         (hydrate-component bom res.lin)
     ==

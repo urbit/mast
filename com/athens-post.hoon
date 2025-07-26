@@ -23,48 +23,48 @@
   |=  =crow:mast
   ^-  blow:mast
   =/  paf  src:post
-  ?>  ?=([%athens %posts *] paf)
+  ?>  ?=([%posts *] paf)
   ?+  path.crow  ~
     ::
       [%click %toggle-hide ~]
     =/  id  (slav %da (rear src:post))
     ?:  hid
-      :~  [%athens %athens-action !>([%unhide-post t.t.paf])]
+      :~  [%athens-action !>([%unhide-post t.paf])]
       ==
-    :~  [%athens %athens-action !>([%hide-post t.t.paf])]
+    :~  [%athens-action !>([%hide-post t.paf])]
     ==
     ::
       [%submit %hide ~]
     =/  id  (slav %da (rear src:post))
     ?<  hid
-    :~  [%athens %athens-action !>([%hide-post t.t.paf])]
+    :~  [%athens-action !>([%hide-post t.paf])]
     ==
     ::
       [%click %unhide ~]
     =/  id  (slav %da (rear src:post))
     ?>  hid
-      :~  [%athens %athens-action !>([%unhide-post t.t.paf])]
+      :~  [%athens-action !>([%unhide-post t.paf])]
       ==
     ::
       [%submit %reply ~]
     =/  dat  (~(got by data.crow) 'reply-input')
     ?:  =('' dat)  ~
-    :~  [%athens %athens-action !>([%put-post t.t.paf dat])]
+    :~  [%athens-action !>([%put-post t.paf dat])]
     ==
     ::
       [%submit %edit ~]
     =/  dat  (~(got by data.crow) 'edit-input')
     ?:  =('' dat)  ~
-    :~  [%athens %athens-action !>([%patch-post t.t.paf dat])]
+    :~  [%athens-action !>([%patch-post t.paf dat])]
     ==
     ::
       [%click %delete ~]
-    :~  [%athens %athens-action !>([%del-post t.t.paf])]
+    :~  [%athens-action !>([%del-post t.paf])]
     ==
     ::
       [%submit %selected ~]
     ?<  sel
-    :~  [%athens %athens-action !>([%set-user-position t.t.paf])]
+    :~  [%athens-action !>([%set-user-position t.paf])]
     ==
     ::
   ==
@@ -78,13 +78,13 @@
   =/  user=@p  (slav %p (~(got by par.hull) %fingerprint))
   =/  is-author  =(user author.post.dat)
   =/  reply=?
-    ?>  ?=([%athens %posts *] paf)
-    (gth (lent t.t.paf) 1) 
+    ?>  ?=([%posts *] paf)
+    (gth (lent t.paf) 1) 
   =/  depth=@
     =-  (mul (dec -) 8)
-    ?>  ?=([%athens %posts *] paf)
-    ?:  (gth (lent t.t.paf) 2) 
-      (dec (lent t.t.paf))  
+    ?>  ?=([%posts *] paf)
+    ?:  (gth (lent t.paf) 2) 
+      (dec (lent t.paf))  
     1
   =/  scroll
     ?:  ?&  !=(new-posts ~)
@@ -116,9 +116,9 @@
         ;+  
           =/  depth=@
             =-  (mul (dec -) 8)
-            ?>  ?=([%athens %posts *] paf) 
-            ?:  (gth (lent t.t.paf) 2) 
-              (dec (lent t.t.paf))
+            ?>  ?=([%posts *] paf) 
+            ?:  (gth (lent t.paf) 2) 
+              (dec (lent t.paf))
             1
           ;div
             =class  "message {?:(hid "hide md:w-[95%] w-[85%]" "full")} ".
@@ -342,20 +342,20 @@
   ++  make-replies 
     =/  depth=@
       =-  (mul (dec -) 8)
-      ?>  ?=([%athens %posts *] paf)
-        (lent t.t.paf)  
+      ?>  ?=([%posts *] paf)
+        (lent t.paf)
     ;div.replies-container.relative
       ;div(class "border-left absolute w-px bg-[var(--grey-default)] top-0 bottom-[2px]", style "--depth: {((d-co:co 1) depth)}px;");
-      ;*  ?>  ?=([%athens %posts *] paf)
+      ;*  ?>  ?=([%posts *] paf)
           %+  turn  rep.dat
           |=  p=path
-          %^  make:mast  mast/%athens-post
+          %^  make:mast  %athens-post
             :~
               :-  %fingerprint  (~(got by par.hull) %fingerprint)
             ==
           :~  [%post (welp paf p)] 
-              [%view (welp /athens/view/[(scot %p src.hull)] (welp t.t.paf p))]
-              [%new (welp /athens/new/[(scot %p src.hull)] (welp t.t.paf p))] 
+              [%view (welp /view/[(scot %p src.hull)] (welp t.paf p))]
+              [%new (welp /new/[(scot %p src.hull)] (welp t.paf p))] 
           ==
     ==
   --

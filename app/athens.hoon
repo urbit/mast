@@ -1,4 +1,5 @@
-/-  athens, mast
+/-  athens
+/+  mast
 /*  favicon  %png  /fil/favicon/png
 /*  app-tile  %png  /fil/app-tile/png
 |%
@@ -11,7 +12,7 @@
   ==
 --
 ::
-!:
+%-  mast
 =|  state-1
 =*  state  -
 =<
@@ -82,7 +83,7 @@
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
-  =^  cards  state  abet:(handle-mast-poke:cor mark vase)
+  =^  cards  state  abet:(poke:cor mark vase)
   :-  cards  this
 ::
 ++  on-watch
@@ -101,24 +102,24 @@
   ?+  pole  ~
     ::
     [%posts-all ~]
-      :^  ~  ~  %$  !>
+      :+  ~  ~
       [%athens-post-list !>((get-post-key-paths posts))]
     ::
     [%posts rest=^]
       =/  =post-node:athens  (get-post-node rest.pole posts)
       =/  rep-num  (count-replies replies.post-node)
-      :^  ~  ~  %$  !>
+      :+  ~  ~
       [%athens-post !>([[post.post-node rep-num] (get-post-key-paths replies.post-node)])]
     ::
-    [%view who=@ta rest=^]
+    [%view who=@ta rest=^]                                                          :: TODO: remove who and use src.bowl
       ^-  (unit (unit cage))
       =/  usr  (~(get by user-sessions) (slav %p who.pole))
-      :^  ~  ~  %$  !>
+      :+  ~  ~
       [%noun !>((get-view rest.pole usr posts))]
     ::
-    [%new who=@ta rest=^]
+    [%new who=@ta rest=^]                                                           :: TODO: remove who and use src.bowl
       =/  usr  (~(get by user-sessions) (slav %p who.pole))
-      ?~  usr  :^  ~  ~  %$  !>  [%noun !>(~)]
+      ?~  usr  :+  ~  ~  [%noun !>(~)]
       =/  new-posts  (get-sort-posts new-posts.u.usr rest.pole)
       ?:  ?&  =((tail rest.pole) /)
               =(%hidden -:(get-view rest.pole usr posts))
@@ -130,17 +131,17 @@
           |=  i=post-id:athens
           =/  sib-path  /[(scot %da i)]
           (get-sort-posts new-posts.u.usr sib-path)
-        :^  ~  ~  %$  !>  [%noun !>(new-posts)]
-      :^  ~  ~  %$  !>  [%noun !>(new-posts)]
+        :+  ~  ~  [%noun !>(new-posts)]
+      :+  ~  ~  [%noun !>(new-posts)]
     ::
     [%access ~]
-      :^  ~  ~  %$  !>
+      :+  ~  ~
       [%athens-access !>(access)]
     ::
   ==
 ::
-++  on-agent  |=([wire sign:agent:gall] ^-((quip card _this) !!))
-++  on-arvo   |=([wire sign-arvo] ^-((quip card _this) !!))
+++  on-agent  |=([wire sign:agent:gall] *(quip card _this))
+++  on-arvo   |=([wire sign-arvo] *(quip card _this))
 ++  on-fail
   |=  [=term =tang]
   ^-  (quip card _this)
@@ -153,15 +154,6 @@
 ++  abet  :-  (flop cards)  state
 ++  emit  |=  =card  cor(cards [card cards])
 ++  emil  |=  caz=(list card)  cor(cards (welp (flop caz) cards))
-::
-++  handle-mast-poke
-  |=  [=mark =vase]
-  ^+  cor
-  ?.  ?=(%mast-poke mark)  (poke mark vase)
-  ?>  =(/gall/mast sap.bowl)
-  =/  gul  !<  gull:mast  vase
-  =.  src.bowl  src.gul
-  %-  poke  dat.gul
 ::
 ++  poke
   |=  [=mark =vase]
@@ -244,14 +236,14 @@
     ==
   %-  emil
   ?~  post-at 
-      :~  %-  make-fact-card  /r/posts-all
+      :~  %-  make-fact-card  /x/posts-all
       ==
   =/  cards  *(list card)
   =/  at=path  post-at
   |-  ^-  (list card)
   ?:  =(/ (tail at))
-    (snoc `(list card)`cards (make-fact-card (weld /r/posts `(list @ta)`at)))
-  =/  c  (snoc `(list card)`cards (make-fact-card (weld /r/posts `(list @ta)`at)))
+    (snoc `(list card)`cards (make-fact-card (weld /x/posts `(list @ta)`at)))
+  =/  c  (snoc `(list card)`cards (make-fact-card (weld /x/posts `(list @ta)`at)))
   %=  $
     at   (snip `path`at)
     cards  c
@@ -278,7 +270,7 @@
       posts  rez
     ==
   %-  emit
-  %-  make-fact-card  (weld /r/posts patch-at)
+  %-  make-fact-card  (weld /x/posts patch-at)
 ::
 ++  del-post
   |=  at=path
@@ -302,8 +294,8 @@
     ==
   %-  emit
   ?:  =(1 (lent at))
-    %-  make-fact-card  /r/posts-all
-  %-  make-fact-card  (weld /r/posts (snip at))
+    %-  make-fact-card  /x/posts-all
+  %-  make-fact-card  (weld /x/posts (snip at))
 ::
 ++  hide-post
   |=  at=path
@@ -334,9 +326,9 @@
     %-  emil 
     %+  turn  ~(tap in card-to)
     |=  i=post-id:athens
-    %-  make-fact-card  (weld /r/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
+    %-  make-fact-card  (weld /x/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
   %-  emit
-  %-  make-fact-card  (weld /r/view/[(scot %p user)] at)
+  %-  make-fact-card  (weld /x/view/[(scot %p user)] at)
 ::
 ++  hide-all
   ^+  cor 
@@ -372,7 +364,7 @@
   %-  emil  
   %+  turn  open-posts
   |=  at=post-id:athens
-  %-  make-fact-card  /r/view/[(scot %p user)]/[(scot %da at)]
+  %-  make-fact-card  /x/view/[(scot %p user)]/[(scot %da at)]
   ::
   ++  posts-to-id
     ^-  (list post-id:athens)
@@ -419,7 +411,7 @@
       (~(del in hidden-posts.usr) id)
     =.  user-sessions  (~(put by user-sessions) user usr)
     %-  emit
-    %-  make-fact-card  (weld /r/view/[(scot %p user)] at)
+    %-  make-fact-card  (weld /x/view/[(scot %p user)] at)
   =/  new-posts-id  
     %-  silt
     ;;  (list @da)
@@ -439,7 +431,7 @@
   ?:  =(~ at)
     %+  weld  +.parent-post
     (flop cards)
-  =/  c  (snoc `(list card)`cards (make-fact-card (weld /r/view/[(scot %p user)] `(list @ta)`at)))
+  =/  c  (snoc `(list card)`cards (make-fact-card (weld /x/view/[(scot %p user)] `(list @ta)`at)))
   %=  $
     at   (snip `path`at)
     cards  c
@@ -455,7 +447,7 @@
       unhide
     %+  turn  ~(tap in unhide)
     |=  id=post-id:athens
-    %-  make-fact-card  (weld /r/view/[(scot %p user)] (weld (snip at) /[(scot %da id)]))
+    %-  make-fact-card  (weld /x/view/[(scot %p user)] (weld (snip at) /[(scot %da id)]))
 --
 ::
 ++  set-door-code
@@ -463,14 +455,14 @@
   ^+  cor
   =.  door-code.access  code
   %-  emit
-  %-  make-fact-card  /r/access
+  %-  make-fact-card  /x/access
   ::
 ++  gated-sign-in
   |=  [comet=@p id=@p]
   ^+  cor
   =.  accounts.access  (~(put by accounts.access) comet id)
   %-  emit
-  %-  make-fact-card  /r/access
+  %-  make-fact-card  /x/access
 ::
 ++  set-user-position
   |=  at=path
@@ -481,7 +473,7 @@
     ?~  selected-post.u.usr  ~
     ?:  =(u.selected-post.u.usr at)  !!
     :~ 
-      %-  make-fact-card  (weld /r/view/[(scot %p user)] u.selected-post.u.usr)
+      %-  make-fact-card  (weld /x/view/[(scot %p user)] u.selected-post.u.usr)
     ==
   =.  user-sessions  
     ?~  usr
@@ -493,7 +485,7 @@
   %-  emil
   %+  weld  
   :~
-    %-  make-fact-card  (weld /r/view/[(scot %p user)] at)
+    %-  make-fact-card  (weld /x/view/[(scot %p user)] at)
   ==
   old-selected-card
 ::
@@ -502,7 +494,7 @@
   ^+  cor
   =.  mode.access  (access-mode:athens term)
   %-  emit
-  %-  make-fact-card  /r/access
+  %-  make-fact-card  /x/access
 ::
 ++  edit-access-id
   |=  ids=(list @p)  ::  xx why is this a list?
@@ -513,12 +505,12 @@
       ?^  (find ids members.access)  cor
       =.  members.access  (welp ids members.access)
       %-  emit
-      %-  make-fact-card  /r/access
+      %-  make-fact-card  /x/access
     %public
       ?^  (find ids blacklist.access)  cor
       =.  blacklist.access  (welp ids blacklist.access)
       %-  emit
-      %-  make-fact-card  /r/access
+      %-  make-fact-card  /x/access
   ==
 ::
 ++  del-access-id
@@ -531,13 +523,13 @@
       ?~  index-id  cor
       =.  members.access  (oust [(need index-id) 1] members.access)
       %-  emit
-      %-  make-fact-card  /r/access
+      %-  make-fact-card  /x/access
     %public
       =/  index-id  (find [id]~ blacklist.access)
       ?~  index-id  cor
       =.  blacklist.access  (oust [(need index-id) 1] blacklist.access)
       %-  emit
-      %-  make-fact-card  /r/access
+      %-  make-fact-card  /x/access
   ==
 ::
 ++  get-post-key-paths
