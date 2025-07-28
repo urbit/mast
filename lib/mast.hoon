@@ -131,17 +131,60 @@
   ++  wait  `card`[%pass wir %arvo %b %wait tim]
   --
 ::
-++  parse-url                  :: TODO: better url parsing
+++  parse-url
   |=  cod=cord
-  ^-  rope
-  =/  url  (stab cod)
-  ?~  url
+  |^  ^-  (unit rope)
+  =/  tap  (trip cod)
+  =/  sep  (find ['?' ~] tap)
+  =/  [paf=tape par=tape]
+    ?~  sep  [tap ~]
+    :-  (scag u.sep tap)  (slag u.sep tap)
+  =/  puf  (parse-path paf)
+  ?~  puf  ~
+  ?~  u.puf
+    :-  ~
     :+  %$
         ~
-        ~
-  :+  i.url
-      t.url
-      ~
+        (parse-query par)
+  :-  ~
+  :+  i.u.puf
+      t.u.puf
+      (parse-query par)
+  ::
+  ++  parse-path
+    |=  tap=tape
+    ^-  (unit path)
+    %+  rust  tap
+    %+  cook
+      |=  p=path
+      ^-  path
+      ?.  .?(p)  ~
+      ?.  =(%$ (rear p))  p
+      %-  snip  p
+    ;~  pfix  fas  (most fas url-segment)
+    ==
+  ++  url-segment
+    %+  cook  |=(a=tape (rap 3 ^-((list @) a)))
+    %-  star
+    ;~  pose  alf  nud  hep  dot  sig  cab  cen-encoded
+    ==
+  ++  cen-encoded
+    %+  cook  |=(a=(list @) `@t`(rap 3 a))
+    ;~  pfix  cen  (most cen mes)
+    ==
+  ++  parse-query
+    |=  tap=tape
+    ^-  quay
+    %-  malt
+    =<  ?~(. ~ u)
+    ^-  (unit (list (pair @t @t)))
+    %+  rust  tap
+    ;~  pfix  wut  (most ;~(pose pam mic) query-param)
+    ==
+  ++  query-param
+    %+  cook  |=([k=@t rest=(list @t)] [k ?~(rest '' ?>(?=(~ t.rest) i.rest))])
+    %+  most  tis  url-segment
+  --
 ::
 ++  parse-channel-data
   |=  jon=json
@@ -449,16 +492,21 @@
       %-  emil  caz
       ::
         %'GET'
-      =/  rop  (parse-url url.request.req)
-      =/  duk  (~(get by dock) bas.rop)
+      =/  rup  (parse-url url.request.req)
+      ?~  rup
+        %-  emil
+        %^  make-direct-http-cards  rid  [400 ['Content-Type' 'text/plain'] ~]
+        :-  ~
+        %-  as-octs:mimes:html  '400 Bad Request: Malformed URL'
+      =/  duk  (~(get by dock) bas.u.rup)
       ?~  duk
         :: fall through to nested agent if binding not found
         =^  caz  you  (~(on-poke you bowl) mark vase)
         %-  emil  caz
-      =/  ui-core  (ui-abed:ui src.bowl rop)
+      =/  ui-core  (ui-abed:ui src.bowl u.rup)
       =^  [sal=manx bos=(set buoy)]  ui-core  ui-moor:ui-core
       =.  gulf  ui-abet:ui-core
-      =.  cor  (handle-component-buoys src.bowl rop ~(tap in bos))
+      =.  cor  (handle-component-buoys src.bowl u.rup ~(tap in bos))
       %-  emil
       %^  make-direct-http-cards  rid  [200 ['Content-Type' 'text/html'] ~]
       :-  ~
