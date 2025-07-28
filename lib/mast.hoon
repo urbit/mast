@@ -5,6 +5,7 @@
 :: ╭╯ │││├─┤╰─╮ │
 :: ╯O ┴ ┴┴ ┴╰─╯ ┴
 ::
+=>
 |%
 +$  state-0
   $:  swab=@da
@@ -19,7 +20,8 @@
 +$  card  card:agent:gall
 --
 ::
-=|  $>  %state-0  state-n
+|=  you=agent:gall
+=>  [[*$>(%state-0 state-n) you=you] +>]
 =*  state  -
 =<
 ^-  agent:gall
@@ -62,7 +64,8 @@
 ::
 ++  on-peek
   |=  =path
-  ^*  (unit (unit cage))
+  ^-  (unit (unit cage))
+  %-  peek:cor  path
 ::
 ++  on-agent
   |=  [=wire =sign:agent:gall]
@@ -76,7 +79,11 @@
   =^  cards  state  abet:(arvo:cor wire sign)
   :-  cards  this
 ::
-++  on-fail   |=([term tang] ^-((quip card _this) !!))
+++  on-fail
+  |=  [=term =tang]
+  ^-  (quip card _this)
+  =^  cards  state  abet:(fail:cor term tang)
+  :-  cards  this
 --
 ::
 |_  [=bowl:gall cards=(list card)]
@@ -95,15 +102,21 @@
   ^-  manx
   ;script: {(trip mast-js)}
 ::
-++  bind-url
-  |=  [app=@tas url=path]
+++  bind-eyre-url
+  |=  url=path
   ^-  card
-  :*  %pass  /bind  %arvo  %e  %connect  [~ url]  app
+  :*  %pass  /mast/bind-eyre-url  %arvo  %e  %connect  [~ url]  dap.bowl
+  ==
+::
+++  unbind-eyre-url
+  |=  url=path
+  ^-  card
+  :*  %pass  /mast/unbind-eyre-url  %arvo  %e  %disconnect  [~ url]
   ==
 ::
 ++  cleanup-timer
   =/  tim  `@da`(add ~d1 now.bowl)
-  =/  wir  `wire`/cleanup
+  =/  wir  `wire`/mast/cleanup
   =/  wab  swab
   |%
   ++  set
@@ -120,11 +133,12 @@
 ::
 ++  parse-url                  :: TODO: better url parsing
   |=  cod=cord
-  ^-  (unit rope)
+  ^-  rope
   =/  url  (stab cod)
-  =.  url  ?>  ?=([%mast *] url)  t.url  :: temporary: assumes /mast prefix
-  ?.  ?=(^ url)  ~
-  :-  ~
+  ?~  url
+    :+  %$
+        ~
+        ~
   :+  i.url
       t.url
       ~
@@ -148,15 +162,15 @@
 ++  make-client-sub-path
   |=  [src=ship rop=rope]
   ^-  path
-  /ui/[(scot %p src)]/[(scot %uv (jam rop))]
+  /mast/ui/[(scot %p src)]/[(scot %uv (jam rop))]
 ::
 ++  parse-client-sub-path
   |=  paf=path
   ^-  [ship rope]
-  ?>  ?=([@ @ @ ~] paf)
-  :-  (slav %p i.t.paf)
+  ?>  ?=([%mast %ui @ta @ta ~] paf)
+  :-  (slav %p i.t.t.paf)
   ;;  rope
-      (cue (slav %uv i.t.t.paf))
+      (cue (slav %uv i.t.t.t.paf))
 ::
 ++  make-direct-http-cards
   |=  [rid=@ta hed=response-header.simple-payload:http dat=(unit octs)]
@@ -187,22 +201,11 @@
       %json  !>(jon)
   ==
 ::
-++  make-gull-cards
-  |=  [src=ship hok=hook blo=blow]
-  ^-  (list card)
-  %+  murn  blo
-  |=  [for=@tas dat=cage]
-  ?:  =(for dap.bowl)  ~
-  :-  ~
-  :*  %pass  /blow  %agent  [our.bowl for]  %poke
-      %mast-poke  !>(`gull`[src hok dat])
-  ==
-::
 ++  make-com-subscription-card
-  |=  [act=?(%add %del) des=desk]
+  |=  act=?(%add %del)
   ^-  card
-  :*  %pass  /deck/[des]  %arvo  %c
-      %warp  our.bowl  des
+  =/  des  q.byk.bowl
+  :*  %pass  /mast/deck/[des]  %arvo  %c  %warp  our.bowl  des
       ?-  act
         %add  [~ %next %z da+now.bowl /com]
         %del  ~
@@ -212,15 +215,10 @@
 ++  make-resource-subscription-card
   |=  [act=?(%add %del) paf=path]
   ^-  card
-  ?<  ?=(~ paf)
-  :: the %mast agent subscribes to an on-watch path
-  :: in the agent specified in the first path segment.
-  =/  age  i.paf
-  =/  for  t.paf
-  =/  wir  [%res paf]
+  =/  wir  [%mast %res paf]
   ?-  act
-    %add  [%pass wir %agent [our.bowl age] %watch [%r for]]
-    %del  [%pass wir %agent [our.bowl age] %leave ~]
+    %add  [%pass wir %agent [our.bowl dap.bowl] %watch [%x paf]]
+    %del  [%pass wir %agent [our.bowl dap.bowl] %leave ~]
   ==
 ::
 ++  handle-component-buoys
@@ -281,21 +279,13 @@
   ?~  paf  ~
   :^  ~  act  rod  u.paf
 ::
-++  dock-has-desk
-  |=  des=desk
-  ^-  ?
-  %-  ~(any by dock)
-  |=  lin=line
-  .=  desk.com.lin  des
-::
-++  put-deck
-  |=  des=desk
-  =/  fis  .^((list path) %ct (bam des /com))
+++  load-deck
+  =/  fis  .^((list path) %ct (bem /com))
   |-  ^-  ^deck
   ?~  fis  deck
-  ~&  (bam des i.fis)
-  =/  fil  .^(vase %ca (bam des i.fis))
-  =/  huk  `hook`[des (rear (snip i.fis))]
+  ~&  (bem i.fis)
+  =/  fil  .^(vase %ca (bem i.fis))
+  =/  huk  `hook`(rear (snip i.fis))
   =/  mat  (mole |.(!<(mast fil)))
   ?^  mat
     %=  $
@@ -305,14 +295,6 @@
   %=  $
     fis  t.fis
   ==
-::
-++  del-deck
-  |=  des=desk
-  ^-  ^deck
-  %-  malt
-  %+  skip  ~(tap by deck)
-  |=  [k=hook *]
-  .=  des  desk.k
 ::
 ++  del-component-state
   |=  $=  act
@@ -346,71 +328,94 @@
   ==
 ::
 ++  init
+  ^+  cor
+  =^  caz  you  ~(on-init you bowl)
   =.  cor  set:cleanup-timer
+  =.  deck  load-deck
   %-  emil
-  :~  (bind-url dap.bowl /mast)
+  :*  (make-com-subscription-card %add)
+      caz
   ==
 ::
 ++  save
   ^-  vase
-  !>  state(deck ~)
+  !>  [%mast `state-n`-:state(deck ~) ~(on-save you bowl)]
 ::
 ++  load
-  |=  =vase
+  |=  vaz=vase
   ^+  cor
-  =/  lod  !<  state-n  vase
-  ?-  -.lod
+  ?.  ?=([%mast *] +.vaz)
+    =^  caz  you  (~(on-load you bowl) vaz)
+    %-  emil  caz
+  =+  !<  [%mast maz=state-n nez=vase]  vaz
+  =^  caz  you  (~(on-load you bowl) nez)
+  =.  cor  (emil caz)
+  ?-  -.maz
     ::
       %state-0
-    =.  state  lod
+    =.  -.state  maz
     :: cleanup previous component state
     =.  cor  (del-component-state [%all ~])
     =.  cor  reset:cleanup-timer
-    =/  des
-      ^-  (list desk)
-      %~  tap  in
-      ^-  (set desk)
-      %-  ~(rep by dock)
-      |=  [[k=knot v=line] a=(set desk)]
-      %-  ~(put in a)  desk.com.v
-    |-  ^+  cor
-    ?~  des  cor
-    =.  deck  (put-deck i.des)
-    =.  cor  (emit (make-com-subscription-card %add i.des))
-    %=  $
-      des  t.des
-    ==
+    =.  deck  load-deck
+    %-  emit  (make-com-subscription-card %add)
     ::
   ==
 ::
-++  watch  |=  poe=(pole @ta)  cor
-++  leave  |=  poe=(pole @ta)  cor
+++  peek
+  |=  poe=(pole @ta)
+  ^-  (unit (unit cage))
+  %-  ~(on-peek you bowl)  poe
+::
+++  watch
+  |=  poe=(pole @ta)
+  ^+  cor
+  =^  caz  you  (~(on-watch you bowl) poe)
+  %-  emil  caz
+::
+++  leave
+  |=  poe=(pole @ta)
+  ^+  cor
+  =^  caz  you  (~(on-leave you bowl) poe)
+  %-  emil  caz
+::
+++  fail
+  |=  [tem=term tan=tang]
+  ^+  cor
+  =^  caz  you  (~(on-fail you bowl) tem tan)
+  %-  emil  caz
 ::
 ++  arvo
   |=  [=wire sign=sign-arvo]
   ^+  cor
+  ?.  ?=([%mast *] wire)
+    =^  caz  you  (~(on-arvo you bowl) wire sign)
+    %-  emil  caz
   ?+  sign  cor
     ::
       [%clay %writ *]
-    ?.  ?=([%deck @ta ~] wire)  cor
-    :: delete all component state   TODO: only delete affected component state
-    =.  cor  (del-component-state [%all ~])
-    :: reload components on change to a desk's /com
-    =.  deck  (del-deck i.t.wire)
-    =.  deck  (put-deck i.t.wire)
-    %-  emit  (make-com-subscription-card %add i.t.wire)
+    ?+  wire  cor
+      ::
+        [%mast %deck ~]
+      :: delete all component state
+      =.  cor  (del-component-state [%all ~])
+      :: reload components on change to a desk's /com
+      =.  deck  load-deck
+      %-  emit  (make-com-subscription-card %add)
+      ::
+    ==
     ::
       [%behn %wake *]
-    ?+  wire  !!
+    ?+  wire  cor
       ::
-        [%cleanup ~]
+        [%mast %cleanup ~]
       =.  cor  set:cleanup-timer
       ?^  error.sign  cor
       =/  liv
         %+  roll  ~(val by sup.bowl)
         |=  [[who=ship paf=path] acc=(set [ship rope])]
-        ::  /ui/[ship]/[rope]
-        ?.  ?=([%ui *] paf)  acc
+        ::  /mast/ui/[ship]/[rope]
+        ?.  ?=([%mast %ui *] paf)  acc
         =/  [src=ship rop=rope]  (parse-client-sub-path paf)
         %-  ~(put in acc)  [who rop]
       =/  kil
@@ -424,19 +429,19 @@
 ++  poke
   |=  [=mark =vase]
   ^+  cor
-  ?+  mark  ~|(bad-poke/mark !!) 
+  ?+  mark
+    ::
+    =^  caz  you  (~(on-poke you bowl) mark vase)
+    %-  emil  caz
     ::
       %mast-bind
     =/  bid  !<  bind  vase
     ?:  (~(has by dock) p.bid)
       ~&  >>>  "%mast-bind failed: /{(trip p.bid)} already exists"
       !!
-    =?  cor  !(dock-has-desk desk.com.q.bid)
-      =.  deck  (put-deck desk.com.q.bid)
-      %-  emit  (make-com-subscription-card %add desk.com.q.bid)
     =.  dock  (~(put by dock) bid)
-    ~&  >  "%mast-bind: /{(trip p.bid)} --> {<desk.com.q.bid>} {(trip name.com.q.bid)}"
-    cor
+    ~&  >  "%mast-bind: /{(trip p.bid)} --> {(trip com.q.bid)}"
+    %-  emit  (bind-eyre-url /[p.bid])
     ::
       %mast-unbind
     =/  not  !<  knot  vase
@@ -446,27 +451,28 @@
       !!
     =.  cor  (del-component-state [%bound not])
     =.  dock  (~(del by dock) not)
-    =?  cor  !(dock-has-desk desk.com.u.duk)
-      =.  deck  (del-deck desk.com.u.duk)
-      %-  emit  (make-com-subscription-card %del desk.com.u.duk)
     ~&  >  "%mast-unbind: /{(trip not)} unbound"
-    cor
+    %-  emit  (unbind-eyre-url /[not])
     ::
       %handle-http-request
     =+  !<  [rid=@ta req=inbound-request:eyre]  vase
-    ?+  method.request.req  ~|(bad-method/method.request.req !!)
+    ?+  method.request.req
+      ::
+      :: fall through to nested agent
+      =^  caz  you  (~(on-poke you bowl) mark vase)
+      %-  emil  caz
       ::
         %'GET'
-      =/  rup  (parse-url url.request.req)
-      ?~  rup
-        %-  emil  (make-404-res rid)
-      =/  duk  (~(get by dock) bas.u.rup)
+      =/  rop  (parse-url url.request.req)
+      =/  duk  (~(get by dock) bas.rop)
       ?~  duk
-        %-  emil  (make-404-res rid)
-      =/  ui-core  (ui-abed:ui src.bowl u.rup)
+        :: fall through to nested agent if binding not found
+        =^  caz  you  (~(on-poke you bowl) mark vase)
+        %-  emil  caz
+      =/  ui-core  (ui-abed:ui src.bowl rop)
       =^  [sal=manx bos=(set buoy)]  ui-core  ui-moor:ui-core
       =.  gulf  ui-abet:ui-core
-      =.  cor  (handle-component-buoys src.bowl u.rup ~(tap in bos))
+      =.  cor  (handle-component-buoys src.bowl rop ~(tap in bos))
       %-  emil
       %^  make-direct-http-cards  rid  [200 ['Content-Type' 'text/html'] ~]
       :-  ~
@@ -482,25 +488,30 @@
             ?=(^ t.p.jon)
             =([%s 'mast'] i.p.jon)
         ==
-      cor
+      :: fall through to nested agent
+      =^  caz  you  (~(on-poke you bowl) mark vase)
+      %-  emil  caz
     =/  [rod=rode rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
-    =/  [hok=hook blo=blow]  (ui-sway:(ui-abed:ui src.bowl rop) rod cro)
-    %-  emil  (make-gull-cards src.bowl hok blo)
+    =^  caz  you  (ui-sway:(ui-abed:ui src.bowl rop) rod cro)
+    %-  emil  caz
     ::
   ==
 ::
 ++  agent
-  |=  [poe=(pole @ta) sin=sign:agent:gall]
+  |=  [wir=(pole @ta) sin=sign:agent:gall]
   ^+  cor
-  ?+  poe  cor
+  ?.  ?=([%mast *] wir)
+    =^  caz  you  (~(on-agent you bowl) wir sin)
+    %-  emil  caz
+  ?+  wir  cor
     ::
-      [%res res=*]
+      [%mast %res res=*]
     ?+  -.sin  cor
       ::
         %fact
-      =/  sus  (~(get by navy) res.poe)
+      =/  sus  (~(get by navy) res.wir)
       ?~  sus
-        %-  emit  (make-resource-subscription-card [%del res.poe])
+        %-  emit  (make-resource-subscription-card [%del res.wir])
       =/  gus
         ^-  (list [[src=ship rop=rope] dat=(set rode)])
         %~  tap  by  u.sus
@@ -563,6 +574,7 @@
     %_  doc
       a.g
         :~  [%our +:(scow %p our.bowl)]
+            [%app (trip dap.bowl)]
             [%sub (spud (make-client-sub-path src rop))]
         ==
       c.i.c  [script-element c.i.c.doc]
@@ -615,14 +627,22 @@
     :-  jon  (~(uni in bos.p.dif) bos)
   ::
   :: ++ui-sway
-  :: apply an event to a component
+  :: apply an event
   ++  ui-sway
     |=  [rod=rode cro=crow]
-    ^-  [hook blow]
+    ^-  [(list card) _you]
     =/  cov  (~(got by yel) rod)
     =/  com  (~(got by deck) com.lin.cov)
-    :-  com.lin.cov
-    %-  ~(spar com (make-hull bom.cov lin.cov))  cro
+    =/  blo  (~(spar com (make-hull bom.cov lin.cov)) cro)
+    =/  caz  *(list card)
+    =/  pof  ~(. you spoof-bowl)
+    |-  ^+  [caz you]
+    ?~  blo  [caz you]
+    =^  cuz  you  (on-poke:pof i.blo)
+    %=  $
+      blo  t.blo
+      caz  (weld caz cuz)
+    ==
   ::
   :: ++parse-component-element
   :: extract component data from a component element;
@@ -635,7 +655,7 @@
     %+  roll  a.g.sal
     |=  [[k=mane v=tape] a=line]
     ?+  k  a
-      [%hook @]  a(com [+.k (crip v)])
+      [%hook @]  a(com +.k)
       [%gust @]  a(par (~(put by par.a) +.k (crip v)))
       [%gale @]  a(res (~(put by res.a) +.k (scan v stap)))
     ==
@@ -718,38 +738,50 @@
       pos-key  [i pos-key]
     ==
   ::
+  ++  spoof-bowl
+    %_  bowl
+      src  src
+      sap  /gall/[dap.bowl]
+    ==
+  ::
   ++  hydrate-component
     |=  [bom=boom res=pool]
     ^-  gale
+    :: load the nested agent with a modified bowl
+    =/  pof  ~(. you spoof-bowl)
     %-  malt
     %+  murn  bom
     |=  [nam=@tas mak=@tas]
     ^-  (unit [term path vase])
     =/  paf  (~(get by res) nam)
     ?~  paf  ~
-    ?~  u.paf  ~&(>>> %null-path ~)
-    ?:  =(%$ mak)
-      :-  ~  [nam u.paf !>(~)]
-    :: the resource path is prefixed with an agent name
-    =/  age  i.u.paf
-    =/  for  (bam age t.u.paf)
-    =/  des  .^(desk %gd (bam age /$))
-    =/  fil  .^(cage %gr for)
-    ?:  =(p.fil mak)
-      :-  ~  [nam u.paf q.fil]
-    =/  tub  .^(tube:clay %cc (bam des /[p.fil]/[mak]))
-    :-  ~  [nam u.paf (tub q.fil)]
+    =/  dat  (on-peek:pof [%x u.paf])
+    ?:  ?|  ?=(~ dat)
+            ?=(~ u.dat)
+        ==
+      ~&  >>>  [%mast dap.bowl %scry-failed `path`[%x u.paf]]
+      ~
+    ?:  =(p.u.u.dat mak)
+      :-  ~
+      :+  nam
+          u.paf
+          q.u.u.dat
+    =/  tub  .^(tube:clay %cc (bem /[p.u.u.dat]/[mak]))
+    :-  ~
+    :+  nam
+        u.paf
+        (tub q.u.u.dat)
   ::
   ++  make-hull
     |=  [bom=boom lin=line]
     ^-  hull
     :*  our.bowl
         src
-        now.bowl
-        eny.bowl
         bas.rop
         rut.rop
         que.rop
+        now.bowl
+        eny.bowl
         par.lin
         (hydrate-component bom res.lin)
     ==

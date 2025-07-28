@@ -23,14 +23,14 @@
 ::
 ++  main-thread
   %-  document
-  %^  make:mast  mast/%athens  ~
-  :~  [%posts /athens/posts-all]
-      [%access /athens/access]
+  %^  make:mast  %athens  ~
+  :~  [%posts /posts-all]
+      [%access /access]
   ==
 ::
 ++  not-found
   %-  document
-  %^  make:mast  mast/%athens-404  ~  ~
+  %^  make:mast  %athens-404  ~  ~
 ::
 ++  document
   |=  com=manx

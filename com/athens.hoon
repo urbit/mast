@@ -24,29 +24,29 @@
       [%submit %post ~]
     =/  dat  (~(got by data.crow) 'post-input')
     ?:  =('' dat)  ~
-    :~  [%athens %athens-action !>([%put-post ~ dat])]
+    :~  [%athens-action !>([%put-post ~ dat])]
     ==
     ::
       [%submit %remove-ship ~]
     =/  dat  (~(got by data.crow) 'ship-input')
     ?:  =('' dat)  ~
-    :~  [%athens %athens-action !>([%del-access-id (slav %p dat)])]
+    :~  [%athens-action !>([%del-access-id (slav %p dat)])]
     ==
     ::
       [%submit %add-ship ~]
     =/  dat  (~(got by data.crow) 'ship-input')
     ?:  =('' dat)  ~
-    :~  [%athens %athens-action !>([%edit-access-id [`@p`(slav %p dat)]~])]
+    :~  [%athens-action !>([%edit-access-id [`@p`(slav %p dat)]~])]
     ==
     ::
       [%input %set-access-mode ~]
     =/  mode  (~(got by data.crow) '/target/mode')
-    :~  [%athens %athens-action !>([%set-access-mode mode])]
+    :~  [%athens-action !>([%set-access-mode mode])]
     ==
     ::
       [%submit %set-door-code ~]
     =/  code  (~(got by data.crow) 'code')
-    :~  [%athens %athens-action !>([%gated-set-door-code code])]
+    :~  [%athens-action !>([%gated-set-door-code code])]
     ==
     ::
       [%submit %sign-in ~]
@@ -55,7 +55,7 @@
       (~(got by data.crow) 'fingerprint')
     ?.  ?=(^ (find ~[fingerprint] ~(val by accounts.access)))
       ~     :: fail sign-in if the user does not have an account
-    :~  [%athens %athens-action !>(gated-sign-in+[src.hull fingerprint])]
+    :~  [%athens-action !>(gated-sign-in+[src.hull fingerprint])]
     ==
     ::
       [%submit %register ~]
@@ -65,7 +65,7 @@
     =/  door-code=@t  (~(got by data.crow) 'door-code')
     ?.  =(door-code door-code.access)
       ~
-    :~  [%athens %athens-action !>(gated-sign-in+[src.hull fingerprint])]
+    :~  [%athens-action !>(gated-sign-in+[src.hull fingerprint])]
     ==
     ::
       [%submit %hide-all ~]
@@ -297,16 +297,16 @@
           ==
         %+  turn  get-post-paths
         |=  =path
-        %^  make:mast  mast/%athens-post
+        %^  make:mast  %athens-post
           :~
             :-  %fingerprint
               %+  scot  %p
               (~(gut by accounts.access) src.hull src.hull)
           ==
-        :~  [%post (weld /athens/posts path)]
-            [%view (welp /athens/view/[(scot %p user)] path)]
-            [%new (weld /athens/new/[(scot %p user)] path)] 
-            :: [%access /athens/access]
+        :~  [%post (weld /posts path)]
+            [%view (welp /view/[(scot %p user)] path)]
+            [%new (weld /new/[(scot %p user)] path)] 
+            :: [%access /access]
         ==
       ;div(class "fixed bottom-[24px] inset-x-0 z-50 md:w-full")
         =key  "athens-post-form" 
