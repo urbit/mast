@@ -4,8 +4,9 @@
       [%patch-post post-at=path content=@t]
       [%del-post at=path]
       [%hide-post at=path]
-      [%hide-all ~]
+      [%hide-all bundles=(list @da)]
       [%unhide-post at=path]
+      [%unhide-bundles dat=date-type at=path]
       [%set-user-position at=path]
       [%set-access-mode mode=term]
       [%edit-access-id ids=(list @p)]
@@ -35,11 +36,13 @@
   %+  pair
       path
       view
++$  date-type  ?(%day %week %month %year)
 +$  view
   $%  [%old selected=?]
       [%new selected=?]
       [%display-none ~]
       [%hidden [posts=@ud new-post-total=@ud selected=?]]
+      [%hid-old [=date-type posts=@ud new-post-total=@ud oldest=@da]]
   ==
 +$  user-session-0
   $:  hidden-posts=(set post-id)

@@ -44,24 +44,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (rect.top >= 60 && rect.bottom > 0) {
         selectedPostContainer = container
-        console.log(selectedPostContainer)
         break
       }
     }
 
     if (selectedPostContainer) {
-      console.log(
-        'Selected container for submission:',
-        selectedPostContainer.id
-      )
       const formSelectedChange =
         selectedPostContainer.querySelector('.submit-selected')
       if (formSelectedChange) {
-        console.log(
-          'Submitting form for container:',
-          selectedPostContainer.id,
-          formSelectedChange
-        )
         const submitEvent = new Event('submit', {
           bubbles: true,
           cancelable: true
@@ -439,6 +429,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         target.classList.add('target')
       }
     }
+  }
+
+  window.submitFormWithIds = function () {
+    const bundleElements = document.querySelectorAll('.bundle')
+    const idArray = Array.from(bundleElements)
+      .map((element) => element.id)
+      .filter((id) => id)
+
+    const elem = document.getElementsByName('id-array')[0]
+    elem.setAttribute('value', JSON.stringify(idArray))
+    const form = elem.closest('form')
+    form.dispatchEvent(new Event('submit', { bubbles: true }))
   }
 
   window.delayedScrollToTop = function (

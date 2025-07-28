@@ -112,11 +112,10 @@
       [%athens-post !>([[post.post-node rep-num] (get-post-key-paths replies.post-node)])]
     ::
     [%view who=@ta rest=^]
-      =/  who  (slav %p who.pole)
-      ?.  =(who src.bowl)  ~
-      =/  usr  (~(get by user-sessions) who)
-      :+  ~  ~
-      [%noun !>((get-view rest.pole usr posts))]
+      ^-  (unit (unit cage))
+      =/  usr  (~(get by user-sessions) (slav %p who.pole))
+      :^  ~  ~  %$  !>
+      [%noun !>((get-view rest.pole usr posts now.bowl))]
     ::
     [%new who=@ta rest=^]
       =/  who  (slav %p who.pole)
@@ -125,9 +124,9 @@
       ?~  usr  :+  ~  ~  [%noun !>(~)]
       =/  new-posts  (get-sort-posts new-posts.u.usr rest.pole)
       ?:  ?&  =((tail rest.pole) /)
-              =(%hidden -:(get-view rest.pole usr posts))
+              =(%hidden -:(get-view rest.pole usr posts now.bowl))
           ==
-        =/  siblings  ~(tap in (hidden-siblings-below (slav %da (rear rest.pole)) posts hidden-posts.u.usr))
+        =/  siblings  ~(tap in (hidden-siblings-below (slav %da (rear rest.pole)) (get-post-key-id posts) hidden-posts.u.usr))
         =/  new-posts
           %-  zing
           %+  turn  siblings 
@@ -193,10 +192,14 @@
         %hide-post
       %-  hide-post  at.act
       ::
-        %hide-all  hide-all  
+        %hide-all  
+      %-  hide-all  bundles.act
       ::
         %unhide-post
       %-  unhide-post  at.act
+      ::
+        %unhide-bundles
+      %+  unhide-bundles  dat.act  at.act
       ::
         %set-user-position
       %-  set-user-position  at.act
@@ -241,7 +244,53 @@
   ?~  post-at 
       :~  %-  make-fact-card  /x/posts-all
       ==
-  =/  cards  *(list card)
+  ::  handles updating view if post hidden in bundle of replies or bundled by date
+  =/  cards
+    %-  zing
+    %+  murn  ~(tap in ~(key by user-sessions))
+    |=  ship=@p
+    ?:  =(ship user)  ~
+    =/  usr  (~(got by user-sessions) ship)
+    =/  top-lvl  =(1 (lent post-at))
+    =/  replies
+      ?:  top-lvl  posts
+      replies:(get-post-node ;;(path (snip `(list @tas)`post-at)) posts)
+    =/  sibling-wrapper=post-id:athens
+      %-  bundle-wrapper 
+      :*  (slav %da (rear post-at))
+          replies
+          hidden-posts.usr
+          ?:(top-lvl `now.bowl ~)
+      ==
+    =/  view-card
+      %-  make-fact-card 
+      ;;  path
+      %-  zing  
+      :~  /r/view/[(scot %p ship)] 
+          ;;(path (snip `(list @tas)`post-at)) 
+          /[(scot %da sibling-wrapper)]
+      ==
+    ?:  top-lvl
+      :-  ~
+      :~  view-card
+      ==
+    =/  wrapper-bundle=post-id:athens
+      %-  bundle-wrapper 
+      :*  (slav %da (head post-at))
+          posts
+          hidden-posts.usr
+          `now.bowl
+      ==
+    ?:  =(sibling-wrapper (slav %da (rear post-at))) 
+      :-  ~
+      :~  %-  make-fact-card 
+          /r/view/[(scot %p ship)]/[(scot %da wrapper-bundle)]
+      ==
+    :-  ~
+    :~  view-card
+        %-  make-fact-card 
+        /r/view/[(scot %p ship)]/[(scot %da wrapper-bundle)]
+    ==
   =/  at=path  post-at
   |-  ^-  (list card)
   ?:  =(/ (tail at))
@@ -329,43 +378,52 @@
     %-  emil 
     %+  turn  ~(tap in card-to)
     |=  i=post-id:athens
-    %-  make-fact-card  (weld /x/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
-  %-  emit
-  %-  make-fact-card  (weld /x/view/[(scot %p user)] at)
+    %-  make-fact-card  (weld /r/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
+  =/  poz-id  (get-post-key-id posts)
+  =/  index  
+    =/  u-i  (find ~[id] poz-id)
+    ?~  u-i  !!
+    (need u-i)
+  =/  sibling-id
+    ?:  (gte index 1)
+      ?:  (gte (lent poz-id) +(index))
+        (swag [(dec index) 3] poz-id)
+      (swag [(dec index) 2] poz-id)
+    (swag [index 2] poz-id)
+  =/  card-to
+    %+  skip  sibling-id
+    |=  =post-id:athens
+    =(~ (find ~[post-id] ~(tap in hidden-posts)))
+  %-  emil 
+  %+  turn  card-to
+  |=  i=post-id:athens
+  %-  make-fact-card  (weld /r/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
 ::
 ++  hide-all
+  |=  bundles=(list @da)
   ^+  cor 
   =/  user  user
-  =/  usr  (~(get by user-sessions) user)
+  =/  u-usr  (~(get by user-sessions) user)
   |^
   =/  posts-id  posts-to-id
-  =/  hidden-posts=(list post-id:athens)
-    %~  tap  in
-    ?~  usr  *(set post-id:athens)
-    hidden-posts.u.usr
-  =/  open-posts
-    %+  skim  posts-id 
-    |=  =post-id:athens
-    =(~ (find [post-id]~ hidden-posts))
+  =/  usr
+    ?~  u-usr  *user-session:athens  (need u-usr)
+  =/  open-post-ids=(set post-id:athens)  
+    (~(dif in (silt posts-id)) hidden-posts.usr)
+  =/  open-post-paths=(set path)
+    %-  %~  run  in 
+        open-post-ids
+      |=  p=post-id:athens  (find-path p ~(tap in new-posts.usr))
   =.  user-sessions  
     %+  ~(put by user-sessions)  user 
-    ?~  usr  [(silt posts-id) *(set path) ~]
-    =/  new-posts-ids=(list post-id:athens)
-      %+  turn  ~(tap in new-posts.u.usr)
-      |=  p=path
-      (slav %da (rear p))
-    =/  hide-new-posts=(list path) 
-      %-  turn  
-      :_  |=  p=post-id:athens  (find-path p ~(tap in new-posts.u.usr))
-      %+  skip  open-posts
-      |=  =post-id:athens
-      =(~ (find [post-id]~ new-posts-ids))
+    ?~  u-usr  [(silt posts-id) *(set path) ~]
+    =/  hide-new-posts=(set path)  (~(int in open-post-paths) new-posts.usr)
     :*  (silt posts-id) 
-      (~(dif in new-posts.u.usr) (silt hide-new-posts))
-      selected-post.u.usr
+      (~(dif in new-posts.usr) hide-new-posts)
+      selected-post.usr
     ==
   %-  emil  
-  %+  turn  open-posts
+  %+  turn  (weld bundles ~(tap in open-post-ids))
   |=  at=post-id:athens
   %-  make-fact-card  /x/view/[(scot %p user)]/[(scot %da at)]
   ::
@@ -443,7 +501,7 @@
     ^-  [(set post-id:athens) (list card)]
     ?:  =(/ (tail at))  [*(set post-id:athens) ~]
     =/  replies  replies:(get-post-node `path`(snip `(list @ta)`at) posts)
-    =/  unhide  (hidden-siblings-below id replies hidden-posts.usr)
+    =/  unhide  (hidden-siblings-below id (get-post-key-id replies) hidden-posts.usr)
     :-
       %-  %~  dif  in 
       hidden-posts.usr
@@ -452,6 +510,27 @@
     |=  id=post-id:athens
     %-  make-fact-card  (weld /x/view/[(scot %p user)] (weld (snip at) /[(scot %da id)]))
 --
+++  unhide-bundles
+  |=  [dat=date-type:athens at=path]
+  ^+  cor
+  =/  user  user
+  =/  usr  (~(got by user-sessions) user)
+  =/  post-id  (slav %da (rear at))
+  =/  posts-id=(list post-id:athens)
+    ::  new to old
+    %-  sort  :_  lth
+    %+  turn  ~(tap by posts)
+    |=  [id=post-id:athens *]  id
+  =/  id-list  (id-list-by-date post-id now.bowl posts-id)
+  =/  unhide=(list post-id:athens)
+    %~  tap  in
+      (~(int in hidden-posts.usr) (silt id-list))
+  =.  hidden-posts.usr  (~(dif in hidden-posts.usr) (silt unhide))
+  =.  user-sessions  (~(put by user-sessions) user usr)
+  %-  emil
+  %+  turn  unhide 
+  |=  id=post-id:athens
+  %-  make-fact-card  /r/view/[(scot %p user)]/[(scot %da id)]
 ::
 ++  set-door-code
   |=  code=@t
@@ -471,10 +550,14 @@
   |=  at=path
   ^+  cor
   =/  usr  (~(get by user-sessions) user)
+  =/  already-selected
+    ?~  usr  |
+    ?~  selected-post.u.usr  |
+    ?:  =(u.selected-post.u.usr at)  &  |
+  ?:  already-selected  cor
   =/  old-selected-card  
     ?~  usr  ~  
     ?~  selected-post.u.usr  ~
-    ?:  =(u.selected-post.u.usr at)  !!
     :~ 
       %-  make-fact-card  (weld /x/view/[(scot %p user)] u.selected-post.u.usr)
     ==
@@ -547,13 +630,13 @@
   (sort ~(tap in ~(key by poz)) lte)
 ::
 ++  get-view
-  |=  [post-path=path usr=(unit user-session:athens) =posts:athens]
+  |=  [post-path=path usr=(unit user-session:athens) =posts:athens now=@da]
   ^-  view:athens
+  =/  id=post-id:athens  (slav %da (rear post-path))
   ?~  usr  [%old |]
   =/  selected-post=path  
     ?~  selected-post.u.usr  ~  
     u.selected-post.u.usr
-  =/  id=post-id:athens  (slav %da (rear post-path))
   ?.  (~(has in hidden-posts.u.usr) id)
     ?.  (~(has in new-posts.u.usr) post-path)  
       :-  %old
@@ -586,7 +669,7 @@
           (~(has in hidden-posts.u.usr) (snag (dec (need i)) id-list))
       ==
     ::if post above is hidden 
-      =/  siblings   ~(tap in (hidden-siblings-below id replies hidden-posts.u.usr))
+      =/  siblings   ~(tap in (hidden-siblings-below id (get-post-key-id replies) hidden-posts.u.usr))
       =/  num-new=@ud
         %-  reel  :_  add
         %+  turn  siblings 
@@ -599,7 +682,63 @@
       =/  num  (lent siblings)
       `view:athens`[%hidden [num num-new =(post-path selected-post)]]
     hidden-view
-  hidden-view
+  =/  hidden-old-view  (collapsed-by-date id posts now usr)
+  ?~  hidden-old-view  
+    hidden-view
+  u.hidden-old-view
+::
+++  collapsed-by-date
+  |=  [when=@da posts=posts:athens now=@da usr=(unit user-session:athens)]
+  ^-  (unit view:athens)
+  =/  d  (sub d:(yell now) d:(yell when))  
+  =/  yor-now  (yore now)
+  =/  yor-when  (yore when)
+  =/  poz-id=(list post-id:athens)
+    %-  sort  :_  lth
+    %+  turn  ~(tap by posts)
+    |=  [id=post-id:athens *]  id
+  =/  poz  (id-list-by-date when now poz-id)
+  =/  dat
+    ?:  (gte d 365)
+    %year
+    ?:  &((gte d 30) (lth d 365))
+    %month
+    ?.  (gte d 7)  %day  %week
+  ::  checks sibling view in feed
+  ?:  =(dat %day)  ~
+  =/  u-i  %+  find  ~[when]  poz
+  ?~  u-i  ~
+  =/  index  (need u-i)
+  ?~  usr  ~
+  ?:  ?&  (gth (lent poz) +(index))
+          (~(has in hidden-posts.u.usr) (snag +(index) poz))
+      ==
+    `[%display-none ~]
+  ?:  ?&  (gte index 1)
+          (~(has in hidden-posts.u.usr) (snag (dec index) poz))
+      ==
+    =/  siblings   ~(tap in (hidden-siblings-below when poz hidden-posts.u.usr))
+    =/  num-new=@ud
+      %-  reel  :_  add
+      %+  turn  siblings
+      |=  i=post-id:athens
+      =/  sib-path  /[(scot %da i)]
+      %-  lent  %-  homo
+      %+  skip  ~(tap in new-posts.u.usr)
+      |=  p=path
+      =(~ (find sib-path p))
+    =/  num  (lent siblings)
+    `[%hid-old dat num num-new -.poz]
+  :-  ~
+  :*  %hid-old
+      dat
+      0
+      %-  lent  %-  homo
+      %+  skip  ~(tap in new-posts.u.usr)
+      |=  p=path
+      =(~ (find ~[(scot %da when)] p))
+      -.poz
+    ==
 ::
 ++  count-replies
   |=  replies=posts:athens
@@ -615,8 +754,70 @@
     replies  p.q.rep-counter
     counter  (add counter n.q.rep-counter)
   ==
+::  returns: post-id for siblings wrapper 
+++  bundle-wrapper
+  |=  [id=post-id:athens poz=posts:athens hidden-posts=(set post-id:athens) now=(unit @da)]
+  ^-  post-id:athens
+  =/  poz-list=(list post-id:athens)  
+    (sort ~(tap in ~(key by poz)) lte)
+  =/  id-list  
+    ?:  =(~ now)  poz-list
+    (id-list-by-date id (need now) poz-list)
+  =/  u-ix  (find ~[id] id-list)
+  ?~  u-ix  id
+  =/  ix  (need u-ix)
+  |-  ^-  post-id:athens
+  ::  if below is hidden
+  ?:  ?&  (gth (lent id-list) +(ix))
+          (~(has in hidden-posts) (snag +(ix) id-list))
+      ==
+    =/  next  (snag +(ix) id-list)
+    ?:  ?&  (gth (lent id-list) (add 2 ix))
+            (~(has in hidden-posts) (snag (add 2 ix) id-list))
+        ==
+      %=  $
+      ix  +(ix)
+      ==
+    next
+  id
 ::
-::  returns: post itself, last hidden sibling post below and hidden sibling above (if has hidden siblingm posts)
+++  id-list-by-date
+  |=  [when=post-id:athens now=@da poz-id=(list post-id:athens)]
+  ^-  (list post-id:athens)
+  =/  yor-now  (yore now)
+  =/  yor-when  (yore when)
+  =/  d  (sub d:(yell now) d:(yell when))  
+  ?:  (gte d 365)
+    =/  y  (sub y:-:yor-now y:-:yor-when)
+    %-  sort  :_  lth
+    %+  skim  poz-id
+    |=  id=post-id:athens
+    =/  d-post  (sub d:(yell now) d:(yell id))  
+    =/  yor-post  (yore id)
+    &(=(y (sub y:-:yor-now y:-:yor-post)) (gte d-post 365))
+  ?:  &((gte d 30) (lth d 365))
+      ::  amount of months ago 
+    =/  m  
+      ?:  =(y:-:yor-now y:-:yor-when)
+        (sub m:yor-now m:yor-when)
+      (sub (add m:yor-now 12) m:yor-when)
+    %-  sort  :_  lth
+    %+  skim  poz-id
+    |=  id=post-id:athens
+    =/  d-post  (sub d:(yell now) d:(yell id)) 
+    =/  yor-post  (yore id)
+    ?.  &((gte d 30) (lth d 365))  |
+    ?:  &((gth m:yor-post m:yor-now) =(+(y.-.yor-post) y.-.yor-now))
+      =(m (sub (add m:yor-now 12) m:yor-post))
+    =(m (sub m:yor-now m:yor-post))
+  ?.  (gte d 7)  ~  ::%days
+  =/  w  (div d 7)
+  %-  sort  :_  lth
+  %+  skim  poz-id
+  |=  id=post-id:athens
+  =/  w-post  (sub d:(yell now) d:(yell id))  
+  =(w (div w-post 7))
+::  returns: post itself, last hidden sibling post below and hidden sibling above (if has hidden sibling posts)
 ++  hidden-siblings
   |=  [id=post-id:athens poz=posts:athens hidden-posts=(set post-id:athens)]
   ^-  (set post-id:athens)
@@ -632,7 +833,7 @@
           (~(has in hidden-posts) (snag +(ix) id-list))
       ==
     =/  next  (snag +(ix) id-list)
-    ::  check if there's other siblings below are hidden send card to last one 
+    ::  check if there's other siblings below are hidden send card to last one  
     ?:  ?&  (gth (lent id-list) (add 2 ix))
             (~(has in hidden-posts) (snag (add 2 ix) id-list))
         ==
@@ -653,9 +854,8 @@
 ::
 ::  returns: all hidden sibling posts below post at id
 ++  hidden-siblings-below
-  |=  [id=post-id:athens poz=posts:athens hidden-posts=(set post-id:athens)]
+  |=  [id=post-id:athens id-list=(list post-id:athens) hidden-posts=(set post-id:athens)]
   ^-  (set post-id:athens)
-  =/  id-list=(list post-id:athens)  (get-post-key-id poz)
   ::  find hidden post in list remove posts before him 
   =/  u-ix  (find ~[id] id-list)
   =/  unhide  (~(put in *(set post-id:athens)) id)
