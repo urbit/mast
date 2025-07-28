@@ -198,7 +198,8 @@
         %hide-post
       %-  hide-post  at.act
       ::
-        %hide-all  hide-all  
+        %hide-all  
+      %-  hide-all  bundles.act
       ::
         %unhide-post
       %-  unhide-post  at.act
@@ -405,6 +406,7 @@
   %-  make-fact-card  (weld /r/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
 ::
 ++  hide-all
+  |=  bundles=(list @da)
   ^+  cor 
   =/  user  user
   =/  u-usr  (~(get by user-sessions) user)
@@ -413,8 +415,6 @@
   =/  usr
     ?~  u-usr  *user-session:athens  (need u-usr)
   =/  open-post-ids=(set post-id:athens)  
-    ::  gets difference beween all posts and hidden to get all open posts
-    ::  TODO: update view for wrappers of the hidden bundles 
     (~(dif in (silt posts-id)) hidden-posts.usr)
   =/  open-post-paths=(set path)
     %-  %~  run  in 
@@ -429,7 +429,7 @@
       selected-post.usr
     ==
   %-  emil  
-  %+  turn  ~(tap in open-post-ids)
+  %+  turn  (weld bundles ~(tap in open-post-ids))
   |=  at=post-id:athens
   %-  make-fact-card  /r/view/[(scot %p user)]/[(scot %da at)]
   ::

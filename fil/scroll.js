@@ -431,6 +431,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  window.submitFormWithIds = function () {
+    const bundleElements = document.querySelectorAll('.bundle')
+    const idArray = Array.from(bundleElements)
+      .map((element) => element.id)
+      .filter((id) => id)
+
+    const elem = document.getElementsByName('id-array')[0]
+    elem.setAttribute('value', JSON.stringify(idArray))
+    const form = elem.closest('form')
+    form.dispatchEvent(new Event('submit', { bubbles: true }))
+  }
+
   window.delayedScrollToTop = function (
     id,
     getParent = true,

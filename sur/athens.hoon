@@ -4,7 +4,7 @@
       [%patch-post post-at=path content=@t]
       [%del-post at=path]
       [%hide-post at=path]
-      [%hide-all ~]
+      [%hide-all bundles=(list @da)]
       [%unhide-post at=path]
       [%unhide-bundles dat=date-type at=path]
       [%set-user-position at=path]

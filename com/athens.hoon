@@ -39,12 +39,12 @@
     :~  [%athens %athens-action !>([%edit-access-id [`@p`(slav %p dat)]~])]
     ==
     ::
-     [%input %set-access-mode ~]
+      [%input %set-access-mode ~]
     =/  mode  (~(got by data.crow) '/target/mode')
     :~  [%athens %athens-action !>([%set-access-mode mode])]
     ==
     ::
-     [%submit %set-door-code ~]
+      [%submit %set-door-code ~]
     =/  code  (~(got by data.crow) 'code')
     :~  [%athens %athens-action !>([%gated-set-door-code code])]
     ==
@@ -68,8 +68,13 @@
     :~  [%athens %athens-action !>(gated-sign-in+[src.hull fingerprint])]
     ==
     ::
-      [%click %hide-all ~]
-    :~  [%athens %athens-action !>([%hide-all ~])]
+      [%submit %hide-all ~]
+    =/  data  (~(got by data.crow) 'id-array')
+    =/  ids=(list @da)
+      %+  turn  ((ar so):dejs:format (need (de:json:html data)))
+      |=  d=@t
+      `@da`(slav %da d)
+    :~  [%athens %athens-action !>([%hide-all ids])]
     ==
   ==
 ::
@@ -143,11 +148,19 @@
               "max-h-[65vh] overflow-y-auto leading-[0.8] w-full"
       ;div
         =class  button-wrapper-class
+        =onclick  "toggleView('settings-menu')"
         ;button
-          =onclick  "toggleView('settings-menu')"
+          =onclick  "submitFormWithIds()"
           =class  button-class
-          =event  "/click/hide-all"
           ;  Read all
+        ==
+        ;form.hidden
+        =event  "/submit/hide-all"
+          ;input.hidden
+            =name  "id-array"
+            =value  ""
+            ;
+          ==
         ==
       ==
       ;div
@@ -165,12 +178,20 @@
               "divide-y divide-[var(--grey-light)] leading-tight ".
               "max-h-[65vh] overflow-y-auto leading-[0.8] w-full"
       ;div
+        =onclick  "toggleView('settings-menu')"
         =class  "flex items-center h-[28px] overflow-hidden"
         ;button
-          =onclick  "toggleView('settings-menu')"
           =class  "p-2 cursor-pointer col-span-2 flex items-center overflow-hidden text-[var(--grey-default)] hover:text-[var(--grey-light)]"
-          =event  "/click/hide-all"
+          =onclick  "submitFormWithIds()"
           ;  Read all
+        ==
+        ;form.hidden
+        =event  "/submit/hide-all"
+          ;input.hidden
+            =name  "id-array"
+            =value  ""
+            ;
+          ==
         ==
       ==
       ;*

@@ -229,7 +229,7 @@
       =id  idt
       =event  "/click/unhide"
       =client-event  "click loading-bundle {idt}"
-      =class  "relative grid grid-cols-2 ".
+      =class  "bundle relative grid grid-cols-2 ".
               "grid-rows-[min-content] gap-y-[16px] md:gap-x-4 ".
               "md:pb-[0px] w-full md:grid-cols-3 md:flex-row ".
               "md:items-start md:w-full md:grid-cols-[min-content_auto_120px] grid-cols-[1fr_min-content] ".
