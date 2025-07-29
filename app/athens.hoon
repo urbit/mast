@@ -116,7 +116,7 @@
     [%view who=@ta rest=^]
       ^-  (unit (unit cage))
       =/  usr  (~(get by user-sessions) (slav %p who.pole))
-      :^  ~  ~  %$  !>
+      :+  ~  ~
       [%noun !>((get-view rest.pole usr posts now.bowl))]
     ::
     [%new who=@ta rest=^]
@@ -380,7 +380,7 @@
     %-  emil 
     %+  turn  ~(tap in card-to)
     |=  i=post-id:athens
-    %-  make-fact-card  (weld /r/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
+    %-  make-fact-card  (weld /x/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
   =/  poz-id  (get-post-key-id posts)
   =/  index  
     =/  u-i  (find ~[id] poz-id)
@@ -399,7 +399,7 @@
   %-  emil 
   %+  turn  card-to
   |=  i=post-id:athens
-  %-  make-fact-card  (weld /r/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
+  %-  make-fact-card  (weld /x/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
 ::
 ++  hide-all
   |=  bundles=(list @da)

@@ -31,7 +31,7 @@
       [%click %toggle-hide ~]
     =/  id  (slav %da (rear src:post))
     ?:  is-hid
-      :~  [%athens %athens-action !>([%unhide-post t.t.paf])]
+      :~  [%athens-action !>([%unhide-post t.paf])]
       ==
     :~  [%athens-action !>([%hide-post t.paf])]
     ==
@@ -45,10 +45,10 @@
       [%click %unhide ~]
     ?~  hid-old
       ?>  hid
-      :~  [%athens %athens-action !>([%unhide-post t.t.paf])]
+      :~  [%athens-action !>([%unhide-post t.paf])]
       ==
     =/  dt=date-type:athens  (need hid-old)
-    :~  [%athens %athens-action !>([%unhide-bundles dt t.t.paf])]
+    :~  [%athens-action !>([%unhide-bundles dt t.paf])]
     ==
     ::
       [%submit %reply ~]

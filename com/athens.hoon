@@ -69,12 +69,13 @@
     ==
     ::
       [%submit %hide-all ~]
-    =/  data  (~(got by data.crow) 'id-array')
+    =/  data  (de:json:html (~(got by data.crow) 'id-array'))
+    ?<  =(~ data)
     =/  ids=(list @da)
-      %+  turn  ((ar so):dejs:format (need (de:json:html data)))
+      %+  turn  ((ar so):dejs:format (need data))
       |=  d=@t
       `@da`(slav %da d)
-    :~  [%athens %athens-action !>([%hide-all ids])]
+    :~  [%athens-action !>([%hide-all ids])]
     ==
   ==
 ::
