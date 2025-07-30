@@ -139,80 +139,218 @@ document.addEventListener('DOMContentLoaded', async () => {
       .forEach((el) => el.classList.remove('target'))
     nextElement.classList.add('target')
 
+    const virtualScroller = document.querySelector('virtual-scroller')
+
     // Scroll to element
     const rect = nextElement.getBoundingClientRect()
-    const targetY = window.pageYOffset + rect.top - HEADER_HEIGHT
+    const targetY = window.pageYOffset + rect.top //- HEADER_HEIGHT
+    console.log('targetY', targetY)
 
-    window.scrollTo({
-      top: targetY,
-      behavior: 'smooth'
-    })
+    if (virtualScroller) {
+      virtualScroller.scrollTo({
+        top: targetY,
+        behavior: 'smooth'
+      })
+    } else {
+      window.scrollTo({
+        top: targetY,
+        behavior: 'smooth'
+      })
+    }
   }
 
-  function scrollToNearest(forceDirection = null) {
+  // window.scrollToNearest = function (forceDirection = null) {
+  //   if (!forceDirection) return
+
+  //   const virtualScroller = window.getComputedStyle('virtual-scroller')
+
+  //   const hasUncollapsed = document.querySelector('.options') !== null
+
+  //   if (hasUncollapsed) {
+  //     scrollInDirection(forceDirection)
+  //   } else {
+  //     const viewportTop = virtualScroller.scrollY + 60
+  //     const viewportBottom = viewportTop + window.innerHeight
+
+  //     let targetElement = null
+  //     let bestDistance = Infinity
+
+  //     let elements = Array.from(document.querySelectorAll('.has-new'))
+
+  //     elements.forEach((element) => {
+  //       const rect = element.getBoundingClientRect()
+  //       const elementTop = rect.top + virtualScroller.scrollY
+  //       const elementBottom = elementTop + rect.height
+
+  //       // Check if element is in the direction we're looking for
+  //       if (forceDirection === 'above' && elementBottom < viewportTop) {
+  //         // Find the closest element above viewport
+  //         const distance = viewportTop - elementBottom
+  //         if (distance < bestDistance) {
+  //           bestDistance = distance
+  //           targetElement = element
+  //         }
+  //       } else if (
+  //         forceDirection === 'above' &&
+  //         elementBottom > viewportTop &&
+  //         elementTop < viewportBottom
+  //       ) {
+  //         // If looking above and element is in viewport, choose from bottom up (bottommost first)
+  //         const distance = viewportBottom - elementBottom
+  //         if (distance < bestDistance) {
+  //           bestDistance = distance
+  //           targetElement = element
+  //         }
+  //       } else if (forceDirection === 'below' && elementTop > viewportBottom) {
+  //         // Find the closest element below viewport
+  //         const distance = elementTop - viewportBottom
+  //         if (distance < bestDistance) {
+  //           bestDistance = distance
+  //           targetElement = element
+  //         }
+  //       } else if (
+  //         forceDirection === 'below' &&
+  //         elementBottom > viewportTop &&
+  //         elementTop < viewportBottom
+  //       ) {
+  //         // If looking below and element is in viewport, choose from top to bottom (topmost first)
+  //         const distance = elementTop - viewportTop
+  //         if (distance < bestDistance) {
+  //           bestDistance = distance
+  //           targetElement = element
+  //         }
+  //       }
+  //     })
+
+  //     if (targetElement) {
+  //       targetElement.click()
+
+  //       const rect = targetElement.getBoundingClientRect()
+  //       const scrollTop =
+  //       virtualScroller.pageYOffset || document.documentElement.scrollTop
+  //       const targetY = scrollTop + rect.top - 157
+
+  //       virtualScroller.scrollTo({
+  //         top: targetY,
+  //         behavior: 'smooth'
+  //       })
+  //     } else {
+  //       scrollInDirection(forceDirection)
+  //     }
+  //   }
+  //}
+
+  window.scrollToNearest = function (forceDirection = null) {
     if (!forceDirection) return
 
+    // Check if there's a virtual scroller on the page
+    const virtualScroller = document.querySelector('virtual-scroller')
     const hasUncollapsed = document.querySelector('.options') !== null
 
-    if (hasUncollapsed) {
+    if (hasUncollapsed && virtualScroller) {
       scrollInDirection(forceDirection)
+      return
+    }
+
+    let viewportTop, viewportBottom, scrollContext
+
+    if (virtualScroller) {
+      // Virtual scroller context
+      scrollContext = virtualScroller
+      viewportTop = virtualScroller.scrollTop
+      viewportBottom = viewportTop + virtualScroller.clientHeight
     } else {
-      const viewportTop = window.scrollY + 60
-      const viewportBottom = viewportTop + window.innerHeight
+      // Main window context
+      scrollContext = window
+      viewportTop = window.scrollY + 60
+      viewportBottom = viewportTop + window.innerHeight
+    }
 
-      let targetElement = null
-      let bestDistance = Infinity
+    let targetElement = null
+    let bestDistance = Infinity
+    let elements
 
-      let elements = Array.from(document.querySelectorAll('.has-new'))
+    if (virtualScroller) {
+      // Get elements from virtual scroller slots, but skip hidden ones
+      const slot = virtualScroller.shadowRoot.querySelector('slot')
+      const slottedElements = slot.assignedElements()
+      elements = slottedElements.filter(
+        (el) => !el.classList.contains('hidden')
+      )
+    } else {
+      // Get elements from main document
+      elements = Array.from(document.querySelectorAll('.has-new'))
+    }
 
-      elements.forEach((element) => {
+    elements.forEach((element) => {
+      let elementTop, elementBottom
+
+      if (virtualScroller) {
+        // For virtual scroller, use offsetTop relative to the container
+        elementTop = element.offsetTop
+        elementBottom = elementTop + element.offsetHeight
+      } else {
+        // For main window, use getBoundingClientRect
         const rect = element.getBoundingClientRect()
-        const elementTop = rect.top + window.scrollY
-        const elementBottom = elementTop + rect.height
+        elementTop = rect.top + window.scrollY
+        elementBottom = elementTop + rect.height
+      }
 
-        // Check if element is in the direction we're looking for
-        if (forceDirection === 'above' && elementBottom < viewportTop) {
-          // Find the closest element above viewport
-          const distance = viewportTop - elementBottom
-          if (distance < bestDistance) {
-            bestDistance = distance
-            targetElement = element
-          }
-        } else if (
-          forceDirection === 'above' &&
-          elementBottom > viewportTop &&
-          elementTop < viewportBottom
-        ) {
-          // If looking above and element is in viewport, choose from bottom up (bottommost first)
-          const distance = viewportBottom - elementBottom
-          if (distance < bestDistance) {
-            bestDistance = distance
-            targetElement = element
-          }
-        } else if (forceDirection === 'below' && elementTop > viewportBottom) {
-          // Find the closest element below viewport
-          const distance = elementTop - viewportBottom
-          if (distance < bestDistance) {
-            bestDistance = distance
-            targetElement = element
-          }
-        } else if (
-          forceDirection === 'below' &&
-          elementBottom > viewportTop &&
-          elementTop < viewportBottom
-        ) {
-          // If looking below and element is in viewport, choose from top to bottom (topmost first)
-          const distance = elementTop - viewportTop
-          if (distance < bestDistance) {
-            bestDistance = distance
-            targetElement = element
-          }
+      // Check if element is in the direction we're looking for
+      if (forceDirection === 'above' && elementBottom < viewportTop) {
+        // Find the closest element above viewport
+        const distance = viewportTop - elementBottom
+        if (distance < bestDistance) {
+          bestDistance = distance
+          targetElement = element
         }
-      })
+      } else if (
+        forceDirection === 'above' &&
+        elementBottom > viewportTop &&
+        elementTop < viewportBottom
+      ) {
+        // If looking above and element is in viewport, choose from bottom up (bottommost first)
+        const distance = viewportBottom - elementBottom
+        if (distance < bestDistance) {
+          bestDistance = distance
+          targetElement = element
+        }
+      } else if (forceDirection === 'below' && elementTop > viewportBottom) {
+        // Find the closest element below viewport
+        const distance = elementTop - viewportBottom
+        if (distance < bestDistance) {
+          bestDistance = distance
+          targetElement = element
+        }
+      } else if (
+        forceDirection === 'below' &&
+        elementBottom > viewportTop &&
+        elementTop < viewportBottom
+      ) {
+        // If looking below and element is in viewport, choose from top to bottom (topmost first)
+        const distance = elementTop - viewportTop
+        if (distance < bestDistance) {
+          bestDistance = distance
+          targetElement = element
+        }
+      }
+    })
 
-      if (targetElement) {
+    if (targetElement) {
+      // Only click if not in virtual scroller (preserve original behavior for main window)
+      if (!virtualScroller) {
         targetElement.click()
+      }
 
+      if (virtualScroller) {
+        // Scroll within the virtual scroller
+        const targetY = targetElement.offsetTop
+        virtualScroller.scrollTo({
+          top: targetY,
+          behavior: 'smooth'
+        })
+      } else {
+        // Scroll the main window
         const rect = targetElement.getBoundingClientRect()
         const scrollTop =
           window.pageYOffset || document.documentElement.scrollTop
@@ -222,29 +360,46 @@ document.addEventListener('DOMContentLoaded', async () => {
           top: targetY,
           behavior: 'smooth'
         })
+      }
+    } else {
+      // Fallback scrolling
+      if (virtualScroller) {
+        // Fallback for virtual scroller - scroll by container height
+        const scrollAmount = virtualScroller.clientHeight * 0.8
+        if (forceDirection === 'below') {
+          virtualScroller.scrollBy({
+            top: scrollAmount,
+            behavior: 'smooth'
+          })
+        } else {
+          virtualScroller.scrollBy({
+            top: -scrollAmount,
+            behavior: 'smooth'
+          })
+        }
       } else {
         scrollInDirection(forceDirection)
       }
     }
   }
 
-  document.addEventListener('keydown', (e) => {
-    const tag = document.activeElement?.tagName?.toLowerCase()
-    if (
-      ['input', 'textarea'].includes(tag) ||
-      document.activeElement?.isContentEditable
-    ) {
-      return
-    }
+  // document.addEventListener('keydown', (e) => {
+  //   const tag = document.activeElement?.tagName?.toLowerCase()
+  //   if (
+  //     ['input', 'textarea'].includes(tag) ||
+  //     document.activeElement?.isContentEditable
+  //   ) {
+  //     return
+  //   }
 
-    if (e.key === 'j' || e.key === ' ' || e.key === 'ArrowDown') {
-      e.preventDefault()
-      scrollToNearest('below')
-    } else if (e.key === 'k' || e.key === 'ArrowUp') {
-      e.preventDefault()
-      scrollToNearest('above')
-    }
-  })
+  //   if (e.key === 'j' || e.key === ' ' || e.key === 'ArrowDown') {
+  //     e.preventDefault()
+  //     scrollToNearest('below')
+  //   } else if (e.key === 'k' || e.key === 'ArrowUp') {
+  //     e.preventDefault()
+  //     scrollToNearest('above')
+  //   }
+  // })
 
   //  Mobile
 
