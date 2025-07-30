@@ -74,7 +74,7 @@
       %+  turn  ((ar so):dejs:format (need (de:json:html data)))
       |=  d=@t
       `@da`(slav %da d)
-    :~  [%athens %athens-action !>([%hide-all ids])]
+    :~  [%athens-action !>([%hide-all ids])]
     ==
   ==
 ::
@@ -84,6 +84,7 @@
   =/  authenticated-user=(unit @p)  (has-access src.hull access)
   =/  is-logged-in=?  |(?=(^ authenticated-user) =(our.hull src.hull))
   =/  user=@p  (fall authenticated-user src.hull)
+  =/  redirect-to  "/{(trip bas.hull)}"
   |^
     ;div.root
       ;+  (make-client-state:mast [reply+"~" edit+"~" show-settings+"false" show-ids+"false" loading-bundle+"~" ~])
@@ -167,7 +168,7 @@
         =class  button-wrapper-class
         ;a
           =class  button-class
-          =href  "/~/logout?redirect=/mast/athens"
+          =href  "/~/logout?redirect={redirect-to}"
           ; Sign out
         ==
       ==
@@ -278,7 +279,7 @@
       =method  "POST"
       ;label.p-2(for "login-input"): login:
       ;input(id "login-input", name "name", required "");
-      ;input(type "hidden", name "redirect", value "/mast/athens");
+      ;input(type "hidden", name "redirect", value redirect-to);
       ;input(type "hidden", name "eauth", value "");
       ;button(type "submit")
         ;+  arrow-right:lucide
@@ -353,7 +354,7 @@
             ;div.font-bold: Unavailable
             ;div: The host needs to set the "door code" before you can register.
             ;a.underline
-              =href  "/~/login?redirect=/mast/athens"
+              =href  "/~/login?redirect={redirect-to}"
               ; login as host
             ==
           ==
@@ -449,14 +450,14 @@
         =method  "post"
         =action  "/~/login"
         ;input.hidden(name "eauth", value "");
-        ;input.hidden(name "redirect", value "/mast/athens");
+        ;input.hidden(name "redirect", value redirect-to);
         ;div.flex.flex-col.gap-3.border.rounded-md.p-3.border-neutral-800
           ;div.text-red-400: access denied
           ;+
           ?:  !is-logged-in  ;/("")
           ;div.flex.gap-2
             ;div.font-mono: {(cite:title user)}
-            ;a.opacity-50(href "/~/logout?redirect=/mast/athens")
+            ;a.opacity-50(href "/~/logout?redirect={redirect-to}")
               ; logout
             ==
           ==

@@ -114,9 +114,10 @@
       [%athens-post !>([[post.post-node rep-num] (get-post-key-paths replies.post-node)])]
     ::
     [%view who=@ta rest=^]
-      ^-  (unit (unit cage))
-      =/  usr  (~(get by user-sessions) (slav %p who.pole))
-      :^  ~  ~  %$  !>
+      =/  who  (slav %p who.pole)
+      ?.  =(who src.bowl)  ~
+      =/  usr  (~(get by user-sessions) who)
+      :+  ~  ~
       [%noun !>((get-view rest.pole usr posts now.bowl))]
     ::
     [%new who=@ta rest=^]
@@ -268,7 +269,7 @@
       %-  make-fact-card 
       ;;  path
       %-  zing  
-      :~  /r/view/[(scot %p ship)] 
+      :~  /x/view/[(scot %p ship)] 
           ;;(path (snip `(list @tas)`post-at)) 
           /[(scot %da sibling-wrapper)]
       ==
@@ -286,12 +287,12 @@
     ?:  =(sibling-wrapper (slav %da (rear post-at))) 
       :-  ~
       :~  %-  make-fact-card 
-          /r/view/[(scot %p ship)]/[(scot %da wrapper-bundle)]
+          /x/view/[(scot %p ship)]/[(scot %da wrapper-bundle)]
       ==
     :-  ~
     :~  view-card
         %-  make-fact-card 
-        /r/view/[(scot %p ship)]/[(scot %da wrapper-bundle)]
+        /x/view/[(scot %p ship)]/[(scot %da wrapper-bundle)]
     ==
   =/  at=path  post-at
   |-  ^-  (list card)
@@ -380,7 +381,7 @@
     %-  emil 
     %+  turn  ~(tap in card-to)
     |=  i=post-id:athens
-    %-  make-fact-card  (weld /r/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
+    %-  make-fact-card  (weld /x/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
   =/  poz-id  (get-post-key-id posts)
   =/  index  
     =/  u-i  (find ~[id] poz-id)
@@ -399,7 +400,7 @@
   %-  emil 
   %+  turn  card-to
   |=  i=post-id:athens
-  %-  make-fact-card  (weld /r/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
+  %-  make-fact-card  (weld /x/view/[(scot %p user)] (weld (snip at) /[(scot %da i)]))
 ::
 ++  hide-all
   |=  bundles=(list @da)
@@ -532,7 +533,7 @@
   %-  emil
   %+  turn  unhide 
   |=  id=post-id:athens
-  %-  make-fact-card  /r/view/[(scot %p user)]/[(scot %da id)]
+  %-  make-fact-card  /x/view/[(scot %p user)]/[(scot %da id)]
 ::
 ++  set-door-code
   |=  code=@t
@@ -1049,3 +1050,4 @@
     --
   --
 --
+
