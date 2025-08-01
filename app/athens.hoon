@@ -114,8 +114,9 @@
       [%athens-post !>([[post.post-node rep-num] (get-post-key-paths replies.post-node)])]
     ::
     [%view who=@ta rest=^]
-      ^-  (unit (unit cage))
-      =/  usr  (~(get by user-sessions) (slav %p who.pole))
+      =/  who  (slav %p who.pole)
+      ?.  =(who src.bowl)  ~
+      =/  usr  (~(get by user-sessions) who)
       :+  ~  ~
       [%noun !>((get-view rest.pole usr posts now.bowl))]
     ::
@@ -1049,3 +1050,4 @@
     --
   --
 --
+
