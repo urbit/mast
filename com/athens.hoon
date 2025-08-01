@@ -69,9 +69,10 @@
     ==
     ::
       [%submit %hide-all ~]
-    =/  data  (~(got by data.crow) 'id-array')
+    =/  data  (de:json:html (~(got by data.crow) 'id-array'))
+    ?<  =(~ data)
     =/  ids=(list @da)
-      %+  turn  ((ar so):dejs:format (need (de:json:html data)))
+      %+  turn  ((ar so):dejs:format (need data))
       |=  d=@t
       `@da`(slav %da d)
     :~  [%athens-action !>([%hide-all ids])]
@@ -287,27 +288,35 @@
     ==
   ++  list-posts
     ;div
-      =class  "posts md:gap-[16px] gap-[16px] relative"
       ;*  
         =;  =marl  ?^  marl  marl
           ;=
-            ;div.flex.flex-col.items-center
-              ;div.text-lg.font-bold: Welcome to Circles.
-              ;div: There are no posts yet.
+            ;div
+              =class  "posts md:gap-[16px] gap-[16px] relative"
+              ;div.flex.flex-col.items-center
+                ;div.text-lg.font-bold: Welcome to Circles.
+                ;div: There are no posts yet.
+              ==
             ==
           ==
-        %+  turn  get-post-paths
-        |=  =path
-        %^  make:mast  %athens-post
-          :~
-            :-  %fingerprint
-              %+  scot  %p
-              (~(gut by accounts.access) src.hull src.hull)
+        ;=
+          ;virtual-scroller
+            =class  "posts md:gap-[16px] gap-[16px] relative"
+            ;*
+            %+  turn  get-post-paths
+            |=  =path
+            %^  make:mast  %athens-post
+              :~
+                :-  %fingerprint
+                  %+  scot  %p
+                  (~(gut by accounts.access) src.hull src.hull)
+              ==
+            :~  [%post (weld /posts path)]
+                [%view (welp /view/[(scot %p user)] path)]
+                [%new (weld /new/[(scot %p user)] path)] 
+                :: [%access /access]
+            ==
           ==
-        :~  [%post (weld /posts path)]
-            [%view (welp /view/[(scot %p user)] path)]
-            [%new (weld /new/[(scot %p user)] path)] 
-            :: [%access /access]
         ==
       ;div(class "fixed bottom-[24px] inset-x-0 z-50 md:w-full")
         =key  "athens-post-form" 

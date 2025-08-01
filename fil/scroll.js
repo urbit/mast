@@ -139,210 +139,123 @@ document.addEventListener('DOMContentLoaded', async () => {
       .forEach((el) => el.classList.remove('target'))
     nextElement.classList.add('target')
 
+    const virtualScroller = document.querySelector('virtual-scroller')
+
     // Scroll to element
     const rect = nextElement.getBoundingClientRect()
-    const targetY = window.pageYOffset + rect.top - HEADER_HEIGHT
+    const targetY = window.pageYOffset + rect.top //- HEADER_HEIGHT
+    console.log('targetY', targetY)
 
-    window.scrollTo({
-      top: targetY,
-      behavior: 'smooth'
-    })
-  }
-
-  function scrollToNearest(forceDirection = null) {
-    if (!forceDirection) return
-
-    const hasUncollapsed = document.querySelector('.options') !== null
-
-    if (hasUncollapsed) {
-      scrollInDirection(forceDirection)
-    } else {
-      const viewportTop = window.scrollY + 60
-      const viewportBottom = viewportTop + window.innerHeight
-
-      let targetElement = null
-      let bestDistance = Infinity
-
-      let elements = Array.from(document.querySelectorAll('.has-new'))
-
-      elements.forEach((element) => {
-        const rect = element.getBoundingClientRect()
-        const elementTop = rect.top + window.scrollY
-        const elementBottom = elementTop + rect.height
-
-        // Check if element is in the direction we're looking for
-        if (forceDirection === 'above' && elementBottom < viewportTop) {
-          // Find the closest element above viewport
-          const distance = viewportTop - elementBottom
-          if (distance < bestDistance) {
-            bestDistance = distance
-            targetElement = element
-          }
-        } else if (
-          forceDirection === 'above' &&
-          elementBottom > viewportTop &&
-          elementTop < viewportBottom
-        ) {
-          // If looking above and element is in viewport, choose from bottom up (bottommost first)
-          const distance = viewportBottom - elementBottom
-          if (distance < bestDistance) {
-            bestDistance = distance
-            targetElement = element
-          }
-        } else if (forceDirection === 'below' && elementTop > viewportBottom) {
-          // Find the closest element below viewport
-          const distance = elementTop - viewportBottom
-          if (distance < bestDistance) {
-            bestDistance = distance
-            targetElement = element
-          }
-        } else if (
-          forceDirection === 'below' &&
-          elementBottom > viewportTop &&
-          elementTop < viewportBottom
-        ) {
-          // If looking below and element is in viewport, choose from top to bottom (topmost first)
-          const distance = elementTop - viewportTop
-          if (distance < bestDistance) {
-            bestDistance = distance
-            targetElement = element
-          }
-        }
+    if (virtualScroller) {
+      virtualScroller.scrollTo({
+        top: targetY,
+        behavior: 'smooth'
       })
-
-      if (targetElement) {
-        targetElement.click()
-
-        const rect = targetElement.getBoundingClientRect()
-        const scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop
-        const targetY = scrollTop + rect.top - 157
-
-        window.scrollTo({
-          top: targetY,
-          behavior: 'smooth'
-        })
-      } else {
-        scrollInDirection(forceDirection)
-      }
+    } else {
+      window.scrollTo({
+        top: targetY,
+        behavior: 'smooth'
+      })
     }
   }
-
-  document.addEventListener('keydown', (e) => {
-    const tag = document.activeElement?.tagName?.toLowerCase()
-    if (
-      ['input', 'textarea'].includes(tag) ||
-      document.activeElement?.isContentEditable
-    ) {
-      return
-    }
-
-    if (e.key === 'j' || e.key === ' ' || e.key === 'ArrowDown') {
-      e.preventDefault()
-      scrollToNearest('below')
-    } else if (e.key === 'k' || e.key === 'ArrowUp') {
-      e.preventDefault()
-      scrollToNearest('above')
-    }
-  })
 
   //  Mobile
 
-  function scrollToDirection(forceDirection = null) {
-    if (!forceDirection) return
+  // function scrollToDirection(forceDirection = null) {
+  //   if (!forceDirection) return
 
-    // No target element found, scroll to next viewport
-    const currentScrollY = window.scrollY
-    const viewportHeight = window.innerHeight
+  //   // No target element found, scroll to next viewport
+  //   const currentScrollY = window.scrollY
+  //   const viewportHeight = window.innerHeight
 
-    if (forceDirection === 'above') {
-      // Scroll up by one viewport height
-      window.scrollTo({
-        top: Math.max(0, currentScrollY - viewportHeight + 157),
-        behavior: 'smooth'
-      })
-    } else if (forceDirection === 'below') {
-      // Scroll down by one viewport height
-      const maxScroll =
-        document.documentElement.scrollHeight - window.innerHeight
-      window.scrollTo({
-        top: Math.min(maxScroll, currentScrollY + viewportHeight - 157),
-        behavior: 'smooth'
-      })
-    }
-  }
+  //   if (forceDirection === 'above') {
+  //     // Scroll up by one viewport height
+  //     window.scrollTo({
+  //       top: Math.max(0, currentScrollY - viewportHeight + 157),
+  //       behavior: 'smooth'
+  //     })
+  //   } else if (forceDirection === 'below') {
+  //     // Scroll down by one viewport height
+  //     const maxScroll =
+  //       document.documentElement.scrollHeight - window.innerHeight
+  //     window.scrollTo({
+  //       top: Math.min(maxScroll, currentScrollY + viewportHeight - 157),
+  //       behavior: 'smooth'
+  //     })
+  //   }
+  // }
 
-  let startX = 0
-  let startY = 0
-  let startTime = 0
+  // let startX = 0
+  // let startY = 0
+  // let startTime = 0
 
-  document.addEventListener(
-    'touchstart',
-    (e) => {
-      const touch = e.touches[0]
-      startX = touch.clientX
-      startY = touch.clientY
-      startTime = Date.now()
-    },
-    { passive: false }
-  )
+  // document.addEventListener(
+  //   'touchstart',
+  //   (e) => {
+  //     const touch = e.touches[0]
+  //     startX = touch.clientX
+  //     startY = touch.clientY
+  //     startTime = Date.now()
+  //   },
+  //   { passive: false }
+  // )
 
-  document.addEventListener(
-    'touchmove',
-    (e) => {
-      // Prevent native scrolling during potential swipes
-      const deltaTime = Date.now() - startTime
-      if (deltaTime < 300) {
-        const touch = e.touches[0]
-        const deltaX = touch.clientX - startX
-        const deltaY = touch.clientY - startY
-        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+  // document.addEventListener(
+  //   'touchmove',
+  //   (e) => {
+  //     // Prevent native scrolling during potential swipes
+  //     const deltaTime = Date.now() - startTime
+  //     if (deltaTime < 300) {
+  //       const touch = e.touches[0]
+  //       const deltaX = touch.clientX - startX
+  //       const deltaY = touch.clientY - startY
+  //       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
 
-        if (distance > 10 && Math.abs(deltaX) < Math.abs(deltaY)) {
-          e.preventDefault() // Stop native scroll for vertical swipes
-        }
-      }
-    },
-    { passive: false }
-  )
+  //       if (distance > 10 && Math.abs(deltaX) < Math.abs(deltaY)) {
+  //         e.preventDefault() // Stop native scroll for vertical swipes
+  //       }
+  //     }
+  //   },
+  //   { passive: false }
+  // )
 
-  document.addEventListener(
-    'touchend',
-    (e) => {
-      const touch = e.changedTouches[0]
-      const endX = touch.clientX
-      const endY = touch.clientY
-      const endTime = Date.now()
+  // document.addEventListener(
+  //   'touchend',
+  //   (e) => {
+  //     const touch = e.changedTouches[0]
+  //     const endX = touch.clientX
+  //     const endY = touch.clientY
+  //     const endTime = Date.now()
 
-      const deltaX = endX - startX
-      const deltaY = endY - startY
-      const deltaTime = endTime - startTime
+  //     const deltaX = endX - startX
+  //     const deltaY = endY - startY
+  //     const deltaTime = endTime - startTime
 
-      // Check if it's a quick swipe (under 300ms)
-      if (deltaTime < 300) {
-        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+  //     // Check if it's a quick swipe (under 300ms)
+  //     if (deltaTime < 300) {
+  //       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
 
-        // Minimum distance for swipe (50px)
-        if (distance > 50) {
-          // Determine direction
-          if (Math.abs(deltaX) < Math.abs(deltaY)) {
-            if (e.cancelable) {
-              e.preventDefault()
-            }
-            // Vertical swipe
-            if (deltaY > 0) {
-              // Handle swipe down
-              scrollToDirection('above')
-            } else {
-              // Handle swipe up
-              scrollToDirection('below')
-            }
-          }
-        }
-      }
-    },
-    { passive: false }
-  )
+  //       // Minimum distance for swipe (50px)
+  //       if (distance > 50) {
+  //         // Determine direction
+  //         if (Math.abs(deltaX) < Math.abs(deltaY)) {
+  //           if (e.cancelable) {
+  //             e.preventDefault()
+  //           }
+  //           // Vertical swipe
+  //           if (deltaY > 0) {
+  //             // Handle swipe down
+  //             scrollToDirection('above')
+  //           } else {
+  //             // Handle swipe up
+  //             scrollToDirection('below')
+  //           }
+  //         }
+  //       }
+  //     }
+  //   },
+  //   { passive: false }
+  // )
 
   //  Handles scroll to the top for new replies and reply form
 
