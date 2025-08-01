@@ -4,7 +4,6 @@
 /*  footnote-parser  %js  /fil/footnote-parser/js
 /*  scroll  %js  /fil/scroll/js
 /*  urbit-sigil  %js  /fil/urbit-sigil/js
-/*  local-notifications  %js  /fil/local-notifications/js
 /*  virtual-scroller  %js  /fil/virtual-scroller/js
 ^-  mast:mast
 =<
@@ -56,7 +55,6 @@
       ;script(type "module"): {(trip urbit-sigil)}
       ;script(type "module"): {(trip virtual-scroller)}
       ;script(defer ""): {(trip scroll)}
-      ;script(defer ""): {(trip local-notifications)}
       ;script(src "https://unpkg.com/lucide@latest");
       ;script:  lucide.createIcons();
       ;style(type "text/tailwindcss")

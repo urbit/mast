@@ -11,10 +11,81 @@ class VirtualScroller extends LitElement {
       display: block;
       overflow-y: auto;
       position: relative;
+
+      /* Hide scrollbar */
+      -ms-overflow-style: none; /* Internet Explorer 10+ */
+      scrollbar-width: none; /* Firefox */
+    }
+
+    :host::-webkit-scrollbar {
+      display: none; /* Safari and Chrome */
     }
 
     ::slotted(.hidden) {
       display: none !important;
+    }
+
+    /* Position indicator styles */
+    .position-indicator {
+      position: fixed;
+      z-index: 100;
+    }
+
+    .tracker-button {
+      background: rgb(3 7 18);
+      border: 1px solid var(--grey-default);
+      border-radius: 0.375rem;
+      padding: 8px;
+      font-family: Inter, sans-serif;
+      color: var(--grey-default);
+      display: none;
+      align-items: center;
+      gap: 0.25rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      height: 28px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    .tracker-button:hover {
+      border-color: var(--grey-light);
+      color: var(--grey-light);
+    }
+
+    .tracker-button.visible {
+      display: flex;
+    }
+
+    .desktop-trackers {
+      display: block;
+    }
+
+    .mobile-trackers {
+      display: none;
+      top: 24px;
+      left: 24px;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .desktop-trackers {
+        display: none;
+      }
+
+      .mobile-trackers {
+        display: flex;
+      }
+    }
+
+    #tracker-above {
+      top: 24px;
+      left: 24px;
+    }
+
+    #tracker-below {
+      bottom: 24px;
+      left: 24px;
     }
   `
 
@@ -29,9 +100,13 @@ class VirtualScroller extends LitElement {
     // Touch handling properties
     this.touchStartY = 0
     this.touchStartTime = 0
-    this.touchThreshold = 50 // minimum distance for swipe
-    this.touchTimeThreshold = 300 // maximum time for quick swipe (ms)
+    this.touchThreshold = 50
+    this.touchTimeThreshold = 300
     this.isScrolling = false
+
+    // Notification tracking properties
+    this.notificationElements = []
+    this.updateElementsInterval = null
   }
 
   connectedCallback() {
@@ -48,6 +123,8 @@ class VirtualScroller extends LitElement {
     this.addEventListener('touchend', this.handleTouchEnd.bind(this), {
       passive: false
     })
+
+    this.initializeNotificationTracking()
   }
 
   disconnectedCallback() {
@@ -62,9 +139,15 @@ class VirtualScroller extends LitElement {
     if (this.observer) {
       this.observer.disconnect()
     }
+
     // Cancel all pending timeouts on disconnect
     this.pendingTimeouts.forEach((timeoutId) => clearTimeout(timeoutId))
     this.pendingTimeouts.clear()
+
+    // Clear notification tracking interval
+    if (this.updateElementsInterval) {
+      clearInterval(this.updateElementsInterval)
+    }
   }
 
   firstUpdated() {
@@ -72,24 +155,182 @@ class VirtualScroller extends LitElement {
     this.addEventListener('scroll', this.handleScroll.bind(this))
   }
 
+  initializeNotificationTracking() {
+    this.updateNotificationElements()
+    this.updateNotificationPositions()
+
+    // Update elements periodically
+    this.updateElementsInterval = setInterval(() => {
+      this.updateNotificationElements()
+      this.updateNotificationPositions()
+    }, 1000)
+  }
+
+  updateNotificationElements() {
+    const spans = document.querySelectorAll('span.new')
+
+    this.notificationElements = Array.from(spans).map((span) => {
+      const text = span.textContent.trim()
+      const cleanedText = text.startsWith('+') ? text.slice(1) : text
+      const value = parseInt(cleanedText) || 0
+      return {
+        element: span,
+        value: value
+      }
+    })
+  }
+
+  updateNotificationPositions() {
+    const scrollerRect = this.getBoundingClientRect()
+    const viewportTop = this.scrollTop + 60
+    const viewportBottom = viewportTop + this.clientHeight - 110
+
+    let aboveSum = 0
+    let belowSum = 0
+
+    this.notificationElements.forEach(({ element, value }) => {
+      const elementRect = element.getBoundingClientRect()
+      const scrollerTopOffset = scrollerRect.top
+      const elementTop = elementRect.top - scrollerTopOffset + this.scrollTop
+      const elementBottom = elementTop + elementRect.height
+
+      if (elementBottom < viewportTop) {
+        aboveSum += value
+      } else if (elementTop > viewportBottom) {
+        belowSum += value
+      }
+    })
+
+    this.updateNotificationDisplay(aboveSum, belowSum)
+  }
+
+  updateNotificationDisplay(aboveSum, belowSum) {
+    this.requestUpdate()
+
+    // Update the rendered indicators after the next render
+    this.updateComplete.then(() => {
+      const trackerAbove = this.shadowRoot.querySelector('#tracker-above')
+      const trackerBelow = this.shadowRoot.querySelector('#tracker-below')
+      const mobileAbove = this.shadowRoot.querySelector('#mobile-tracker-above')
+      const mobileBelow = this.shadowRoot.querySelector('#mobile-tracker-below')
+
+      // Update desktop indicators
+      if (trackerAbove) {
+        const aboveNumber = trackerAbove.querySelector('.above-number')
+        if (aboveSum > 0) {
+          trackerAbove.classList.add('visible')
+          if (aboveNumber) aboveNumber.textContent = aboveSum
+        } else {
+          trackerAbove.classList.remove('visible')
+        }
+      }
+
+      if (trackerBelow) {
+        const belowNumber = trackerBelow.querySelector('.below-number')
+        if (belowSum > 0) {
+          trackerBelow.classList.add('visible')
+          if (belowNumber) belowNumber.textContent = belowSum
+        } else {
+          trackerBelow.classList.remove('visible')
+        }
+      }
+
+      // Update mobile indicators
+      if (mobileAbove) {
+        const aboveNumber = mobileAbove.querySelector('.above-number')
+        if (aboveSum > 0) {
+          mobileAbove.classList.add('visible')
+          if (aboveNumber) aboveNumber.textContent = aboveSum
+        } else {
+          mobileAbove.classList.remove('visible')
+        }
+      }
+
+      if (mobileBelow) {
+        const belowNumber = mobileBelow.querySelector('.below-number')
+        if (belowSum > 0) {
+          mobileBelow.classList.add('visible')
+          if (belowNumber) belowNumber.textContent = belowSum
+        } else {
+          mobileBelow.classList.remove('visible')
+        }
+      }
+    })
+  }
+
+  scrollToNearestNotification(direction) {
+    const scrollerRect = this.getBoundingClientRect()
+    const viewportTop = this.scrollTop + 60
+    const viewportBottom = viewportTop + this.clientHeight - 110
+
+    let targetPost = null
+    let bestDistance = Infinity
+
+    // Look through all .new elements to find ones in the requested direction
+    const newElements = document.querySelectorAll('span.new')
+
+    newElements.forEach((newElement) => {
+      const text = newElement.textContent.trim()
+      const cleanedText = text.startsWith('+') ? text.slice(1) : text
+      const value = parseInt(cleanedText) || 0
+
+      if (value <= 0) return // Skip if no new items
+
+      const elementRect = newElement.getBoundingClientRect()
+      const scrollerTopOffset = scrollerRect.top
+      const elementTop = elementRect.top - scrollerTopOffset + this.scrollTop
+      const elementBottom = elementTop + elementRect.height
+
+      let shouldConsider = false
+      let distance = 0
+
+      if (direction === 'above' && elementBottom < viewportTop) {
+        shouldConsider = true
+        distance = viewportTop - elementBottom
+      } else if (direction === 'below' && elementTop > viewportBottom) {
+        shouldConsider = true
+        distance = elementTop - viewportBottom
+      }
+
+      if (shouldConsider && distance < bestDistance) {
+        // Find the .post-container that contains this .new element
+        const postContainer = newElement.closest('.post-container')
+        if (postContainer) {
+          bestDistance = distance
+          targetPost = postContainer
+        }
+      }
+    })
+
+    if (targetPost) {
+      // Set target class and scroll to the post
+      this.setTargetClass(targetPost)
+      this.scrollToTop(targetPost)
+
+      // Update current target index
+      const allPosts = this.getAllPosts()
+      this.currentTargetIndex = allPosts.indexOf(targetPost)
+    } else {
+      // Fallback: use regular post navigation if no notification post found
+      this.scrollToNearest(direction)
+    }
+  }
+
   setupIntersectionObserver() {
     const options = {
       root: this,
-      rootMargin: '0px 0px -100% 0px', // Only trigger when element is above viewport
+      rootMargin: '0px 0px -100% 0px',
       threshold: 0
     }
 
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        // When element exits the viewport from the top
         if (
           !entry.isIntersecting &&
           entry.boundingClientRect.bottom < entry.rootBounds.top
         ) {
           this.handleElementAboveViewport(entry.target)
-        }
-        // When element comes back into view, cancel any pending timeout
-        else if (
+        } else if (
           entry.isIntersecting &&
           this.pendingTimeouts.has(entry.target)
         ) {
@@ -105,7 +346,6 @@ class VirtualScroller extends LitElement {
       })
     }, options)
 
-    // Observe all slotted elements with IDs or without IDs (which should have hidden class)
     this.observeSlottedElements()
   }
 
@@ -114,7 +354,6 @@ class VirtualScroller extends LitElement {
     const slottedElements = slot.assignedElements()
 
     slottedElements.forEach((element) => {
-      // Only observe elements with IDs or elements without IDs that have hidden class
       if (element.id || (!element.id && element.classList.contains('hidden'))) {
         this.observer.observe(element)
       }
@@ -122,7 +361,6 @@ class VirtualScroller extends LitElement {
   }
 
   handleElementAboveViewport(element) {
-    // Prevent multiple triggers for the same element
     if (this.trackedElements.has(element)) {
       return
     }
@@ -133,7 +371,6 @@ class VirtualScroller extends LitElement {
     if (trackElement) {
       const timeoutId = setTimeout(() => {
         trackElement.dispatchEvent(new Event('submit', { bubbles: true }))
-
         this.pendingTimeouts.delete(element)
       }, 3000)
 
@@ -155,7 +392,6 @@ class VirtualScroller extends LitElement {
   }
 
   setTargetClass(element) {
-    // Remove target class from all posts
     const allPosts = this.getAllPosts()
     allPosts.forEach((post) => post.classList.remove('target'))
 
@@ -172,7 +408,6 @@ class VirtualScroller extends LitElement {
     const currentIndex = this.getCurrentTargetIndex()
     const currentTarget = currentIndex !== -1 ? allPosts[currentIndex] : null
 
-    // Check if current target is still visible in viewport
     const isCurrentTargetVisible = currentTarget
       ? this.isElementVisible(currentTarget)
       : false
@@ -243,7 +478,6 @@ class VirtualScroller extends LitElement {
   }
 
   handleTouchMove(e) {
-    // Allow normal scrolling, just track that we're scrolling
     this.isScrolling = true
   }
 
@@ -256,7 +490,6 @@ class VirtualScroller extends LitElement {
     const deltaY = this.touchStartY - touchEndY
     const deltaTime = touchEndTime - this.touchStartTime
 
-    // Check if it's a quick swipe
     if (
       deltaTime <= this.touchTimeThreshold &&
       Math.abs(deltaY) >= this.touchThreshold
@@ -297,7 +530,6 @@ class VirtualScroller extends LitElement {
     const scrollOffset =
       elementRect.top - scrollerRect.top + this.scrollTop - 70
 
-    // Smooth scroll to position
     this.scrollTo({
       top: scrollOffset,
       behavior: 'smooth'
@@ -325,13 +557,15 @@ class VirtualScroller extends LitElement {
   }
 
   handleScroll() {
-    // Reset tracking when scrolling back up significantly
     const scrollTop = this.scrollTop
     if (scrollTop < 100) {
       this.pendingTimeouts.forEach((timeoutId) => clearTimeout(timeoutId))
       this.pendingTimeouts.clear()
       this.trackedElements.clear()
     }
+
+    // Update notification positions on scroll
+    this.updateNotificationPositions()
   }
 
   logEvent(message) {
@@ -343,15 +577,68 @@ class VirtualScroller extends LitElement {
     }
   }
 
+  handleNotificationClick(direction) {
+    console.log('handle notification click', direction)
+    if (direction === 'above') {
+      const event = new CustomEvent('click/toggle-hide')
+      document.dispatchEvent(event)
+    }
+    this.scrollToNearestNotification(direction)
+  }
+
   render() {
-    return html`<slot @slotchange=${this.handleSlotChange}></slot>`
+    return html`
+      <slot @slotchange=${this.handleSlotChange}></slot>
+
+      <!-- Desktop notification indicators -->
+      <div class="desktop-trackers">
+        <div
+          id="tracker-above"
+          class="tracker-button position-indicator"
+          @click=${() => this.handleNotificationClick('above')}
+        >
+          <span>↑</span>
+          <span class="above-number">0</span>
+          <span>new</span>
+        </div>
+        <div
+          id="tracker-below"
+          class="tracker-button position-indicator"
+          @click=${() => this.handleNotificationClick('below')}
+        >
+          <span>↓</span>
+          <span class="below-number">0</span>
+          <span>new</span>
+        </div>
+      </div>
+
+      <!-- Mobile notification indicators -->
+      <div class="mobile-trackers position-indicator">
+        <div
+          id="mobile-tracker-above"
+          class="tracker-button"
+          @click=${() => this.handleNotificationClick('above')}
+        >
+          <span>↑</span>
+          <span class="above-number">0</span>
+          <span>new</span>
+        </div>
+        <div
+          id="mobile-tracker-below"
+          class="tracker-button"
+          @click=${() => this.handleNotificationClick('below')}
+        >
+          <span>↓</span>
+          <span class="below-number">0</span>
+          <span>new</span>
+        </div>
+      </div>
+    `
   }
 
   handleSlotChange() {
-    // Re-observe elements when slot content changes
     if (this.observer) {
       this.observer.disconnect()
-      // Cancel all pending timeouts when slot changes
       this.pendingTimeouts.forEach((timeoutId) => clearTimeout(timeoutId))
       this.pendingTimeouts.clear()
       this.trackedElements.clear()
@@ -361,3 +648,40 @@ class VirtualScroller extends LitElement {
 }
 
 customElements.define('virtual-scroller', VirtualScroller)
+
+// Focus tracking functionality
+document.addEventListener('DOMContentLoaded', () => {
+  function setupFocusTracking() {
+    const inputs = document.querySelectorAll(
+      'input.track-focus, textarea.track-focus'
+    )
+
+    inputs.forEach((input) => {
+      input.addEventListener('focus', () => {
+        const postForm = document.getElementById('post-form')
+        if (postForm) {
+          postForm.classList.add('hidden')
+        }
+      })
+
+      input.addEventListener('blur', () => {
+        const postForm = document.getElementById('post-form')
+        if (postForm) {
+          postForm.classList.remove('hidden')
+        }
+      })
+    })
+  }
+
+  const focusMutationObserver = new MutationObserver(() => {
+    setupFocusTracking()
+  })
+
+  focusMutationObserver.observe(document.body, {
+    childList: true,
+    subtree: true
+  })
+
+  // Initialize focus tracking
+  setupFocusTracking()
+})
