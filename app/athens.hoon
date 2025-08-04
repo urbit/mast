@@ -4,16 +4,17 @@
 /*  app-tile  %png  /fil/app-tile/png
 |%
 +$  card  card:agent:gall
-+$  state-1
-  $:  %state-1
++$  state-2
+  $:  %state-2
+      =index:athens
       =posts:athens
       =user-sessions:athens
-      access=access:athens
+      =access:athens
   ==
 --
 ::
 %-  mast
-=|  state-1
+=|  state-2
 =*  state  -
 =<
 ^-  agent:gall
@@ -40,8 +41,14 @@
     ::
     =?  state  ?=(^ old)
       ?-  -.u.old
-        %state-1  u.old
-        %state-0  (state-0-to-1 u.old)
+        %state-2  u.old
+        %state-1
+          %-  state-1-to-2
+          u.old
+        %state-0
+          %-  state-1-to-2
+          %-  state-0-to-1
+          u.old
       ==
     :_  this
     :~
@@ -51,6 +58,7 @@
   +$  state-n
     $%  state-0
         state-1
+        state-2
     ==
   +$  state-0
     $:  %state-0
@@ -80,6 +88,21 @@
           members  members.access-0.zero
         ==
     ==
+  +$  state-1
+    $:  %state-1
+        =posts:athens
+        =user-sessions:athens
+        access=access:athens
+    ==
+  ++  state-1-to-2
+    |=  one=state-1
+    ^-  state-2
+    :*  %state-2
+        ~
+        posts:one
+        user-sessions:one
+        access:one
+    ==
   --
 ::
 ++  on-poke
@@ -107,6 +130,27 @@
       :+  ~  ~
       [%athens-post-list !>((get-post-key-paths posts))]
     ::
+    [%post ~]
+      =/  =post-node:athens  (get-post-node / posts)
+      :+  ~  ~
+      :-  %sparta-post  !>
+      :+  /
+        ~  :: no root post
+      %-  ~(run by replies.post-node)
+      |=  =post-node:athens
+      post.post-node
+      ::
+    [%post id=@ta ~]
+      =/  where=path  (~(got by index) (slav %da id.pole))
+      =/  =post-node:athens  (get-post-node where posts)
+      :+  ~  ~
+      :-  %sparta-post  !>
+      :+  where
+        `post.post-node
+      %-  ~(run by replies.post-node)
+      |=  =post-node:athens
+      post.post-node
+      ::
     [%posts rest=^]
       =/  =post-node:athens  (get-post-node rest.pole posts)
       =/  rep-num  (count-replies replies.post-node)
