@@ -183,6 +183,17 @@
         :+  ~  ~  [%noun !>(new-posts)]
       :+  ~  ~  [%noun !>(new-posts)]
     ::
+    [%recent who=@ta ~]
+      =/  who  (slav %p who.pole)
+      ?.  =(who src.bowl)  ~
+      =/  usr  (~(get by user-sessions) who)
+      ?~  usr  :+  ~  ~  [%sparta-recent !>(~)]
+      =/  recent 
+        %+  turn  ~(tap in new-posts.u.usr)
+        |=  paf=path
+        (get-tree paf posts)
+      :+  ~  ~  [%sparta-recent !>(recent)]
+    ::
     [%access ~]
       :+  ~  ~
       [%athens-access !>(access)]
@@ -918,6 +929,20 @@
         unhide  (~(put in unhide) (snag (dec ix) id-list))
         ix      (dec ix)
     ==
+::
+++  get-tree
+  |=  [=path =posts:athens]
+  =/  tree  *(map post-id:athens post:athens)
+  |-  ^-  [post-id:athens post:athens (map post-id:athens post:athens)]
+  =/  =post-id:athens  (slav %da -.path)
+  =/  =post-node:athens  (~(got by posts) post-id)
+  ?^  +.path
+    %=  $
+      posts  replies.post-node
+      path  +.path
+      tree  (~(put by tree) [(slav %da -.path) post.post-node])
+    ==
+  [post-id post.post-node tree]
 ::
 ++  get-post-node 
   |=  [=path =posts:athens]
