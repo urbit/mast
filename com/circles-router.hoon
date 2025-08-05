@@ -169,7 +169,7 @@
 
     return (
       el.isContentEditable ||
-      tag === 'TEXTAREA' ||
+      tag.includes('TEXTAREA') ||
       (tag === 'INPUT' && ['text', 'search', 'email', 'url', 'tel', 'password', 'number'].includes(type))
     );
   }
