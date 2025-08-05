@@ -1,5 +1,6 @@
 /-  mast
 /*  urbit-sigil  %js  /fil/urbit-sigil/js
+/*  expanding-textarea  %js  /fil/expanding-textarea/js
 ^-  mast:mast
 =<
 :-  ~
@@ -51,6 +52,7 @@
       ;script(src "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4");
       ;script(src "https://cdn.jsdelivr.net/npm/marked/marked.min.js");
       ;script(type "module"): {(trip urbit-sigil)}
+      ;script(type "module"): {(trip expanding-textarea)}
       ;style(type "text/tailwindcss")
         ;-  %-  trip
         '''
@@ -71,13 +73,62 @@
   ==
 ::
 ++  style
-  :: :root{
-  ::   --bg-color: #0F0F0F;
-  ::   --grey-light: #A3A3A3;
-  ::   --grey-default: #737373;
-  ::   --text-color: #FAFAFA;
-  :: }
   '''
+  :root{
+    --bg-color: #0F0F0F;
+    --grey-light: #A3A3A3;
+    --grey-default: #737373;
+    --text-color: #FAFAFA;
+  }
+  .center-line, 
+  .center-line-first,
+  .center-line-last {
+    position: relative;
+    isolation: isolate;
+  }
+  .center-line::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--grey-default);
+    transform: translateX(-50%);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .center-line-last::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: calc(100% - 0.7em);
+    left: 50%;
+    width: 1px;
+    background: var(--grey-default);
+    transform: translateX(-50%);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .center-line-first::after {
+    content: "";
+    position: absolute;
+    top: 0.75em;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--grey-default);
+    transform: translateX(-50%);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .linkable a {
+    text-decoration: underline;
+  }
+  textarea {  /* fix a safari textarea flickering */
+    -webkit-overflow-scrolling: auto;
+    transition: height 0s;
+  }
   html {
     scroll-behavior: smooth;
   }
@@ -90,26 +141,6 @@
   '''
 ++  script
   '''
-  function resizeTextarea(el) {
-    // store scroll position to avoid a scroll flicker bug
-    const container = el.closest('body') || window;
-    const scrollTop = container.scrollTop;
-    
-    el.style.overflowY = 'hidden'
-    el.style.height = 'auto';
-    let newHeight = Math.max(el.scrollHeight, 15);
-    el.style.height = newHeight + 'px';
-
-    container.scrollTop = scrollTop;
-
-  }
-  function resizeBoxes() {
-    document.querySelectorAll('textarea').forEach(autoResize);
-  }
-  function autoResize(el) {
-    resizeTextarea(el);
-    setTimeout(() => {resizeTextarea(el)}, 10);
-  }
   function linkify() {
     const divs = document.querySelectorAll('.linkable');
   
@@ -125,32 +156,7 @@
     });
   }
   
-  document.addEventListener('input', (e) => {
-    if (e.target.tagName === 'TEXTAREA') autoResize(e.target);
-  });
-  
-  document.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'TEXTAREA') {
-      if (e.key == 'Enter' && (e.metaKey || e.ctrlKey)) {
-        e.target?.form?.requestSubmit()
-      }
-    } else if (e.target.tagName === 'INPUT') {
-      if (e.key == 'Enter' && (e.metaKey || e.ctrlKey)) {
-        e.target?.form?.requestSubmit()
-      } else if (e.key == 'Enter' && e.target.classList.contains('subject')) {
-        e.preventDefault();
-        e.stopPropagation();
-        let message = e.target.nextElementSibling?.focus()
-      }
-    } else if (e.key ==  ' ') {
-      e.preventDefault();
-      e.stopPropagation();
-      document.getElementById('next-new')?.click()
-    }
-  });
-  
   window.addEventListener('load', () => {
-    document.querySelectorAll('textarea').forEach(autoResize);
     linkify();
   });
   '''

@@ -53,15 +53,27 @@
             [(crip id) ?~(t.chain "open" "closed")]
             [(crip (welp "editing" id)) "false"]
           ==
-      ;button.font-mono.px-2.flex.flex-col.justify-start
-        =client-display  "{id} closed"
-        =client-event  "click {id} open"
-        ; +
-      ==
-      ;button.font-mono.px-2.flex.flex-col.justify-start
-        =client-display  "{id} !closed"
-        =client-event  "click {id} closed"
-        ; -
+      ;*
+        =/  class
+          %+  welp  "font-mono px-2 flex flex-col justify-start "
+          ?~  where
+            ?~  t.chain  ""
+            "center-line-first"
+          ?~  t.chain  "center-line-last"
+          "center-line"
+      ;=
+        ;button
+          =class  class
+          =client-display  "{id} closed"
+          =client-event  "click {id} open"
+          ; •
+        ==
+        ;button
+          =class  class
+          =client-display  "{id} !closed"
+          =client-event  "click {id} closed"
+          ; -
+        ==
       ==
       ;div.flex.flex-col.grow
         ;a.flex.gap-2
@@ -81,9 +93,8 @@
                 =client-display  "editing{id} true"
                 =event  "/submit/edit"
                 ;input.hidden(name "where", value (spud where));
-                ;textarea.py-1.px-2.grow.h-fit
+                ;expanding-textarea.py-1.px-2.grow
                   =placeholder  "reply"
-                  =rows  "1"
                   =name  "content"
                   =required  ""
                   ;*
@@ -91,7 +102,7 @@
                   |=  line=tape
                   ;/  (welp line "\0a")
                 ==
-                ;button.p-1: →
+                ;button.p-1.flex.flex-col.justify-end: →
               ==
           ;div.whitespace-pre-line
             =client-display  "editing{id} !true"

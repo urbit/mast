@@ -59,14 +59,13 @@
   ++  form-create
     ;form.relative.border.rounded-sm.flex.items-stretch
       =event  "/submit/create"
-      ;textarea.py-1.px-2.grow.h-fit
+      ;expanding-textarea.py-1.px-2.grow
         =placeholder  "reply"
-        =rows  "1"
         =name  "content"
         =required  ""
         ;
       ==
-      ;button.p-1: →
+      ;button.p-1.flex.flex-col.justify-end: →
     ==
   ++  part-subtree
     %^  make:mast  %circles-below
