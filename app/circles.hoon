@@ -119,6 +119,16 @@
     [%initialized ship=@ta ~]
       :^  ~  ~  %circles-flag  !>
       (~(has by user-sessions) (slav %p ship.route))
+    [%recent who=@ta ~]
+      =/  who  (slav %p who.route)
+      ?.  =(who src.bowl)  ~
+      =/  usr  (~(get by user-sessions) who)
+      ?~  usr  ``circles-recent+!>(~)
+      =/  recent 
+        %+  turn  ~(tap in new-posts.u.usr)
+        |=  paf=path
+        (get-above paf)
+      ``circles-recent+!>(recent)
   ==
 ::
 ++  on-agent  |=([wire sign:agent:gall] *(quip card _this))
@@ -247,6 +257,19 @@
   ^-  card
   :*  %give  %fact  ~[path]  %noun  !>(~)
   ==
+::
+++  get-above
+  |=  where=path
+  =/  above  *(list (pair path post))
+  |-  ^-  [post-id post (list (pair path post))]
+  =/  =post-id  (slav %da -.where)
+  =/  pos=post  (fall (~(get of posts) where) *post)
+  ?:  =(pos [*@p ''])  !!  :: [*post-id *post ~]
+  ?^  +.where
+    %=  $
+      above  (snoc above [where pos])
+    ==
+  [post-id pos above]
 ::
 ++  handle-http-request
   |_  [rid=@ta req=inbound-request:eyre]

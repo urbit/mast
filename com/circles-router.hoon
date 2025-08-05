@@ -20,7 +20,11 @@
     ==
   ::
       [%recent ~]
-    ;div: recent
+    %-  document
+    %^  make:mast  %recent  ~
+    :~
+      [%recent /recent/[(scot %p src.hull)]] 
+    ==
   ::
       [id=* ~]
     ?~  when=(slaw %da id.route)  not-found
