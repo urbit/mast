@@ -135,6 +135,7 @@
     =/  act  !<  action  vase
     ?+  -.act  !!
       %create-post  (create-post +.act)
+      %edit-post  (edit-post +.act)
     ==
     ::
   == 
@@ -143,11 +144,26 @@
   |=  [parent=path content=@t]
   ^+  cor
   =/  where  (snoc parent (scot %da now.bowl))
-  =/  =post  [our.bowl content]
+  =/  =post  [src.bowl content]
   =.  posts  (~(put of posts) where post)
   =.  index  (~(put by index) now.bowl where)
   %-  emil
   %+  turn  (ancestors where)
+  |=  =path
+  %-  make-fact-card  (welp /x/below path)
+  ::
+++  edit-post
+  |=  [where=path content=@t]
+  ^+  cor
+  =/  =post  [src.bowl content]
+  =.  posts  (~(put of posts) where post)
+  %-  emil
+  :-  %-  make-fact-card  (welp /x/post where)
+  %+  welp
+    %+  turn  (lineage where)
+    |=  =path
+    %-  make-fact-card  (welp /x/above path)
+  %+  turn  (lineage where)
   |=  =path
   %-  make-fact-card  (welp /x/below path)
   ::

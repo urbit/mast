@@ -12,8 +12,11 @@
   ^-  blow:mast
   ?+  route=((pole @ta) path.crow)  ~
     ::
-      [%submit %post ~]
-    ~
+      [%submit %edit ~]
+    =/  where=path  (stab (~(got by data.crow) 'where'))
+    =/  content=@t  (~(got by data.crow) 'content')
+    :~  [%circles-action !>([%edit-post where content])]
+    ==
   ==
 ::
 ++  sail
@@ -21,8 +24,11 @@
   =/  chain  get-chain
   ;div
     ;*
-    %+  turn  chain
-    |=  [where=path =post]
+    =|  acc=marl
+    |-
+    ^+  acc
+    ?~  chain  (flop acc)
+    =/  [where=path =post]  i.chain
     =/  href=tape
       %-  spud
       ?~  where  /circles
@@ -32,8 +38,21 @@
       %+  welp  (swag [1 6] -)
       (slag 7 -)
     =/  [subject=tape body=wall]  (split-content content.post)
+    =/  modifyable=?
+      ?&
+        ?=(~ t.chain)
+        ?|
+          =(author.post src.hull)
+          =(our.hull src.hull)
+        ==
+      ==
+    =;  =manx  $(acc [manx acc], chain t.chain)
     ;div.flex.items-stretch
-      ;+  (make-client-state:mast [[(crip id) "closed"]]~)
+      ;+  %-  make-client-state:mast
+          :~
+            [(crip id) ?~(t.chain "open" "closed")]
+            [(crip (welp "editing" id)) "false"]
+          ==
       ;button.font-mono.px-2.flex.flex-col.justify-start
         =client-display  "{id} closed"
         =client-event  "click {id} open"
@@ -47,17 +66,61 @@
       ;div.flex.flex-col.grow
         ;a.flex.gap-2
           =href  href
+          ;*  ?~  where  ~
+          :_  ~
           ;div.font-mono
             ;-  (cite:title author.post)
           ==
           ;div.text-neutral-bright:(-subject)
         ==
-        ;div.whitespace-pre-line.py-4
+        ;div.py-4.flex.flex-col.gap-4
           =client-display  "{id} !closed"
+          ;*  ?.  modifyable  ~
+              :_  ~
+              ;form.relative.border.rounded-sm.flex.items-stretch
+                =client-display  "editing{id} true"
+                =event  "/submit/edit"
+                ;input.hidden(name "where", value (spud where));
+                ;textarea.py-1.px-2.grow.h-fit
+                  =placeholder  "reply"
+                  =rows  "1"
+                  =name  "content"
+                  =required  ""
+                  ;*
+                  %+  turn  `wall`[subject "" body]
+                  |=  line=tape
+                  ;/  (welp line "\0a")
+                ==
+                ;button.p-1: →
+              ==
+          ;div.whitespace-pre-line
+            =client-display  "editing{id} !true"
+            ;*
+            %+  turn  body
+            |=  line=tape
+            ;div:(-line)
+          ==
           ;*
-          %+  turn  body
-          |=  line=tape
-          ;div:(-line)
+          ?.  modifyable
+            ~
+          :_  ~
+          ;div.flex.gap-3
+            ;button
+              =client-event  "click editing{id} true"
+              =client-display  "editing{id} false"
+              =onclick  "resizeBoxes()"
+              ; edit
+            ==
+            ;button
+              =client-event  "click editing{id} false"
+              =client-display  "editing{id} true"
+              ; edit
+            ==
+            ;button
+              =event  "/click/delete"
+              ; delete
+            ==
+          ==
         ==
       ==
     ==

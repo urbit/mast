@@ -103,9 +103,12 @@
     container.scrollTop = scrollTop;
 
   }
+  function resizeBoxes() {
+    document.querySelectorAll('textarea').forEach(autoResize);
+  }
   function autoResize(el) {
     resizeTextarea(el);
-    // setTimeout(() => {resizeTextarea(el)}, 100);
+    setTimeout(() => {resizeTextarea(el)}, 10);
   }
   function linkify() {
     const divs = document.querySelectorAll('.linkable');

@@ -34,7 +34,8 @@
     ==
   ++  part-header
     ;header.flex.align-items.justify-between.gap-4
-      ;a
+      ;a.border.rounded-sm.p-1
+        =href  "/circles/recent"
         ; recent
       ==
       ;div.flex.items-center.gap-2.border.rounded-sm.p-1
@@ -58,7 +59,6 @@
   ++  form-create
     ;form.relative.border.rounded-sm.flex.items-stretch
       =event  "/submit/create"
-      =client-display  "replying true"
       ;textarea.py-1.px-2.grow.h-fit
         =placeholder  "reply"
         =rows  "1"
