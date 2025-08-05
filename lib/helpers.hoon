@@ -36,4 +36,8 @@
     "-"
     (slag 8 -)
   ==
+++  attr-if
+  |=  [=flag [=term =tape] =manx]
+  ?.  flag  manx
+  manx(a.g [[term tape] a.g.manx])
 --

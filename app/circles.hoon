@@ -177,7 +177,7 @@
     ==
   %-  emil
   ;:  welp
-    %+  turn  (ancestors where)
+    %+  turn  (lineage where)
     |=  =path
     %-  make-fact-card  (welp /x/below path)
   ::
@@ -230,15 +230,16 @@
   ==
 ++  mark-read
   |=  pax=path
+  =/  sesh  (~(gut by user-sessions) src.bowl *user-session)
+  ?.  (~(has in new-posts.sesh) pax)  cor
   =.  user-sessions
     %+  ~(put by user-sessions)  src.bowl
-    =/  sesh  (~(gut by user-sessions) src.bowl *user-session)
     %=  sesh
       new-posts  (~(del in new-posts.sesh) pax)
     ==
   %-  emil
   :-  %-  make-fact-card  /x/new-posts/[(scot %p src.bowl)]
-  %+  turn  (ancestors pax)
+  %+  turn  (lineage pax)
   |=  =path
   %-  make-fact-card  (welp /x/new-posts-below/[(scot %p src.bowl)] path)
 ++  make-fact-card

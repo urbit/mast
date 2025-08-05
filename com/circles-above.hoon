@@ -64,9 +64,8 @@
           "center-line"
       ;=
         ;+
-          =;  m=manx
-            ?^  body  m
-            m(a.g [[%disabled ""] a.g.m])
+          %^  attr-if  ?=(~ body)  disabled+""
+          %^  attr-if  ?=(~ t.chain)  hidden+""
         ;button
           =class  class
           =client-display  "{id} closed"
@@ -74,9 +73,8 @@
           ; -
         ==
         ;+
-          =;  m=manx
-            ?^  body  m
-            m(a.g [[%disabled ""] a.g.m])
+          %^  attr-if  ?=(~ body)  disabled+""
+          %^  attr-if  ?=(^ t.chain)  hidden+""
         ;button
           =class  class
           =client-display  "{id} !closed"
@@ -85,20 +83,23 @@
         ==
       ==
       ;div.flex.flex-col.grow
-        ;a.flex.gap-2
+        ;a
           =href  href
+          ;span.text-neutral-bright:(-subject)
           ;*  ?~  where  ~
-          :_  ~
-          ;div.font-mono
-            ;-  (cite:title author.post)
-          ==
-          ;div.text-neutral-bright:(-subject)
+            ;=
+              ;span.opacity-0:(-" . ")
+              ;span.text-sm.font-mono
+                ;-  (cite:title author.post)
+              ==
+            ==
         ==
         ;*  ?:  ?&  ?=(^ t.chain)
                     ?=(~ body)
                 ==
               ~
         :_  ~
+          %^  attr-if  ?=(^ t.chain)  hidden+""
         ;div.py-4.flex.flex-col.gap-4
           =client-display  "{id} !closed"
           ;*  ?.  modifyable  ~
@@ -107,6 +108,7 @@
                 =client-display  "editing{id} true"
                 =event  "/submit/edit"
                 =onsubmit  "clientState['editing{id}'] = 'false'; handleClientAttrs(document.body);"
+                =hidden  ""
                 ;input.hidden(name "where", value (spud where));
                 ;expanding-textarea.py-1.px-2.grow.text-neutral-bright
                   =placeholder  "reply"
@@ -136,9 +138,10 @@
               =client-display  "editing{id} false"
               ; edit
             ==
-            ;button
+            ;button.text-neutral-bright
               =client-event  "click editing{id} false"
               =client-display  "editing{id} true"
+              =hidden  ""
               ; edit
             ==
             ;button

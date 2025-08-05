@@ -19,7 +19,7 @@
 ++  sail
   ^-  manx
   =/  [where=path kids=(list post-id)]  get-below
-  ;div
+  ;div.pt-4
     ;*
       =;  =marl  ?^  marl  marl
         ;=
@@ -31,12 +31,10 @@
     |=  =post-id
     =/  id  (scot %da post-id)
     =/  where  (snoc where id)
-    ;div.pl-6
-      ;+  %^  make:mast  %circles-unread-replies
-        :~  [%where (spat where)]
-        ==
-      :~  [%new-below (welp /new-posts-below/[(scot %p src.hull)] where)]
+    %^  make:mast  %circles-unread-replies
+      :~  [%where (spat where)]
       ==
+    :~  [%new-below (welp /new-posts-below/[(scot %p src.hull)] where)]
     ==
   ==
 --

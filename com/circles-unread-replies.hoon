@@ -36,6 +36,7 @@
     ;div
       ;+  %^  make:mast  %circles-summary
           :~  [%id id]
+              [%where (spat pax)]
               [%unread ?:(?=(^ fil.new-tree) 'yes' 'no')]
           ==
         :~  [%post :(welp /post pax)]

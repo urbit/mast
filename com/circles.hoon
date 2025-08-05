@@ -49,11 +49,11 @@
     ==
   ++  part-header
     ;header.flex.align-items.justify-between.gap-4
-      ;a.border.rounded-sm.p-1
+      ;a.border.rounded-sm.py-1.px-2
         =href  "/circles/recent"
         ; recent
       ==
-      ;div.flex.items-center.gap-2.border.rounded-sm.p-1
+      ;div.flex.items-center.gap-2.border.rounded-sm.py-1.px-2
         ;urbit-sigil
           =patp  (cite-as-planet src.hull)
           ;
@@ -67,7 +67,7 @@
     :~  [%above (welp /above where)]
     ==
   ++  part-below
-    ;div.flex.flex-col.gap-4
+    ;div.flex.flex-col.gap-4.px-2
       ;+  form-create
       ;+  part-subtree
       ;+  part-pager
