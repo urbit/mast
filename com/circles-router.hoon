@@ -16,6 +16,7 @@
     %^  make:mast  %circles
       ~
     :~  [%id /id]
+        [%initialized /initialized/[(scot %p src.hull)]]
     ==
   ::
       [%recent ~]
@@ -26,6 +27,7 @@
     %^  make:mast  %circles
       ~
     :~  [%id /id/[(scot %da u.when)]]
+        [%initialized /initialized/[(scot %p src.hull)]]
     ==
   ::
   ==
@@ -159,5 +161,31 @@
   window.addEventListener('load', () => {
     linkify();
   });
+
+  function isTypeableElement(el) {
+    if (!el) return false;
+    const tag = el.tagName;
+    const type = el.type;
+
+    return (
+      el.isContentEditable ||
+      tag === 'TEXTAREA' ||
+      (tag === 'INPUT' && ['text', 'search', 'email', 'url', 'tel', 'password', 'number'].includes(type))
+    );
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.key === ' ') {
+      const active = document.activeElement;
+      if (!isTypeableElement(active)) {
+        e.preventDefault();
+        clickPrimary();
+      }
+    }
+  });
+
+  function clickPrimary() {
+    document.querySelector('.primary-action')?.click()
+  }
   '''
 --

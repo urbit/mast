@@ -10,6 +10,8 @@
       [%edit-access-id ids=(list @p)]
       [%del-access-id id=@p]
       ::
+      [%initialize-user ~]
+      ::
       [%gated-sign-in comet=@p id=@p]
       [%gated-set-door-code code=@t]
   ==

@@ -99,7 +99,7 @@
                 =event  "/submit/edit"
                 =onsubmit  "clientState['editing{id}'] = 'false'; handleClientAttrs(document.body);"
                 ;input.hidden(name "where", value (spud where));
-                ;expanding-textarea.py-1.px-2.grow
+                ;expanding-textarea.py-1.px-2.grow.text-neutral-bright
                   =placeholder  "reply"
                   =name  "content"
                   =required  ""

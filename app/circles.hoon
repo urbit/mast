@@ -100,6 +100,15 @@
       %+  fall
         (~(get of posts) where.route)
       *post
+    [%new-posts ship=@ta ~]
+      :^  ~  ~  %circles-set-path  !>
+      =<  new-posts
+      %+  ~(gut by user-sessions)
+        (slav %p ship.route)
+      *user-session
+    [%initialized ship=@ta ~]
+      :^  ~  ~  %circles-flag  !>
+      (~(has by user-sessions) (slav %p ship.route))
   ==
 ::
 ++  on-agent  |=([wire sign:agent:gall] *(quip card _this))
@@ -136,6 +145,8 @@
     ?+  -.act  !!
       %create-post  (create-post +.act)
       %edit-post  (edit-post +.act)
+      %initialize-user  initialize-user
+      %mark-read  (mark-read +.act)
     ==
     ::
   == 
@@ -147,10 +158,23 @@
   =/  =post  [src.bowl content]
   =.  posts  (~(put of posts) where post)
   =.  index  (~(put by index) now.bowl where)
+  =.  user-sessions
+    %-  ~(urn by user-sessions)
+    |=  [who=@p =user-session]
+    ?:  =(who src.bowl)  user-session
+    %=  user-session
+      new-posts  (~(put in new-posts.user-session) where)
+    ==
   %-  emil
-  %+  turn  (ancestors where)
-  |=  =path
-  %-  make-fact-card  (welp /x/below path)
+  %+  welp
+    %+  turn  (ancestors where)
+    |=  =path
+    %-  make-fact-card  (welp /x/below path)
+  %+  murn  ~(tap in ~(key by user-sessions))
+  |=  who=@p
+  ?:  =(who src.bowl)  ~
+  :-  ~
+  %-  make-fact-card  /x/new-posts/[(scot %p who)]
   ::
 ++  edit-post
   |=  [where=path content=@t]
@@ -167,6 +191,35 @@
   |=  =path
   %-  make-fact-card  (welp /x/below path)
   ::
+++  initialize-user
+  =.  user-sessions
+    %+  ~(put by user-sessions)  src.bowl
+    %*  .  *user-session
+      new-posts
+        ^-  (set path)
+        %-  silt
+        %+  scag  15
+        ^-  (list path)
+        %+  turn
+          %+  sort  ~(tap by index)
+          |=  [a=[=post-id path] b=[=post-id path]]
+          (gth post-id.a post-id.b)
+        tail
+    ==
+  %-  emil
+  :~  %-  make-fact-card  /x/initialized/[(scot %p src.bowl)]
+  ==
+++  mark-read
+  |=  pax=path
+  =.  user-sessions
+    %+  ~(put by user-sessions)  src.bowl
+    =/  sesh  (~(gut by user-sessions) src.bowl *user-session)
+    %=  sesh
+      new-posts  (~(del in new-posts.sesh) pax)
+    ==
+  %-  emil
+  :~  %-  make-fact-card  /x/new-posts/[(scot %p src.bowl)]
+  ==
 ++  make-fact-card
   |=  =path
   ^-  card
