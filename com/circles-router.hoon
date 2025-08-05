@@ -60,6 +60,7 @@
         '''
         @theme {
           --color-neutral-bg: #0f0f0f;
+          --color-neutral-disabled: #666666;
           --color-neutral-dim: #A3A3A3;
           --color-neutral-bright: #FAFAFA;
         }
