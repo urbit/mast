@@ -25,13 +25,16 @@
     |=  [a=path b=path]
     ?~  a  %.n
     ?~  b  %.y
-    %+  gth
+    %+  lth
       (slav %da (rear `path`a))
     (slav %da (rear `path`b))
   ;div.flex.flex-col.border.px-2.py-1.rounded-sm.fixed.bottom-2.right-2.bg-neutral-bg.z-2
     ;+
     ?~  sorted
-      ;div: no new
+      ;a.primary-action
+        =href  "/circles"
+        ; home
+      ==
     =/  pax=path  i.sorted
     =/  pate  ?~  pax  ""  (spud pax)
     =/  id=tape  ?~  pax  ""  "/{(trip (rear `path`pax))}"

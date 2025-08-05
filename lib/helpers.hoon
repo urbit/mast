@@ -13,8 +13,14 @@
 ++  is-ancestor
   |=  [a=path b=path]
   ^-  ?
-  .=  b
-  (scag (lent b) a)
+  ?&
+    =(b (scag (lent b) a))
+    !=(a b)
+  ==
+++  is-ancestor-or-same
+  |=  [a=path b=path]
+  ^-  ?
+  =(b (scag (lent b) a))
 ++  split-content
   |=  content=@t
   ^-  [subject=tape body=wall]

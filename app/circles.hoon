@@ -97,9 +97,19 @@
       (slav %da ta)
     [%post where=*]
       :^  ~  ~  %circles-post  !>
-      %+  fall
-        (~(get of posts) where.route)
-      *post
+      (fall (~(get of posts) where.route) *post)
+    [%new-posts-below ship=@ta where=*]
+      :^  ~  ~  %circles-set-path  !>
+      %-  silt
+      %-  skim  :_
+        |=  =path
+        (is-ancestor-or-same path where.route)
+      ^-  (list path)
+      %~  tap  in
+      =<  new-posts
+      %+  ~(gut by user-sessions)
+        (slav %p ship.route)
+      *user-session
     [%new-posts ship=@ta ~]
       :^  ~  ~  %circles-set-path  !>
       =<  new-posts
@@ -166,16 +176,25 @@
       new-posts  (~(put in new-posts.user-session) where)
     ==
   %-  emil
-  %+  welp
+  ;:  welp
     %+  turn  (ancestors where)
     |=  =path
     %-  make-fact-card  (welp /x/below path)
-  %+  murn  ~(tap in ~(key by user-sessions))
-  |=  who=@p
-  ?:  =(who src.bowl)  ~
-  :-  ~
-  %-  make-fact-card  /x/new-posts/[(scot %p who)]
   ::
+    %-  zing
+    %+  murn  ~(tap in ~(key by user-sessions))
+    |=  who=@p
+    ?:  =(who src.bowl)  ~
+    :-  ~
+    %+  welp
+      :~
+        %-  make-fact-card  /x/new-posts/[(scot %p who)]
+      ==
+    %+  turn  (lineage where)
+    |=  =path
+    %-  make-fact-card  (welp /x/new-posts-below/[(scot %p who)] path)
+  ::
+  ==
 ++  edit-post
   |=  [where=path content=@t]
   ^+  cor
@@ -218,8 +237,10 @@
       new-posts  (~(del in new-posts.sesh) pax)
     ==
   %-  emil
-  :~  %-  make-fact-card  /x/new-posts/[(scot %p src.bowl)]
-  ==
+  :-  %-  make-fact-card  /x/new-posts/[(scot %p src.bowl)]
+  %+  turn  (ancestors pax)
+  |=  =path
+  %-  make-fact-card  (welp /x/new-posts-below/[(scot %p src.bowl)] path)
 ++  make-fact-card
   |=  =path
   ^-  card

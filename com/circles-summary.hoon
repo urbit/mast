@@ -17,15 +17,19 @@
   =/  id  (trip (~(gut by par.hull) 'id' 'none'))
   =/  [author=@p content=@t]  get-post
   =/  [subject=tape body=wall]  (split-content content)
-  ;div
-    ;a.flex.gap-2
-      =href  "/circles/{id}"
-      ;span.font-mono
-        ;-  (cite:title author)
-      ==
-      ;span.text-neutral-bright
-        ;-  subject
-      ==
+  ;a.block
+    =href  "/circles/{id}"
+    ;+
+      =/  class
+        ?:  =(`'yes' (~(get by par.hull) %unread))
+          "text-neutral-bright "
+        "text-neutral-dim "
+    ;span
+      =class  class
+      ;-  subject
+    ==
+    ;span.font-mono.float-right.text-sm
+      ;-  (cite:title author)
     ==
   ==
 --
