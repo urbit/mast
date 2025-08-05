@@ -7,6 +7,6 @@
   --
 ++  grab
   |%
-  ++  noun  (list [id=post-id =post above=(list [post-id post])])
+  ++  noun  (list [id=post-id =post above=(list (pair path post))])
   --
 --
