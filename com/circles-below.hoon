@@ -21,6 +21,12 @@
   =/  [where=path kids=(list post-id)]  get-below
   ;div
     ;*
+      =;  =marl  ?^  marl  marl
+        ;=
+          ;div.flex.p-8.items-center.justify-center
+            ; no replies
+          ==
+        ==
     %+  turn  kids
     |=  =post-id
     =/  id  (scot %da post-id)

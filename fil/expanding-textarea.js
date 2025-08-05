@@ -45,6 +45,17 @@ class ExpandingTextarea extends HTMLElement {
     this._observer = new MutationObserver(() => this._syncValue());
     this._internals = this.attachInternals();
 
+    // Observers for visibility and layout changes
+    this._intersectionObserver = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) this._resize();
+      }
+    });
+
+    this._resizeObserver = new ResizeObserver(() => {
+      this._resize();
+    });
+
     this._resize = this._resize.bind(this);
     this._onKeydown = this._onKeydown.bind(this);
     this._onInput = this._onInput.bind(this);
@@ -59,6 +70,10 @@ class ExpandingTextarea extends HTMLElement {
       characterData: true,
     });
 
+    this._intersectionObserver.observe(this);
+    this._resizeObserver.observe(this);
+
+    // Default attributes
     if (!this.hasAttribute('spellcheck')) this.setAttribute('spellcheck', 'false');
     if (!this.hasAttribute('autocomplete')) this.setAttribute('autocomplete', 'off');
 
@@ -71,6 +86,8 @@ class ExpandingTextarea extends HTMLElement {
     this.textarea.removeEventListener('input', this._onInput);
     this.textarea.removeEventListener('keydown', this._onKeydown);
     this._observer.disconnect();
+    this._intersectionObserver.disconnect();
+    this._resizeObserver.disconnect();
   }
 
   attributeChangedCallback() {
@@ -88,7 +105,7 @@ class ExpandingTextarea extends HTMLElement {
 
   _onInput() {
     this._internals.setFormValue(this.textarea.value);
-    this._resize();
+    this._deferResizeUntilVisible();
     this._validate();
   }
 
@@ -96,6 +113,22 @@ class ExpandingTextarea extends HTMLElement {
     const text = this.textContent || '';
     this.value = text.trim();
     this._validate();
+  }
+
+  _deferResizeUntilVisible(maxTries = 10) {
+    const el = this.textarea;
+    let tries = 0;
+
+    const tryResize = () => {
+      if (el.scrollHeight > 0 || tries >= maxTries) {
+        this._resize();
+        return;
+      }
+      tries++;
+      requestAnimationFrame(tryResize);
+    };
+
+    tryResize();
   }
 
   _resize() {
@@ -134,7 +167,7 @@ class ExpandingTextarea extends HTMLElement {
     }
   }
 
-  // Form-associated element API
+  // --- Form-associated element API ---
   get form() {
     return this._internals.form;
   }
@@ -154,7 +187,7 @@ class ExpandingTextarea extends HTMLElement {
   set value(val) {
     this.textarea.value = val;
     this._internals.setFormValue(val);
-    this._resize();
+    this._deferResizeUntilVisible();
     this._validate();
   }
 

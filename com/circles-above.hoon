@@ -85,6 +85,11 @@
           ==
           ;div.text-neutral-bright:(-subject)
         ==
+        ;*  ?:  ?&  ?=(^ t.chain)
+                    ?=(~ body)
+                ==
+              ~
+        :_  ~
         ;div.py-4.flex.flex-col.gap-4
           =client-display  "{id} !closed"
           ;*  ?.  modifyable  ~
@@ -92,6 +97,7 @@
               ;form.relative.border.rounded-sm.flex.items-stretch
                 =client-display  "editing{id} true"
                 =event  "/submit/edit"
+                =onsubmit  "clientState['editing{id}'] = 'false'; handleClientAttrs(document.body);"
                 ;input.hidden(name "where", value (spud where));
                 ;expanding-textarea.py-1.px-2.grow
                   =placeholder  "reply"
@@ -104,7 +110,7 @@
                 ==
                 ;button.p-1.flex.flex-col.justify-end: →
               ==
-          ;div.whitespace-pre-line
+          ;div.whitespace-pre-line.pl-4
             =client-display  "editing{id} !true"
             ;*
             %+  turn  body
@@ -119,7 +125,6 @@
             ;button
               =client-event  "click editing{id} true"
               =client-display  "editing{id} false"
-              =onclick  "resizeBoxes()"
               ; edit
             ==
             ;button
