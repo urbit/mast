@@ -18,7 +18,7 @@
     :~  [%circles-action !>([%edit-post where content])]
     ==
     ::
-      [%submit %delete where=*]
+      [%click %delete where=*]
     :~  [%circles-action !>([%delete-post where.route])]
     ==
   ==

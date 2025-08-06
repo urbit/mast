@@ -222,7 +222,8 @@
   ^+  cor 
   =.  posts
     %-  ~(gas of *(axal post))
-    %+  skip  ~(tap of posts)
+    %+  skip  
+      %~  tap  of  (~(del of posts) where)
     |=  [=path =post]
     (is-ancestor path where)
   =.  user-sessions  
@@ -234,10 +235,6 @@
         |=(=path (is-ancestor path where))
   %-  emil
   :-  %-  make-fact-card  (welp /x/post where)
-  %+  welp
-    %+  turn  (lineage where)
-    |=  =path
-    %-  make-fact-card  (welp /x/above path)
   %+  turn  (lineage where)
   |=  =path
   %-  make-fact-card  (welp /x/below path)
@@ -329,6 +326,7 @@
     ==
   %-  emil
   :-  %-  make-fact-card  /x/new-posts/[(scot %p src.bowl)]
+  :-  %-  make-fact-card  /x/recent/[(scot %p src.bowl)]
   %+  turn  (lineage pax)
   |=  =path
   %-  make-fact-card  (welp /x/new-posts-below/[(scot %p src.bowl)] path)
