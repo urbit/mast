@@ -18,6 +18,7 @@
 ::
 +$  post-id  @da
 +$  posts  (map post-id post-node)
++$  index  (map id=@ path)  :: resolves post id to its path
 +$  post-node
   $~  [*post ~]
   $:  =post
