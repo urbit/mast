@@ -119,17 +119,6 @@
     [%initialized ship=@ta ~]
       :^  ~  ~  %circles-flag  !>
       (~(has by user-sessions) (slav %p ship.route))
-    [%recent who=@ta ~]
-      =/  who  (slav %p who.route)
-      ?.  =(who src.bowl)  ~
-      =/  usr  (~(get by user-sessions) who)
-      ?~  usr  ``circles-recent+!>(~)
-      =/  recent 
-        %+  turn  ~(tap in new-posts.u.usr)
-        |=  paf=path
-        ^-  (list (pair path post))
-        (get-above paf posts)
-      ``circles-recent+!>(recent)
     [%access ~]  ``circles-access+!>(access)
   ==
 ::
@@ -207,7 +196,6 @@
     %+  welp
       :~
         %-  make-fact-card  /x/new-posts/[(scot %p who)]
-        %-  make-fact-card  /x/recent/[(scot %p who)]
       ==
     %+  turn  (lineage where)
     |=  =path
@@ -350,17 +338,6 @@
   ^-  card
   :*  %give  %fact  ~[path]  %noun  !>(~)
   ==
-::
-++  get-above
-  |=  [where=path posts=(axal post)]
-  =|  chain=(list (pair path post))
-  =/  =post-id  (slav %da -.where)
-  =/  pos=post  (fall (~(get of posts) where) *post)
-  |-
-  =/  =post  (fall (~(get of posts) where) *post)
-  =.  chain  [[where post] chain]
-  ?~  where  (tail chain)
-  $(where (snip `path`where))
 ::
 ++  handle-http-request
   |_  [rid=@ta req=inbound-request:eyre]

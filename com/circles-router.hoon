@@ -24,7 +24,7 @@
     %-  document
     %^  make:mast  %recent  ~
     :~
-      [%recent /recent/[(scot %p src.hull)]] 
+      [%new-posts /new-posts/[(scot %p src.hull)]]
     ==
   ::
       [id=* ~]
