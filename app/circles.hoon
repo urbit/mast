@@ -255,7 +255,6 @@
 ++  set-access-mode
   |=  =term  
   ^+  cor
-  ~&  >>  term
   =.  mode.access  (access-mode term)
   %-  emit
   %-  make-fact-card  /x/access
