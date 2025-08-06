@@ -127,7 +127,8 @@
       =/  recent 
         %+  turn  ~(tap in new-posts.u.usr)
         |=  paf=path
-        (get-above paf)
+        ^-  (list (pair path post))
+        (get-above paf posts)
       ``circles-recent+!>(recent)
     [%access ~]  ``circles-access+!>(access)
   ==
@@ -206,6 +207,7 @@
     %+  welp
       :~
         %-  make-fact-card  /x/new-posts/[(scot %p who)]
+        %-  make-fact-card  /x/recent/[(scot %p who)]
       ==
     %+  turn  (lineage where)
     |=  =path
@@ -350,17 +352,15 @@
   ==
 ::
 ++  get-above
-  |=  where=path
-  =/  above  *(list (pair path post))
-  |-  ^-  [post-id post (list (pair path post))]
+  |=  [where=path posts=(axal post)]
+  =|  chain=(list (pair path post))
   =/  =post-id  (slav %da -.where)
   =/  pos=post  (fall (~(get of posts) where) *post)
-  ?:  =(pos [*@p ''])  !!  :: [*post-id *post ~]
-  ?^  +.where
-    %=  $
-      above  (snoc above [where pos])
-    ==
-  [post-id pos above]
+  |-
+  =/  =post  (fall (~(get of posts) where) *post)
+  =.  chain  [[where post] chain]
+  ?~  where  (tail chain)
+  $(where (snip `path`where))
 ::
 ++  handle-http-request
   |_  [rid=@ta req=inbound-request:eyre]

@@ -1,5 +1,5 @@
 /-  *circles
-|_  res=(list [id=post-id =post above=(list (pair path post))])
+|_  res=(list (list (pair path post)))
 ++  grad  %noun
 ++  grow
   |%
@@ -7,6 +7,6 @@
   --
 ++  grab
   |%
-  ++  noun  (list [id=post-id =post above=(list [post-id post])])
+  ++  noun  (list (list (pair path post)))
   --
 --

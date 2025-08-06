@@ -32,6 +32,7 @@
     %^  make:mast  %circles
       ~
     :~  [%id /id/[(scot %da u.when)]]
+        [%access /access]
         [%initialized /initialized/[(scot %p src.hull)]]
     ==
   ::
@@ -245,7 +246,7 @@
     document.getElementById('register-input').value = fingerprint;
     evt.target.closest('form').requestSubmit()
   }
-  
+
   async function signIn(evt) {
     let credential = await navigator.credentials.get({
       publicKey: { challenge: urbitChallenge() }
