@@ -19,7 +19,7 @@
 ++  sail
   ^-  manx
   =/  [where=path kids=(list post-id)]  get-below
-  ;div.pt-4
+  ;div.pt-4.px-3
     ;*
       =;  =marl  ?^  marl  marl
         ;=

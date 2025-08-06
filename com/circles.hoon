@@ -28,7 +28,13 @@
   ^-  manx
   =/  initialized  get-initialized
   ?~  gid=get-id
-    ;div: there is no post here
+    ;div.w-full.h-full.flex.flex-col.gap-3.items-center.justify-center
+      ;div: there is no post here
+      ;a.border.rounded-sm.px-2.py-1
+        =href  "/circles"
+        ; home
+      ==
+    ==
   =/  where=path  (need gid)
   |^
     ?:  &(!initialized =(where /))
@@ -81,7 +87,7 @@
         =required  ""
         ;
       ==
-      ;button.p-1.flex.flex-col.justify-end: →
+      ;button.p-1.flex.flex-col.justify-end.hover: →
     ==
   ++  part-subtree
     %^  make:mast  %circles-below
@@ -100,7 +106,7 @@
         Circles is a forum designed to enable *small, closed groups*
         to have *in-depth discussions* over a *long period of time*.
       ==
-      ;button.px-2.py-1.border.rounded-sm
+      ;button.px-2.py-1.border.rounded-sm.hover
         =event  "/click/initialize-user"
         ; Begin
       ==

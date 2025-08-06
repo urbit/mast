@@ -55,7 +55,7 @@
           ==
       ;*
         =/  class
-          %+  welp  "font-mono px-2 flex flex-col justify-start ".
+          %+  welp  "hover font-mono px-2 flex flex-col justify-start ".
                     "text-neutral-bright disabled:text-neutral-disabled "
           ?~  where
             ?~  t.chain  ""
@@ -119,7 +119,7 @@
                   |=  line=tape
                   ;/  (welp line "\0a")
                 ==
-                ;button.p-1.flex.flex-col.justify-end: →
+                ;button.hover.p-1.flex.flex-col.justify-end: →
               ==
           ;div.whitespace-pre-line.pl-4.text-neutral-bright
             =client-display  "editing{id} !true"
@@ -133,18 +133,18 @@
             ~
           :_  ~
           ;div.flex.gap-3.pl-4
-            ;button
+            ;button.hover
               =client-event  "click editing{id} true"
               =client-display  "editing{id} false"
               ; edit
             ==
-            ;button.text-neutral-bright
+            ;button.text-neutral-bright.hover
               =client-event  "click editing{id} false"
               =client-display  "editing{id} true"
               =hidden  ""
               ; edit
             ==
-            ;button
+            ;button.hover
               =event  "/click/delete"
               ; delete
             ==

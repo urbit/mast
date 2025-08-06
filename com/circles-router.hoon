@@ -141,6 +141,24 @@
   textarea {
     resize: none;
   }
+  button {
+    cursor: pointer;
+    background: inherit;
+  }
+  button:hover {
+    background: inherit;
+    filter: invert(25%);
+  }
+  a {
+    background: inherit;
+  }
+  a:hover {
+    background: inherit;
+    filter: invert(25%);
+  }
+  .hover {
+    filter: invert(20%);
+  }
   '''
 ++  script
   '''
