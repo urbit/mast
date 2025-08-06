@@ -17,6 +17,11 @@
     =/  content=@t  (~(got by data.crow) 'content')
     :~  [%circles-action !>([%edit-post where content])]
     ==
+    ::
+      [%submit %delete ~]
+    =/  where=path  (stab (~(got by data.crow) 'where'))
+    :~  [%circles-action !>([%delete-post where])]
+    ==
   ==
 ::
 ++  sail
@@ -144,9 +149,18 @@
               =hidden  ""
               ; edit
             ==
-            ;button.hover
-              =event  "/click/delete"
-              ; delete
+            ;+ 
+            =/  to
+              ?:  (gth (lent get-chain) 2)
+                "./{(trip (rear `(list @tas)`p:(snag 1 (flop get-chain))))}"
+              "./"
+            ;form
+              =event  "/submit/delete"
+              ;input.hidden(name "where", value (spud where));
+              ;button
+                =onclick  "window.location.href = '{to}';"
+                ; delete
+              ==
             ==
           ==
         ==

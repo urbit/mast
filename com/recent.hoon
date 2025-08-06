@@ -19,7 +19,15 @@
   ^-  manx
   ;div
     ;div
-      ;*  %+  turn  rec
+      ;*
+      ?~  rec  
+        ;=
+          ;div.flex.flex-col.pointer
+            ;span: Recent posts empty
+            ;a(href "./"): back
+          ==
+        ==
+      %+  turn  rec
       |=  [id=post-id pos=post above=(list (pair path post))]
       ;a.flex.flex-col.pointer
         =href  "./{(scow %da id)}"

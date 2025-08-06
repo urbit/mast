@@ -16,6 +16,7 @@
     %^  make:mast  %circles
       ~
     :~  [%id /id]
+        [%access /access]
         [%initialized /initialized/[(scot %p src.hull)]]
     ==
   ::
@@ -67,6 +68,7 @@
           --color-neutral-disabled: #666666;
           --color-neutral-dim: #A3A3A3;
           --color-neutral-bright: #FAFAFA;
+          --color-neutral-dark: #737373;
         }
         '''
       ==
@@ -209,6 +211,48 @@
 
   function clickPrimary() {
     document.querySelector('.primary-action')?.click()
+  }
+
+  function stringToUint8Array(str) {
+    const encoder = new TextEncoder();
+    return encoder.encode(str);
+  }
+
+  function arrayBufferToString(buffer, encoding = 'utf-8') {
+    const decoder = new TextDecoder(encoding);
+    const view = new Uint8Array(buffer);
+    return decoder.decode(view);
+  }
+
+  function urbitChallenge() {
+    return stringToUint8Array('urbit-deadbeef');
+  }
+
+  async function register(evt) {
+    let credential = await navigator.credentials.create({
+      publicKey: {
+        challenge: urbitChallenge(),
+        user: {
+          id: stringToUint8Array('athens'),
+          name: 'anonymous user',
+          displayName: 'anonymous user',
+        },
+        rp: { name: "Urbit" },
+        pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+      },
+    });
+    let fingerprint = credential.id
+    document.getElementById('register-input').value = fingerprint;
+    evt.target.closest('form').requestSubmit()
+  }
+  
+  async function signIn(evt) {
+    let credential = await navigator.credentials.get({
+      publicKey: { challenge: urbitChallenge() }
+    });
+    let fingerprint = credential.id
+    document.getElementById('sign-in-input').value = fingerprint;
+    evt.target.closest('form').requestSubmit()
   }
   '''
 --
