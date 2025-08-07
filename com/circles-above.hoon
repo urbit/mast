@@ -2,10 +2,12 @@
 /+  lucide, *helpers
 ^-  mast:mast
 :-  :~  above+%circles-above
+        replies+%noun
     ==
 |_  =hull:mast
 ::
 +*  get-chain  !<  (list (pair path post))  fil:(~(got by res.hull) %above)
+    get-replies  !<  @ud  fil:(~(got by res.hull) %replies)
 ::
 ++  spar
   |=  =crow:mast
@@ -158,6 +160,9 @@
               =event  "/click/delete{(spud where)}"
               =onclick  "window.location.href = '{to}';"
               ; delete
+            ==
+            ;div
+              ; replies: {<get-replies>}  
             ==
           ==
         ==

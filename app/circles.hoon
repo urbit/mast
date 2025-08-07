@@ -132,6 +132,11 @@
       :^  ~  ~  %circles-flag  !>
       (~(has by user-sessions) (slav %p ship.route))
     [%access ~]  ``circles-access+!>(access)
+    [%replies where=*]
+    =/  rep  (lent ~(tap of (~(dip of posts) where.route)))
+    :^  ~  ~  %noun  !>
+    ?:  =(rep 0)  0
+    (dec rep)
   ==
 ::
 ++  on-agent  |=([wire sign:agent:gall] *(quip card _this))
@@ -195,21 +200,22 @@
       new-posts  (~(put in new-posts.user-session) where)
     ==
   %-  emil
+  :-  %-  make-fact-card  /x/recent
   ;:  welp
+    %-  zing
     %+  turn  (lineage where)
     |=  =path
-    %-  make-fact-card  (welp /x/below path)
+    :~
+      %-  make-fact-card  (welp /x/below path)
+      %-  make-fact-card  (welp /x/replies path)
+    ==
   ::
     %-  zing
     %+  murn  ~(tap in ~(key by user-sessions))
     |=  who=@p
     ?:  =(who src.bowl)  ~
     :-  ~
-    %+  welp
-      :~
-        %-  make-fact-card  /x/recent
-        %-  make-fact-card  /x/new-posts/[(scot %p who)]
-      ==
+    :-  %-  make-fact-card  /x/new-posts/[(scot %p who)]
     %+  turn  (lineage where)
     |=  =path
     %-  make-fact-card  (welp /x/new-posts-below/[(scot %p who)] path)
@@ -256,9 +262,13 @@
   %-  emil
   :-  %-  make-fact-card  /x/recent
   :-  %-  make-fact-card  (welp /x/post where)
+  %-  zing
   %+  turn  (lineage where)
   |=  =path
-  %-  make-fact-card  (welp /x/below path)
+  :~
+    %-  make-fact-card  (welp /x/below path)
+    %-  make-fact-card  (welp /x/replies path)
+  ==
   ::
 ++  set-access-mode
   |=  =term  

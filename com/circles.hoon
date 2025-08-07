@@ -94,6 +94,7 @@
     %^  make:mast  %circles-above
       ~
     :~  [%above (welp /above where)]
+        [%replies (welp /replies where)]
     ==
   ++  part-below
     ;div.flex.flex-col.gap-4.px-2
