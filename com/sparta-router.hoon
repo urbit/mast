@@ -162,7 +162,7 @@
     overflow-y: scroll;
   }
   .posts {
-    padding: 64px 16px 120px 16px;
+    padding: 70px 16px 120px 16px;
     margin: auto;
     width: 100%;
     max-width: 1000px;

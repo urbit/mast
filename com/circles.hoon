@@ -102,7 +102,11 @@
       ;+  part-pager
     ==
   ++  form-create
-    ;form.relative.border.rounded-sm.flex.items-stretch
+    ;form
+      =class  "border rounded-sm leading-normal rounded-md ".
+              "overflow-hidden flex items-stretch ".
+              "md:shadow-none md:p-0 ".
+              "items-stretch [&.is-focused]:!border-white [&.is-focused]:!text-white" 
       =event  "/submit/create"
       ;expanding-textarea.py-1.px-2.grow.text-neutral-bright
         =placeholder  "reply"
@@ -110,7 +114,10 @@
         =required  ""
         ;
       ==
-      ;button.p-1.flex.flex-col.justify-end.hover: →
+      ;button
+        =class  "mt-auto p-2 text-[14px] h-[28px] flex items-center justify-center"
+        ; →
+      ==
     ==
   ++  part-subtree
     %^  make:mast  %circles-below

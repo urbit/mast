@@ -108,7 +108,8 @@
           =client-display  "{id} !closed"
           ;*  ?.  modifyable  ~
               :_  ~
-              ;form.relative.border.rounded-sm.flex.items-stretch
+              ;form
+                =class  "relative.border rounded-sm flex items-stretch h-[28px]"
                 =client-display  "editing{id} true"
                 =event  "/submit/edit"
                 =onsubmit  "clientState['editing{id}'] = 'false'; handleClientAttrs(document.body);"

@@ -22,9 +22,9 @@
   ::
       [%recent ~]
     %-  document
-    %^  make:mast  %recent  ~
+    %^  make:mast  %circles-recent  ~
     :~
-      [%new-posts /new-posts/[(scot %p src.hull)]]
+      [%recent /recent]
     ==
   ::
       [%settings ~]
@@ -149,6 +149,7 @@
   }
   body{
     font-family: Inter, sans-serif;
+    font-size: 14px;
   }
   textarea {
     resize: none;

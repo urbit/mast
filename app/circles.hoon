@@ -116,6 +116,18 @@
       %+  ~(gut by user-sessions)
         (slav %p ship.route)
       *user-session
+    [%recent ~]
+      =/  latest-id=(list post-id) 
+        %+  scag  10
+        %+  sort
+          %~  tap  in
+          ~(key by index)
+        gth
+      :^  ~  ~  %circles-set-path  !>
+      %-  silt
+      %+  turn  latest-id
+      |=  id=post-id
+      (~(got by index) id)
     [%initialized ship=@ta ~]
       :^  ~  ~  %circles-flag  !>
       (~(has by user-sessions) (slav %p ship.route))
@@ -195,6 +207,7 @@
     :-  ~
     %+  welp
       :~
+        %-  make-fact-card  /x/recent
         %-  make-fact-card  /x/new-posts/[(scot %p who)]
       ==
     %+  turn  (lineage where)
@@ -208,6 +221,7 @@
   =/  =post  [src.bowl content]
   =.  posts  (~(put of posts) where post)
   %-  emil
+  :-  %-  make-fact-card  /x/recent
   :-  %-  make-fact-card  (welp /x/post where)
   %+  welp
     %+  turn  (lineage where)
@@ -220,11 +234,17 @@
 ++  delete-post
   |=  where=path
   ^+  cor 
-  =.  posts
+  =.  posts  
     %-  ~(gas of *(axal post))
     %+  skip  
       %~  tap  of  (~(del of posts) where)
     |=  [=path =post]
+    (is-ancestor path where)
+  =.  index
+    %-  ~(gas by *(map post-id path))
+    %+  skip  
+      %~  tap  by  (~(del by index) `@da`(slav %da (rear where)))
+    |=  [=post-id =path]
     (is-ancestor path where)
   =.  user-sessions  
     %-  ~(run by user-sessions)
@@ -234,6 +254,7 @@
         %+  skip  ~(tap in new-posts.sesh)
         |=(=path (is-ancestor path where))
   %-  emil
+  :-  %-  make-fact-card  /x/recent
   :-  %-  make-fact-card  (welp /x/post where)
   %+  turn  (lineage where)
   |=  =path
