@@ -119,6 +119,7 @@
     [%initialized ship=@ta ~]
       :^  ~  ~  %circles-flag  !>
       (~(has by user-sessions) (slav %p ship.route))
+    [%access ~]  ``circles-access+!>(access)
   ==
 ::
 ++  on-agent  |=([wire sign:agent:gall] *(quip card _this))
@@ -155,6 +156,12 @@
     ?+  -.act  !!
       %create-post  (create-post +.act)
       %edit-post  (edit-post +.act)
+      %delete-post  (delete-post +.act)
+      %set-access-mode  (set-access-mode +.act)
+      %edit-access-id  (edit-access-id +.act)
+      %del-access-id  (del-access-id +.act)
+      %gated-set-door-code  (set-door-code +.act)
+      %gated-sign-in  (gated-sign-in +.act)
       %initialize-user  initialize-user
       %mark-read  (mark-read +.act)
     ==
@@ -210,6 +217,85 @@
   |=  =path
   %-  make-fact-card  (welp /x/below path)
   ::
+++  delete-post
+  |=  where=path
+  ^+  cor 
+  =.  posts
+    %-  ~(gas of *(axal post))
+    %+  skip  
+      %~  tap  of  (~(del of posts) where)
+    |=  [=path =post]
+    (is-ancestor path where)
+  =.  user-sessions  
+    %-  ~(run by user-sessions)
+    |=  sesh=user-session
+    :_  error.sesh
+        %-  silt
+        %+  skip  ~(tap in new-posts.sesh)
+        |=(=path (is-ancestor path where))
+  %-  emil
+  :-  %-  make-fact-card  (welp /x/post where)
+  %+  turn  (lineage where)
+  |=  =path
+  %-  make-fact-card  (welp /x/below path)
+  ::
+++  set-access-mode
+  |=  =term  
+  ^+  cor
+  =.  mode.access  (access-mode term)
+  %-  emit
+  %-  make-fact-card  /x/access
+::
+++  edit-access-id
+  |=  ids=(list @p)
+  ^+  cor
+  ?-  mode.access
+    %gated  cor
+    %private
+      ?^  (find ids members.access)  cor
+      =.  members.access  (welp ids members.access)
+      %-  emit
+      %-  make-fact-card  /x/access
+    %public
+      ?^  (find ids blacklist.access)  cor
+      =.  blacklist.access  (welp ids blacklist.access)
+      %-  emit
+      %-  make-fact-card  /x/access
+  ==
+::
+++  del-access-id
+  |=  id=@p
+  ^+  cor
+  ?-  mode.access
+    %gated  cor
+    %private
+      =/  index-id  (find [id]~ members.access)
+      ?~  index-id  cor
+      =.  members.access  (oust [(need index-id) 1] members.access)
+      %-  emit
+      %-  make-fact-card  /x/access
+    %public
+      =/  index-id  (find [id]~ blacklist.access)
+      ?~  index-id  cor
+      =.  blacklist.access  (oust [(need index-id) 1] blacklist.access)
+      %-  emit
+      %-  make-fact-card  /x/access
+  ==
+::
+++  set-door-code
+  |=  code=@t
+  ^+  cor
+  =.  door-code.access  code
+  %-  emit
+  %-  make-fact-card  /x/access
+::
+++  gated-sign-in
+  |=  [comet=@p id=@p]
+  ^+  cor
+  =.  accounts.access  (~(put by accounts.access) comet id)
+  %-  emit
+  %-  make-fact-card  /x/access
+::
 ++  initialize-user
   =.  user-sessions
     %+  ~(put by user-sessions)  src.bowl
@@ -228,6 +314,7 @@
   %-  emil
   :~  %-  make-fact-card  /x/initialized/[(scot %p src.bowl)]
   ==
+::
 ++  mark-read
   |=  pax=path
   =/  sesh  (~(gut by user-sessions) src.bowl *user-session)
@@ -239,9 +326,11 @@
     ==
   %-  emil
   :-  %-  make-fact-card  /x/new-posts/[(scot %p src.bowl)]
+  :-  %-  make-fact-card  /x/recent/[(scot %p src.bowl)]
   %+  turn  (lineage pax)
   |=  =path
   %-  make-fact-card  (welp /x/new-posts-below/[(scot %p src.bowl)] path)
+::
 ++  make-fact-card
   |=  =path
   ^-  card

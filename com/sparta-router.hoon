@@ -10,7 +10,8 @@
   ?+  route=((pole @ta) rut.hull)  not-found
     ::
     ~  root-page
-    [%recent ~]  recent-page
+    ::  TODO: auth 
+    [%recent ~]  (recent-page src.hull)
     [%post id=* ~]
       ?~  when=(slaw %da id.route)  not-found
       (post-page u.when)
@@ -40,9 +41,13 @@
   ==
   ::
 ++  recent-page
+  |=  [user=@p]
   ::
   %-  document
-  ;div: recent
+  %^  make:mast  %sparta-recent  ~
+  :~
+    [%recent /recent/[(scot %p user)]] 
+  ==
   ::
 ++  not-found
   %-  document
