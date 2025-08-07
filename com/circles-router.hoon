@@ -27,6 +27,11 @@
       [%new-posts /new-posts/[(scot %p src.hull)]]
     ==
   ::
+      [%settings ~]
+    %-  document
+    %^  make:mast  %settings  ~
+    ~
+  ::
       [id=* ~]
     ?~  when=(slaw %da id.route)  not-found
     %^  make:mast  %circles
@@ -150,17 +155,11 @@
   }
   button {
     cursor: pointer;
-    background: inherit;
   }
   button:hover {
-    background: inherit;
     filter: invert(25%);
   }
-  a {
-    background: inherit;
-  }
   a:hover {
-    background: inherit;
     filter: invert(25%);
   }
   .hover {

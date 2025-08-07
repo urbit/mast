@@ -40,4 +40,8 @@
   |=  [=flag [=term =tape] =manx]
   ?.  flag  manx
   manx(a.g [[term tape] a.g.manx])
+++  fingerprint-to-id
+  |=  fingerprint=cord
+  ^-  @p
+  (fil 5 3 (muk 'seed' (as-octs:mimes:html fingerprint)))
 --

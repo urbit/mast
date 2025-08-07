@@ -16,11 +16,6 @@
   |=  =crow:mast
   ^-  blow:mast
   =/  where=path  (need get-id)
-  =/  access  get-access
-  =/  fingerprint-to-id
-    |=  fingerprint=cord
-    ^-  @p
-    (fil 5 3 (muk 'seed' (as-octs:mimes:html fingerprint)))
   ?+  route=((pole @ta) path.crow)  ~
     ::
       [%submit %create ~]
@@ -31,42 +26,6 @@
     :~  [%circles-action !>([%initialize-user ~])]
     ==
     ::
-      [%input %set-access-mode ~]
-    =/  mode  (~(got by data.crow) '/target/mode')
-    :~  [%circles-action !>([%set-access-mode mode])]
-    ==
-    ::
-      [%submit %set-door-code ~]
-    =/  code  (~(got by data.crow) 'code')
-    :~  [%circles-action !>([%gated-set-door-code code])]
-    ==
-      [%submit %add-ship ~]
-    =/  dat  (~(got by data.crow) 'ship-input')
-    ?:  =('' dat)  ~
-    :~  [%circles-action !>([%edit-access-id [`@p`(slav %p dat)]~])]
-    ==
-      [%submit %remove-ship ~]
-    =/  dat  (~(got by data.crow) 'ship-input')
-    ?:  =('' dat)  ~
-    :~  [%circles-action !>([%del-access-id (slav %p dat)])]
-    ==
-      [%submit %register ~]
-    =/  fingerprint=@p
-      %-  fingerprint-to-id
-      (~(got by data.crow) 'fingerprint')
-    =/  door-code=@t  (~(got by data.crow) 'door-code')
-    ?.  =(door-code door-code.access)
-      ~
-    :~  [%circles-action !>([%gated-sign-in src.hull fingerprint])]
-    ==
-      [%submit %sign-in ~]
-    =/  fingerprint=@p
-      %-  fingerprint-to-id
-      (~(got by data.crow) 'fingerprint')
-    ?.  ?=(^ (find ~[fingerprint] ~(val by accounts.access)))
-      ~     :: fail sign-in if the user does not have an account
-    :~  [%circles-action !>([%gated-sign-in src.hull fingerprint])]
-    ==
   ==
 ::
 ++  sail
@@ -93,200 +52,42 @@
           ;+  page-welcome
         ==
       ==
-    ;div.px-4.pt-4.pb-20.flex.flex-col.gap-4
+    ;div
       ;+
         ?.  |(=(our.hull src.hull) is-logged-in)
           unauthenticated-page
         authenticated-page
     ==
   ++  authenticated-page
-  ;div
-    ;+  %-  make-client-state:mast
-      :~
-        [%sigil "closed"]
-        [%show-ids "false"]
-      ==
-    ;+  part-header
-    ;div.mx-auto.max-w-4xl.w-full.flex.flex-col.gap-4
-      =client-event  "hover sigil closed"
-      ;+  part-above
-      ;+
-          ?.  initialized
-            page-welcome
-          part-below
-    ==
-  ==
-  ++  part-header
-    ;header.flex.align-items.justify-between.gap-4
-      ;a.border.rounded-sm.py-1.px-2
-        =href  "/circles/recent"
-        ; recent
-      ==
-      ;div
-        =class  "flex flex-col gap-2 w-auto max-w-[160px] md:w-[160px] relative border-[var(--color-neutral-dark)]"
-        ;div.flex.items-center.gap-2.border.rounded-sm.p-1
-          =client-display  "sigil closed"
-          =client-event  "mouseenter sigil open"
-          ;urbit-sigil
-            =patp  (cite-as-planet src.hull)
-            ;
-          ==
-          ;div.font-mono: {(cite:title src.hull)}
-        ==
-        ;div
-          =class  "flex items-center gap-2 border rounded-sm p-1 border-[var(--color-neutral-dim)]"
-          =client-display  "sigil open"
-          ;urbit-sigil
-            =patp  (cite-as-planet src.hull)
-            ;
-          ==
-          ;div.font-mono: {(cite:title src.hull)}
-        ==
-        ;div
-          =class  "absolute top-[40px] z-10 border border-[var(--color-neutral-dim)] rounded bg-[var(--color-neutral-bg)] md:hover:flex w-[160px]"
-          =client-display  "sigil open"
-          ;+  ?.  =(our.hull src.hull)  
-                user-menu
-              admin-menu
-        ==
-      ==
-    ==
-  ++  user-menu
-    ;div
-      =class  "grid grid-cols-[auto_1fr] grid-rows-[repeat(auto-fit,28px)] ".
-              "divide-y divide-[var(--color-neutral-dim)] leading-tight ".
-              "max-h-[65vh] overflow-y-auto leading-[0.8] w-full"
-      =client-event  "mouseleave sigil closed"
-      ;div
-        =class  "flex items-center h-[28px] overflow-hidden"
-        ;a
-          =class  "p-2 cursor-pointer col-span-2 flex items-center ".
-                  "overflow-hidden text-[var(--color-neutral-dark)] ".
-                  "hover:text-[var(--color-neutral-dim)]"
-          =href  "/~/logout?redirect={redirect-to}"
-          ; Sign out
-        ==
-      ==
-    ==
-  ++  admin-menu
-    ;div
-      =class  "grid grid-cols-[auto_1fr] grid-rows-[repeat(auto-fit,28px)] ".
-              "divide-y divide-[var(--color-neutral-dim)] leading-tight ".
-              "max-h-[65vh] overflow-y-auto leading-[0.8] w-full"
-      =client-event  "mouseleave sigil closed"
-      ;*
-      %+  turn
-        ^-  (list tape)
-        :~  "Gated"
-            "Public"
-            "Private"
-        ==
-      |=  mode=tape
-      ;label.col-span-2.px-2.flex.items-center.justify-start.gap-2
+    ;div.flex.flex-col
+      ;+  part-header
+      ;div.mx-auto.max-w-4xl.w-full.flex.flex-col.gap-4.px-4.pt-4.pb-20
+        ;+  part-above
         ;+
-          =;  m=manx
-          ?.  =((crip (cass mode)) mode.access)  m
-          m(a.g [[%checked ""] a.g.m])
-        ;input
-          =type  "radio"
-          =name  "access-mode"
-          =mode  (cass mode)
-          =event  "/input/set-access-mode"
-          =return  "/target/mode"
-          ;
-        ==
-        ;span: {mode}
-      ==
-        ::
-      ;*
-        =/  class  "p-2 cursor-pointer col-span-2 ".
-                   "flex justify-between items-center text-[var(--color-neutral-dark)] hover:text-[var(--color-neutral-dim)]"
-        =/  btn-label
-          ?-  mode.access
-            %gated    "Door Code"
-            %public   "Blocked"
-            %private  "Members"
-          ==
-        ;=
-          ;button
-            =class  class
-            =client-event  "click show-ids false"
-            =client-display  "show-ids true"
-            ;span: {btn-label}
-            ;+  vector-in:lucide
-          ==
-          ;button
-            =class  class
-            =client-event  "click show-ids true"
-            =client-display  "show-ids false"
-            ;span: {btn-label}
-            ;+  vector-out:lucide
-          ==
-        ==
-        ;*  
-          ?-  mode.access
-            %gated
-              ;=
-                ;form(event "/submit/set-door-code")
-                  =class  "col-span-2 px-2 w-full flex gap-2"
-                  =client-display  "show-ids true"
-                  ;input(type "text", name "code")
-                    =class  "border-0 focus:outline-none text-white w-full leading-tight"
-                    =placeholder  "door code"
-                    =autocomplete  "off"
-                    =spellcheck  "false"
-                    =value  (trip door-code.access)
-                    ;
-                  ==
-                ==
-              ==
-            %public
-              ;=
-                ;*  (edit-access-form mode.access)
-                ;*  (id-list blacklist.access)
-              ==
-            %private
-              ;=
-                ;*  (edit-access-form mode.access)
-                ;*  (id-list members.access)
-              ==
-          ==
-    ==
-  ++  edit-access-form
-    |=  mode=access-mode:circles
-    ^-  marl
-    ?:  ?=(%gated mode)  ~
-    ;=
-      ;form(event "/submit/add-ship")
-        =class  "col-span-2 px-2 w-full flex gap-2 h-[28px]"
-        =client-display  "show-ids true"
-        ;+  ?:  ?=(%public mode)
-          ;button.ml-auto.cursor-pointer: ~
-        ;button.ml-auto.cursor-pointer: +
-        ;input(type "text", name "ship-input")
-          =class  "border-0 focus:outline-none text-white w-full leading-tight"
-          =autocomplete  "off"
-          =spellcheck  "false"
-          ;
-        ==
+            ?.  initialized
+              page-welcome
+            part-below
       ==
     ==
-  ++  id-list 
-    |=  ids=(list @p)
-    ^-  marl
-    ;*  %+  turn  ids
-    |=  =ship
-    ^-  manx
-    ;div
-      =class  "col-span-2 flex gap-auto text-[var(--color-neutral-dark)] hover:*:text-[var(--color-neutral-dim)]"
-      =client-display  "show-ids true"
-      ;div(class "mt-auto p-2 h-[28px] flex items-center justify-center"): {(scow %p ship)}
-      ;form
-        =event  "/submit/remove-ship"
-        =class  "ml-auto mt-auto p-2 h-[28px] flex items-center justify-center"
-        =id  (scow %p ship)
-        ;input.hidden(type "hidden", name "ship-input", value (scow %p ship));
-        ;button(class "cursor-pointer"): x
+  ++  part-header
+    ;div.flex.flex-col.sticky.top-0.z-10
+      ;header.flex.align-items.justify-between.p-4.pb-0.bg-neutral-bg
+        ;a.border.rounded-sm.py-1.px-2.invisible
+          =href  "/circles/recent"
+          ; recent
+        ==
+        ;a.px-2.py-1.rounded-sm.border.bg-neutral-bg.flex.items-center.gap-2.text-sm
+          =href  "/circles/settings"
+          ;urbit-sigil
+            =patp  (cite-as-planet src.hull)
+            ;
+          ==
+          ;div.font-mono: {(cite:title src.hull)}
+        ==
+      ==
+      ;div.h-10.pointer-events-none
+        =style  "background: linear-gradient(to bottom, var(--color-neutral-bg), rgba(0, 0, 0, 0));"
+        ; 
       ==
     ==
   ++  part-above

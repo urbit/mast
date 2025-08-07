@@ -28,20 +28,24 @@
     %+  lth
       (slav %da (rear `path`a))
     (slav %da (rear `path`b))
-  ;div.flex.flex-col.border.px-2.py-1.rounded-sm.fixed.bottom-2.right-2.bg-neutral-bg.z-2
+  ;div
+    =class  "flex flex-col fixed z-2 ".
+            "bottom-4 right-4 md:bottom-9 md:right-9 "
     ;+
     ?~  sorted
-      ;a.primary-action
+      ?~  rut.hull  ;/  ""
+      ;a.primary-action.px-2.py-1.border.rounded-sm.bg-neutral-bg
         =href  "/circles"
         ; home
       ==
     =/  pax=path  i.sorted
     =/  pate  ?~  pax  ""  (spud pax)
     =/  id=tape  ?~  pax  ""  "/{(trip (rear `path`pax))}"
-    ;a.primary-action
+    ;a.primary-action.px-3.py-1.bg-neutral-bg.text-lg.rounded-sm
+      =style  "filter: invert(100%);"
       =href  "/circles{id}"
       =event  "/click/read{pate}"
-      ; {<(lent sorted)>} new
+      ; {<(lent sorted)>} new →
     ==
   ==
 --
