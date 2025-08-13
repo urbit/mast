@@ -74,11 +74,6 @@
   %+  map  path                                  ::
   %+  map  [ship buoy]                           ::
   %-  set  rode                                  ::
-:: +$  gulf  (map [ship rope] isle)                 ::
-:: +$  navy                                         :: resource to client subscription state
-::   %+  map  path                                  ::
-::   %+  map  (pair ship rope)                      ::
-::   %-  set  rode                                  ::
 ::
   ::
 ::

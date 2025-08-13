@@ -188,32 +188,26 @@
 ::
 ++  parse-channel-data
   |=  jon=json
-  ^-  [rode rope crow]
+  ^-  [buoy rode crow]
   =,  dejs:format
-  =+  ^-  [rod=rode sub=path eve=path dat=(map @t @t)]
-      %.  jon
-      %-  ot
-      :~  com+so  :: expexts the component's key,
-          sub+pa  :: and the sub path from the client
-          path+pa
-          data+(om so)
-      ==
-  =/  [src=ship rop=rope]  (parse-client-sub-path sub)
-  :+  rod  rop
-  :-  eve  dat
+  %.  jon
+  %-  ot
+  :~  ses+so  :: expexts the session id string,
+      com+so  :: and the component's key
+      path+pa
+      data+(om so)
+  ==
 ::
 ++  make-client-sub-path
-  |=  [src=ship rop=rope]
+  |=  [src=ship ses=buoy]
   ^-  path
-  /mast/ui/[(scot %p src)]/[(scot %uv (jam rop))]
+  /mast/ui/[(scot %p src)]/[`@t`ses]
 ::
 ++  parse-client-sub-path
-  |=  paf=path
-  ^-  [ship rope]
-  ?>  ?=([%mast %ui @ta @ta ~] paf)
-  :-  (slav %p i.t.t.paf)
-  ;;  rope
-      (cue (slav %uv i.t.t.t.paf))
+  |=  poe=(pole @ta)
+  ^-  [ship buoy]
+  ?>  ?=([%mast %ui who=@ta ses=@ta ~] poe)
+  :-  (slav %p who.poe)  ses.poe
 ::
 ++  make-direct-http-cards
   |=  [rid=@ta hed=response-header.simple-payload:http dat=(unit octs)]
@@ -224,9 +218,9 @@
   ==
 ::
 ++  make-diff-card
-  |=  [src=ship rop=rope jon=json]
+  |=  [src=ship ses=buoy jon=json]
   ^-  card
-  :*  %give  %fact  [(make-client-sub-path src rop) ~]
+  :*  %give  %fact  [(make-client-sub-path src ses) ~]
       %json  !>(jon)
   ==
 ::
@@ -251,7 +245,7 @@
   ==
 ::
 ++  handle-component-res
-  |=  [src=ship rop=rope res=(list tide)]
+  |=  [src=ship ses=buoy res=(list tide)]
   ^+  cor
   ?~  res  cor
   ?-  -.i.res
@@ -259,19 +253,19 @@
       %add
     =/  sus  (~(get by navy) q.i.res)
     ?^  sus
-      =/  bub  (~(get by u.sus) [src rop])
+      =/  bub  (~(get by u.sus) [src ses])
       %=  $
         res  t.res
         navy
           %+  ~(put by navy)  q.i.res
           ?~  bub
-            %+  ~(put by u.sus)  [src rop]  (silt p.i.res ~)
-          %+  ~(put by u.sus)  [src rop]  (~(put in u.bub) p.i.res)
+            %+  ~(put by u.sus)  [src ses]  (silt p.i.res ~)
+          %+  ~(put by u.sus)  [src ses]  (~(put in u.bub) p.i.res)
       ==
     =.  cor  (emit (make-resource-subscription-card [%add q.i.res]))
     %=  $
       res  t.res
-      navy  (~(put by navy) q.i.res (malt [[src rop] (silt p.i.res ~)] ~))
+      navy  (~(put by navy) q.i.res (malt [[src ses] (silt p.i.res ~)] ~))
     ==
     ::
       %del
@@ -281,11 +275,11 @@
         res  t.res
       ==
     =.  u.sus
-      =/  bub  (~(get by u.sus) [src rop])
+      =/  bub  (~(get by u.sus) [src ses])
       ?~  bub  u.sus
       =.  u.bub  (~(del in u.bub) p.i.res)
-      ?^  u.bub  (~(put by u.sus) [src rop] u.bub)
-      %-  ~(del by u.sus)  [src rop]
+      ?^  u.bub  (~(put by u.sus) [src ses] u.bub)
+      %-  ~(del by u.sus)  [src ses]
     ?^  u.sus
       %=  $
         res  t.res
@@ -328,27 +322,29 @@
 ++  del-component-state
   |=  $=  act
       $%  [%bound bas=knot]
-          [%clean kil=(list [src=ship rop=rope])]
+          [%clean kil=(list [src=ship ses=buoy])]
           [%all ~]
       ==
-  =/  guf=(list [key=[src=ship rop=rope] val=isle])  ~(tap by gulf)
+  =/  guf
+    ^-  (list [key=[src=ship ses=buoy] val=[rop=rope yel=isle]])
+    %~  tap  by  gulf
   |-  ^+  cor
   ?~  guf  cor
   ?.  ?|  ?=(%all -.act)
-          &(?=(%bound -.act) =(bas.act bas.rop.key.i.guf))
+          &(?=(%bound -.act) =(bas.act bas.rop.val.i.guf))
           &(?=(%clean -.act) ?=(^ (find ~[key.i.guf] kil.act)))
       ==
     %=  $
       guf  t.guf
     ==
-  =/  cos=(list [rod=rode cov=cove])  ~(tap by val.i.guf)
+  =/  cos=(list [rod=rode cov=cove])  ~(tap by yel.val.i.guf)
   |-  ^+  cor
   ?~  cos
     %=  ^$
       guf  t.guf
     ==
   =.  cor
-    %^  handle-component-res  src.key.i.guf  rop.key.i.guf
+    %^  handle-component-res  src.key.i.guf  ses.key.i.guf
     %:  make-component-res  %del  rod.i.cos  bom.cov.i.cos  res.lin.cov.i.cos
     ==
   =.  gulf  (~(del by gulf) key.i.guf)
@@ -442,11 +438,11 @@
       ?^  error.sign  cor
       =/  liv
         %+  roll  ~(val by sup.bowl)
-        |=  [[who=ship paf=path] acc=(set [ship rope])]
-        ::  /mast/ui/[ship]/[rope]
+        |=  [[who=ship paf=path] acc=(set [ship buoy])]
+        ::  /mast/ui/[ship]/[buoy]
         ?.  ?=([%mast %ui *] paf)  acc
-        =/  [src=ship rop=rope]  (parse-client-sub-path paf)
-        %-  ~(put in acc)  [who rop]
+        =/  [src=ship ses=buoy]  (parse-client-sub-path paf)
+        %-  ~(put in acc)  [who ses]
       =/  kil
         %-  ~(dif in ~(key by gulf))  liv
       %-  del-component-state  [%clean ~(tap in kil)]
@@ -503,10 +499,11 @@
         :: fall through to nested agent if binding not found
         =^  caz  you  (~(on-poke you bowl) mark vase)
         %-  emil  caz
-      =/  ui-core  (ui-abed:ui src.bowl u.rup)
+      =/  ses  `buoy`(crip ((d-co:co 1) now.bowl))
+      =/  ui-core  (ui-abed:ui %& src.bowl ses u.rup)
       =^  [sal=manx res=(set tide)]  ui-core  ui-moor:ui-core
       =.  gulf  ui-abet:ui-core
-      =.  cor  (handle-component-res src.bowl u.rup ~(tap in res))
+      =.  cor  (handle-component-res src.bowl ses ~(tap in res))
       %-  emil
       %^  make-direct-http-cards  rid  [200 ['Content-Type' 'text/html'] ~]
       :-  ~
@@ -525,8 +522,8 @@
       :: fall through to nested agent
       =^  caz  you  (~(on-poke you bowl) mark vase)
       %-  emil  caz
-    =/  [rod=rode rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
-    =^  caz  you  (ui-sway:(ui-abed:ui src.bowl rop) rod cro)
+    =/  [ses=buoy rod=rode cro=crow]  (parse-channel-data i.t.p.jon)
+    =^  caz  you  (ui-sway:(ui-abed:ui %| src.bowl ses) rod cro)
     %-  emil  caz
     ::
   ==
@@ -547,18 +544,18 @@
       ?~  sus
         %-  emit  (make-resource-subscription-card [%del res.wir])
       =/  gus
-        ^-  (list [[src=ship rop=rope] dat=(set rode)])
+        ^-  (list [[src=ship ses=buoy] dat=(set rode)])
         %~  tap  by  u.sus
       |-  ^+  cor
       ?~  gus  cor
       =/  cus  ~(tap in dat.i.gus)
       |-  ^+  cor
       ?~  cus  ^$(gus t.gus)
-      =/  ui-core  (ui-abed:ui src.i.gus rop.i.gus)
+      =/  ui-core  (ui-abed:ui %| src.i.gus ses.i.gus)
       =^  [jon=json res=(set tide)]  ui-core  (ui-furl:ui-core i.cus)
       =.  gulf  ui-abet:ui-core
-      =?  cor  .?(res)  (handle-component-res src.i.gus rop.i.gus ~(tap in res))
-      =?  cor  .?(jon)  (emit (make-diff-card src.i.gus rop.i.gus jon))
+      =?  cor  .?(res)  (handle-component-res src.i.gus ses.i.gus ~(tap in res))
+      =?  cor  .?(jon)  (emit (make-diff-card src.i.gus ses.i.gus jon))
       %=  $
         cus  t.cus
       ==
@@ -568,17 +565,29 @@
   ==
 ::
 ++  ui
-  |_  [src=ship rop=rope yel=isle]
+  |_  [src=ship ses=buoy rop=rope yel=isle]
   ++  ui-core  .
-  ++  ui-abet  (~(put by gulf) [src rop] yel)
+  ++  ui-abet  (~(put by gulf) [src ses] [rop yel])
   ++  ui-abed
-    |=  [s=ship r=rope]
-    ^+  ui-core
-    =/  yul  (~(get by gulf) [s r])
-    %_  ui-core
-      src  s
-      rop  r
-      yel  ?^(yul u.yul ~)
+    |=  %+  each
+            [s=ship b=buoy r=rope]
+            [s=ship b=buoy]
+    ?-  +<-
+      %&
+        %_  ui-core
+          src  s.p
+          ses  b.p
+          rop  r.p
+          yel  ~
+        ==
+      %|
+        =/  q=[r=rope y=isle]  (~(got by gulf) [s.p b.p])
+        %_  ui-core
+          src  s.p
+          ses  b.p
+          rop  r.q
+          yel  y.q
+        ==
     ==
   ::
   :: ++ui-moor
@@ -609,7 +618,8 @@
       a.g
         :~  [%our +:(scow %p our.bowl)]
             [%app (trip dap.bowl)]
-            [%sub (spud (make-client-sub-path src rop))]
+            [%ses (trip `@t`ses)]
+            [%sub (spud (make-client-sub-path src ses))]
         ==
       c.i.c  [script-element c.i.c.doc]
       i.t.c  sal
@@ -811,6 +821,7 @@
     ^-  hull
     :*  our.bowl
         src
+        ses
         bas.rop
         rut.rop
         que.rop
