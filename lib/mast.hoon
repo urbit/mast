@@ -250,58 +250,58 @@
     %del  [%pass wir %agent [our.bowl dap.bowl] %leave ~]
   ==
 ::
-++  handle-component-buoys
-  |=  [src=ship rop=rope bos=(list buoy)]
+++  handle-component-res
+  |=  [src=ship rop=rope res=(list tide)]
   ^+  cor
-  ?~  bos  cor
-  ?-  -.i.bos
+  ?~  res  cor
+  ?-  -.i.res
     ::
       %add
-    =/  sus  (~(get by navy) q.i.bos)
+    =/  sus  (~(get by navy) q.i.res)
     ?^  sus
       =/  bub  (~(get by u.sus) [src rop])
       %=  $
-        bos  t.bos
+        res  t.res
         navy
-          %+  ~(put by navy)  q.i.bos
+          %+  ~(put by navy)  q.i.res
           ?~  bub
-            %+  ~(put by u.sus)  [src rop]  (silt p.i.bos ~)
-          %+  ~(put by u.sus)  [src rop]  (~(put in u.bub) p.i.bos)
+            %+  ~(put by u.sus)  [src rop]  (silt p.i.res ~)
+          %+  ~(put by u.sus)  [src rop]  (~(put in u.bub) p.i.res)
       ==
-    =.  cor  (emit (make-resource-subscription-card [%add q.i.bos]))
+    =.  cor  (emit (make-resource-subscription-card [%add q.i.res]))
     %=  $
-      bos  t.bos
-      navy  (~(put by navy) q.i.bos (malt [[src rop] (silt p.i.bos ~)] ~))
+      res  t.res
+      navy  (~(put by navy) q.i.res (malt [[src rop] (silt p.i.res ~)] ~))
     ==
     ::
       %del
-    =/  sus  (~(get by navy) q.i.bos)
+    =/  sus  (~(get by navy) q.i.res)
     ?~  sus
       %=  $
-        bos  t.bos
+        res  t.res
       ==
     =.  u.sus
       =/  bub  (~(get by u.sus) [src rop])
       ?~  bub  u.sus
-      =.  u.bub  (~(del in u.bub) p.i.bos)
+      =.  u.bub  (~(del in u.bub) p.i.res)
       ?^  u.bub  (~(put by u.sus) [src rop] u.bub)
       %-  ~(del by u.sus)  [src rop]
     ?^  u.sus
       %=  $
-        bos  t.bos
-        navy  (~(put by navy) q.i.bos u.sus)
+        res  t.res
+        navy  (~(put by navy) q.i.res u.sus)
       ==
-    =.  cor  (emit (make-resource-subscription-card [%del q.i.bos]))
+    =.  cor  (emit (make-resource-subscription-card [%del q.i.res]))
     %=  $
-      bos  t.bos
-      navy  (~(del by navy) q.i.bos)
+      res  t.res
+      navy  (~(del by navy) q.i.res)
     ==
     ::
   ==
 ::
-++  make-component-buoys
+++  make-component-res
   |=  [act=?(%add %del) rod=rode bom=boom pol=pool]
-  ^-  (list buoy)
+  ^-  (list tide)
   %+  murn  bom
   |=  [nam=@tas mak=@tas]
   =/  paf  (~(get by pol) nam)
@@ -348,8 +348,8 @@
       guf  t.guf
     ==
   =.  cor
-    %^  handle-component-buoys  src.key.i.guf  rop.key.i.guf
-    %:  make-component-buoys  %del  rod.i.cos  bom.cov.i.cos  res.lin.cov.i.cos
+    %^  handle-component-res  src.key.i.guf  rop.key.i.guf
+    %:  make-component-res  %del  rod.i.cos  bom.cov.i.cos  res.lin.cov.i.cos
     ==
   =.  gulf  (~(del by gulf) key.i.guf)
   %=  $
@@ -504,9 +504,9 @@
         =^  caz  you  (~(on-poke you bowl) mark vase)
         %-  emil  caz
       =/  ui-core  (ui-abed:ui src.bowl u.rup)
-      =^  [sal=manx bos=(set buoy)]  ui-core  ui-moor:ui-core
+      =^  [sal=manx res=(set tide)]  ui-core  ui-moor:ui-core
       =.  gulf  ui-abet:ui-core
-      =.  cor  (handle-component-buoys src.bowl u.rup ~(tap in bos))
+      =.  cor  (handle-component-res src.bowl u.rup ~(tap in res))
       %-  emil
       %^  make-direct-http-cards  rid  [200 ['Content-Type' 'text/html'] ~]
       :-  ~
@@ -555,9 +555,9 @@
       |-  ^+  cor
       ?~  cus  ^$(gus t.gus)
       =/  ui-core  (ui-abed:ui src.i.gus rop.i.gus)
-      =^  [jon=json bos=(set buoy)]  ui-core  (ui-furl:ui-core i.cus)
+      =^  [jon=json res=(set tide)]  ui-core  (ui-furl:ui-core i.cus)
       =.  gulf  ui-abet:ui-core
-      =?  cor  .?(bos)  (handle-component-buoys src.i.gus rop.i.gus ~(tap in bos))
+      =?  cor  .?(res)  (handle-component-res src.i.gus rop.i.gus ~(tap in res))
       =?  cor  .?(jon)  (emit (make-diff-card src.i.gus rop.i.gus jon))
       %=  $
         cus  t.cus
@@ -584,7 +584,7 @@
   :: ++ui-moor
   :: render from the root
   ++  ui-moor
-    ^-  [[manx (set buoy)] _ui-core]
+    ^-  [[manx (set tide)] _ui-core]
     :: the component key for the root is null
     =/  rod  *rode
     =/  lin  (~(got by dock) bas.rop)
@@ -604,7 +604,7 @@
     ?>  ?=(%body n.g.sal)
     =.  yel  (~(uni by yel) new.wak)
     :_  ui-core
-    :_  bos.wak
+    :_  res.wak
     %_  doc
       a.g
         :~  [%our +:(scow %p our.bowl)]
@@ -619,7 +619,7 @@
   :: rerender and diff a component
   ++  ui-furl
     |=  rod=rode
-    ^-  [[json (set buoy)] _ui-core]
+    ^-  [[json (set tide)] _ui-core]
     =/  cov  (~(got by yel) rod)
     =/  com  (~(got by deck) com.lin.cov)
     =/  cun  +(dif.cov)
@@ -645,20 +645,20 @@
         aft  new
         dif  cun
       ==
-    =^  bos=(set buoy)  yel
-      =/  bos  *(set buoy)
+    =^  res=(set tide)  yel
+      =/  res  *(set tide)
       =/  ros  ~(tap in del.p.dif)
-      |-  ^-  [(set buoy) isle]
-      ?~  ros  [bos yel]
+      |-  ^-  [(set tide) isle]
+      ?~  ros  [res yel]
       =/  cuv  (~(get by yel) i.ros)
       ?~  cuv  $(ros t.ros)
       %=  $
         ros  t.ros
-        bos  (~(gas in bos) (make-component-buoys %del i.ros bom.u.cuv res.lin.u.cuv))
+        res  (~(gas in res) (make-component-res %del i.ros bom.u.cuv res.lin.u.cuv))
         yel  (~(del by yel) i.ros)
       ==
     :_  ui-core
-    :-  jon  (~(uni in bos.p.dif) bos)
+    :-  jon  (~(uni in res.p.dif) res)
   ::
   :: ++ui-sway
   :: apply an event
@@ -842,7 +842,7 @@
     =-  ?>  ?=(^ p)
         :-  i.p
         ?.  new  q
-        :-  (~(gas in bos.q) (make-component-buoys %add rod bom.cov res.lin))
+        :-  (~(gas in res.q) (make-component-res %add rod bom.cov res.lin))
             (~(put by new.q) rod cov)
     |-  ^-  (pair marl wake)
     %^  spin  mal  *wake
@@ -859,7 +859,7 @@
         lin  (parse-component-element m)
       ==
     :-  m
-    :-  (~(uni in bos.a) bos.b)
+    :-  (~(uni in res.a) res.b)
         (~(uni by new.a) new.b)
   ::
   ++  handle-diff-branch-add
@@ -881,7 +881,7 @@
           (getv %key a.g.m)
           (parse-component-element m)
     :-  m
-    :-  (~(uni in bos.a) bos.b)
+    :-  (~(uni in res.a) res.b)
         (~(uni by new.a) new.b)
   ::
   ++  handle-diff-branch-dels
@@ -957,7 +957,7 @@
         acc
           =^  wak  i.new  (handle-diff-branch-add i.new)
           %_  acc
-            bos.p  (~(uni in bos.p.acc) bos.wak)
+            res.p  (~(uni in res.p.acc) res.wak)
             add.p  (~(uni by add.p.acc) new.wak)
             q
               %+  snoc  q.acc
