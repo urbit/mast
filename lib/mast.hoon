@@ -436,16 +436,12 @@
         [%mast %cleanup ~]
       =.  cor  set:cleanup-timer
       ?^  error.sign  cor
-      =/  liv
-        %+  roll  ~(val by sup.bowl)
-        |=  [[who=ship paf=path] acc=(set [ship buoy])]
-        ::  /mast/ui/[ship]/[buoy]
-        ?.  ?=([%mast %ui *] paf)  acc
-        =/  [src=ship ses=buoy]  (parse-client-sub-path paf)
-        %-  ~(put in acc)  [who ses]
+      =/  nel  .^(channel-state:eyre %e (bak %channel-state))
       =/  kil
-        %-  ~(dif in ~(key by gulf))  liv
-      %-  del-component-state  [%clean ~(tap in kil)]
+        %+  skip  ~(tap in ~(key by gulf))
+        |=  [s=ship b=buoy]
+        %-  ~(has by session.nel)  `@t`b
+      %-  del-component-state  [%clean kil]
       ::
     ==
     ::
@@ -522,9 +518,19 @@
       :: fall through to nested agent
       =^  caz  you  (~(on-poke you bowl) mark vase)
       %-  emil  caz
-    =/  [ses=buoy rod=rode cro=crow]  (parse-channel-data i.t.p.jon)
-    =^  caz  you  (ui-sway:(ui-abed:ui %| src.bowl ses) rod cro)
-    %-  emil  caz
+    ?+  i.t.p.jon  !!
+      ::
+        [%s %'event']
+      ?>  ?=(^ t.t.p.jon)
+      =/  [ses=buoy rod=rode cro=crow]  (parse-channel-data i.t.t.p.jon)
+      =^  caz  you  (ui-sway:(ui-abed:ui %| src.bowl ses) rod cro)
+      %-  emil  caz
+      ::
+        [%s %'kill']
+      ?>  ?=([[%s @] ~] t.t.p.jon)
+      %-  del-component-state  [%clean [[src.bowl p.i.t.t.p.jon] ~]]
+      ::
+    ==
     ::
   ==
 ::
