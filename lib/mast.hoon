@@ -248,7 +248,7 @@
   |=  act=?(%add %del)
   ^-  card
   =/  des  q.byk.bowl
-  :*  %pass  /mast/deck/[des]  %arvo  %c  %warp  our.bowl  des
+  :*  %pass  /mast/deck  %arvo  %c  %warp  our.bowl  des
       ?-  act
         %add  [~ %next %z da+now.bowl /com]
         %del  ~
