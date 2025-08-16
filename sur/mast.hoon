@@ -2,7 +2,7 @@
 +$  crow  [=path data=(map @t @t)]               :: event for a component
 +$  blow  (list cage)                            :: pokes for an agent from a component
 +$  gull                                         :: mast actions
-  $%  [%navigate ses=buoy to=rope]               ::
+  $%  [%navigate src=ship ses=buoy to=rope]      ::
   ==                                             ::
 +$  hull                                         :: component sample
   $:  our=ship                                   ::   our
@@ -77,20 +77,24 @@
 ::
   ::
 ::
-+$  diff                                         :: ++luff diff output
++$  grog
+  $%  [%diff component=rode counter=@ diff=(list mess)]
+      [%navigate to=@t]
+  ==
++$  mess
+  $%  [%new parent-key=@t index=@t data=@t]
+      [%delete keys=(list @t)]
+      [%move key=@t index=@t]
+      [%change-attr key=@t del=(list @t) new=(list [k=@t v=@t])]
+      [%text container-key=@t data=@t]
+  ==
++$  diff
   %+  pair
   $:  res=(set tide)
       del=(set rode)
       add=isle
   ==
-  %-  list  json
-+$  jiff
-  $%  [%new parent-key=_s+'' index=_n+'' data=_s+'']
-      [%delete keys=[%a (list _s+'')]]
-      [%move key=_s+'' index=_n+'']
-      [%change-attr key=_s+'' del=[%a (list k=_s+'')] new=[%a (list [%a k=_s+'' v=_s+'' ~])]]
-      [%text container-key=_s+'' data=_s+'']
-  ==
+  %-  list  mess
 ::
   ::
 ::

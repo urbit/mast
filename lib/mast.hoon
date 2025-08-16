@@ -186,6 +186,26 @@
     %+  most  tis  url-segment
   --
 ::
+++  print-url
+  |=  rop=rope
+  ^-  cord
+  %-  crip
+  %+  weld  (trip bas.rop)
+  %+  weld  (spud rut.rop)
+  =/  qus  ~(tap by que.rop)
+  ?~  qus  ~
+  :-  '?'
+  |-  ^-  tape
+  %+  weld
+    ?:  =('' q.i.qus)  (trip p.i.qus)
+    %+  weld  (trip p.i.qus)
+    :-  '='  (trip q.i.qus)
+  ?~  t.qus  ~
+  :-  '&'
+  %=  $
+    qus  t.qus
+  ==
+::
 ++  parse-channel-data
   |=  jon=json
   ^-  [buoy rode crow]
@@ -217,7 +237,7 @@
       [%give %kick ~[/http-response/[rid]] ~]
   ==
 ::
-++  make-diff-card
+++  make-channel-card
   |=  [src=ship ses=buoy jon=json]
   ^-  card
   :*  %give  %fact  [(make-client-sub-path src ses) ~]
@@ -456,6 +476,7 @@
     %-  emil  caz
     ::
       %mast-bind
+    ?>  =(our.bowl src.bowl)
     =/  bid  !<  bind  vase
     ?:  (~(has by dock) p.bid)
       ~&  >>>  "%mast-bind failed: /{(trip p.bid)} already exists"
@@ -465,6 +486,7 @@
     %-  emit  (bind-eyre-url /[p.bid])
     ::
       %mast-unbind
+    ?>  =(our.bowl src.bowl)
     =/  not  !<  knot  vase
     =/  duk  (~(get by dock) not)
     ?~  duk
@@ -474,6 +496,19 @@
     =.  dock  (~(del by dock) not)
     ~&  >  "%mast-unbind: /{(trip not)} unbound"
     %-  emit  (unbind-eyre-url /[not])
+    ::
+      %mast-action
+    ?>  ?&  =(our.bowl src.bowl)
+            =(/gall/[dap.bowl] sap.bowl)
+        ==
+    =/  act  !<(gull vase)
+    ?-  -.act
+      ::
+        %navigate
+      =/  jon  (swig [%navigate (print-url to.act)])
+      %-  emit  (make-channel-card src.act ses.act jon)
+      ::
+    ==
     ::
       %handle-http-request
     =+  !<  [rid=@ta req=inbound-request:eyre]  vase
@@ -561,7 +596,7 @@
       =^  [jon=json res=(set tide)]  ui-core  (ui-furl:ui-core i.cus)
       =.  gulf  ui-abet:ui-core
       =?  cor  .?(res)  (handle-component-res src.i.gus ses.i.gus ~(tap in res))
-      =?  cor  .?(jon)  (emit (make-diff-card src.i.gus ses.i.gus jon))
+      =?  cor  .?(jon)  (emit (make-channel-card src.i.gus ses.i.gus jon))
       %=  $
         cus  t.cus
       ==
@@ -643,16 +678,7 @@
     =/  dif  (luff [aft.cov ~] [new ~])
     ?~  q.dif
       :-  ~^~  ui-core
-    :: if there is a diff, build the full diff object
-    :: with the key and diff counter for this component
-    =/  jon
-      ^-  json
-      :-  %o
-      %-  my
-      :~  ['p' [%s rod]]
-          ['q' [%n (crip ((d-co:co 1) cun))]]
-          ['r' [%a q.dif]]
-      ==
+    =/  jon  (swig [%diff rod cun q.dif])
     =.  yel
       %.  add.p.dif
       %~  uni  by
@@ -688,6 +714,11 @@
     =/  pof  ~(. you spoof-bowl)
     |-  ^+  [caz you]
     ?~  blo  [caz you]
+    ?:  =(%mast-action p.i.blo)
+      %=  $
+        blo  t.blo
+        caz  [[%pass /mast/action %agent [our.bowl dap.bowl] %poke i.blo] caz]
+      ==
     =^  cuz  you  (on-poke:pof i.blo)
     %=  $
       blo  t.blo
@@ -938,9 +969,8 @@
           %-  handle-diff-branch-dels  old
         q
           :_  q.acc
-          %-  swig
           :*  %delete
-              [%a (turn old |=(m=manx [%s (getv %key a.g.m)]))]
+              (turn old |=(m=manx (getv %key a.g.m)))
           ==
       ==
     ?:  =(%$ n.g.i.new)
@@ -955,10 +985,9 @@
         i    +(i)
         q.acc
           %+  snoc  q.acc
-          %-  swig
           :*  %move
-              [%s (getv %key a.g.i.new)]
-              [%n (getv %i a.g.i.new)]
+              (getv %key a.g.i.new)
+              (getv %i a.g.i.new)
           ==
       ==
     =|  j=@ud
@@ -978,11 +1007,10 @@
             add.p  (~(uni by add.p.acc) new.wak)
             q
               %+  snoc  q.acc
-              %-  swig
               :*  %new
-                  [%s pkey]
-                  [%n (crip ((d-co:co 1) i))]
-                  [%s (crip (en-xml:html i.new))]
+                  pkey
+                  (crip ((d-co:co 1) i))
+                  (crip (en-xml:html i.new))
               ==
           ==
       ==
@@ -1031,9 +1059,8 @@
                 q.acc
                   ?:  &(?=(~ del.jib) ?=(~ new.jib))  q.acc
                   :_  q.acc
-                  %-  swig
                   :*  %change-attr
-                      [%s k.nnky]
+                      k.nnky
                       jib
                   ==
               ==
@@ -1052,16 +1079,14 @@
               q.acc
                 =.  q.acc
                   %+  snoc  q.acc
-                  %-  swig
                   :*  %move
-                      [%s k.nkey]
-                      [%n (crip ((d-co:co 1) i))]
+                      k.nkey
+                      (crip ((d-co:co 1) i))
                   ==
                 ?:  &(?=(~ del.jib) ?=(~ new.jib))  q.acc
                 :_  q.acc
-                %-  swig
                 :*  %change-attr
-                    [%s k.nkey]
+                    k.nkey
                     jib
                 ==
             ==
@@ -1085,10 +1110,9 @@
           i    +(i)
           q.acc
             :_  q.acc
-            %-  swig
             :*  %text
-                [%s (getv %key a.g.i.new)]
-                [%s txt]
+                (getv %key a.g.i.new)
+                txt
             ==
         ==
       =/  jib  (jibe n.g.i.new a.g.i.old a.g.i.new)
@@ -1105,9 +1129,8 @@
             q.acc
               ?:  &(?=(~ del.jib) ?=(~ new.jib))  q.acc
               :_  q.acc
-              %-  swig
               :*  %change-attr
-                  [%s k.nkey]
+                  k.nkey
                   jib
               ==
           ==
@@ -1123,8 +1146,8 @@
   ++  jibe
     |=  [nn=mane om=mart nm=mart]
     =|  $=  acc
-        $:  [%a del=(list [%s @t])]
-            [%a new=(list [%a [%s @t] [%s @t] ~])]
+        $:  del=(list @t)
+            new=(list [k=@t v=@t])
         ==
     ?:  =(%mast nn)  acc
     |-  ^+  acc
@@ -1135,7 +1158,7 @@
           del
         %+  turn  om
         |=  [n=mane *]
-        [%s `@t`?>(?=(@ n) n)]
+        `@t`?>(?=(@ n) n)
       ==
     =|  i=@ud
     =/  com=mart  om
@@ -1147,10 +1170,8 @@
         nm  t.nm
         new.acc
           :_  new.acc
-          :-  %a
-          :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
-              [%s (crip v.i.nm)]
-          ==
+          :-  `@t`?>(?=(@ n.i.nm) n.i.nm)
+              (crip v.i.nm)
       ==
     ?~  om
       !!
@@ -1167,10 +1188,8 @@
         nm   t.nm
         new.acc
           :_  new.acc
-          :-  %a
-          :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
-              [%s (crip v.i.nm)]
-          ==
+          :-  `@t`?>(?=(@ n.i.nm) n.i.nm)
+              (crip v.i.nm)
       ==
     %=  $
       com  t.com
@@ -1187,44 +1206,62 @@
       (crip v.i.m)
     $(m t.m)
   ::
-  :: ++swig
-  :: takes +$jiff which is the json diff format for the client,
-  :: and turns it into the full json object to be sent.
-  ++  swig
-    |=  jif=jiff
+  --
+::
+:: ++swig
+:: client update to json
+++  swig
+  |=  gog=grog
+  ^-  json
+  ?-  -.gog
+    ::
+      %navigate
+    :-  %s  to.gog
+    ::
+      %diff
+    =;  dif
+      :-  %o
+      %-  my
+      :~  ['p' [%s component.gog]]
+          ['q' [%n (crip ((d-co:co 1) counter.gog))]]
+          ['r' [%a dif]]
+      ==
+    ^-  (list json)
+    %+  turn  diff.gog
+    |=  mes=mess
     ^-  json
     :-  %o
     %-  my
-    ?-  -.jif
+    ?-  -.mes
       %new
         :~  ['p' [%s 'n']]
-            ['q' parent-key.jif]
-            ['r' index.jif]
-            ['s' data.jif]
+            ['q' [%s parent-key.mes]]
+            ['r' [%n index.mes]]
+            ['s' [%s data.mes]]
         ==
       %delete
         :~  ['p' [%s 'd']]
-            ['q' keys.jif]
+            ['q' [%a (turn keys.mes |=(k=@t s+k))]]
         ==
       %move
         :~  ['p' [%s 'm']]
-            ['q' key.jif]
-            ['r' index.jif]
+            ['q' [%s key.mes]]
+            ['r' [%n index.mes]]
         ==
       %change-attr
         :~  ['p' [%s 'c']]
-            ['q' key.jif]
-            ['r' del.jif]
-            ['s' new.jif]
+            ['q' [%s key.mes]]
+            ['r' [%a (turn del.mes |=(k=@t s+k))]]
+            ['s' [%a (turn new.mes |=([k=@t v=@t] [%a s+k s+v ~]))]]
         ==
       %text
         :~  ['p' [%s 't']]
-            ['q' container-key.jif]
-            ['r' data.jif]
+            ['q' [%s container-key.mes]]
+            ['r' [%s data.mes]]
         ==
     ==
-  ::
-  --
+    ::
+  ==
 ::
 --
 
