@@ -186,34 +186,48 @@
     %+  most  tis  url-segment
   --
 ::
+++  print-url
+  |=  rop=rope
+  ^-  cord
+  %-  crip
+  %+  weld  (trip bas.rop)
+  %+  weld  (spud rut.rop)
+  =/  qus  ~(tap by que.rop)
+  ?~  qus  ~
+  :-  '?'
+  |-  ^-  tape
+  %+  weld
+    ?:  =('' q.i.qus)  (trip p.i.qus)
+    %+  weld  (trip p.i.qus)
+    :-  '='  (trip q.i.qus)
+  ?~  t.qus  ~
+  :-  '&'
+  %=  $
+    qus  t.qus
+  ==
+::
 ++  parse-channel-data
   |=  jon=json
-  ^-  [rode rope crow]
+  ^-  [buoy rode crow]
   =,  dejs:format
-  =+  ^-  [rod=rode sub=path eve=path dat=(map @t @t)]
-      %.  jon
-      %-  ot
-      :~  com+so  :: expexts the component's key,
-          sub+pa  :: and the sub path from the client
-          path+pa
-          data+(om so)
-      ==
-  =/  [src=ship rop=rope]  (parse-client-sub-path sub)
-  :+  rod  rop
-  :-  eve  dat
+  %.  jon
+  %-  ot
+  :~  ses+so  :: expexts the session id string,
+      com+so  :: and the component's key
+      path+pa
+      data+(om so)
+  ==
 ::
 ++  make-client-sub-path
-  |=  [src=ship rop=rope]
+  |=  [src=ship ses=buoy]
   ^-  path
-  /mast/ui/[(scot %p src)]/[(scot %uv (jam rop))]
+  /mast/ui/[(scot %p src)]/[`@t`ses]
 ::
 ++  parse-client-sub-path
-  |=  paf=path
-  ^-  [ship rope]
-  ?>  ?=([%mast %ui @ta @ta ~] paf)
-  :-  (slav %p i.t.t.paf)
-  ;;  rope
-      (cue (slav %uv i.t.t.t.paf))
+  |=  poe=(pole @ta)
+  ^-  [ship buoy]
+  ?>  ?=([%mast %ui who=@ta ses=@ta ~] poe)
+  :-  (slav %p who.poe)  ses.poe
 ::
 ++  make-direct-http-cards
   |=  [rid=@ta hed=response-header.simple-payload:http dat=(unit octs)]
@@ -223,10 +237,10 @@
       [%give %kick ~[/http-response/[rid]] ~]
   ==
 ::
-++  make-diff-card
-  |=  [src=ship rop=rope jon=json]
+++  make-channel-card
+  |=  [src=ship ses=buoy jon=json]
   ^-  card
-  :*  %give  %fact  [(make-client-sub-path src rop) ~]
+  :*  %give  %fact  [(make-client-sub-path src ses) ~]
       %json  !>(jon)
   ==
 ::
@@ -234,7 +248,7 @@
   |=  act=?(%add %del)
   ^-  card
   =/  des  q.byk.bowl
-  :*  %pass  /mast/deck/[des]  %arvo  %c  %warp  our.bowl  des
+  :*  %pass  /mast/deck  %arvo  %c  %warp  our.bowl  des
       ?-  act
         %add  [~ %next %z da+now.bowl /com]
         %del  ~
@@ -250,58 +264,58 @@
     %del  [%pass wir %agent [our.bowl dap.bowl] %leave ~]
   ==
 ::
-++  handle-component-buoys
-  |=  [src=ship rop=rope bos=(list buoy)]
+++  handle-component-res
+  |=  [src=ship ses=buoy res=(list tide)]
   ^+  cor
-  ?~  bos  cor
-  ?-  -.i.bos
+  ?~  res  cor
+  ?-  -.i.res
     ::
       %add
-    =/  sus  (~(get by navy) q.i.bos)
+    =/  sus  (~(get by navy) q.i.res)
     ?^  sus
-      =/  bub  (~(get by u.sus) [src rop])
+      =/  bub  (~(get by u.sus) [src ses])
       %=  $
-        bos  t.bos
+        res  t.res
         navy
-          %+  ~(put by navy)  q.i.bos
+          %+  ~(put by navy)  q.i.res
           ?~  bub
-            %+  ~(put by u.sus)  [src rop]  (silt p.i.bos ~)
-          %+  ~(put by u.sus)  [src rop]  (~(put in u.bub) p.i.bos)
+            %+  ~(put by u.sus)  [src ses]  (silt p.i.res ~)
+          %+  ~(put by u.sus)  [src ses]  (~(put in u.bub) p.i.res)
       ==
-    =.  cor  (emit (make-resource-subscription-card [%add q.i.bos]))
+    =.  cor  (emit (make-resource-subscription-card [%add q.i.res]))
     %=  $
-      bos  t.bos
-      navy  (~(put by navy) q.i.bos (malt [[src rop] (silt p.i.bos ~)] ~))
+      res  t.res
+      navy  (~(put by navy) q.i.res (malt [[src ses] (silt p.i.res ~)] ~))
     ==
     ::
       %del
-    =/  sus  (~(get by navy) q.i.bos)
+    =/  sus  (~(get by navy) q.i.res)
     ?~  sus
       %=  $
-        bos  t.bos
+        res  t.res
       ==
     =.  u.sus
-      =/  bub  (~(get by u.sus) [src rop])
+      =/  bub  (~(get by u.sus) [src ses])
       ?~  bub  u.sus
-      =.  u.bub  (~(del in u.bub) p.i.bos)
-      ?^  u.bub  (~(put by u.sus) [src rop] u.bub)
-      %-  ~(del by u.sus)  [src rop]
+      =.  u.bub  (~(del in u.bub) p.i.res)
+      ?^  u.bub  (~(put by u.sus) [src ses] u.bub)
+      %-  ~(del by u.sus)  [src ses]
     ?^  u.sus
       %=  $
-        bos  t.bos
-        navy  (~(put by navy) q.i.bos u.sus)
+        res  t.res
+        navy  (~(put by navy) q.i.res u.sus)
       ==
-    =.  cor  (emit (make-resource-subscription-card [%del q.i.bos]))
+    =.  cor  (emit (make-resource-subscription-card [%del q.i.res]))
     %=  $
-      bos  t.bos
-      navy  (~(del by navy) q.i.bos)
+      res  t.res
+      navy  (~(del by navy) q.i.res)
     ==
     ::
   ==
 ::
-++  make-component-buoys
+++  make-component-res
   |=  [act=?(%add %del) rod=rode bom=boom pol=pool]
-  ^-  (list buoy)
+  ^-  (list tide)
   %+  murn  bom
   |=  [nam=@tas mak=@tas]
   =/  paf  (~(get by pol) nam)
@@ -328,28 +342,30 @@
 ++  del-component-state
   |=  $=  act
       $%  [%bound bas=knot]
-          [%clean kil=(list [src=ship rop=rope])]
+          [%clean kil=(list [src=ship ses=buoy])]
           [%all ~]
       ==
-  =/  guf=(list [key=[src=ship rop=rope] val=isle])  ~(tap by gulf)
+  =/  guf
+    ^-  (list [key=[src=ship ses=buoy] val=[rop=rope yel=isle]])
+    %~  tap  by  gulf
   |-  ^+  cor
   ?~  guf  cor
   ?.  ?|  ?=(%all -.act)
-          &(?=(%bound -.act) =(bas.act bas.rop.key.i.guf))
+          &(?=(%bound -.act) =(bas.act bas.rop.val.i.guf))
           &(?=(%clean -.act) ?=(^ (find ~[key.i.guf] kil.act)))
       ==
     %=  $
       guf  t.guf
     ==
-  =/  cos=(list [rod=rode cov=cove])  ~(tap by val.i.guf)
+  =/  cos=(list [rod=rode cov=cove])  ~(tap by yel.val.i.guf)
   |-  ^+  cor
   ?~  cos
     %=  ^$
       guf  t.guf
     ==
   =.  cor
-    %^  handle-component-buoys  src.key.i.guf  rop.key.i.guf
-    %:  make-component-buoys  %del  rod.i.cos  bom.cov.i.cos  res.lin.cov.i.cos
+    %^  handle-component-res  src.key.i.guf  ses.key.i.guf
+    %:  make-component-res  %del  rod.i.cos  bom.cov.i.cos  res.lin.cov.i.cos
     ==
   =.  gulf  (~(del by gulf) key.i.guf)
   %=  $
@@ -440,16 +456,12 @@
         [%mast %cleanup ~]
       =.  cor  set:cleanup-timer
       ?^  error.sign  cor
-      =/  liv
-        %+  roll  ~(val by sup.bowl)
-        |=  [[who=ship paf=path] acc=(set [ship rope])]
-        ::  /mast/ui/[ship]/[rope]
-        ?.  ?=([%mast %ui *] paf)  acc
-        =/  [src=ship rop=rope]  (parse-client-sub-path paf)
-        %-  ~(put in acc)  [who rop]
+      =/  nel  .^(channel-state:eyre %e (bak %channel-state))
       =/  kil
-        %-  ~(dif in ~(key by gulf))  liv
-      %-  del-component-state  [%clean ~(tap in kil)]
+        %+  skip  ~(tap in ~(key by gulf))
+        |=  [s=ship b=buoy]
+        %-  ~(has by session.nel)  `@t`b
+      %-  del-component-state  [%clean kil]
       ::
     ==
     ::
@@ -464,6 +476,7 @@
     %-  emil  caz
     ::
       %mast-bind
+    ?>  =(our.bowl src.bowl)
     =/  bid  !<  bind  vase
     ?:  (~(has by dock) p.bid)
       ~&  >>>  "%mast-bind failed: /{(trip p.bid)} already exists"
@@ -473,6 +486,7 @@
     %-  emit  (bind-eyre-url /[p.bid])
     ::
       %mast-unbind
+    ?>  =(our.bowl src.bowl)
     =/  not  !<  knot  vase
     =/  duk  (~(get by dock) not)
     ?~  duk
@@ -482,6 +496,19 @@
     =.  dock  (~(del by dock) not)
     ~&  >  "%mast-unbind: /{(trip not)} unbound"
     %-  emit  (unbind-eyre-url /[not])
+    ::
+      %mast-action
+    ?>  ?&  =(our.bowl src.bowl)
+            =(/gall/[dap.bowl] sap.bowl)
+        ==
+    =/  act  !<(gull vase)
+    ?-  -.act
+      ::
+        %navigate
+      =/  jon  (swig [%navigate (print-url to.act)])
+      %-  emit  (make-channel-card src.act ses.act jon)
+      ::
+    ==
     ::
       %handle-http-request
     =+  !<  [rid=@ta req=inbound-request:eyre]  vase
@@ -503,10 +530,11 @@
         :: fall through to nested agent if binding not found
         =^  caz  you  (~(on-poke you bowl) mark vase)
         %-  emil  caz
-      =/  ui-core  (ui-abed:ui src.bowl u.rup)
-      =^  [sal=manx bos=(set buoy)]  ui-core  ui-moor:ui-core
+      =/  ses  `buoy`(crip ((d-co:co 1) now.bowl))
+      =/  ui-core  (ui-abed:ui %& src.bowl ses u.rup)
+      =^  [sal=manx res=(set tide)]  ui-core  ui-moor:ui-core
       =.  gulf  ui-abet:ui-core
-      =.  cor  (handle-component-buoys src.bowl u.rup ~(tap in bos))
+      =.  cor  (handle-component-res src.bowl ses ~(tap in res))
       %-  emil
       %^  make-direct-http-cards  rid  [200 ['Content-Type' 'text/html'] ~]
       :-  ~
@@ -525,9 +553,19 @@
       :: fall through to nested agent
       =^  caz  you  (~(on-poke you bowl) mark vase)
       %-  emil  caz
-    =/  [rod=rode rop=rope cro=crow]  (parse-channel-data i.t.p.jon)
-    =^  caz  you  (ui-sway:(ui-abed:ui src.bowl rop) rod cro)
-    %-  emil  caz
+    ?+  i.t.p.jon  !!
+      ::
+        [%s %'event']
+      ?>  ?=(^ t.t.p.jon)
+      =/  [ses=buoy rod=rode cro=crow]  (parse-channel-data i.t.t.p.jon)
+      =^  caz  you  (ui-sway:(ui-abed:ui %| src.bowl ses) rod cro)
+      %-  emil  caz
+      ::
+        [%s %'kill']
+      ?>  ?=([[%s @] ~] t.t.p.jon)
+      %-  del-component-state  [%clean [[src.bowl p.i.t.t.p.jon] ~]]
+      ::
+    ==
     ::
   ==
 ::
@@ -547,18 +585,18 @@
       ?~  sus
         %-  emit  (make-resource-subscription-card [%del res.wir])
       =/  gus
-        ^-  (list [[src=ship rop=rope] dat=(set rode)])
+        ^-  (list [[src=ship ses=buoy] dat=(set rode)])
         %~  tap  by  u.sus
       |-  ^+  cor
       ?~  gus  cor
       =/  cus  ~(tap in dat.i.gus)
       |-  ^+  cor
       ?~  cus  ^$(gus t.gus)
-      =/  ui-core  (ui-abed:ui src.i.gus rop.i.gus)
-      =^  [jon=json bos=(set buoy)]  ui-core  (ui-furl:ui-core i.cus)
+      =/  ui-core  (ui-abed:ui %| src.i.gus ses.i.gus)
+      =^  [jon=json res=(set tide)]  ui-core  (ui-furl:ui-core i.cus)
       =.  gulf  ui-abet:ui-core
-      =?  cor  .?(bos)  (handle-component-buoys src.i.gus rop.i.gus ~(tap in bos))
-      =?  cor  .?(jon)  (emit (make-diff-card src.i.gus rop.i.gus jon))
+      =?  cor  .?(res)  (handle-component-res src.i.gus ses.i.gus ~(tap in res))
+      =?  cor  .?(jon)  (emit (make-channel-card src.i.gus ses.i.gus jon))
       %=  $
         cus  t.cus
       ==
@@ -568,23 +606,35 @@
   ==
 ::
 ++  ui
-  |_  [src=ship rop=rope yel=isle]
+  |_  [src=ship ses=buoy rop=rope yel=isle]
   ++  ui-core  .
-  ++  ui-abet  (~(put by gulf) [src rop] yel)
+  ++  ui-abet  (~(put by gulf) [src ses] [rop yel])
   ++  ui-abed
-    |=  [s=ship r=rope]
-    ^+  ui-core
-    =/  yul  (~(get by gulf) [s r])
-    %_  ui-core
-      src  s
-      rop  r
-      yel  ?^(yul u.yul ~)
+    |=  %+  each
+            [s=ship b=buoy r=rope]
+            [s=ship b=buoy]
+    ?-  +<-
+      %&
+        %_  ui-core
+          src  s.p
+          ses  b.p
+          rop  r.p
+          yel  ~
+        ==
+      %|
+        =/  q=[r=rope y=isle]  (~(got by gulf) [s.p b.p])
+        %_  ui-core
+          src  s.p
+          ses  b.p
+          rop  r.q
+          yel  y.q
+        ==
     ==
   ::
   :: ++ui-moor
   :: render from the root
   ++  ui-moor
-    ^-  [[manx (set buoy)] _ui-core]
+    ^-  [[manx (set tide)] _ui-core]
     :: the component key for the root is null
     =/  rod  *rode
     =/  lin  (~(got by dock) bas.rop)
@@ -604,12 +654,13 @@
     ?>  ?=(%body n.g.sal)
     =.  yel  (~(uni by yel) new.wak)
     :_  ui-core
-    :_  bos.wak
+    :_  res.wak
     %_  doc
       a.g
         :~  [%our +:(scow %p our.bowl)]
             [%app (trip dap.bowl)]
-            [%sub (spud (make-client-sub-path src rop))]
+            [%ses (trip `@t`ses)]
+            [%sub (spud (make-client-sub-path src ses))]
         ==
       c.i.c  [script-element c.i.c.doc]
       i.t.c  sal
@@ -619,7 +670,7 @@
   :: rerender and diff a component
   ++  ui-furl
     |=  rod=rode
-    ^-  [[json (set buoy)] _ui-core]
+    ^-  [[json (set tide)] _ui-core]
     =/  cov  (~(got by yel) rod)
     =/  com  (~(got by deck) com.lin.cov)
     =/  cun  +(dif.cov)
@@ -627,16 +678,7 @@
     =/  dif  (luff [aft.cov ~] [new ~])
     ?~  q.dif
       :-  ~^~  ui-core
-    :: if there is a diff, build the full diff object
-    :: with the key and diff counter for this component
-    =/  jon
-      ^-  json
-      :-  %o
-      %-  my
-      :~  ['p' [%s rod]]
-          ['q' [%n (crip ((d-co:co 1) cun))]]
-          ['r' [%a q.dif]]
-      ==
+    =/  jon  (swig [%diff rod cun q.dif])
     =.  yel
       %.  add.p.dif
       %~  uni  by
@@ -645,20 +687,20 @@
         aft  new
         dif  cun
       ==
-    =^  bos=(set buoy)  yel
-      =/  bos  *(set buoy)
+    =^  res=(set tide)  yel
+      =/  res  *(set tide)
       =/  ros  ~(tap in del.p.dif)
-      |-  ^-  [(set buoy) isle]
-      ?~  ros  [bos yel]
+      |-  ^-  [(set tide) isle]
+      ?~  ros  [res yel]
       =/  cuv  (~(get by yel) i.ros)
       ?~  cuv  $(ros t.ros)
       %=  $
         ros  t.ros
-        bos  (~(gas in bos) (make-component-buoys %del i.ros bom.u.cuv res.lin.u.cuv))
+        res  (~(gas in res) (make-component-res %del i.ros bom.u.cuv res.lin.u.cuv))
         yel  (~(del by yel) i.ros)
       ==
     :_  ui-core
-    :-  jon  (~(uni in bos.p.dif) bos)
+    :-  jon  (~(uni in res.p.dif) res)
   ::
   :: ++ui-sway
   :: apply an event
@@ -672,6 +714,11 @@
     =/  pof  ~(. you spoof-bowl)
     |-  ^+  [caz you]
     ?~  blo  [caz you]
+    ?:  =(%mast-action p.i.blo)
+      %=  $
+        blo  t.blo
+        caz  [[%pass /mast/action %agent [our.bowl dap.bowl] %poke i.blo] caz]
+      ==
     =^  cuz  you  (on-poke:pof i.blo)
     %=  $
       blo  t.blo
@@ -811,6 +858,7 @@
     ^-  hull
     :*  our.bowl
         src
+        ses
         bas.rop
         rut.rop
         que.rop
@@ -842,7 +890,7 @@
     =-  ?>  ?=(^ p)
         :-  i.p
         ?.  new  q
-        :-  (~(gas in bos.q) (make-component-buoys %add rod bom.cov res.lin))
+        :-  (~(gas in res.q) (make-component-res %add rod bom.cov res.lin))
             (~(put by new.q) rod cov)
     |-  ^-  (pair marl wake)
     %^  spin  mal  *wake
@@ -859,7 +907,7 @@
         lin  (parse-component-element m)
       ==
     :-  m
-    :-  (~(uni in bos.a) bos.b)
+    :-  (~(uni in res.a) res.b)
         (~(uni by new.a) new.b)
   ::
   ++  handle-diff-branch-add
@@ -881,7 +929,7 @@
           (getv %key a.g.m)
           (parse-component-element m)
     :-  m
-    :-  (~(uni in bos.a) bos.b)
+    :-  (~(uni in res.a) res.b)
         (~(uni by new.a) new.b)
   ::
   ++  handle-diff-branch-dels
@@ -921,9 +969,8 @@
           %-  handle-diff-branch-dels  old
         q
           :_  q.acc
-          %-  swig
           :*  %delete
-              [%a (turn old |=(m=manx [%s (getv %key a.g.m)]))]
+              (turn old |=(m=manx (getv %key a.g.m)))
           ==
       ==
     ?:  =(%$ n.g.i.new)
@@ -938,10 +985,9 @@
         i    +(i)
         q.acc
           %+  snoc  q.acc
-          %-  swig
           :*  %move
-              [%s (getv %key a.g.i.new)]
-              [%n (getv %i a.g.i.new)]
+              (getv %key a.g.i.new)
+              (getv %i a.g.i.new)
           ==
       ==
     =|  j=@ud
@@ -957,15 +1003,14 @@
         acc
           =^  wak  i.new  (handle-diff-branch-add i.new)
           %_  acc
-            bos.p  (~(uni in bos.p.acc) bos.wak)
+            res.p  (~(uni in res.p.acc) res.wak)
             add.p  (~(uni by add.p.acc) new.wak)
             q
               %+  snoc  q.acc
-              %-  swig
               :*  %new
-                  [%s pkey]
-                  [%n (crip ((d-co:co 1) i))]
-                  [%s (crip (en-xml:html i.new))]
+                  pkey
+                  (crip ((d-co:co 1) i))
+                  (crip (en-xml:html i.new))
               ==
           ==
       ==
@@ -1014,9 +1059,8 @@
                 q.acc
                   ?:  &(?=(~ del.jib) ?=(~ new.jib))  q.acc
                   :_  q.acc
-                  %-  swig
                   :*  %change-attr
-                      [%s k.nnky]
+                      k.nnky
                       jib
                   ==
               ==
@@ -1035,16 +1079,14 @@
               q.acc
                 =.  q.acc
                   %+  snoc  q.acc
-                  %-  swig
                   :*  %move
-                      [%s k.nkey]
-                      [%n (crip ((d-co:co 1) i))]
+                      k.nkey
+                      (crip ((d-co:co 1) i))
                   ==
                 ?:  &(?=(~ del.jib) ?=(~ new.jib))  q.acc
                 :_  q.acc
-                %-  swig
                 :*  %change-attr
-                    [%s k.nkey]
+                    k.nkey
                     jib
                 ==
             ==
@@ -1068,10 +1110,9 @@
           i    +(i)
           q.acc
             :_  q.acc
-            %-  swig
             :*  %text
-                [%s (getv %key a.g.i.new)]
-                [%s txt]
+                (getv %key a.g.i.new)
+                txt
             ==
         ==
       =/  jib  (jibe n.g.i.new a.g.i.old a.g.i.new)
@@ -1088,9 +1129,8 @@
             q.acc
               ?:  &(?=(~ del.jib) ?=(~ new.jib))  q.acc
               :_  q.acc
-              %-  swig
               :*  %change-attr
-                  [%s k.nkey]
+                  k.nkey
                   jib
               ==
           ==
@@ -1106,8 +1146,8 @@
   ++  jibe
     |=  [nn=mane om=mart nm=mart]
     =|  $=  acc
-        $:  [%a del=(list [%s @t])]
-            [%a new=(list [%a [%s @t] [%s @t] ~])]
+        $:  del=(list @t)
+            new=(list [k=@t v=@t])
         ==
     ?:  =(%mast nn)  acc
     |-  ^+  acc
@@ -1118,7 +1158,7 @@
           del
         %+  turn  om
         |=  [n=mane *]
-        [%s `@t`?>(?=(@ n) n)]
+        `@t`?>(?=(@ n) n)
       ==
     =|  i=@ud
     =/  com=mart  om
@@ -1130,10 +1170,8 @@
         nm  t.nm
         new.acc
           :_  new.acc
-          :-  %a
-          :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
-              [%s (crip v.i.nm)]
-          ==
+          :-  `@t`?>(?=(@ n.i.nm) n.i.nm)
+              (crip v.i.nm)
       ==
     ?~  om
       !!
@@ -1150,10 +1188,8 @@
         nm   t.nm
         new.acc
           :_  new.acc
-          :-  %a
-          :~  [%s `@t`?>(?=(@ n.i.nm) n.i.nm)]
-              [%s (crip v.i.nm)]
-          ==
+          :-  `@t`?>(?=(@ n.i.nm) n.i.nm)
+              (crip v.i.nm)
       ==
     %=  $
       com  t.com
@@ -1170,44 +1206,62 @@
       (crip v.i.m)
     $(m t.m)
   ::
-  :: ++swig
-  :: takes +$jiff which is the json diff format for the client,
-  :: and turns it into the full json object to be sent.
-  ++  swig
-    |=  jif=jiff
+  --
+::
+:: ++swig
+:: client update to json
+++  swig
+  |=  gog=grog
+  ^-  json
+  ?-  -.gog
+    ::
+      %navigate
+    :-  %s  to.gog
+    ::
+      %diff
+    =;  dif
+      :-  %o
+      %-  my
+      :~  ['p' [%s component.gog]]
+          ['q' [%n (crip ((d-co:co 1) counter.gog))]]
+          ['r' [%a dif]]
+      ==
+    ^-  (list json)
+    %+  turn  diff.gog
+    |=  mes=mess
     ^-  json
     :-  %o
     %-  my
-    ?-  -.jif
+    ?-  -.mes
       %new
         :~  ['p' [%s 'n']]
-            ['q' parent-key.jif]
-            ['r' index.jif]
-            ['s' data.jif]
+            ['q' [%s parent-key.mes]]
+            ['r' [%n index.mes]]
+            ['s' [%s data.mes]]
         ==
       %delete
         :~  ['p' [%s 'd']]
-            ['q' keys.jif]
+            ['q' [%a (turn keys.mes |=(k=@t s+k))]]
         ==
       %move
         :~  ['p' [%s 'm']]
-            ['q' key.jif]
-            ['r' index.jif]
+            ['q' [%s key.mes]]
+            ['r' [%n index.mes]]
         ==
       %change-attr
         :~  ['p' [%s 'c']]
-            ['q' key.jif]
-            ['r' del.jif]
-            ['s' new.jif]
+            ['q' [%s key.mes]]
+            ['r' [%a (turn del.mes |=(k=@t s+k))]]
+            ['s' [%a (turn new.mes |=([k=@t v=@t] [%a s+k s+v ~]))]]
         ==
       %text
         :~  ['p' [%s 't']]
-            ['q' container-key.jif]
-            ['r' data.jif]
+            ['q' [%s container-key.mes]]
+            ['r' [%s data.mes]]
         ==
     ==
-  ::
-  --
+    ::
+  ==
 ::
 --
 
