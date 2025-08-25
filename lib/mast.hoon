@@ -1,4 +1,5 @@
 /-  *mast
+/~  tui-deck  mast  /tui
 /*  mast-js  %js  /lib/mast/js
 ::
 :: O╭ ┌┬╮╭─╮╭─╮┌┬┐
@@ -13,11 +14,19 @@
       =gulf
       =dock
       =deck
+      =tui-gulf
+      =tui-navy
+      =tui-dock
   ==
 +$  state-n
   $%  [%state-0 state-0]
   ==
 +$  card  card:agent:gall
+::
++$  tui-isle  $~([*line ~] (pair line (map rode tui-isle)))
++$  tui-gulf  (map [ship buoy buoy] (pair rope tui-isle))
++$  tui-navy  (map path (set [ship buoy (list rode)]))
++$  tui-dock  dock
 --
 ::
 |=  you=agent:gall
@@ -415,12 +424,14 @@
 ++  watch
   |=  poe=(pole @ta)
   ^+  cor
+  ?:  ?=([%mast-tui *] poe)  (tui-watch-handler poe)
   =^  caz  you  (~(on-watch you bowl) poe)
   %-  emil  caz
 ::
 ++  leave
   |=  poe=(pole @ta)
   ^+  cor
+  ?:  ?=([%mast-tui *] poe)  (tui-leave-handler poe)
   =^  caz  you  (~(on-leave you bowl) poe)
   %-  emil  caz
 ::
@@ -474,6 +485,8 @@
     ::
     =^  caz  you  (~(on-poke you bowl) mark vase)
     %-  emil  caz
+    ::
+      %mast-tui  (tui-poke-handler mark vase)
     ::
       %mast-bind
     ?>  =(our.bowl src.bowl)
@@ -572,6 +585,7 @@
 ++  agent
   |=  [wir=(pole @ta) sin=sign:agent:gall]
   ^+  cor
+  ?:  ?=([%mast-tui *] wir)  (tui-fact-handler wir)
   ?.  ?=([%mast *] wir)
     =^  caz  you  (~(on-agent you bowl) wir sin)
     %-  emil  caz
@@ -1262,6 +1276,327 @@
     ==
     ::
   ==
+::    :::    ::
+  ::  TUI  ::
+::    :::    ::
+++  ulus
+  |%
+  +$  component-event
+    $:  session-id=@t
+        route=rope
+        com-key=(list @t)
+        =path
+        data=(map @t @t)
+    ==
+  +$  update  (lest update-card)
+  +$  update-card
+    $%  [%element p=manx]
+        :: [%set-select p=path]
+        [%set-scroll-position p=?(%c %p) q=@ r=path]
+    ==
+  --
+::
+++  tui-make-update-card
+  |=  [src=ship ses=buoy zez=buoy dat=update:ulus]
+  ^-  card
+  =/  paf  /mast-tui/[(scot %p src)]/[ses]
+  :*  %give  %fact  [paf ~]
+      %json  !>(dat)
+  ==
+::
+++  tui-watch-handler
+  |=  poe=(pole @ta)
+  ^+  cor
+  :: /mast-tui/session-id/uw-jam-of-rope
+  ?>  ?=([%mast-tui ses=@t zez=@t ~] poe)
+  =/  rop  ;;(rope (cue (slav %uw zez.poe)))
+  =/  tui-core  (tui-abed:tui [%& src.bowl ses.poe zez.poe rop])
+  =^  [caz=(list card) sal=manx]  tui-core  tui-full:tui-core
+  %-  emil
+      :-  (tui-make-update-card src.bowl ses.poe zez.poe [[%element sal] ~])
+          caz
+::
+++  tui-leave-handler
+  |=  poe=(pole @ta)
+  ^+  cor
+  ?>  ?=([%mast-tui ses=@t zez=@t ~] poe)
+  =/  tui-core  (tui-abed:tui [%| src.bowl ses.poe zez.poe])
+  =^  caz=(list card)  tui-core  tui-kill:tui-core
+  =.  tui-gulf  (~(del by tui-gulf) [src.bowl ses.poe zez.poe])
+  %-  emil  caz
+::
+++  tui-fact-handler
+  |=  wir=(pole @ta)
+  ^+  cor
+  :: /mast-tui/res/ship/session-id/component-ancestry-keys...
+  ?>  ?=([%mast-tui %res sip=@ta ses=@t zez=@t ros=*] wir)
+  =/  who  (slav %p sip.wir)
+  =/  tui-core  (tui-abed:tui [%| who ses.wir zez.wir])
+  =^  [caz=(list card) sal=manx]  tui-core
+      %-  tui-update:tui-core
+          ros.wir
+  %-  emil
+      :-  (tui-make-update-card who ses.wir zez.wir [[%element sal] ~])
+          caz
+::
+++  tui-poke-handler
+  |=  [mak=mark vaz=vase]
+  ^+  cor
+  ?>  ?=(%mast-tui mak)
+  =/  eve  !<(component-event:ulus vaz)
+  =/  zez  (scot %uw (jam route.eve))
+  =^  caz  you  (tui-event:(tui-abed:tui [%| src.bowl session-id.eve zez]) com-key.eve path.eve data.eve)
+  %-  emil  caz
+::
+++  tui
+  |_  [src=ship ses=buoy zez=buoy rop=rope yel=tui-isle]
+  ++  tui-core  .
+  ++  tui-abet  (~(put by tui-gulf) [src ses zez] [rop yel])
+  ++  tui-abed
+    |=  %+  each
+            [s=ship b=buoy z=buoy r=rope]
+            [s=ship b=buoy z=buoy]
+    ?-  +<-
+    %&
+        :: open a new session
+        =/  l  (~(got by tui-dock) bas.r.p)
+        %_  tui-core
+          src  s.p
+          ses  b.p
+          zez  z.p
+          rop  r.p
+          yel  [l ~]
+        ==
+    %|
+        :: get an existing session
+        =/  q=[r=rope y=tui-isle]  (~(got by tui-gulf) [s.p b.p z.p])
+        %_  tui-core
+          src  s.p
+          ses  b.p
+          zez  z.p
+          rop  r.q
+          yel  y.q
+        ==
+    ==
+  ::
+  ++  tui-full
+    ^-  [[(list card) manx] _tui-core]
+    :: the root component's key is null
+    =/  key  ''
+    =/  [yul=tui-isle sal=manx]  (render key p.yel)
+    :_  tui-core(yel yul)
+    :-  (diff-resources [key ~] yel yul)
+        sal
+  ::
+  ++  tui-kill
+    ^-  [(list card) _tui-core]
+    =/  key  ''
+    =/  [yul=tui-isle sal=manx]  (render key p.yel)
+    =/  kil  [p.yel ~]
+    :-  (diff-resources [key ~] yel kil)
+        tui-core(yel kil)
+  ::
+  ++  tui-update
+    |=  ros=(list rode)
+    ^-  [[(list card) manx] _tui-core]
+    =/  old  (get-tui-isle ?>(?=(^ ros) ros))
+    =/  [new=tui-isle sal=manx]  (render (rear ros) p.old)
+    :_  tui-core(yel (set-tui-isle ?>(?=(^ ros) ros) new))
+    :-  (diff-resources ros old new)
+        sal
+  ::
+  ++  tui-event
+    |=  [ros=(list rode) cro=crow]
+    ^-  [(list card) _you]
+    =/  yul  (get-tui-isle ?>(?=(^ ros) ros))
+    =/  com  (~(got by tui-deck) com.p.yul)
+    =/  blo  (~(spar com (make-hull boom.com p.yul)) cro)
+    =/  caz  *(list card)
+    =/  pof  ~(. you spoof-bowl)
+    |-  ^+  [caz you]
+    ?~  blo  [caz you]
+    ?:  =(%mast-tui-action p.i.blo)
+      %=  $
+        blo  t.blo
+        caz  [[%pass /mast/action %agent [our.bowl dap.bowl] %poke i.blo] caz]
+      ==
+    =^  cuz  you  (on-poke:pof i.blo)
+    %=  $
+      blo  t.blo
+      caz  (weld caz cuz)
+    ==
+  ::
+  ++  get-tui-isle
+    |=  ros=(lest rode)
+    ^-  tui-isle
+    ?~  t.ros  yel
+    %=  $
+        ros  t.ros
+        yel  (~(got by q.yel) i.ros)
+    ==
+  ::
+  ++  set-tui-isle
+    |=  [ros=(lest rode) yul=tui-isle]
+    ^-  tui-isle
+    ?~  t.ros  yul
+    %_  yel
+        q
+        %+  ~(put by q.yel)  i.ros
+        %=  $
+            ros  t.ros
+            yel  (~(got by q.yel) i.ros)
+        ==
+    ==
+  ::
+  ++  render
+    |=  [rod=rode lin=line]
+    ^-  [tui-isle manx]
+    :: rod is the key for the current component
+    :: passed in on iteration of render
+    =/  com  (~(got by tui-deck) com.lin)
+    =/  mal  `marl`[~(sail com (make-hull boom.com lin)) ~]
+    =-  ?>  ?=(^ p)
+        :-  [lin q]
+        :: add this component's key to the root element as a %mast attribute
+        %_  i.p
+            a.g  [[%mast (trip rod)] a.g.i.p]
+        ==
+    |-  ^-  (pair marl (map rode tui-isle))
+    %^  spin
+        mal
+        *(map rode tui-isle)
+    |=  [m=manx a=(map rode tui-isle)]
+    =^  b  m
+        ^-  [(map rode tui-isle) manx]
+        ?.  =(%mast n.g.m)
+            =+  ^$(mal c.m)
+            :-  q
+                m(c p)
+        =/  l  (parse-component-element m)
+        :: make a key for the nested component
+        :: using its parent's key and its line
+        =/  k  (crip ((v-co:co 1) (mug [rod l])))
+        =^  i  m
+            %=  ^^$
+                rod  k
+                lin  l
+            ==
+        :-  [[k i] ~ ~]
+            m
+    :-  m
+        (~(uni by a) b)
+  ::
+  ++  diff-resources
+    |=  [unc=(list rode) old=tui-isle new=tui-isle]
+    |^
+    ^-  (list card)
+    %+  weld  (del-or-add %del (~(dif by q.old) q.new))
+    %+  weld  (del-or-add %add (~(dif by q.new) q.old))
+    ^-  (list card)
+    %-  ~(rep in ~(key by (~(int by q.old) q.new)))
+    |=  [r=rode a=(list card)]
+    ^-  (list card)
+    %+  weld  a
+    %=  ^$
+        unc  (snoc unc r)
+        old  (~(got by q.old) r)
+        new  (~(got by q.new) r)
+    ==
+    ::
+    ++  del-or-add
+    |=  [wat=?(%del %add) dis=(map rode tui-isle)]
+    ^-  (list card)
+    %-  ~(rep by dis)
+    |=  [[k=rode v=tui-isle] a=(list card)]
+    =.  unc  (snoc unc k)
+    %+  weld  a
+    %+  weld
+        %+  turn  ~(val by res.p.v)
+        |=  paf=path
+        %+  tui-make-resource-subscription-card
+            wat
+            paf
+    %=  ^$
+        dis  q.v
+    ==
+    ::
+    ++  tui-make-resource-subscription-card
+    |=  [act=?(%add %del) paf=path]
+    ^-  card
+    :: /mast-tui/res/ship/session-id/component-ancestry-keys...
+    =/  wir  [%mast-tui %res (scot %p src) ses unc]
+    ?-  act
+        %add  [%pass wir %agent [our.bowl dap.bowl] %watch [%x paf]]
+        %del  [%pass wir %agent [our.bowl dap.bowl] %leave ~]
+    ==
+    --
+  ::
+  :: :: :: :: :: :: ::
+  :: copied from +ui:
+  :: :: :: :: :: :: ::
+  ++  parse-component-element
+    |=  sal=manx
+    ^-  line
+    ?>  =(%mast n.g.sal)
+    %+  roll  a.g.sal
+    |=  [[k=mane v=tape] a=line]
+    ?+  k  a
+      [%hook @]  a(com +.k)
+      [%gust @]  a(par (~(put by par.a) +.k (crip v)))
+      [%gale @]  a(res (~(put by res.a) +.k (scan v stap)))
+    ==
+  ::
+  ++  make-hull
+    |=  [bom=boom lin=line]
+    ^-  hull
+    :*  our.bowl
+        src
+        ses
+        bas.rop
+        rut.rop
+        que.rop
+        now.bowl
+        eny.bowl
+        par.lin
+        (hydrate-component bom res.lin)
+    ==
+  ::
+  ++  hydrate-component
+    |=  [bom=boom res=pool]
+    ^-  gale
+    :: load the nested agent with a modified bowl
+    =/  pof  ~(. you spoof-bowl)
+    %-  malt
+    %+  murn  bom
+    |=  [nam=@tas mak=@tas]
+    ^-  (unit [term path vase])
+    =/  paf  (~(get by res) nam)
+    ?~  paf  ~
+    =/  dat  (on-peek:pof [%x u.paf])
+    ?:  ?|  ?=(~ dat)
+            ?=(~ u.dat)
+        ==
+      ~&  >>>  [%mast dap.bowl %scry-failed `path`[%x u.paf]]
+      ~
+    ?:  =(p.u.u.dat mak)
+      :-  ~
+      :+  nam
+          u.paf
+          q.u.u.dat
+    =/  tub  .^(tube:clay %cc (bem /[p.u.u.dat]/[mak]))
+    :-  ~
+    :+  nam
+        u.paf
+        (tub q.u.u.dat)
+  ::
+  ++  spoof-bowl
+    %_  bowl
+      src  src
+      sap  /gall/[dap.bowl]
+    ==
+  :: :: :: :: :: :: ::
+  ::
+  --
 ::
 --
 
