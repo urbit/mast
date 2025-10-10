@@ -24,25 +24,23 @@
 +$  gale                                         :: component resources
   %+  map  @tas                                  ::
   $:  src=path                                   ::
-      fil=vase                                   ::
+      fil=page                                   ::
+      dir=(list path)                            ::
   ==                                             ::
-+$  boom                                         :: resource spec
-  %-  list                                       ::
-  $:  name=@tas                                  ::   map key
-      mark=@tas                                  ::   mark, possibly converted to
-  ==                                             ::
+:: +$  boom                                         :: resource spec
+::   %-  list                                       ::
+::   $:  name=@tas                                  ::   map key
+::       mark=@tas                                  ::   mark, possibly converted to
+::   ==                                             ::
 +$  mast                                         :: component
-  $:  $:  =boom                                  ::
-      ==                                         ::
-      $_  ^|                                     ::
-      |_  hull                                   ::
-      ++  spar  *$-(crow blow)                   ::
-      ++  sail  *manx                            ::
-      --                                         ::
-  ==                                             ::
+  $_  ^|                                         ::
+  |_  hull                                       ::
+  ++  spar  *$-(crow blow)                       ::
+  ++  sail  *manx                                ::
+  --                                             ::
 +$  buoy  @                                      :: session id
 +$  bind  (pair knot line)                       :: base url segment to root component
-+$  dock  (map knot line)                        :: bindings
+::+$  dock  (map knot line)                        :: bindings
 +$  deck  (map hook mast)                        :: component cache
 +$  hook  term                                   :: component name
 +$  rode  cord                                   :: component key
@@ -57,44 +55,23 @@
       res=pool                                   ::
   ==                                             ::
 +$  pool  (map @tas path)                        :: resources for a component
-+$  tide  [?(%add %del) p=rode q=path]           :: resource subscription effect
-+$  wake                                         :: component creation effect
-  $:  res=(set tide)                             ::
-      new=isle                                   ::
-  ==                                             ::
-+$  cove                                         :: component state
-  $:  dif=atom                                   ::
-      bom=boom                                   ::
-      aft=manx                                   ::
-      lin=line                                   ::
-  ==                                             ::
-+$  isle  (map rode cove)                        ::
-+$  gulf  (map [ship buoy] (pair rope isle))     ::
-+$  navy                                         :: resource to client subscription state
++$  tide  [?(%add %del) p=(list rode) q=path]    :: resource subscription effect
++$  wake  (list tide)                            ::
++$  navy                                         ::
   %+  map  path                                  ::
-  %+  map  [ship buoy]                           ::
-  %-  set  rode                                  ::
-::
-  ::
-::
-+$  grog
-  $%  [%diff component=rode counter=@ diff=(list mess)]
-      [%navigate to=@t]
-  ==
-+$  mess
-  $%  [%new parent-key=@t index=@t data=@t]
-      [%delete keys=(list @t)]
-      [%move key=@t index=@t]
-      [%change-attr key=@t del=(list @t) new=(list [k=@t v=@t])]
-      [%text container-key=@t data=@t]
-  ==
-+$  diff
-  %+  pair
-  $:  res=(set tide)
-      del=(set rode)
-      add=isle
-  ==
-  %-  list  mess
+  %-  set  (pair [ship buoy] (list rode))        ::
++$  gulf  (map [ship buoy] (pair rope isle))     ::
++$  isle                                         ::
+  $~  [*line ~]                                  ::
+  %+  pair  line  (map rode isle)                ::
++$  mess  (list grog)                            ::
++$  grog                                         ::
+  %+  pair  path                                 ::
+  $%  [%put =page]                               ::
+      [%tom =case]                               ::
+      [%cul =case]                               ::
+    ==                                           ::
++$  swab  @da                                    ::
 ::
   ::
 ::
@@ -118,18 +95,6 @@
       %+  turn  resources
       |=  [k=@tas v=path]
       :-  [%gale k]  (spud v)
-  ==
-::
-:: ++make-client-state
-:: produce an element that adds values
-:: to the client state object on render
-++  make-client-state
-  |=  kv-list=(list (pair term tape))
-  ^-  manx
-  :_  ~
-  :*  %client-state
-      [%style "display:none"]
-      kv-list
   ==
 ::
 --
